@@ -40,7 +40,7 @@
         .address-card { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f2f2f2; }
         .address-card h3 { font-size: 1.1rem; color: #111; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
         
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 5px; font-weight: bold; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; }
         .form-group input:focus { border-color: #ea1d2c; background: #fff; }
@@ -92,6 +92,16 @@
                         <input type="text" id="p-bairro" placeholder="Bairro">
                     </div>
                 </div>
+                
+                <div class="row">
+                    <div class="form-group" style="flex: 0.7;">
+                        <input type="text" id="p-cidade" placeholder="Cidade" value="Doresópolis">
+                    </div>
+                    <div class="form-group" style="flex: 0.3;">
+                        <input type="text" id="p-estado" placeholder="UF" value="MG" maxlength="2" style="text-transform: uppercase;">
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <input type="text" id="p-comp" placeholder="Complemento (Opcional)">
                 </div>
@@ -153,7 +163,6 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // IMPORTANTE: Adicionamos o "deleteDoc" na importação abaixo
         import { getFirestore, collection, query, where, getDocs, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // SUA CONFIGURAÇÃO OFICIAL
@@ -175,7 +184,7 @@
         let userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
 
         let userDocId = null;
-        let fullUserData = null; // Guarda os dados completos do Firebase
+        let fullUserData = null; 
 
         window.onload = async () => {
             if (!isLogged) {
@@ -197,13 +206,16 @@
                     if (!querySnapshot.empty) {
                         querySnapshot.forEach((documento) => {
                             userDocId = documento.id; 
-                            fullUserData = documento.data(); // Salva na memória
+                            fullUserData = documento.data(); 
                             
                             if(fullUserData.address) {
                                 document.getElementById('p-rua').value = fullUserData.address.rua || '';
                                 document.getElementById('p-num').value = fullUserData.address.num || '';
                                 document.getElementById('p-bairro').value = fullUserData.address.bairro || '';
                                 document.getElementById('p-comp').value = fullUserData.address.comp || '';
+                                // Puxa Cidade e Estado se já existirem, ou mantém o padrão Doresópolis/MG
+                                document.getElementById('p-cidade').value = fullUserData.address.cidade || 'Doresópolis';
+                                document.getElementById('p-estado').value = fullUserData.address.estado || 'MG';
                             }
                         });
                     }
@@ -213,15 +225,17 @@
             }
         };
 
-        // Função para salvar o endereço no Firebase
+        // Função para salvar o endereço no Firebase (AGORA COM CIDADE E ESTADO)
         window.saveAddress = async () => {
             const rua = document.getElementById('p-rua').value.trim();
             const num = document.getElementById('p-num').value.trim();
             const bairro = document.getElementById('p-bairro').value.trim();
+            const cidade = document.getElementById('p-cidade').value.trim();
+            const estado = document.getElementById('p-estado').value.trim().toUpperCase();
             const comp = document.getElementById('p-comp').value.trim();
 
-            if (!rua || !num || !bairro) {
-                alert("Por favor, preencha pelo menos a Rua, Número e Bairro.");
+            if (!rua || !num || !bairro || !cidade || !estado) {
+                alert("Por favor, preencha Rua, Número, Bairro, Cidade e Estado.");
                 return;
             }
 
@@ -236,7 +250,7 @@
 
             try {
                 await updateDoc(doc(db, "customers", userDocId), {
-                    address: { rua, num, bairro, comp }
+                    address: { rua, num, bairro, cidade, estado, comp }
                 });
                 alert("Endereço salvo com sucesso! Ele será usado automaticamente em suas próximas compras.");
             } catch(e) {
@@ -257,15 +271,13 @@
                 return;
             }
             
-            // Esconde a tela principal e mostra o formulário
             document.getElementById('logged-state').style.display = 'none';
             document.getElementById('settings-state').style.display = 'block';
 
-            // Preenche os inputs com os dados atuais
             document.getElementById('cfg-name').value = fullUserData.name || userName || '';
             document.getElementById('cfg-phone').value = fullUserData.phone || '';
             document.getElementById('cfg-email').value = fullUserData.email || userEmail || '';
-            document.getElementById('cfg-pass').value = ''; // Sempre vazio por segurança
+            document.getElementById('cfg-pass').value = ''; 
         };
 
         window.closeSettings = () => {
@@ -297,15 +309,12 @@
                     email: newEmail
                 };
                 
-                // Se ele digitou uma senha nova, atualiza. Se não, mantém a velha intacta.
                 if (newPass !== '') {
                     dataToUpdate.password = newPass; 
                 }
 
-                // Salva no Firebase
                 await updateDoc(doc(db, "customers", userDocId), dataToUpdate);
 
-                // Atualiza a memória local (Navegador)
                 let storedCust = JSON.parse(localStorage.getItem('loggedCustomer')) || {};
                 storedCust.name = newName;
                 storedCust.email = newEmail;
@@ -314,14 +323,12 @@
                 localStorage.setItem('userName', newName);
                 localStorage.setItem('userEmail', newEmail);
 
-                // Atualiza as variáveis do código para alterar a tela instantaneamente
                 userName = newName;
                 userEmail = newEmail;
                 fullUserData.name = newName;
                 fullUserData.phone = newPhone;
                 fullUserData.email = newEmail;
 
-                // Muda o visual da tela
                 document.getElementById('user-name').innerText = newName;
                 document.getElementById('user-email').innerText = newEmail;
                 document.getElementById('user-avatar').innerText = newName.charAt(0).toUpperCase();
@@ -338,7 +345,7 @@
             }
         };
 
-        // 🟢 NOVA FUNÇÃO: EXCLUIR CONTA DEFINITIVAMENTE 🟢
+        // EXCLUIR CONTA
         window.deleteAccount = async () => {
             if (!userDocId) {
                 alert("Erro ao localizar seu cadastro para exclusão.");
@@ -349,20 +356,15 @@
 
             if (confirmAction) {
                 try {
-                    // Apaga o documento do cliente na coleção "customers" no Firebase
                     await deleteDoc(doc(db, "customers", userDocId));
-                    
                     alert("Sua conta foi excluída com sucesso.");
                     
-                    // Limpa a sessão do navegador e desloga o usuário
                     localStorage.removeItem('loggedCustomer');
                     localStorage.removeItem('isLogged');
                     localStorage.removeItem('userName');
                     localStorage.removeItem('userEmail');
                     
-                    // Redireciona para a página inicial
                     window.location.href = 'index.html';
-
                 } catch (error) {
                     console.error("Erro ao excluir conta:", error);
                     alert("Ocorreu um erro ao tentar excluir sua conta. Tente novamente mais tarde.");
