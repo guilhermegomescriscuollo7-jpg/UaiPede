@@ -138,6 +138,8 @@
 
                 <button class="btn-primary" id="btn-save-cfg" onclick="window.saveProfileSettings()">Salvar Alterações</button>
                 <button class="btn-secondary" style="margin-top: 15px; justify-content: center;" onclick="window.closeSettings()">Cancelar e Voltar</button>
+                
+                <button class="btn-danger" style="margin-top: 30px; border-color: #ea1d2c;" onclick="window.deleteAccount()">Excluir Minha Conta Definitivamente</button>
             </div>
         </div>
 
@@ -151,7 +153,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // IMPORTANTE: Adicionamos o "deleteDoc" na importação abaixo
+        import { getFirestore, collection, query, where, getDocs, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // SUA CONFIGURAÇÃO OFICIAL
         const firebaseConfig = {
@@ -332,6 +335,38 @@
             } finally {
                 btn.innerText = "Salvar Alterações";
                 btn.disabled = false;
+            }
+        };
+
+        // 🟢 NOVA FUNÇÃO: EXCLUIR CONTA DEFINITIVAMENTE 🟢
+        window.deleteAccount = async () => {
+            if (!userDocId) {
+                alert("Erro ao localizar seu cadastro para exclusão.");
+                return;
+            }
+
+            const confirmAction = confirm("⚠️ ATENÇÃO: Tem certeza absoluta que deseja excluir sua conta? Todos os seus dados, endereços salvos e histórico serão apagados permanentemente. Esta ação não pode ser desfeita.");
+
+            if (confirmAction) {
+                try {
+                    // Apaga o documento do cliente na coleção "customers" no Firebase
+                    await deleteDoc(doc(db, "customers", userDocId));
+                    
+                    alert("Sua conta foi excluída com sucesso.");
+                    
+                    // Limpa a sessão do navegador e desloga o usuário
+                    localStorage.removeItem('loggedCustomer');
+                    localStorage.removeItem('isLogged');
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('userEmail');
+                    
+                    // Redireciona para a página inicial
+                    window.location.href = 'index.html';
+
+                } catch (error) {
+                    console.error("Erro ao excluir conta:", error);
+                    alert("Ocorreu um erro ao tentar excluir sua conta. Tente novamente mais tarde.");
+                }
             }
         };
 
