@@ -43,9 +43,14 @@
         .summary-line { display: flex; justify-content: space-between; font-size: 0.95rem; color: #555; margin-bottom: 10px; }
         .summary-total { display: flex; justify-content: space-between; font-size: 1.1rem; color: #111; font-weight: 700; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
 
-        /* FORMS (ENDEREÇO E PAGAMENTO) */
+        /* FORMS E SEÇÕES */
         .checkout-section { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
         .checkout-section h3 { font-size: 1rem; color: #111; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; }
+        
+        /* BOTÕES DE MÉTODO DE RECEBIMENTO */
+        .delivery-methods { display: flex; gap: 10px; margin-bottom: 15px; }
+        .btn-method { flex: 1; padding: 12px; border: 1px solid #ddd; background: #f9f9f9; border-radius: 8px; font-weight: bold; color: #555; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
+        .btn-method.active { background: #eef4ff; border-color: #0d6efd; color: #0d6efd; }
         
         .form-group { margin-bottom: 12px; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; outline: none; background: #f9f9f9; }
@@ -54,13 +59,15 @@
         .row { display: flex; gap: 10px; }
         .row .form-group { flex: 1; }
 
+        /* CAIXA DE AVISO DE RETIRADA */
+        .pickup-info { display: none; background: #eef4ff; border: 1px solid #b6d4fe; padding: 15px; border-radius: 8px; color: #084298; font-size: 0.9rem; line-height: 1.4; }
+
         /* OPÇÕES DE PAGAMENTO */
         .payment-options { display: flex; flex-direction: column; gap: 10px; }
         .pay-label { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; background: #f9f9f9; }
         .pay-label:hover { background: #fff; }
         .pay-label input[type="radio"] { accent-color: #ea1d2c; transform: scale(1.2); }
         
-        /* Input de Troco (Escondido por padrão) */
         #change-container { display: none; margin-top: 10px; padding: 15px; background: #fef0f0; border: 1px dashed #fbd5d5; border-radius: 8px; }
         #change-container label { font-size: 0.85rem; color: #ea1d2c; font-weight: bold; display: block; margin-bottom: 8px; }
 
@@ -114,26 +121,38 @@
             <div id="checkout-form" style="display: none;">
                 
                 <div class="checkout-section">
-                    <h3>📍 Endereço de Entrega</h3>
-                    <div class="form-group">
-                        <input type="text" id="end-rua" placeholder="Rua / Avenida" required>
+                    <h3>📦 Como deseja receber?</h3>
+                    <div class="delivery-methods">
+                        <button id="btn-method-entrega" class="btn-method active" onclick="window.setDeliveryMethod('entrega')">🛵 Entrega</button>
+                        <button id="btn-method-retirada" class="btn-method" onclick="window.setDeliveryMethod('retirada')">🚶‍♂️ Retirar na Loja</button>
                     </div>
-                    <div class="row">
-                        <div class="form-group" style="flex: 0.4;">
-                            <input type="text" id="end-num" placeholder="Número" required>
+
+                    <div id="address-container">
+                        <div class="form-group">
+                            <input type="text" id="end-rua" placeholder="Rua / Avenida">
                         </div>
-                        <div class="form-group" style="flex: 0.6;">
-                            <input type="text" id="end-bairro" placeholder="Bairro" required>
+                        <div class="row">
+                            <div class="form-group" style="flex: 0.4;">
+                                <input type="text" id="end-num" placeholder="Número">
+                            </div>
+                            <div class="form-group" style="flex: 0.6;">
+                                <input type="text" id="end-bairro" placeholder="Bairro">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="end-comp" placeholder="Complemento (Opcional)">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <input type="text" id="end-comp" placeholder="Complemento (Opcional)">
+
+                    <div id="pickup-container" class="pickup-info">
+                        <strong>📍 Você escolheu Retirada no Local</strong><br><br>
+                        Não será cobrada taxa de entrega. Vá até o estabelecimento para retirar seu pedido informando seu nome ou número do pedido.
                     </div>
                 </div>
 
                 <div class="checkout-section">
-                    <h3>💳 Pagamento na Entrega</h3>
-                    <p style="font-size: 0.8rem; color: #777; margin-bottom: 12px;">Como você prefere pagar quando o entregador chegar?</p>
+                    <h3>💳 Forma de Pagamento</h3>
+                    <p style="font-size: 0.8rem; color: #777; margin-bottom: 12px;">Como você prefere pagar?</p>
                     
                     <div class="payment-options">
                         <label class="pay-label">
@@ -164,10 +183,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // 🟢 ADICIONAMOS query, where e getDocs PARA BUSCAR O PERFIL DO USUÁRIO 🟢
         import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // SUA CONFIGURAÇÃO OFICIAL
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -182,9 +199,13 @@
 
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let finalTotal = 0;
-        let deliveryFee = 0; 
+        let subtotalStore = 0;
         
-        // Verifica se o usuário tem sessão ativa
+        let originalDeliveryFee = 0; // Taxa real cobrada pela loja
+        let currentDeliveryFee = 0;  // Taxa aplicada no momento (0 se for retirada)
+        
+        let currentMethod = 'entrega'; // 'entrega' ou 'retirada'
+
         const loggedCustomer = JSON.parse(localStorage.getItem('loggedCustomer'));
         const isLogged = !!loggedCustomer || localStorage.getItem('isLogged') === 'true'; 
         const userName = loggedCustomer ? loggedCustomer.name : (localStorage.getItem('userName') || 'Cliente');
@@ -201,6 +222,49 @@
             }
         };
 
+        // 🟢 ALTERAR FORMA DE RECEBIMENTO 🟢
+        window.setDeliveryMethod = (method) => {
+            currentMethod = method;
+            const btnEntrega = document.getElementById('btn-method-entrega');
+            const btnRetirada = document.getElementById('btn-method-retirada');
+            const addrContainer = document.getElementById('address-container');
+            const pickupContainer = document.getElementById('pickup-container');
+
+            if(method === 'entrega') {
+                btnEntrega.classList.add('active');
+                btnRetirada.classList.remove('active');
+                addrContainer.style.display = 'block';
+                pickupContainer.style.display = 'none';
+                currentDeliveryFee = originalDeliveryFee; // Restaura a taxa
+            } else {
+                btnRetirada.classList.add('active');
+                btnEntrega.classList.remove('active');
+                addrContainer.style.display = 'none';
+                pickupContainer.style.display = 'block';
+                currentDeliveryFee = 0; // Taxa zera na retirada
+            }
+
+            window.updateTotalsUI();
+        };
+
+        // 🟢 ATUALIZAR VISUAL DOS VALORES 🟢
+        window.updateTotalsUI = () => {
+            const feeTextElement = document.getElementById('delivery-fee-val');
+            
+            if (currentDeliveryFee > 0) {
+                feeTextElement.innerText = `R$ ${currentDeliveryFee.toFixed(2)}`;
+                feeTextElement.style.color = '#555';
+                feeTextElement.style.fontWeight = 'normal';
+            } else {
+                feeTextElement.innerText = 'Grátis';
+                feeTextElement.style.color = '#00a14b';
+                feeTextElement.style.fontWeight = 'bold';
+            }
+
+            finalTotal = subtotalStore + currentDeliveryFee;
+            document.getElementById('total-val').innerText = `R$ ${finalTotal.toFixed(2)}`;
+        };
+
         window.loadCart = async () => {
             if (cart.length === 0) {
                 document.getElementById('empty-state').style.display = 'block';
@@ -214,11 +278,11 @@
             document.getElementById('cart-store-name').innerText = cart[0].store;
             const storeId = cart[0].storeId;
 
-            let subtotal = 0;
+            subtotalStore = 0;
             const container = document.getElementById('cart-items-container');
             
             container.innerHTML = cart.map(item => {
-                subtotal += item.price;
+                subtotalStore += item.price;
                 
                 let details = [];
                 if(item.variant) details.push(item.variant);
@@ -238,43 +302,32 @@
                 `;
             }).join('');
 
-            document.getElementById('subtotal-val').innerText = `R$ ${subtotal.toFixed(2)}`;
+            document.getElementById('subtotal-val').innerText = `R$ ${subtotalStore.toFixed(2)}`;
 
-            // LÓGICA DA TAXA DE ENTREGA
+            // LÓGICA DE BUSCAR TAXA NA LOJA
             try {
                 const storeRef = doc(db, "stores", storeId);
                 const storeSnap = await getDoc(storeRef);
                 
                 if (storeSnap.exists() && storeSnap.data().deliveryFee) {
-                    deliveryFee = parseFloat(storeSnap.data().deliveryFee);
+                    originalDeliveryFee = parseFloat(storeSnap.data().deliveryFee);
                 } else {
-                    deliveryFee = 0; 
-                }
-
-                const feeTextElement = document.getElementById('delivery-fee-val');
-                if (deliveryFee > 0) {
-                    feeTextElement.innerText = `R$ ${deliveryFee.toFixed(2)}`;
-                    feeTextElement.style.color = '#555';
-                    feeTextElement.style.fontWeight = 'normal';
-                } else {
-                    feeTextElement.innerText = 'Grátis';
-                    feeTextElement.style.color = '#00a14b';
-                    feeTextElement.style.fontWeight = 'bold';
+                    originalDeliveryFee = 0; 
                 }
             } catch (error) {
                 console.error("Erro ao buscar a taxa de entrega da loja:", error);
-                document.getElementById('delivery-fee-val').innerText = "Grátis";
-                deliveryFee = 0;
+                originalDeliveryFee = 0;
             }
 
-            finalTotal = subtotal + deliveryFee;
-            document.getElementById('total-val').innerText = `R$ ${finalTotal.toFixed(2)}`;
+            // Aplica a taxa inicial (padrão é entrega)
+            currentDeliveryFee = originalDeliveryFee;
+            window.updateTotalsUI();
 
             if (isLogged) {
                 document.getElementById('checkout-form').style.display = 'block';
                 document.getElementById('login-alert').style.display = 'none';
 
-                // 🟢 PUXAR ENDEREÇO DO PERFIL DO CLIENTE 🟢
+                // PUXAR ENDEREÇO DO PERFIL (se for entrega)
                 try {
                     if(userEmail) {
                         const q = query(collection(db, "customers"), where("email", "==", userEmail));
@@ -283,7 +336,6 @@
                         if (!querySnapshot.empty) {
                             querySnapshot.forEach((doc) => {
                                 const userData = doc.data();
-                                // Se ele tem endereço salvo e os campos de texto estão vazios
                                 if(userData.address && !document.getElementById('end-rua').value) {
                                     document.getElementById('end-rua').value = userData.address.rua || '';
                                     document.getElementById('end-num').value = userData.address.num || '';
@@ -294,7 +346,7 @@
                         }
                     }
                 } catch(err) {
-                    console.error("Não foi possível puxar o endereço automático: ", err);
+                    console.error("Não foi possível puxar o endereço: ", err);
                 }
 
             } else {
@@ -310,14 +362,22 @@
         };
 
         window.finishOrder = async () => {
-            const rua = document.getElementById('end-rua').value.trim();
-            const num = document.getElementById('end-num').value.trim();
-            const bairro = document.getElementById('end-bairro').value.trim();
-            const comp = document.getElementById('end-comp').value.trim();
+            let addressString = "";
 
-            if(!rua || !num || !bairro) {
-                alert("Por favor, preencha a Rua, Número e Bairro para entrega.");
-                return;
+            // VALIDAÇÃO: Se escolheu Entrega, obriga endereço. Se escolheu Retirada, ignora.
+            if (currentMethod === 'entrega') {
+                const rua = document.getElementById('end-rua').value.trim();
+                const num = document.getElementById('end-num').value.trim();
+                const bairro = document.getElementById('end-bairro').value.trim();
+                const comp = document.getElementById('end-comp').value.trim();
+
+                if(!rua || !num || !bairro) {
+                    alert("Por favor, preencha a Rua, Número e Bairro para entrega.");
+                    return;
+                }
+                addressString = `${rua}, ${num} - ${bairro} ${comp ? '('+comp+')' : ''}`;
+            } else {
+                addressString = "🚶‍♂️ RETIRADA NO LOCAL (Pelo Cliente)";
             }
 
             const payMethod = document.querySelector('input[name="pay-method"]:checked').value;
@@ -332,9 +392,7 @@
                 }
             }
 
-            const addressString = `${rua}, ${num} - ${bairro} ${comp ? '('+comp+')' : ''}`;
             const btn = document.getElementById('btn-finish');
-
             btn.innerText = "Enviando Pedido...";
             btn.disabled = true;
 
@@ -350,7 +408,8 @@
                     address: addressString
                 },
                 items: cart,
-                deliveryFee: deliveryFee,
+                deliveryFee: currentDeliveryFee, 
+                orderType: currentMethod, // Salva se foi Entrega ou Retirada
                 total: finalTotal,
                 paymentMethod: paymentString,
                 status: 'Pendente' 
@@ -359,7 +418,7 @@
             try {
                 await addDoc(collection(db, "orders"), newOrder);
                 localStorage.removeItem('cart');
-                alert("Pedido realizado com sucesso! O restaurante já foi notificado.");
+                alert("Pedido realizado com sucesso! A loja já foi notificada.");
                 window.location.href = "pedidos.html";
 
             } catch (error) {
