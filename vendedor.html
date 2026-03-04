@@ -193,19 +193,22 @@
         .top-stats { text-align: right; font-size: 0.85rem; color: #777; display: flex; flex-direction: column; }
         .top-stats strong { color: #00a14b; font-size: 1.1rem; margin-top: 2px; }
 
-        /* 🟢 ESTILOS DA SEÇÃO DE CUPONS 🟢 */
+        /* CUPONS */
         .coupon-layout { display: flex; gap: 20px; align-items: flex-start; }
         .coupon-form { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 350px; flex-shrink: 0; }
         .coupon-list-area { flex: 1; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .coupon-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; background: #fafafa; }
         .coupon-code { font-weight: 900; color: #ea1d2c; font-size: 1.1rem; text-transform: uppercase; background: #fff0f0; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 5px; }
         .coupon-details { font-size: 0.85rem; color: #555; }
-        .coupon-actions { display: flex; gap: 10px; }
+        .coupon-actions { display: flex; gap: 10px; align-items: center;}
         .btn-toggle-cup { padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; border: 1px solid #ccc; background: #fff; }
         .btn-toggle-cup.active { background: #e6f4ea; color: #00a14b; border-color: #badbcc; }
         .btn-toggle-cup.inactive { background: #fef0f0; color: #ea1d2c; border-color: #fbd5d5; }
         .btn-del-cup { background: none; border: none; color: #999; font-size: 1.2rem; cursor: pointer; }
         .btn-del-cup:hover { color: #ea1d2c; }
+        
+        .limit-badge { background: #eef4ff; color: #0d6efd; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-left: 5px; }
+        .limit-esgotado { background: #fef0f0; color: #ea1d2c; }
 
         /* RESPONSIVIDADE */
         @media (max-width: 1024px) {
@@ -467,6 +470,12 @@
                         <input type="number" id="cp-min" class="form-input" step="0.01" placeholder="Ex: 50.00 ou deixe em branco">
                     </div>
 
+                    <div class="form-group">
+                        <label>Limite de Usos (Opcional)</label>
+                        <input type="number" id="cp-limit" class="form-input" placeholder="Ex: 5 (Deixe em branco para ilimitado)">
+                        <span style="font-size: 0.75rem; color: #888;">Gera escassez: "Válido apenas para os 5 primeiros"</span>
+                    </div>
+
                     <button class="btn-action btn-accept" style="margin-top: 15px; padding: 12px; font-size: 1rem;" onclick="window.createCoupon()">Salvar Cupom</button>
                 </div>
 
@@ -553,9 +562,6 @@
             <div class="mod-header">
                 <h3>Categorias de modificadores <span class="p-badge" id="mod-header-count">0</span></h3>
                 <div class="mod-header-actions">
-                    <div style="border: 1px solid #ddd; padding: 6px 10px; border-radius: 6px; background:#fff; display:flex; align-items:center;">
-                        🔍 <input type="text" placeholder="Pesquisa de categoria" style="border:none; outline:none; margin-left:8px; width: 150px;">
-                    </div>
                     <button class="btn-outline-blue" onclick="window.addModCategory()">+ Criar categoria</button>
                     <button class="btn-close-mod" onclick="window.closeModifiersModal()">✕</button>
                 </div>
@@ -580,10 +586,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // VARIÁVEIS GLOBAIS
         let globalOrders = []; 
         let previousOrderCount = -1;
-        let globalCoupons = []; // Armazena cupons
+        let globalCoupons = []; 
 
         const loggedStore = JSON.parse(localStorage.getItem('loggedStore'));
         if (!loggedStore || !loggedStore.id) { 
@@ -648,7 +653,7 @@
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 const ctx = new AudioContext();
-                ctx.resume().then(() => { console.log('Áudio destravado!'); });
+                ctx.resume().then(() => {});
             } catch(e) {}
 
             if ("Notification" in window) {
@@ -710,7 +715,53 @@
             }
         };
 
-        // KANBAN COM 4 COLUNAS E LÓGICA DE BOTÕES
+        // HORÁRIOS E TAXAS
+        const daysOfWeek = [
+            { id: 'seg', name: 'Segunda-feira' }, { id: 'ter', name: 'Terça-feira' }, { id: 'qua', name: 'Quarta-feira' },
+            { id: 'qui', name: 'Quinta-feira' }, { id: 'sex', name: 'Sexta-feira' }, { id: 'sab', name: 'Sábado' }, { id: 'dom', name: 'Domingo' }
+        ];
+
+        window.renderScheduleUI = (scheduleData = {}) => {
+            const container = document.getElementById('schedule-container');
+            let html = '';
+            daysOfWeek.forEach(day => {
+                const data = scheduleData[day.id] || { active: true, open: '08:00', close: '18:00' };
+                html += `
+                    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                        <label style="width: 130px; display: flex; align-items: center; gap: 8px; margin: 0; font-weight:bold; color:#333; cursor:pointer;">
+                            <input type="checkbox" id="sch-active-${day.id}" ${data.active ? 'checked' : ''} style="transform: scale(1.3); accent-color: #ea1d2c; cursor:pointer;"> 
+                            ${day.name}
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="time" id="sch-open-${day.id}" class="form-input" style="width: 110px;" value="${data.open}">
+                            <span style="color: #777; font-weight:bold;">até</span>
+                            <input type="time" id="sch-close-${day.id}" class="form-input" style="width: 110px;" value="${data.close}">
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        };
+
+        window.saveSchedule = async () => {
+            const newSchedule = {};
+            daysOfWeek.forEach(day => {
+                newSchedule[day.id] = {
+                    active: document.getElementById(`sch-active-${day.id}`).checked,
+                    open: document.getElementById(`sch-open-${day.id}`).value,
+                    close: document.getElementById(`sch-close-${day.id}`).value
+                };
+            });
+            try { await updateDoc(doc(db, "stores", loggedStore.id), { schedule: newSchedule }); alert("Horários atualizados com sucesso!"); } catch(e) { alert("Ocorreu um erro ao salvar os horários."); }
+        };
+
+        window.saveDeliveryFee = async () => {
+            const feeInput = document.getElementById('cfg-delivery-fee').value;
+            const fee = feeInput === '' ? 0 : parseFloat(feeInput);
+            try { await updateDoc(doc(db, "stores", loggedStore.id), { deliveryFee: fee }); alert("Taxa de entrega atualizada com sucesso!"); } catch(e) { alert("Erro ao salvar."); }
+        };
+
+        // KANBAN COM 4 COLUNAS
         const qOrders = query(collection(db, "orders"), where("storeId", "==", loggedStore.id));
 
         onSnapshot(qOrders, (snapshot) => {
@@ -800,7 +851,6 @@
                 orderTypeBadge = `<span style="background:#eef4ff; color:#0d6efd; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; margin-left:10px;">🛵 ENTREGA</span>`;
             }
 
-            // Exibição do Desconto se houver
             let discountHtml = '';
             if(order.discount && order.discount > 0) {
                 discountHtml = `<div style="font-size:0.85rem; color:#ea1d2c; font-weight:bold; text-align:right; margin-bottom:2px;">Desconto Cupom: - R$ ${order.discount.toFixed(2)}</div>`;
@@ -952,11 +1002,7 @@
             }
         };
 
-        // ==========================================
-        // 🟢 NOVA LÓGICA DE CUPONS DE DESCONTO 🟢
-        // ==========================================
-        
-        // Listener contínuo para manter os cupons atualizados
+        // 🟢 LÓGICA DE CUPONS COM LIMITE DE USO 🟢
         const qCoupons = query(collection(db, "coupons"), where("storeId", "==", loggedStore.id));
         onSnapshot(qCoupons, (snapshot) => {
             globalCoupons = [];
@@ -969,13 +1015,13 @@
             const type = document.getElementById('cp-type').value;
             const value = parseFloat(document.getElementById('cp-value').value);
             const minOrder = parseFloat(document.getElementById('cp-min').value) || 0;
+            const usageLimit = parseInt(document.getElementById('cp-limit').value) || null; // NOVO: Captura o limite
 
             if (!code || isNaN(value) || value <= 0) {
                 alert("Preencha o código do cupom e um valor de desconto válido.");
                 return;
             }
 
-            // Verifica se o cupom já existe na loja
             const exists = globalCoupons.find(c => c.code === code);
             if (exists) {
                 alert("Já existe um cupom com este código. Use outro nome.");
@@ -988,6 +1034,8 @@
                 type: type,
                 value: value,
                 minOrder: minOrder,
+                usageLimit: usageLimit, // Salva o limite no banco
+                usedCount: 0,           // Inicia os usos com ZERO
                 active: true,
                 createdAt: Date.now()
             };
@@ -995,12 +1043,11 @@
             try {
                 await addDoc(collection(db, "coupons"), newCoupon);
                 alert("Cupom criado com sucesso!");
-                // Limpa form
                 document.getElementById('cp-code').value = '';
                 document.getElementById('cp-value').value = '';
                 document.getElementById('cp-min').value = '';
+                document.getElementById('cp-limit').value = '';
             } catch (e) {
-                console.error("Erro ao criar cupom", e);
                 alert("Ocorreu um erro ao criar o cupom.");
             }
         };
@@ -1014,12 +1061,19 @@
                 return;
             }
 
-            // Ordena os mais recentes primeiro
             globalCoupons.sort((a, b) => b.createdAt - a.createdAt).forEach(coupon => {
-                
                 let valText = coupon.type === 'percentage' ? `${coupon.value}% de desconto` : `R$ ${coupon.value.toFixed(2)} de desconto`;
-                let minText = coupon.minOrder > 0 ? `(Compras acima de R$ ${coupon.minOrder.toFixed(2)})` : '(Qualquer valor)';
+                let minText = coupon.minOrder > 0 ? `(Acima de R$ ${coupon.minOrder.toFixed(2)})` : '(Qualquer valor)';
                 
+                // NOVO: Exibe a quantidade de vezes que o cupom foi usado
+                let limitHtml = '';
+                if (coupon.usageLimit) {
+                    const esgotado = coupon.usedCount >= coupon.usageLimit;
+                    limitHtml = `<span class="limit-badge ${esgotado ? 'limit-esgotado' : ''}">Usos: ${coupon.usedCount || 0}/${coupon.usageLimit}</span>`;
+                } else {
+                    limitHtml = `<span class="limit-badge">Uso Ilimitado</span>`;
+                }
+
                 let toggleBtn = coupon.active 
                     ? `<button class="btn-toggle-cup active" onclick="window.toggleCoupon('${coupon.id}', false)">Ativo</button>`
                     : `<button class="btn-toggle-cup inactive" onclick="window.toggleCoupon('${coupon.id}', true)">Inativo</button>`;
@@ -1029,6 +1083,7 @@
                     <div>
                         <div class="coupon-code">${coupon.code}</div>
                         <div class="coupon-details">${valText} <br> ${minText}</div>
+                        <div style="margin-top: 5px;">${limitHtml}</div>
                     </div>
                     <div class="coupon-actions">
                         ${toggleBtn}
@@ -1049,7 +1104,7 @@
         };
 
         // ==========================================
-        // GESTÃO DO CARDÁPIO E CATEGORIAS (MANTIDO INTACTO)
+        // GESTÃO DO CARDÁPIO (MANTIDO INTACTO)
         // ==========================================
         let currentEditingId = null; let editorImageBase64 = ''; let currentPriceType = 'simples'; let editingVariants = []; let editingModifiers = []; 
         let globalProducts = [];
@@ -1174,8 +1229,7 @@
         window.loadCategoriesAndProducts = () => {
             const container = document.getElementById('product-list-container'); 
             const catSelect = document.getElementById('ed-category');
-            container.innerHTML = ''; 
-            catSelect.innerHTML = '';
+            container.innerHTML = ''; catSelect.innerHTML = '';
 
             let productCategories = globalProducts.map(p => p.category || 'Geral');
             let allUniqueCategories = [...new Set([...myCategories, ...productCategories])];
@@ -1205,16 +1259,11 @@
                 } else {
                     prodsInCat.forEach(p => {
                         let subText = '';
-                        if (p.variants && p.variants.length > 0) {
-                            subText = `${p.variants.length} Variantes`;
-                        } else {
-                            if(p.unit === 'kg' && p.weight) {
-                                subText = `R$ ${(p.price || 0).toFixed(2)} (${p.weight}kg)`;
-                            } else {
-                                subText = `R$ ${(p.price || 0).toFixed(2)}`;
-                            }
+                        if (p.variants && p.variants.length > 0) { subText = `${p.variants.length} Variantes`; } 
+                        else {
+                            if(p.unit === 'kg' && p.weight) { subText = `R$ ${(p.price || 0).toFixed(2)} (${p.weight}kg)`; } 
+                            else { subText = `R$ ${(p.price || 0).toFixed(2)}`; }
                         }
-
                         let inactiveStyle = p.isActive === false ? 'opacity: 0.5; background: #fafafa;' : '';
                         let inactiveBadge = p.isActive === false ? '<span style="background:#ea1d2c; color:#fff; font-size:0.6rem; padding:2px 6px; border-radius:4px; margin-left:5px;">Inativo</span>' : '';
                         let promoBadge = p.isPromo === true ? '<span style="background:#ea1d2c; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; letter-spacing:0.5px; text-transform:uppercase;">Promoção</span>' : '';
@@ -1226,8 +1275,7 @@
                             </div>`;
                     });
                 }
-                blockHTML += `</div>`; 
-                container.innerHTML += blockHTML;
+                blockHTML += `</div>`; container.innerHTML += blockHTML;
             });
         };
 
@@ -1236,17 +1284,9 @@
             document.getElementById('ed-img-file').value = ''; document.getElementById('ed-img-preview').src = '';
             document.getElementById('ed-img-preview').style.display = 'none'; document.getElementById('btn-delete').style.display = 'none';
             editorImageBase64 = ''; document.getElementById('ed-price').value = ''; document.getElementById('ed-var-title').value = '';
-            
-            document.getElementById('ed-status').value = 'true';
-            document.getElementById('ed-promo').value = 'false';
-            
-            document.getElementById('ed-unit').value = 'un';
-            document.getElementById('ed-price-kg').value = '';
-            document.getElementById('ed-weight').value = '';
-            document.getElementById('kg-fields').style.display = 'none';
-            document.getElementById('ed-price').readOnly = false;
-            document.getElementById('ed-price').style.backgroundColor = '#fff';
-
+            document.getElementById('ed-status').value = 'true'; document.getElementById('ed-promo').value = 'false';
+            document.getElementById('ed-unit').value = 'un'; document.getElementById('ed-price-kg').value = ''; document.getElementById('ed-weight').value = '';
+            document.getElementById('kg-fields').style.display = 'none'; document.getElementById('ed-price').readOnly = false; document.getElementById('ed-price').style.backgroundColor = '#fff';
             editingVariants = []; editingModifiers = []; window.updateModBadge(); window.setPriceType('simples'); 
             document.querySelectorAll('.product-row').forEach(row => row.classList.remove('selected'));
         };
@@ -1273,7 +1313,6 @@
                     document.getElementById('ed-weight').value = prod.weight || '';
                 }
                 window.toggleWeightFields();
-
                 editingModifiers = prod.modifiers ? JSON.parse(JSON.stringify(prod.modifiers)) : []; window.updateModBadge();
             }
         };
@@ -1290,10 +1329,8 @@
             if (!name) return alert("O Nome do produto é obrigatório!");
             if (currentPriceType === 'simples') {
                 finalPrice = parseFloat(document.getElementById('ed-price').value); if (isNaN(finalPrice)) return alert("Preço é obrigatório!");
-                
                 if(unit === 'kg') {
-                    priceKg = parseFloat(document.getElementById('ed-price-kg').value) || 0;
-                    weight = parseFloat(document.getElementById('ed-weight').value) || 0;
+                    priceKg = parseFloat(document.getElementById('ed-price-kg').value) || 0; weight = parseFloat(document.getElementById('ed-weight').value) || 0;
                     if(priceKg <= 0 || weight <= 0) return alert("Para produtos por Kg, preencha o valor do Kg e o peso da peça!");
                 }
             } else {
@@ -1312,25 +1349,16 @@
             if(editorImageBase64) prodData.image = editorImageBase64;
 
             try {
-                if (currentEditingId) {
-                    await updateDoc(doc(db, "products", currentEditingId), prodData);
-                    alert("Produto atualizado!");
-                } else {
-                    if(!editorImageBase64) prodData.image = 'https://via.placeholder.com/150';
-                    await addDoc(collection(db, "products"), prodData);
-                    alert("Produto salvo!");
-                }
+                if (currentEditingId) { await updateDoc(doc(db, "products", currentEditingId), prodData); alert("Produto atualizado!"); } 
+                else { if(!editorImageBase64) prodData.image = 'https://via.placeholder.com/150'; await addDoc(collection(db, "products"), prodData); alert("Produto salvo!"); }
                 window.clearEditor();
-            } catch(e) { console.error(e); alert("Erro ao salvar produto."); }
+            } catch(e) { alert("Erro ao salvar produto."); }
         };
 
         window.deleteEditingProduct = async () => {
             if(!currentEditingId) return;
             if(confirm("Apagar este produto permanentemente?")) {
-                try {
-                    await deleteDoc(doc(db, "products", currentEditingId));
-                    window.clearEditor();
-                } catch(e) { console.error("Erro ao deletar", e); }
+                try { await deleteDoc(doc(db, "products", currentEditingId)); window.clearEditor(); } catch(e) {}
             }
         };
 
