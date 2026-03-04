@@ -185,7 +185,7 @@
 
                     const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
 
-                    // Caso esteja cancelado, não mostra barra de progresso, mostra aviso
+                    // Barra de progresso HTML
                     let progressHtml = `
                         <div class="progress-container">
                             <div class="progress-track">
@@ -206,7 +206,19 @@
                         progressHtml = `<div style="background:#fff0f0; color:#ea1d2c; text-align:center; padding:10px; border-radius:8px; font-weight:bold; font-size:0.8rem; margin:15px 0;">❌ PEDIDO CANCELADO</div>`;
                     }
 
-                    // 🟢 LINHA DO CUPOM DE DESCONTO 🟢
+                    // 🟢 LINHA DA TAXA DE ENTREGA 🟢
+                    let deliveryFeeHtml = '';
+                    if (order.deliveryFee !== undefined) {
+                        const feeText = order.deliveryFee > 0 ? `R$ ${parseFloat(order.deliveryFee).toFixed(2)}` : 'Grátis';
+                        const feeColor = order.deliveryFee > 0 ? '#111' : '#00a14b';
+                        deliveryFeeHtml = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed #eee; margin-top: 10px; font-size: 0.85rem;">
+                            <span style="color: #555;">🛵 Taxa de Entrega</span>
+                            <span style="color: ${feeColor}; font-weight: bold;">${feeText}</span>
+                        </div>`;
+                    }
+
+                    // LINHA DO CUPOM DE DESCONTO
                     let discountHtml = '';
                     if (order.discount && order.discount > 0) {
                         discountHtml = `
@@ -233,7 +245,8 @@
                             <ul class="items-list">
                                 ${itemsHtml}
                             </ul>
-                            
+
+                            ${deliveryFeeHtml}
                             ${discountHtml}
                         </div>
                         
