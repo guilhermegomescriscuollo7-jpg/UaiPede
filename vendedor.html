@@ -30,9 +30,7 @@
         .section.active { display: block; }
         h2 { font-size: 1.5rem; color: #111; margin-bottom: 25px; }
 
-        /* =========================================================
-           ALERTA DE NOVO PEDIDO (TOAST)
-           ========================================================= */
+        /* TOAST NOTIFICATION */
         .toast-notification {
             position: fixed; top: 30px; right: -400px; width: 320px;
             background: #fff; border-left: 6px solid #00a14b; border-radius: 8px;
@@ -44,17 +42,14 @@
         .toast-icon { font-size: 2.5rem; animation: shake 0.5s infinite alternate; }
         .toast-text h4 { margin: 0; color: #111; font-size: 1.1rem; }
         .toast-text p { margin: 5px 0 0 0; color: #555; font-size: 0.9rem; }
-        
-        @keyframes shake {
-            0% { transform: rotate(-10deg); }
-            100% { transform: rotate(10deg); }
-        }
+        @keyframes shake { 0% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
 
-        /* KANBAN DE PEDIDOS */
-        .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; height: calc(100% - 60px); }
-        .kanban-col { background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow-y: auto; }
-        .col-header { font-size: 1rem; font-weight: 700; color: #111; padding-bottom: 12px; border-bottom: 2px solid #eee; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        /* 🟢 KANBAN COM 4 COLUNAS 🟢 */
+        .kanban-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; height: calc(100% - 60px); }
+        .kanban-col { background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow-y: auto; border: 1px solid #eee;}
+        .col-header { font-size: 0.95rem; font-weight: 700; color: #111; padding-bottom: 12px; border-bottom: 2px solid #eee; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .col-count { background: #eee; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; color: #555; }
+        
         .order-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-bottom: 15px; animation: slideIn 0.3s ease;}
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -68,7 +63,8 @@
         .pay-card { background: #eef4ff; color: #084298; border: 1px solid #b6d4fe; }
         .pay-pix { background: #fdf5e6; color: #997404; border: 1px solid #f9e1b5; }
         .order-total { font-size: 1.2rem; font-weight: 900; text-align: right; margin-bottom: 10px; }
-        .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: #fff; margin-bottom: 5px; transition: 0.2s;}
+        
+        .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: #fff; margin-bottom: 5px; transition: 0.2s; font-size: 0.85rem;}
         .btn-action:active { transform: scale(0.98); }
         .btn-accept { background: #00a14b; } 
         .btn-dispatch { background: #0d6efd; }
@@ -203,6 +199,11 @@
         /* =========================================================
            RESPONSIVIDADE (MOBILE E TELAS MENORES)
            ========================================================= */
+        @media (max-width: 1024px) {
+            .kanban-board { display: flex; flex-direction: column; height: auto; gap: 15px; }
+            .kanban-col { height: auto; max-height: none; }
+        }
+        
         @media (max-width: 850px) {
             body { flex-direction: column; overflow-y: auto; height: auto; }
             .sidebar { width: 100%; border-right: none; border-bottom: 2px solid #eee; display: flex; flex-direction: column; height: auto; flex-shrink: 0; }
@@ -213,8 +214,6 @@
             .btn-logout { margin: 10px; padding: 10px; }
             
             .main-content { padding: 15px; height: auto; overflow: visible; }
-            .kanban-board { display: flex; flex-direction: column; height: auto; gap: 15px; }
-            .kanban-col { height: auto; max-height: none; }
             
             .menu-layout { flex-direction: column; height: auto; }
             .menu-list-area { height: auto; max-height: 400px; }
@@ -274,22 +273,26 @@
             
             <div class="kanban-board">
                 <div class="kanban-col">
-                    <div class="col-header">Novos Pedidos <span class="col-count" id="count-pendente">0</span></div>
+                    <div class="col-header">1. Novos <span class="col-count" id="count-pendente">0</span></div>
                     <div id="list-pendente"></div>
                 </div>
                 <div class="kanban-col">
-                    <div class="col-header">Em Preparo / Rota <span class="col-count" id="count-preparo">0</span></div>
+                    <div class="col-header">2. Preparando <span class="col-count" id="count-preparo">0</span></div>
                     <div id="list-preparo"></div>
                 </div>
                 <div class="kanban-col">
+                    <div class="col-header">3. Em Rota / Prontos <span class="col-count" id="count-rota">0</span></div>
+                    <div id="list-rota"></div>
+                </div>
+                <div class="kanban-col">
                     <div class="col-header">
-                        <div style="display:flex; align-items:center; flex-wrap:wrap;">
-                            Prontos / Entregues 
-                            <select id="filter-concluido" onchange="window.renderOrders()" style="margin-left:8px; padding:2px 5px; border-radius:4px; font-size:0.75rem; border:1px solid #ccc; background:#fff; outline:none; color:#555; cursor:pointer;">
+                        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:5px;">
+                            4. Entregues 
+                            <select id="filter-concluido" onchange="window.renderOrders()" style="padding:2px 5px; border-radius:4px; font-size:0.75rem; border:1px solid #ccc; background:#fff; outline:none; color:#555; cursor:pointer;">
                                 <option value="hoje" selected>Hoje</option>
-                                <option value="7dias">Últimos 7 dias</option>
-                                <option value="mes">Último mês</option>
-                                <option value="semestre">Último semestre</option>
+                                <option value="7dias">7 Dias</option>
+                                <option value="mes">Este Mês</option>
+                                <option value="semestre">Este Semestre</option>
                                 <option value="todos">Todos</option>
                             </select>
                         </div>
@@ -449,8 +452,7 @@
                 </div>
                 <p style="font-size: 0.85rem; color: #777; margin-bottom: 20px;">Defina os dias e horários padrão em que a sua loja atende aos clientes.</p>
                 
-                <div id="schedule-container">
-                    </div>
+                <div id="schedule-container"></div>
                 
                 <button class="btn-save-prod" onclick="window.saveSchedule()" style="margin-top: 20px; width: 100%; padding: 15px; font-size: 1rem;">Salvar Horários</button>
             </div>
@@ -531,10 +533,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ==========================================
-        // VARIÁVEIS GLOBAIS DE PEDIDOS E LOJA
-        // ==========================================
-        let globalOrders = []; // Armazena todos os pedidos na memória para o filtro rápido
+        // VARIÁVEIS GLOBAIS
+        let globalOrders = []; 
         let previousOrderCount = -1;
 
         const loggedStore = JSON.parse(localStorage.getItem('loggedStore'));
@@ -596,9 +596,6 @@
             try { await updateDoc(doc(db, "stores", loggedStore.id), { status: newStatus }); } catch(e) {}
         };
 
-        // ==========================================
-        // 2. SISTEMA DE ALERTAS (SOM E TOAST)
-        // ==========================================
         window.requestNotificationPermission = () => {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -624,14 +621,11 @@
                 function playTone(freq, type, start, dur, vol) {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
-                    osc.type = type; 
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+                    osc.type = type; osc.connect(gain); gain.connect(ctx.destination);
                     osc.frequency.setValueAtTime(freq, start);
                     gain.gain.setValueAtTime(vol, start);
                     gain.gain.setTargetAtTime(0.0001, start + dur, dur / 3);
-                    osc.start(start);
-                    osc.stop(start + dur + 0.1);
+                    osc.start(start); osc.stop(start + dur + 0.1);
                 }
                 const now = ctx.currentTime;
                 for (let i = 0; i < 5; i++) {
@@ -641,7 +635,7 @@
                     playTone(800, 'sine', offset + 0.9, 0.3, 0.8);
                     playTone(1000, 'sine', offset + 1.2, 0.5, 0.8);
                 }
-            } catch (e) { console.log("O som foi bloqueado."); }
+            } catch (e) {}
         }
 
         function triggerNewOrderAlert() {
@@ -649,12 +643,8 @@
             const toast = document.getElementById('new-order-toast');
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 10000); 
-            
             if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("Dores Delivery: Novo Pedido!", {
-                    body: "Acabou de chegar um novo pedido na sua loja.",
-                    icon: "https://cdn-icons-png.flaticon.com/512/3500/3500833.png"
-                });
+                new Notification("Dores Delivery: Novo Pedido!", { body: "Acabou de chegar um novo pedido na sua loja." });
             }
         }
 
@@ -668,20 +658,14 @@
 
         window.logoutStore = () => {
             if(confirm("Deseja sair do painel da loja?")) {
-                localStorage.removeItem('loggedStore');
-                window.location.href = 'login-vendedor.html';
+                localStorage.removeItem('loggedStore'); window.location.href = 'login-vendedor.html';
             }
         };
 
-        // LÓGICA DE HORÁRIOS E TAXA DE ENTREGA
+        // HORÁRIOS E TAXAS
         const daysOfWeek = [
-            { id: 'seg', name: 'Segunda-feira' },
-            { id: 'ter', name: 'Terça-feira' },
-            { id: 'qua', name: 'Quarta-feira' },
-            { id: 'qui', name: 'Quinta-feira' },
-            { id: 'sex', name: 'Sexta-feira' },
-            { id: 'sab', name: 'Sábado' },
-            { id: 'dom', name: 'Domingo' }
+            { id: 'seg', name: 'Segunda-feira' }, { id: 'ter', name: 'Terça-feira' }, { id: 'qua', name: 'Quarta-feira' },
+            { id: 'qui', name: 'Quinta-feira' }, { id: 'sex', name: 'Sexta-feira' }, { id: 'sab', name: 'Sábado' }, { id: 'dom', name: 'Domingo' }
         ];
 
         window.renderScheduleUI = (scheduleData = {}) => {
@@ -715,29 +699,17 @@
                     close: document.getElementById(`sch-close-${day.id}`).value
                 };
             });
-
-            try {
-                await updateDoc(doc(db, "stores", loggedStore.id), { schedule: newSchedule });
-                alert("Horários atualizados com sucesso!");
-            } catch(e) {
-                console.error(e);
-                alert("Ocorreu um erro ao salvar os horários.");
-            }
+            try { await updateDoc(doc(db, "stores", loggedStore.id), { schedule: newSchedule }); alert("Horários atualizados com sucesso!"); } catch(e) { alert("Ocorreu um erro ao salvar os horários."); }
         };
 
         window.saveDeliveryFee = async () => {
             const feeInput = document.getElementById('cfg-delivery-fee').value;
             const fee = feeInput === '' ? 0 : parseFloat(feeInput);
-            try {
-                await updateDoc(doc(db, "stores", loggedStore.id), { deliveryFee: fee });
-                alert("Taxa de entrega atualizada com sucesso!");
-            } catch(e) {
-                alert("Erro ao salvar.");
-            }
+            try { await updateDoc(doc(db, "stores", loggedStore.id), { deliveryFee: fee }); alert("Taxa de entrega atualizada com sucesso!"); } catch(e) { alert("Erro ao salvar."); }
         };
 
         // ==========================================
-        // 3. KANBAN E RELATÓRIOS (COM FILTROS TEMPORAIS)
+        // 3. KANBAN COM 4 COLUNAS E LÓGICA DE BOTÕES
         // ==========================================
         const qOrders = query(collection(db, "orders"), where("storeId", "==", loggedStore.id));
 
@@ -745,7 +717,6 @@
             globalOrders = [];
             snapshot.forEach(document => globalOrders.push({ id: document.id, ...document.data() }));
 
-            // Toca alarme apenas se o número de pedidos PENDENTES crescer
             const currentPendingCount = globalOrders.filter(o => o.status === 'Pendente').length;
             if (previousOrderCount !== -1 && currentPendingCount > previousOrderCount) { triggerNewOrderAlert(); }
             previousOrderCount = currentPendingCount;
@@ -754,16 +725,15 @@
             window.renderReports();
         });
 
-        // 🟢 FUNÇÃO DE RENDERIZAR KANBAN COM FILTRO NOS CONCLUÍDOS 🟢
         window.renderOrders = () => {
             const colPendente = document.getElementById('list-pendente'); 
             const colPreparo = document.getElementById('list-preparo'); 
+            const colRota = document.getElementById('list-rota'); 
             const colConcluido = document.getElementById('list-concluido');
             
-            colPendente.innerHTML = ''; colPreparo.innerHTML = ''; colConcluido.innerHTML = '';
-            let cPend = 0, cPrep = 0, cConc = 0;
+            colPendente.innerHTML = ''; colPreparo.innerHTML = ''; colRota.innerHTML = ''; colConcluido.innerHTML = '';
+            let cPend = 0, cPrep = 0, cRota = 0, cConc = 0;
 
-            // Pega o valor selecionado no filtro
             const filterValue = document.getElementById('filter-concluido').value;
             const nowTime = Date.now();
             const startOfToday = new Date().setHours(0,0,0,0);
@@ -771,42 +741,52 @@
             const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
             const startOfSemester = nowTime - (180 * 24 * 60 * 60 * 1000);
 
-            globalOrders.sort((a, b) => b.timestamp - a.timestamp).forEach(order => {
+            // Filtra os pedidos ativos (Colunas 1, 2 e 3) e os concluídos (Coluna 4)
+            const activeOrders = globalOrders.filter(o => !['Entregue', 'Concluído', 'Concluido', 'Cancelado'].includes(o.status));
+            const completedOrders = globalOrders.filter(o => ['Entregue', 'Concluído', 'Concluido', 'Cancelado'].includes(o.status));
+
+            // Os pedidos ativos ficam com os mais ANTIGOS no topo (ordem de chegada na cozinha)
+            activeOrders.sort((a, b) => a.timestamp - b.timestamp).forEach(order => {
                 const cardHTML = buildOrderCard(order);
-                
                 if(order.status === 'Pendente') { 
                     colPendente.innerHTML += cardHTML; cPend++; 
                 } 
-                else if(order.status === 'Em Preparo' || order.status === 'Aguardando Entregador') { 
+                else if(order.status === 'Aceito' || order.status === 'Em Preparo') { 
                     colPreparo.innerHTML += cardHTML; cPrep++; 
                 } 
-                else if(order.status === 'Saiu para Entrega' || order.status === 'Entregue' || order.status === 'Concluído') { 
-                    // Aplica a lógica do filtro APENAS na coluna de concluídos
-                    let showOrder = true;
-                    if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
-                    else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
-                    else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
-                    else if (filterValue === 'semestre') showOrder = order.timestamp >= startOfSemester;
+                else if(order.status === 'Saiu para Entrega' || order.status === 'Aguardando Entregador' || order.status === 'Pronto para Retirada') { 
+                    colRota.innerHTML += cardHTML; cRota++; 
+                }
+            });
 
-                    if (showOrder) {
-                        colConcluido.innerHTML += cardHTML; cConc++; 
-                    }
+            // Os pedidos concluídos ficam com os mais RECENTES no topo
+            completedOrders.sort((a, b) => b.timestamp - a.timestamp).forEach(order => {
+                const cardHTML = buildOrderCard(order);
+                let showOrder = true;
+                if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
+                else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
+                else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
+                else if (filterValue === 'semestre') showOrder = order.timestamp >= startOfSemester;
+
+                if (showOrder) {
+                    colConcluido.innerHTML += cardHTML; cConc++; 
                 }
             });
             
             document.getElementById('count-pendente').innerText = cPend; 
             document.getElementById('count-preparo').innerText = cPrep; 
+            document.getElementById('count-rota').innerText = cRota; 
             document.getElementById('count-concluido').innerText = cConc;
         };
 
         window.callPlatformDriver = async (orderId) => {
-            if(confirm("Chamar o entregador da plataforma destina R$ 5,00 desta corrida para o entregador. Confirmar chamada?")) {
+            if(confirm("Chamar o entregador da plataforma destina R$ 5,00 desta corrida para ele. Confirmar chamada?")) {
                 try {
                     await updateDoc(doc(db, "orders", orderId), { 
                         status: 'Aguardando Entregador',
                         platformDriverFee: 5.00 
                     });
-                } catch(e) { console.error(e); }
+                } catch(e) {}
             }
         };
 
@@ -823,7 +803,7 @@
             else if (payMethodText.includes('Pix')) { paymentBadge = `<div class="payment-box pay-pix">💠 ${payMethodText}</div>`; } 
             else { paymentBadge = `<div class="payment-box pay-card">💳 ${payMethodText}</div>`; }
             
-            const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA NO LOCAL'));
+            const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
             
             let addressHtml = '';
             let orderTypeBadge = '';
@@ -836,48 +816,68 @@
                 orderTypeBadge = `<span style="background:#eef4ff; color:#0d6efd; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; margin-left:10px;">🛵 ENTREGA</span>`;
             }
 
+            // 🟢 LÓGICA DE BOTÕES PASSO A PASSO (ACEITO -> PREPARO -> ROTA -> ENTREGUE) 🟢
             let actionBtn = '';
+            let sellerBadge = '';
+
             if (order.status === 'Pendente') { 
-                actionBtn = `<button class="btn-action btn-accept" onclick="window.updateOrderStatus('${order.id}', 'Em Preparo')">Aceitar Pedido</button>`; 
+                sellerBadge = `<span style="color:#ea1d2c; font-size:0.75rem; font-weight:bold;">Novo Pedido</span>`;
+                actionBtn = `<button class="btn-action btn-accept" onclick="window.updateOrderStatus('${order.id}', 'Aceito')">1️⃣ Aceitar Pedido</button>`; 
+            } 
+            else if (order.status === 'Aceito') { 
+                sellerBadge = `<span style="color:#f39c12; font-size:0.75rem; font-weight:bold;">Aguardando Cozinha</span>`;
+                actionBtn = `<button class="btn-action" style="background:#f39c12;" onclick="window.updateOrderStatus('${order.id}', 'Em Preparo')">2️⃣ Iniciar Preparo</button>`; 
             } 
             else if (order.status === 'Em Preparo') { 
+                sellerBadge = `<span style="color:#0d6efd; font-size:0.75rem; font-weight:bold;">Na Cozinha</span>`;
                 if (isPickup) {
-                    actionBtn = `<button class="btn-action btn-dispatch" style="background:#00a14b; font-size:0.9rem; padding:12px;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">✅ Pedido Retirado pelo Cliente</button>`;
+                    actionBtn = `<button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Pronto para Retirada')">🛍️ Marcar como Pronto</button>`;
                 } else {
                     actionBtn = `
                     <div style="display:flex; flex-direction:column; gap:8px;">
-                        <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver('${order.id}')">🛎️ Chamar Entregador (Custo R$ 5)</button>
-                        <div style="display:flex; gap:5px;">
-                            <button class="btn-action" style="flex:1; background:#f59e0b; font-size:0.8rem; padding:10px 5px;" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')">🛵 Próprio (Saiu)</button>
-                            <button class="btn-action btn-dispatch" style="flex:1; font-size:0.8rem; padding:10px 5px;" onclick="window.updateOrderStatus('${order.id}', 'Entregue')">✅ Entregue</button>
-                        </div>
+                        <button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')">3️⃣ Saiu p/ Entrega (Próprio)</button>
+                        <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver('${order.id}')">🛎️ Chamar Entregador (R$ 5)</button>
                     </div>`; 
                 }
             }
             else if (order.status === 'Aguardando Entregador') {
+                sellerBadge = `<span style="color:#8e44ad; font-size:0.75rem; font-weight:bold;">Aguardando Motoboy</span>`;
                 actionBtn = `
-                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #8e44ad; font-weight: bold;">⏳ Aguardando entregador aceitar...</div>
-                <button class="btn-action btn-dispatch" style="background:#ccc; color:#333;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">Forçar Conclusão</button>`;
+                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #8e44ad; font-weight: bold;">⏳ Entregador a caminho da loja...</div>
+                <button class="btn-action" style="background:#ccc; color:#333;" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')">Forçar Saída</button>`;
+            }
+            else if (order.status === 'Pronto para Retirada') {
+                sellerBadge = `<span style="color:#856404; font-size:0.75rem; font-weight:bold;">Aguardando Cliente</span>`;
+                actionBtn = `
+                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #856404; font-weight: bold;">🛍️ Cliente vem buscar</div>
+                <button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">4️⃣ Entregue ao Cliente</button>`;
             }
             else if (order.status === 'Saiu para Entrega') {
+                sellerBadge = `<span style="color:#f59e0b; font-size:0.75rem; font-weight:bold;">Em Rota</span>`;
                 actionBtn = `
-                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #f59e0b; font-weight: bold;">🛵 Em rota de entrega</div>
-                <button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Entregue')">✅ Marcar como Entregue</button>`;
+                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #f59e0b; font-weight: bold;">🛵 Com o Entregador</div>
+                <button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">4️⃣ Marcar como Entregue</button>`;
             }
-            else if (order.status === 'Entregue') {
-                actionBtn = `
-                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #0d6efd; font-weight: bold;">⏳ Aguardando cliente confirmar...</div>
-                <button class="btn-action btn-dispatch" style="background:#eee; color:#555; border: 1px solid #ccc;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">Forçar Conclusão (Cliente Esqueceu)</button>`;
+            else if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
+                sellerBadge = `<span style="color:#00a14b; font-size:0.75rem; font-weight:bold;">Finalizado</span>`;
+                actionBtn = `<div style="text-align:center; color:#00a14b; font-weight:bold; font-size:0.9rem;">✅ Pedido Concluído</div>`;
             }
-            else if (order.status === 'Concluído') {
-                actionBtn = `<div style="text-align:center; color:#00a14b; font-weight:bold; font-size:0.9rem;">✅ Finalizado e Confirmado</div>`;
+            else if (order.status === 'Cancelado') {
+                sellerBadge = `<span style="color:#ea1d2c; font-size:0.75rem; font-weight:bold;">Cancelado</span>`;
+                actionBtn = `<div style="text-align:center; color:#ea1d2c; font-weight:bold; font-size:0.9rem;">❌ Cancelado</div>`;
             }
             
             const shortId = order.id.substring(0, 6).toUpperCase();
 
             return `
             <div class="order-card" ${isPickup ? 'style="border-left: 5px solid #ffc107;"' : ''}>
-                <div class="order-header"><span class="order-id">#${shortId} ${orderTypeBadge}</span><span class="order-time">${order.date.split(' ')[1] || ''}</span></div>
+                <div class="order-header">
+                    <div style="display:flex; flex-direction:column;">
+                        <span class="order-id">#${shortId} ${orderTypeBadge}</span>
+                        <div style="margin-top:3px;">${sellerBadge}</div>
+                    </div>
+                    <span class="order-time" style="font-size:0.8rem; color:#888;">${order.date.split(' ')[1] || ''}</span>
+                </div>
                 <div class="customer-info"><strong>👤 ${order.customerName}</strong>${addressHtml}</div>
                 <ul class="order-items" style="list-style:none; padding:0;">${itemsList}</ul>${paymentBadge}<div class="order-total">R$ ${(order.total || 0).toFixed(2)}</div>${actionBtn}
             </div>`;
@@ -887,7 +887,6 @@
             try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); } catch(e) { console.error(e); }
         };
 
-        // 🟢 NOVA FUNÇÃO: RENDERIZAR RELATÓRIOS COM FILTRO 🟢
         window.renderReports = () => {
             if(!globalOrders) return; 
 
@@ -898,22 +897,21 @@
             const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
             const startOfSemester = nowTime - (180 * 24 * 60 * 60 * 1000);
 
-            let totalRevenue = 0; 
-            let orderCount = 0;
+            let totalRevenue = 0; let orderCount = 0;
             let payPix = 0; let payCard = 0; let payCash = 0;
             const productSales = {};
 
             globalOrders.forEach(order => {
-                // Filtra os pedidos com base na data escolhida
+                if (order.status === 'Cancelado') return; // Não conta cancelados na receita
+
                 let showOrder = true;
                 if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
                 else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
                 else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
                 else if (filterValue === 'semestre') showOrder = order.timestamp >= startOfSemester;
 
-                if (!showOrder) return; // Pula este pedido se não estiver na data
+                if (!showOrder) return; 
 
-                // Somatórias e Contagens
                 orderCount++;
                 totalRevenue += (order.total || 0);
 
@@ -922,7 +920,6 @@
                 else if (pm.includes('cartão') || pm.includes('cartao')) payCard++; 
                 else if (pm.includes('dinheiro')) payCash++;
 
-                // Produtos
                 if(order.items && Array.isArray(order.items)) {
                     order.items.forEach(item => {
                         if(!productSales[item.name]) { productSales[item.name] = { qty: 0, revenue: 0 }; }
@@ -934,19 +931,16 @@
 
             const avgTicket = orderCount > 0 ? (totalRevenue / orderCount) : 0;
             
-            // Atualiza os cartões principais
             document.getElementById('rep-revenue').innerText = `R$ ${totalRevenue.toFixed(2)}`;
             document.getElementById('rep-count').innerText = orderCount;
             document.getElementById('rep-avg').innerText = `R$ ${avgTicket.toFixed(2)}`;
 
-            // Atualiza formas de pagamento
             document.getElementById('rep-payments').innerHTML = `
                 <li><span>💠 Pix</span> <strong>${payPix}</strong></li>
                 <li><span>💳 Cartão</span> <strong>${payCard}</strong></li>
                 <li><span>💵 Dinheiro</span> <strong>${payCash}</strong></li>
             `;
 
-            // Atualiza Top Produtos
             const sortedProducts = Object.keys(productSales)
                 .map(name => ({ name, qty: productSales[name].qty, rev: productSales[name].revenue }))
                 .sort((a, b) => b.qty - a.qty).slice(0, 3); 
@@ -967,7 +961,7 @@
         };
 
         // ==========================================
-        // 5. GESTÃO DO CARDÁPIO E CATEGORIAS
+        // GESTÃO DO CARDÁPIO E CATEGORIAS (MANTIDO INTACTO)
         // ==========================================
         let currentEditingId = null; let editorImageBase64 = ''; let currentPriceType = 'simples'; let editingVariants = []; let editingModifiers = []; 
         let globalProducts = [];
