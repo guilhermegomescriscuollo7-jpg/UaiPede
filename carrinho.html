@@ -125,7 +125,7 @@
 
                 <div class="coupon-section">
                     <div class="coupon-input-group" id="coupon-input-group">
-                        <input type="text" id="coupon-code" placeholder="Tem um cupom de desconto?">
+                        <input type="text" id="coupon-code" placeholder="CUPOM DE DESCONTO">
                         <button class="btn-coupon" onclick="window.applyCoupon()">Aplicar</button>
                     </div>
                     <div id="coupon-message"></div>
@@ -207,7 +207,7 @@
         let currentDeliveryFee = 0;  
         let currentMethod = 'entrega'; 
 
-        // 🟢 VARIÁVEIS DE CUPOM 🟢
+        // VARIÁVEIS DE CUPOM
         let appliedCoupon = null;
         let discountAmount = 0;
 
@@ -242,7 +242,7 @@
             window.updateTotalsUI();
         };
 
-        // 🟢 LÓGICA DE APLICAR O CUPOM 🟢
+        // LÓGICA DE APLICAR O CUPOM
         window.applyCoupon = async () => {
             const codeInput = document.getElementById('coupon-code').value.trim().toUpperCase();
             const msg = document.getElementById('coupon-message');
@@ -257,7 +257,6 @@
             try {
                 const storeId = cart[0].storeId;
                 
-                // Procura na coleção "coupons" onde a loja e o código batem
                 const q = query(collection(db, "coupons"), where("storeId", "==", storeId), where("code", "==", codeInput), where("active", "==", true));
                 const snap = await getDocs(q);
 
@@ -269,7 +268,6 @@
 
                 const coupon = snap.docs[0].data();
 
-                // Verifica se o cliente atingiu o valor mínimo
                 if (coupon.minOrder && subtotalStore < parseFloat(coupon.minOrder)) {
                     msg.style.color = '#ea1d2c'; msg.innerText = `Para usar este cupom, o pedido mínimo é de R$ ${parseFloat(coupon.minOrder).toFixed(2)}`;
                     window.removeCoupon(false);
@@ -279,7 +277,7 @@
                 appliedCoupon = coupon;
                 msg.style.color = '#00a14b'; 
                 msg.innerHTML = `Cupom aplicado! <button class="btn-remove-coupon" onclick="window.removeCoupon(true)">Remover</button>`;
-                document.getElementById('coupon-input-group').style.display = 'none'; // Esconde o input
+                document.getElementById('coupon-input-group').style.display = 'none'; 
                 
                 window.updateTotalsUI();
 
@@ -311,7 +309,7 @@
                 feeTextElement.style.color = '#00a14b'; feeTextElement.style.fontWeight = 'bold';
             }
 
-            // 🟢 CALCULA O DESCONTO 🟢
+            // CALCULA O DESCONTO
             if (appliedCoupon) {
                 if (appliedCoupon.type === 'fixed') {
                     discountAmount = parseFloat(appliedCoupon.value);
@@ -319,7 +317,6 @@
                     discountAmount = subtotalStore * (parseFloat(appliedCoupon.value) / 100);
                 }
                 
-                // O desconto não pode ser maior que o subtotal dos produtos
                 if (discountAmount > subtotalStore) discountAmount = subtotalStore;
 
                 document.getElementById('discount-line').style.display = 'flex';
@@ -330,7 +327,6 @@
                 document.getElementById('discount-line').style.display = 'none';
             }
 
-            // TOTAL FINAL = SUBTOTAL + TAXA DE ENTREGA - DESCONTO
             finalTotal = subtotalStore + currentDeliveryFee - discountAmount;
             document.getElementById('total-val').innerText = `R$ ${finalTotal.toFixed(2)}`;
         };
@@ -392,7 +388,6 @@
 
             currentDeliveryFee = originalDeliveryFee;
             
-            // Revalida o cupom se o subtotal mudou (ex: removeu um item)
             if (appliedCoupon && subtotalStore < parseFloat(appliedCoupon.minOrder)) {
                 window.removeCoupon(true);
                 alert("O cupom foi removido porque o pedido não atinge mais o valor mínimo.");
@@ -478,7 +473,6 @@
                 deliveryFee: currentDeliveryFee, 
                 orderType: currentMethod, 
                 
-                // 🟢 SALVA OS DADOS DO DESCONTO NO PEDIDO 🟢
                 discount: discountAmount,
                 couponCode: appliedCoupon ? appliedCoupon.code : null,
                 
