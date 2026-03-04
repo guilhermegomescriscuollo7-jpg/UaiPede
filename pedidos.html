@@ -21,43 +21,48 @@
         .empty-state h3 { color: #111; margin-bottom: 10px; font-size: 1.2rem; }
         .empty-state p { color: #717171; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.4; }
         
-        .btn-primary { background: #ea1d2c; color: #fff; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; width: 100%; text-align: center; display: inline-block; text-decoration: none; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: #ea1d2c; color: #fff; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; width: 100%; text-align: center; display: inline-block; text-decoration: none; cursor: pointer; transition: 0.2s; border: none; }
         .btn-primary:active { background: #c81824; transform: scale(0.98); }
 
         /* CARD DE PEDIDO */
-        .order-card { background: #fff; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; overflow: hidden; }
+        .order-card { background: #fff; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; overflow: hidden; }
         
         .order-header { padding: 15px; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
         .store-name { font-weight: 700; color: #111; font-size: 1.05rem; display: flex; align-items: center; gap: 6px; }
-        
-        /* 🟢 CÓDIGO DO PEDIDO EM DESTAQUE 🟢 */
-        .order-id { font-weight: 900; color: #ea1d2c; font-size: 0.95rem; background: #fff0f0; padding: 4px 8px; border-radius: 6px; border: 1px solid #fbd5d5; }
+        .order-id { font-weight: 900; color: #ea1d2c; font-size: 0.85rem; background: #fff0f0; padding: 4px 8px; border-radius: 6px; border: 1px solid #fbd5d5; }
 
         .order-body { padding: 15px; }
-        .order-date { font-size: 0.8rem; color: #888; margin-bottom: 12px; }
+        .order-date { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
         
-        .items-list { list-style: none; padding: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555; }
-        .items-list li { margin-bottom: 5px; display: flex; gap: 8px; }
-        .item-qty { font-weight: bold; color: #111; }
+        /* 🟢 BARRA DE PROGRESSO VISUAL 🟢 */
+        .progress-container { margin: 20px 0; padding: 0 10px; }
+        .progress-track { display: flex; justify-content: space-between; position: relative; margin-bottom: 10px; }
+        .progress-track::before { content: ""; position: absolute; top: 12px; left: 0; width: 100%; height: 4px; background: #eee; z-index: 1; }
+        .progress-step { width: 28px; height: 28px; background: #eee; border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; border: 3px solid #fff; transition: 0.3s; }
+        .progress-step.active { background: #00a14b; color: #fff; box-shadow: 0 0 10px rgba(0,161,75,0.3); }
+        .progress-labels { display: flex; justify-content: space-between; }
+        .progress-labels span { font-size: 0.65rem; color: #999; font-weight: bold; text-align: center; width: 60px; }
+        .progress-labels span.active { color: #00a14b; }
+
+        .items-list { list-style: none; padding: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555; border-top: 1px solid #f9f9f9; padding-top: 15px; }
+        .items-list li { margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .item-qty { font-weight: bold; color: #111; margin-right: 5px; }
         
-        .order-footer { padding: 15px; background: #fff; border-top: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
+        /* BOTÕES DE AÇÃO */
+        .order-actions { padding: 15px; display: flex; gap: 10px; border-top: 1px dashed #eee; }
+        .btn-cancel { background: #fff; color: #ea1d2c; border: 1px solid #ea1d2c; padding: 10px; border-radius: 8px; flex: 1; font-size: 0.85rem; font-weight: bold; cursor: pointer; }
+        .btn-reorder { background: #eef4ff; color: #0d6efd; border: 1px solid #b6d4fe; padding: 10px; border-radius: 8px; flex: 1; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+        .order-footer { padding: 15px; background: #fafafa; display: flex; justify-content: space-between; align-items: center; }
         .order-total { font-size: 1.1rem; font-weight: 900; color: #111; }
         
-        /* BADGES DE STATUS */
-        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-align: center; display: inline-block; width: 100%; margin-bottom: 10px;}
-        .status-pendente { background: #f8f9fa; color: #555; border: 1px solid #ddd; }
-        .status-preparo { background: #eef4ff; color: #0d6efd; border: 1px solid #b6d4fe; }
-        .status-rota { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .status-entregue { background: #e6f4ea; color: #00a14b; border: 1px solid #badbcc; }
-
-        /* BADGES DE TIPO DE RECEBIMENTO */
-        .type-badge { font-size: 0.75rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 5px; display: inline-block; }
-        .type-entrega { background: #eee; color: #555; }
-        .type-retirada { background: #ffc107; color: #000; }
+        .type-badge { font-size: 0.7rem; font-weight: bold; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
+        .type-entrega { background: #eef4ff; color: #0d6efd; }
+        .type-retirada { background: #fff3cd; color: #856404; }
 
         /* MENU INFERIOR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 150; padding-bottom: calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 10px rgba(0,0,0,0.02);}
-        .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
+        .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-icon-img { width: 24px; height: 24px; filter: invert(40%); }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
         .nav-link.active .nav-icon-img { filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
@@ -98,9 +103,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CONFIGURAÇÃO OFICIAL
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -112,10 +116,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // VERIFICA LOGIN
         const loggedCustomer = JSON.parse(localStorage.getItem('loggedCustomer'));
         const isLogged = !!loggedCustomer || localStorage.getItem('isLogged') === 'true'; 
         const userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
+
+        // 🟢 FUNÇÃO CANCELAR PEDIDO 🟢
+        window.cancelOrder = async (orderId) => {
+            if(confirm("Deseja realmente cancelar este pedido?")) {
+                try {
+                    await updateDoc(doc(db, "orders", orderId), { status: 'Cancelado' });
+                    alert("Pedido cancelado com sucesso.");
+                } catch(e) { alert("Erro ao cancelar."); }
+            }
+        };
+
+        // 🟢 FUNÇÃO PEDIR NOVAMENTE 🟢
+        window.reorderItems = (itemsJson) => {
+            const items = JSON.parse(decodeURIComponent(itemsJson));
+            if(confirm("Deseja adicionar estes mesmos itens ao seu carrinho e pedir novamente?")) {
+                localStorage.setItem('cart', JSON.stringify(items));
+                window.location.href = "carrinho.html";
+            }
+        };
 
         window.onload = () => {
             if (!isLogged) {
@@ -123,7 +145,6 @@
                 return;
             }
 
-            // BUSCA OS PEDIDOS DO CLIENTE EM TEMPO REAL
             const q = query(collection(db, "orders"), where("customer.email", "==", userEmail));
             
             onSnapshot(q, (snapshot) => {
@@ -140,62 +161,74 @@
                 }
 
                 emptyState.style.display = 'none';
-
-                // Ordena do mais recente para o mais antigo
                 myOrders.sort((a, b) => b.timestamp - a.timestamp);
 
                 container.innerHTML = myOrders.map(order => {
-                    // 🟢 GERA O CÓDIGO CURTO DO PEDIDO (IGUAL AO DO LOJISTA) 🟢
                     const shortId = order.id.substring(0, 6).toUpperCase();
+                    const itemsHtml = order.items.map(i => `<li><div><span class="item-qty">${i.qty}x</span> ${i.name}</div> <span>R$ ${i.price.toFixed(2)}</span></li>`).join('');
 
-                    // Formata os itens
-                    const itemsHtml = order.items.map(i => {
-                        let details = i.variant ? `(${i.variant})` : ''; 
-                        return `<li><span class="item-qty">${i.qty}x</span> ${i.name} ${details}</li>`;
-                    }).join('');
+                    // Lógica da Barra de Progresso
+                    let stepIndex = 0; // 0: Pendente, 1: Preparo, 2: Rota, 3: Entregue
+                    if (order.status === 'Em Preparo' || order.status === 'Aguardando Entregador') stepIndex = 1;
+                    if (order.status === 'Saiu para Entrega') stepIndex = 2;
+                    if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') stepIndex = 3;
+                    if (order.status === 'Cancelado') stepIndex = -1;
 
-                    // Define as cores e textos do Status
-                    let statusClass = 'status-pendente';
-                    let statusText = '⏳ Aguardando Loja Aceitar';
-                    
-                    if (order.status === 'Em Preparo') {
-                        statusClass = 'status-preparo';
-                        statusText = '🍳 Sendo Preparado';
-                    } else if (order.status === 'Aguardando Entregador') {
-                        statusClass = 'status-preparo';
-                        statusText = '🛎️ Aguardando Entregador';
-                    } else if (order.status === 'Saiu para Entrega') {
-                        statusClass = 'status-rota';
-                        statusText = '🛵 Saiu para Entrega!';
-                    } else if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
-                        statusClass = 'status-entregue';
-                        statusText = '✅ Finalizado';
+                    // Lógica dos Botões
+                    let actionButtons = '';
+                    if (order.status === 'Pendente') {
+                        actionButtons = `<button class="btn-cancel" onclick="window.cancelOrder('${order.id}')">🚫 Cancelar Pedido</button>`;
+                    } else if (stepIndex === 3 || stepIndex === -1) {
+                        const itemsEncoded = encodeURIComponent(JSON.stringify(order.items));
+                        actionButtons = `<button class="btn-reorder" onclick="window.reorderItems('${itemsEncoded}')">🔄 Pedir Novamente</button>`;
                     }
 
-                    // Verifica se é Entrega ou Retirada
                     const isPickup = order.orderType === 'retirada' || (order.customer.address && order.customer.address.includes('RETIRADA'));
-                    const typeBadge = isPickup 
-                        ? `<div class="type-badge type-retirada">🚶‍♂️ RETIRAR NA LOJA</div>` 
-                        : `<div class="type-badge type-entrega">🛵 ENTREGA</div>`;
+
+                    // Caso esteja cancelado, não mostra barra de progresso, mostra aviso
+                    let progressHtml = `
+                        <div class="progress-container">
+                            <div class="progress-track">
+                                <div class="progress-step ${stepIndex >= 0 ? 'active' : ''}">✓</div>
+                                <div class="progress-step ${stepIndex >= 1 ? 'active' : ''}">🍳</div>
+                                <div class="progress-step ${stepIndex >= 2 ? 'active' : ''}">🛵</div>
+                                <div class="progress-step ${stepIndex >= 3 ? 'active' : ''}">⭐</div>
+                            </div>
+                            <div class="progress-labels">
+                                <span class="${stepIndex >= 0 ? 'active' : ''}">Pedido Realizado</span>
+                                <span class="${stepIndex >= 1 ? 'active' : ''}">Em Preparo</span>
+                                <span class="${stepIndex >= 2 ? 'active' : ''}">${isPickup ? 'Pronto p/ Retirar' : 'Saiu p/ Entrega'}</span>
+                                <span class="${stepIndex >= 3 ? 'active' : ''}">Finalizado</span>
+                            </div>
+                        </div>`;
+
+                    if(order.status === 'Cancelado') {
+                        progressHtml = `<div style="background:#fff0f0; color:#ea1d2c; text-align:center; padding:10px; border-radius:8px; font-weight:bold; font-size:0.8rem; margin:15px 0;">❌ PEDIDO CANCELADO</div>`;
+                    }
 
                     return `
-                    <div class="order-card">
+                    <div class="order-card" style="${order.status === 'Cancelado' ? 'opacity: 0.7' : ''}">
                         <div class="order-header">
                             <span class="store-name">🏪 ${order.storeName}</span>
                             <span class="order-id">#${shortId}</span>
                         </div>
                         <div class="order-body">
-                            <div class="status-badge ${statusClass}">${statusText}</div>
                             <div class="order-date">${order.date || ''}</div>
+                            <div class="type-badge ${isPickup ? 'type-retirada' : 'type-entrega'}">
+                                ${isPickup ? '🚶‍♂️ RETIRADA NO LOCAL' : '🛵 ENTREGA EM CASA'}
+                            </div>
+
+                            ${progressHtml}
                             
                             <ul class="items-list">
                                 ${itemsHtml}
                             </ul>
-                            
-                            ${typeBadge}
                         </div>
+                        
+                        ${actionButtons ? `<div class="order-actions">${actionButtons}</div>` : ''}
+
                         <div class="order-footer">
-                            <span style="color: #777; font-size: 0.85rem;">${order.paymentMethod}</span>
+                            <span style="color: #777; font-size: 0.8rem;">Pago via ${order.paymentMethod.split(' ')[0]}</span>
                             <span class="order-total">R$ ${(order.total || 0).toFixed(2)}</span>
                         </div>
                     </div>`;
