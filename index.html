@@ -73,7 +73,7 @@
         .effect-slide.active { transform: translateY(0); }
 
         /* =========================================================
-           CABEÇALHO E MÓDULOS DE COMPRA (MANTIDOS)
+           CABEÇALHO E MÓDULOS DE COMPRA 
            ========================================================= */
         .brand-header { background: #fff; padding: 20px 20px; position: relative; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; }
         .brand-logo-container { display: flex; align-items: center; gap: 8px; flex-grow: 1; }
@@ -189,6 +189,11 @@
         .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
         .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
+        
+        /* 🟢 CARRINHO FLUTUANTE 🟢 */
+        .floating-cart { position: fixed; bottom: 80px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 10003; text-decoration: none; transition: 0.3s;}
+        .floating-cart:active { transform: scale(0.9); }
+        .cart-badge-float { position: absolute; top: -5px; right: -5px; background: #111; color: #fff; font-size: 0.75rem; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
     </style>
 </head>
 <body>
@@ -274,6 +279,11 @@
         <a href="perfil.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="nav-icon-img" alt="Perfil"><span>Perfil</span></a>
     </nav>
 
+    <a href="carrinho.html" class="floating-cart" id="floating-cart">
+        🛒
+        <div class="cart-badge-float" id="floating-cart-count">0</div>
+    </a>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -293,8 +303,7 @@
         let allStores = []; let currentStoreProducts = []; let activeProduct = null;
         let activeStore = { name: '', logo: '', status: '' };
         let prodQty = 1; let basePriceCalc = 0; let currentCategoryFilter = null; 
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
+        
         let deferredPrompt;
         const installBanner = document.getElementById('install-banner');
         const installBtn = document.getElementById('btn-install-app');
@@ -314,7 +323,6 @@
             const sponsorWrapper = document.getElementById('sponsor-wrapper');
             const sponsorContent = document.getElementById('sponsor-content');
 
-            // 🟢 LÓGICA DE SESSÃO: SÓ MOSTRA NA PRIMEIRA VEZ 🟢
             if (sessionStorage.getItem('splashShown') === 'true') {
                 if (splash) splash.style.display = 'none';
                 if (sponsorWrapper) sponsorWrapper.style.display = 'none';
@@ -450,7 +458,7 @@
                 
                 return `
                 <div class="${cardClass}" onclick="${onClickAction}">
-                    <img src="${s.logo}" class="store-logo" alt="Logo">
+                    <img src="${s.logo || 'https://via.placeholder.com/60'}" class="store-logo" alt="Logo">
                     <div class="store-info">
                         <h3>${s.name}</h3>
                         <div class="store-details"><span>${s.cat || 'Geral'}</span><span class="dot">•</span><span style="font-weight: bold; color: ${statusColor};">${statusText}</span></div>
@@ -537,7 +545,7 @@
                         <button class="btn-circle" onclick="window.location.href='carrinho.html'" style="position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg><span class="cart-badge" id="modal-cart-count" style="display:none; position:absolute; top:-5px; right:-5px;">0</span></button>
                     </div>
                 </div>
-                <div class="store-card-overlay"><img src="${storeLogo}" class="overlay-logo"><h2 class="store-title-modal">${storeName} <span class="arrow-right">›</span></h2><p class="store-sub-modal">${storeCat || 'Categoria não definida'} • ${storeStatus === 'Fechado' ? 'Fechada Agora' : 'Aberta'}</p><div class="store-stats-modal"><span style="color:#717171;">Entrega em</span><span class="dot">•</span><span>30-40 min</span><span class="dot">•</span><span style="color:#00a14b; font-weight:500;">Grátis</span></div></div>
+                <div class="store-card-overlay"><img src="${storeLogo || 'https://via.placeholder.com/80'}" class="overlay-logo"><h2 class="store-title-modal">${storeName} <span class="arrow-right">›</span></h2><p class="store-sub-modal">${storeCat || 'Categoria não definida'} • ${storeStatus === 'Fechado' ? 'Fechada Agora' : 'Aberta'}</p><div class="store-stats-modal"><span style="color:#717171;">Entrega em</span><span class="dot">•</span><span>30-40 min</span><span class="dot">•</span><span style="color:#00a14b; font-weight:500;">Grátis</span></div></div>
                 ${productsHTML}
             `;
             window.updateCartBadge(); 
@@ -551,7 +559,6 @@
             prodQty = 1; document.getElementById('p-modal-qty').innerText = prodQty; document.getElementById('p-modal-obs').value = ''; window.updateObsCount();
             document.getElementById('p-modal-img').src = activeProduct.image || 'https://via.placeholder.com/600x400'; document.getElementById('p-modal-name').innerText = activeProduct.name; document.getElementById('p-modal-desc').innerText = activeProduct.desc || '';
             
-            // Corrige se basePriceCalc era unitário ou KG e prepara para o carrinho
             if (activeProduct.unit === 'kg' && activeProduct.weight) {
                 basePriceCalc = activeProduct.priceKg * activeProduct.weight;
             } else {
@@ -602,14 +609,39 @@
             let selectedAddonsText = [];
             document.querySelectorAll('.addon-check:checked').forEach(addon => { finalPrice += parseFloat(addon.value); selectedAddonsText.push(addon.dataset.name); });
             
+            // Pega o carrinho atual
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
             cart.push({ id: activeProduct.id + '-' + Date.now(), name: activeProduct.name, variant: selectedVariantText, addons: selectedAddonsText, observation: document.getElementById('p-modal-obs').value, price: finalPrice * prodQty, qty: prodQty, store: activeStore.name, storeId: activeStore.id });
-            localStorage.setItem('cart', JSON.stringify(cart)); window.updateCartBadge(); window.closeProductModal();
+            localStorage.setItem('cart', JSON.stringify(cart)); 
+            
+            window.updateCartBadge(); 
+            window.closeProductModal();
         };
 
+        // 🟢 ATUALIZA O CARRINHO FLUTUANTE EM TEMPO REAL 🟢
         window.updateCartBadge = () => {
-            const mainBadge = document.getElementById('cart-count'); const modalBadge = document.getElementById('modal-cart-count');
-            if (mainBadge) { mainBadge.style.display = cart.length > 0 ? 'block' : 'none'; mainBadge.innerText = cart.length; }
-            if (modalBadge) { modalBadge.style.display = cart.length > 0 ? 'block' : 'none'; modalBadge.innerText = cart.length; }
+            const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            const mainBadge = document.getElementById('cart-count'); 
+            const modalBadge = document.getElementById('modal-cart-count');
+            const floatingCart = document.getElementById('floating-cart');
+            const floatingBadge = document.getElementById('floating-cart-count');
+
+            if (currentCart.length > 0) {
+                if (mainBadge) { mainBadge.style.display = 'flex'; mainBadge.innerText = currentCart.length; }
+                if (modalBadge) { modalBadge.style.display = 'flex'; modalBadge.innerText = currentCart.length; }
+                
+                // Exibe a bolinha grande flutuante na tela inicial
+                if (floatingCart) { 
+                    floatingCart.style.display = 'flex'; 
+                    floatingBadge.innerText = currentCart.length;
+                }
+            } else {
+                if (mainBadge) mainBadge.style.display = 'none';
+                if (modalBadge) modalBadge.style.display = 'none';
+                if (floatingCart) floatingCart.style.display = 'none';
+            }
         };
     </script>
 </body>
