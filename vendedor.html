@@ -282,7 +282,19 @@
                     <div id="list-preparo"></div>
                 </div>
                 <div class="kanban-col">
-                    <div class="col-header">Prontos / Entregues <span class="col-count" id="count-concluido">0</span></div>
+                    <div class="col-header">
+                        <div style="display:flex; align-items:center; flex-wrap:wrap;">
+                            Prontos / Entregues 
+                            <select id="filter-concluido" onchange="window.renderOrders()" style="margin-left:8px; padding:2px 5px; border-radius:4px; font-size:0.75rem; border:1px solid #ccc; background:#fff; outline:none; color:#555; cursor:pointer;">
+                                <option value="hoje" selected>Hoje</option>
+                                <option value="7dias">Últimos 7 dias</option>
+                                <option value="mes">Último mês</option>
+                                <option value="semestre">Último semestre</option>
+                                <option value="todos">Todos</option>
+                            </select>
+                        </div>
+                        <span class="col-count" id="count-concluido">0</span>
+                    </div>
                     <div id="list-concluido"></div>
                 </div>
             </div>
@@ -447,31 +459,21 @@
         <section id="relatorios" class="section">
             <h2>Desempenho da Loja</h2>
             
-            <h3 class="rep-section-title">Faturamento por Período</h3>
-            <div class="report-grid">
-                <div class="report-card">
-                    <div class="rep-title">Hoje</div>
-                    <div class="rep-value green" id="rep-hoje">R$ 0,00</div>
-                </div>
-                <div class="report-card">
-                    <div class="rep-title">Últimos 7 Dias</div>
-                    <div class="rep-value green" id="rep-semana">R$ 0,00</div>
-                </div>
-                <div class="report-card">
-                    <div class="rep-title">Este Mês</div>
-                    <div class="rep-value green" id="rep-mes">R$ 0,00</div>
-                </div>
-                <div class="report-card">
-                    <div class="rep-title">Este Semestre</div>
-                    <div class="rep-value green" id="rep-semestre">R$ 0,00</div>
-                </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h3 class="rep-section-title" style="border: none; margin: 0; padding: 0;">Faturamento por Período</h3>
+                <select id="filter-reports" onchange="window.renderReports()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; color: #111; font-weight: bold;">
+                    <option value="hoje" selected>Hoje</option>
+                    <option value="7dias">Últimos 7 Dias</option>
+                    <option value="mes">Último Mês</option>
+                    <option value="semestre">Último Semestre</option>
+                    <option value="todos">Todo o Histórico</option>
+                </select>
             </div>
 
-            <h3 class="rep-section-title" style="margin-top: 30px;">Métricas Gerais (Todo o Histórico)</h3>
             <div class="report-grid">
                 <div class="report-card">
-                    <div class="rep-title">Faturamento Total</div>
-                    <div class="rep-value" id="rep-revenue">R$ 0,00</div>
+                    <div class="rep-title">Faturamento</div>
+                    <div class="rep-value green" id="rep-revenue">R$ 0,00</div>
                 </div>
                 <div class="report-card">
                     <div class="rep-title">Total de Pedidos</div>
@@ -530,8 +532,11 @@
         const db = getFirestore(app);
 
         // ==========================================
-        // 1. INICIALIZAÇÃO DA SESSÃO
+        // VARIÁVEIS GLOBAIS DE PEDIDOS E LOJA
         // ==========================================
+        let globalOrders = []; // Armazena todos os pedidos na memória para o filtro rápido
+        let previousOrderCount = -1;
+
         const loggedStore = JSON.parse(localStorage.getItem('loggedStore'));
         if (!loggedStore || !loggedStore.id) { 
             localStorage.removeItem('loggedStore');
@@ -594,8 +599,6 @@
         // ==========================================
         // 2. SISTEMA DE ALERTAS (SOM E TOAST)
         // ==========================================
-        let previousOrderCount = -1;
-
         window.requestNotificationPermission = () => {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -670,9 +673,7 @@
             }
         };
 
-        // ==========================================
         // LÓGICA DE HORÁRIOS E TAXA DE ENTREGA
-        // ==========================================
         const daysOfWeek = [
             { id: 'seg', name: 'Segunda-feira' },
             { id: 'ter', name: 'Terça-feira' },
@@ -736,17 +737,25 @@
         };
 
         // ==========================================
-        // 3. KANBAN DE PEDIDOS (TEMPO REAL FIREBASE)
+        // 3. KANBAN E RELATÓRIOS (COM FILTROS TEMPORAIS)
         // ==========================================
         const qOrders = query(collection(db, "orders"), where("storeId", "==", loggedStore.id));
 
         onSnapshot(qOrders, (snapshot) => {
-            const myOrders = [];
-            snapshot.forEach(document => myOrders.push({ id: document.id, ...document.data() }));
+            globalOrders = [];
+            snapshot.forEach(document => globalOrders.push({ id: document.id, ...document.data() }));
 
-            if (previousOrderCount !== -1 && myOrders.length > previousOrderCount) { triggerNewOrderAlert(); }
-            previousOrderCount = myOrders.length;
+            // Toca alarme apenas se o número de pedidos PENDENTES crescer
+            const currentPendingCount = globalOrders.filter(o => o.status === 'Pendente').length;
+            if (previousOrderCount !== -1 && currentPendingCount > previousOrderCount) { triggerNewOrderAlert(); }
+            previousOrderCount = currentPendingCount;
 
+            window.renderOrders();
+            window.renderReports();
+        });
+
+        // 🟢 FUNÇÃO DE RENDERIZAR KANBAN COM FILTRO NOS CONCLUÍDOS 🟢
+        window.renderOrders = () => {
             const colPendente = document.getElementById('list-pendente'); 
             const colPreparo = document.getElementById('list-preparo'); 
             const colConcluido = document.getElementById('list-concluido');
@@ -754,8 +763,17 @@
             colPendente.innerHTML = ''; colPreparo.innerHTML = ''; colConcluido.innerHTML = '';
             let cPend = 0, cPrep = 0, cConc = 0;
 
-            myOrders.sort((a, b) => b.timestamp - a.timestamp).forEach(order => {
+            // Pega o valor selecionado no filtro
+            const filterValue = document.getElementById('filter-concluido').value;
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+            const startOfSemester = nowTime - (180 * 24 * 60 * 60 * 1000);
+
+            globalOrders.sort((a, b) => b.timestamp - a.timestamp).forEach(order => {
                 const cardHTML = buildOrderCard(order);
+                
                 if(order.status === 'Pendente') { 
                     colPendente.innerHTML += cardHTML; cPend++; 
                 } 
@@ -763,16 +781,23 @@
                     colPreparo.innerHTML += cardHTML; cPrep++; 
                 } 
                 else if(order.status === 'Saiu para Entrega' || order.status === 'Entregue' || order.status === 'Concluído') { 
-                    colConcluido.innerHTML += cardHTML; cConc++; 
+                    // Aplica a lógica do filtro APENAS na coluna de concluídos
+                    let showOrder = true;
+                    if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
+                    else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
+                    else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
+                    else if (filterValue === 'semestre') showOrder = order.timestamp >= startOfSemester;
+
+                    if (showOrder) {
+                        colConcluido.innerHTML += cardHTML; cConc++; 
+                    }
                 }
             });
             
             document.getElementById('count-pendente').innerText = cPend; 
             document.getElementById('count-preparo').innerText = cPrep; 
             document.getElementById('count-concluido').innerText = cConc;
-            
-            window.loadReports(myOrders);
-        });
+        };
 
         window.callPlatformDriver = async (orderId) => {
             if(confirm("Chamar o entregador da plataforma destina R$ 5,00 desta corrida para o entregador. Confirmar chamada?")) {
@@ -798,7 +823,6 @@
             else if (payMethodText.includes('Pix')) { paymentBadge = `<div class="payment-box pay-pix">💠 ${payMethodText}</div>`; } 
             else { paymentBadge = `<div class="payment-box pay-card">💳 ${payMethodText}</div>`; }
             
-            // 🟢 LÓGICA DE RETIRADA x ENTREGA 🟢
             const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA NO LOCAL'));
             
             let addressHtml = '';
@@ -818,10 +842,8 @@
             } 
             else if (order.status === 'Em Preparo') { 
                 if (isPickup) {
-                    // Botão único de retirada para o lojista
                     actionBtn = `<button class="btn-action btn-dispatch" style="background:#00a14b; font-size:0.9rem; padding:12px;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">✅ Pedido Retirado pelo Cliente</button>`;
                 } else {
-                    // Botões normais de entrega
                     actionBtn = `
                     <div style="display:flex; flex-direction:column; gap:8px;">
                         <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver('${order.id}')">🛎️ Chamar Entregador (Custo R$ 5)</button>
@@ -853,7 +875,6 @@
             
             const shortId = order.id.substring(0, 6).toUpperCase();
 
-            // Adiciona borda amarela destacada se for Retirada
             return `
             <div class="order-card" ${isPickup ? 'style="border-left: 5px solid #ffc107;"' : ''}>
                 <div class="order-header"><span class="order-id">#${shortId} ${orderTypeBadge}</span><span class="order-time">${order.date.split(' ')[1] || ''}</span></div>
@@ -866,46 +887,42 @@
             try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); } catch(e) { console.error(e); }
         };
 
-        // ==========================================
-        // 4. ALGORITMO DE RELATÓRIOS
-        // ==========================================
-        window.loadReports = (myOrders) => {
-            if(!myOrders) return; 
-            let totalRevenue = 0; let orderCount = myOrders.length;
+        // 🟢 NOVA FUNÇÃO: RENDERIZAR RELATÓRIOS COM FILTRO 🟢
+        window.renderReports = () => {
+            if(!globalOrders) return; 
+
+            const filterValue = document.getElementById('filter-reports').value;
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+            const startOfSemester = nowTime - (180 * 24 * 60 * 60 * 1000);
+
+            let totalRevenue = 0; 
+            let orderCount = 0;
             let payPix = 0; let payCard = 0; let payCash = 0;
-            let revHoje = 0; let revSemana = 0; let revMes = 0; let revSemestre = 0;
             const productSales = {};
-            const now = new Date();
-            const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth();
-            const currentSemester = Math.floor(currentMonth / 6);
-            const nowTime = now.getTime();
 
-            myOrders.forEach(order => {
-                totalRevenue += order.total;
+            globalOrders.forEach(order => {
+                // Filtra os pedidos com base na data escolhida
+                let showOrder = true;
+                if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
+                else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
+                else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
+                else if (filterValue === 'semestre') showOrder = order.timestamp >= startOfSemester;
+
+                if (!showOrder) return; // Pula este pedido se não estiver na data
+
+                // Somatórias e Contagens
+                orderCount++;
+                totalRevenue += (order.total || 0);
+
                 const pm = (order.paymentMethod || '').toLowerCase();
-                if (pm.includes('pix')) payPix++; else if (pm.includes('cartão') || pm.includes('cartao')) payCard++; else if (pm.includes('dinheiro')) payCash++;
+                if (pm.includes('pix')) payPix++; 
+                else if (pm.includes('cartão') || pm.includes('cartao')) payCard++; 
+                else if (pm.includes('dinheiro')) payCash++;
 
-                let orderDate = new Date();
-                try {
-                    const parts = order.date.split(/[\s,]+/);
-                    const [day, month, year] = parts[0].split('/');
-                    orderDate = new Date(year, month - 1, day);
-                } catch(e) {}
-
-                const isSameYear = orderDate.getFullYear() === currentYear;
-                const isSameMonth = isSameYear && orderDate.getMonth() === currentMonth;
-                const isSameDay = isSameMonth && orderDate.getDate() === now.getDate();
-                const isSameSemester = isSameYear && Math.floor(orderDate.getMonth() / 6) === currentSemester;
-                
-                const diffDays = (nowTime - orderDate.getTime()) / (1000 * 3600 * 24);
-                const isLast7Days = diffDays >= 0 && diffDays <= 7;
-
-                if (isSameDay) revHoje += order.total;
-                if (isLast7Days) revSemana += order.total;
-                if (isSameMonth) revMes += order.total;
-                if (isSameSemester) revSemestre += order.total;
-
+                // Produtos
                 if(order.items && Array.isArray(order.items)) {
                     order.items.forEach(item => {
                         if(!productSales[item.name]) { productSales[item.name] = { qty: 0, revenue: 0 }; }
@@ -915,30 +932,33 @@
                 }
             });
 
-            document.getElementById('rep-hoje').innerText = `R$ ${revHoje.toFixed(2)}`;
-            document.getElementById('rep-semana').innerText = `R$ ${revSemana.toFixed(2)}`;
-            document.getElementById('rep-mes').innerText = `R$ ${revMes.toFixed(2)}`;
-            document.getElementById('rep-semestre').innerText = `R$ ${revSemestre.toFixed(2)}`;
             const avgTicket = orderCount > 0 ? (totalRevenue / orderCount) : 0;
+            
+            // Atualiza os cartões principais
             document.getElementById('rep-revenue').innerText = `R$ ${totalRevenue.toFixed(2)}`;
             document.getElementById('rep-count').innerText = orderCount;
             document.getElementById('rep-avg').innerText = `R$ ${avgTicket.toFixed(2)}`;
 
+            // Atualiza formas de pagamento
             document.getElementById('rep-payments').innerHTML = `
                 <li><span>💠 Pix</span> <strong>${payPix}</strong></li>
                 <li><span>💳 Cartão</span> <strong>${payCard}</strong></li>
                 <li><span>💵 Dinheiro</span> <strong>${payCash}</strong></li>
             `;
 
-            const sortedProducts = Object.keys(productSales).map(name => ({ name, qty: productSales[name].qty, rev: productSales[name].revenue })).sort((a, b) => b.qty - a.qty).slice(0, 3); 
+            // Atualiza Top Produtos
+            const sortedProducts = Object.keys(productSales)
+                .map(name => ({ name, qty: productSales[name].qty, rev: productSales[name].revenue }))
+                .sort((a, b) => b.qty - a.qty).slice(0, 3); 
+                
             const topContainer = document.getElementById('rep-top-products');
             if(sortedProducts.length === 0) {
-                topContainer.innerHTML = `<li style="justify-content:center; color:#999;">Nenhuma venda registrada ainda.</li>`;
+                topContainer.innerHTML = `<li style="justify-content:center; color:#999;">Nenhuma venda registrada no período.</li>`;
             } else {
                 const medals = ['🥇', '🥈', '🥉'];
                 topContainer.innerHTML = sortedProducts.map((p, index) => `
                     <li>
-                        <span class="top-medal">${medals[index]}</span>
+                        <span class="top-medal">${medals[index] || '🏅'}</span>
                         <div class="top-name">${p.name}</div>
                         <div class="top-stats"><span>${p.qty}x vendidos</span><strong>R$ ${p.rev.toFixed(2)}</strong></div>
                     </li>
