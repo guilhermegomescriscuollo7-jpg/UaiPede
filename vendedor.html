@@ -58,8 +58,8 @@
         .order-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-bottom: 15px; animation: slideIn 0.3s ease;}
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .order-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
-        .order-id { font-weight: 900; color: #ea1d2c; }
+        .order-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;}
+        .order-id { font-weight: 900; color: #ea1d2c; display: flex; align-items: center; }
         .customer-info { font-size: 0.9rem; margin-bottom: 12px; }
         .customer-info .address { color: #555; background: #f9f9f9; padding: 8px; border-radius: 6px; margin-top: 5px; }
         .order-items { border-top: 1px dashed #eee; border-bottom: 1px dashed #eee; padding: 12px 0; margin-bottom: 12px; font-size: 0.85rem; }
@@ -774,9 +774,8 @@
             window.loadReports(myOrders);
         });
 
-        // 🟢 LÓGICA DE CHAMAR ENTREGADOR COM AVISO 🟢
         window.callPlatformDriver = async (orderId) => {
-            if(confirm("Chamar o entregador da plataforma destina R$ 5,00 desta corrida para o entregador (o cliente pagou a taxa combinada no carrinho). Confirmar chamada?")) {
+            if(confirm("Chamar o entregador da plataforma destina R$ 5,00 desta corrida para o entregador. Confirmar chamada?")) {
                 try {
                     await updateDoc(doc(db, "orders", orderId), { 
                         status: 'Aguardando Entregador',
@@ -799,19 +798,39 @@
             else if (payMethodText.includes('Pix')) { paymentBadge = `<div class="payment-box pay-pix">💠 ${payMethodText}</div>`; } 
             else { paymentBadge = `<div class="payment-box pay-card">💳 ${payMethodText}</div>`; }
             
+            // 🟢 LÓGICA DE RETIRADA x ENTREGA 🟢
+            const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA NO LOCAL'));
+            
+            let addressHtml = '';
+            let orderTypeBadge = '';
+            
+            if (isPickup) {
+                addressHtml = `<div class="address" style="background:#fff3cd; color:#856404; font-weight:900; font-size: 0.95rem; text-align: center; border: 2px dashed #ffeeba; padding: 12px;">🚶‍♂️ RETIRAR NA LOJA</div>`;
+                orderTypeBadge = `<span style="background:#ffc107; color:#000; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; margin-left:10px;">RETIRADA</span>`;
+            } else {
+                addressHtml = `<div class="address">📍 ${order.customer.address}</div>`;
+                orderTypeBadge = `<span style="background:#eef4ff; color:#0d6efd; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; margin-left:10px;">🛵 ENTREGA</span>`;
+            }
+
             let actionBtn = '';
             if (order.status === 'Pendente') { 
                 actionBtn = `<button class="btn-action btn-accept" onclick="window.updateOrderStatus('${order.id}', 'Em Preparo')">Aceitar Pedido</button>`; 
             } 
             else if (order.status === 'Em Preparo') { 
-                actionBtn = `
-                <div style="display:flex; flex-direction:column; gap:8px;">
-                    <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver('${order.id}')">🛎️ Chamar Entregador (Custo R$ 5)</button>
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn-action" style="flex:1; background:#f59e0b; font-size:0.8rem; padding:10px 5px;" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')">🛵 Próprio (Saiu)</button>
-                        <button class="btn-action btn-dispatch" style="flex:1; font-size:0.8rem; padding:10px 5px;" onclick="window.updateOrderStatus('${order.id}', 'Entregue')">✅ Entregue</button>
-                    </div>
-                </div>`; 
+                if (isPickup) {
+                    // Botão único de retirada para o lojista
+                    actionBtn = `<button class="btn-action btn-dispatch" style="background:#00a14b; font-size:0.9rem; padding:12px;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">✅ Pedido Retirado pelo Cliente</button>`;
+                } else {
+                    // Botões normais de entrega
+                    actionBtn = `
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver('${order.id}')">🛎️ Chamar Entregador (Custo R$ 5)</button>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-action" style="flex:1; background:#f59e0b; font-size:0.8rem; padding:10px 5px;" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')">🛵 Próprio (Saiu)</button>
+                            <button class="btn-action btn-dispatch" style="flex:1; font-size:0.8rem; padding:10px 5px;" onclick="window.updateOrderStatus('${order.id}', 'Entregue')">✅ Entregue</button>
+                        </div>
+                    </div>`; 
+                }
             }
             else if (order.status === 'Aguardando Entregador') {
                 actionBtn = `
@@ -834,10 +853,11 @@
             
             const shortId = order.id.substring(0, 6).toUpperCase();
 
+            // Adiciona borda amarela destacada se for Retirada
             return `
-            <div class="order-card">
-                <div class="order-header"><span class="order-id">#${shortId}</span><span class="order-time">${order.date.split(' ')[1] || ''}</span></div>
-                <div class="customer-info"><strong>👤 ${order.customerName}</strong><div class="address">📍 ${order.customer.address}</div></div>
+            <div class="order-card" ${isPickup ? 'style="border-left: 5px solid #ffc107;"' : ''}>
+                <div class="order-header"><span class="order-id">#${shortId} ${orderTypeBadge}</span><span class="order-time">${order.date.split(' ')[1] || ''}</span></div>
+                <div class="customer-info"><strong>👤 ${order.customerName}</strong>${addressHtml}</div>
                 <ul class="order-items" style="list-style:none; padding:0;">${itemsList}</ul>${paymentBadge}<div class="order-total">R$ ${(order.total || 0).toFixed(2)}</div>${actionBtn}
             </div>`;
         }
@@ -940,7 +960,6 @@
                 loggedStore.status = data.status || 'Aberto';
                 localStorage.setItem('loggedStore', JSON.stringify(loggedStore));
 
-                // Carrega a Taxa de Entrega na tela
                 document.getElementById('cfg-delivery-fee').value = data.deliveryFee || '';
 
                 if (data.categories && Array.isArray(data.categories)) { myCategories = data.categories; }
