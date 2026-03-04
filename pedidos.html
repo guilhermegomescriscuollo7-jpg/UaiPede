@@ -4,44 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meus Pedidos - Dores Delivery</title>
-    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; }
 
+        /* HEADER */
         header { background: #fff; padding: 20px; text-align: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         header h1 { font-size: 1.2rem; font-weight: 700; color: #111; }
 
         .container { padding: 15px; max-width: 600px; margin: 0 auto; }
 
+        /* ESTADO VAZIO */
         .empty-state { text-align: center; padding: 60px 20px; display: none; }
         .empty-state span { font-size: 3rem; display: block; margin-bottom: 15px; }
         .empty-state h3 { color: #111; margin-bottom: 10px; font-size: 1.2rem; }
         .empty-state p { color: #717171; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.4; }
-        .btn-primary { background: #ea1d2c; color: #fff; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-block; transition: 0.2s; cursor: pointer; }
         
-        .order-card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f2f2f2; }
-        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #eee; padding-bottom: 10px; }
-        .order-store { font-weight: 700; font-size: 1.1rem; color: #111; }
-        .order-date { font-size: 0.8rem; color: #888; }
-        
-        .order-items { list-style: none; margin-bottom: 15px; font-size: 0.9rem; color: #555; }
-        .order-items li { margin-bottom: 5px; }
-        
-        .order-footer { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .order-total { font-weight: 900; font-size: 1.1rem; color: #111; }
-        
-        .status-badge { padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; }
-        .status-pendente { background: #fdf5e6; color: #997404; }
-        .status-preparo { background: #eef4ff; color: #084298; }
-        .status-rota { background: #fff1e6; color: #fd7e14; }
-        .status-entregue { background: #e6f4ea; color: #00a14b; }
-        
-        /* BOTÃO DE CONFIRMAÇÃO DO CLIENTE */
-        .btn-confirm-receipt { width: 100%; background: #00a14b; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 900; font-size: 1rem; cursor: pointer; text-transform: uppercase; margin-top: 10px; animation: pulseBtn 1.5s infinite; }
-        @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        .btn-primary { background: #ea1d2c; color: #fff; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; width: 100%; text-align: center; display: inline-block; text-decoration: none; cursor: pointer; transition: 0.2s; }
+        .btn-primary:active { background: #c81824; transform: scale(0.98); }
 
+        /* CARD DE PEDIDO */
+        .order-card { background: #fff; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; overflow: hidden; }
+        
+        .order-header { padding: 15px; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
+        .store-name { font-weight: 700; color: #111; font-size: 1.05rem; display: flex; align-items: center; gap: 6px; }
+        
+        /* 🟢 CÓDIGO DO PEDIDO EM DESTAQUE 🟢 */
+        .order-id { font-weight: 900; color: #ea1d2c; font-size: 0.95rem; background: #fff0f0; padding: 4px 8px; border-radius: 6px; border: 1px solid #fbd5d5; }
+
+        .order-body { padding: 15px; }
+        .order-date { font-size: 0.8rem; color: #888; margin-bottom: 12px; }
+        
+        .items-list { list-style: none; padding: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555; }
+        .items-list li { margin-bottom: 5px; display: flex; gap: 8px; }
+        .item-qty { font-weight: bold; color: #111; }
+        
+        .order-footer { padding: 15px; background: #fff; border-top: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
+        .order-total { font-size: 1.1rem; font-weight: 900; color: #111; }
+        
+        /* BADGES DE STATUS */
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-align: center; display: inline-block; width: 100%; margin-bottom: 10px;}
+        .status-pendente { background: #f8f9fa; color: #555; border: 1px solid #ddd; }
+        .status-preparo { background: #eef4ff; color: #0d6efd; border: 1px solid #b6d4fe; }
+        .status-rota { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .status-entregue { background: #e6f4ea; color: #00a14b; border: 1px solid #badbcc; }
+
+        /* BADGES DE TIPO DE RECEBIMENTO */
+        .type-badge { font-size: 0.75rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 5px; display: inline-block; }
+        .type-entrega { background: #eee; color: #555; }
+        .type-retirada { background: #ffc107; color: #000; }
+
+        /* MENU INFERIOR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 150; padding-bottom: calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 10px rgba(0,0,0,0.02);}
         .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
         .nav-icon-img { width: 24px; height: 24px; filter: invert(40%); }
@@ -51,25 +65,29 @@
 </head>
 <body>
 
-    <header><h1>Meus Pedidos</h1></header>
+    <header>
+        <h1>Meus Pedidos</h1>
+    </header>
 
     <main class="container">
+        
         <div id="unlogged-state" class="empty-state">
-            <span>🔒</span>
+            <span>👤</span>
             <h3>Você não está logado</h3>
-            <p>Faça login para acompanhar o status dos seus pedidos.</p>
+            <p>Faça login para ver o histórico e o status dos seus pedidos.</p>
             <a href="login.html" class="btn-primary">Fazer Login</a>
         </div>
 
-        <div id="no-orders" class="empty-state" style="display:none;">
-            <span>🛍️</span>
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <span>🛵</span>
             <h3>Nenhum pedido ainda</h3>
-            <p>Você ainda não fez nenhum pedido no nosso aplicativo.</p>
+            <p>Você ainda não fez nenhum pedido no Dores Delivery.</p>
             <a href="index.html" class="btn-primary">Ver Lojas</a>
         </div>
 
-        <div id="orders-list">
+        <div id="orders-container">
             </div>
+
     </main>
 
     <nav class="bottom-nav">
@@ -80,8 +98,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // CONFIGURAÇÃO OFICIAL
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -93,83 +112,95 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const isLogged = localStorage.getItem('isLogged') === 'true';
-        const userName = localStorage.getItem('userName');
+        // VERIFICA LOGIN
+        const loggedCustomer = JSON.parse(localStorage.getItem('loggedCustomer'));
+        const isLogged = !!loggedCustomer || localStorage.getItem('isLogged') === 'true'; 
+        const userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
 
-        if (!isLogged) {
-            document.getElementById('unlogged-state').style.display = 'block';
-        } else {
-            // Busca pedidos do usuário logado
-            const q = query(collection(db, "orders"));
-            onSnapshot(q, (snapshot) => {
-                const myOrders = [];
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.customerName === userName) {
-                        myOrders.push({ id: doc.id, ...data });
-                    }
-                });
-
-                renderOrders(myOrders.sort((a,b) => b.timestamp - a.timestamp));
-            });
-        }
-
-        function renderOrders(orders) {
-            const container = document.getElementById('orders-list');
-            const noOrders = document.getElementById('no-orders');
-
-            if (orders.length === 0) {
-                noOrders.style.display = 'block';
-                container.innerHTML = '';
+        window.onload = () => {
+            if (!isLogged) {
+                document.getElementById('unlogged-state').style.display = 'block';
                 return;
             }
 
-            noOrders.style.display = 'none';
-            container.innerHTML = orders.map(order => {
-                const itemsHtml = order.items.map(i => `<li><b>${i.qty}x</b> ${i.name}</li>`).join('');
-                
-                let badgeClass = 'status-pendente';
-                let statusText = order.status;
-                let actionButton = '';
+            // BUSCA OS PEDIDOS DO CLIENTE EM TEMPO REAL
+            const q = query(collection(db, "orders"), where("customer.email", "==", userEmail));
+            
+            onSnapshot(q, (snapshot) => {
+                const myOrders = [];
+                snapshot.forEach(doc => myOrders.push({ id: doc.id, ...doc.data() }));
 
-                if (order.status === 'Pendente') { statusText = 'Aguardando Loja'; }
-                if (order.status === 'Em Preparo' || order.status === 'Aguardando Entregador') { badgeClass = 'status-preparo'; statusText = 'Em Preparo'; }
-                if (order.status === 'Saiu para Entrega') { badgeClass = 'status-rota'; statusText = '🛵 Saiu para Entrega'; }
-                if (order.status === 'Concluído' || order.status === 'Concluido') { badgeClass = 'status-entregue'; statusText = '✅ Concluído'; }
-                
-                // 🟢 SE O ENTREGADOR MARCOU COMO ENTREGUE, ESPERA O CLIENTE CONFIRMAR 🟢
-                if (order.status === 'Entregue') {
-                    badgeClass = 'status-entregue'; 
-                    statusText = '📦 Pedido na sua porta';
-                    actionButton = `<button class="btn-confirm-receipt" onclick="window.confirmCustomerReceipt('${order.id}')">✅ Sim, recebi meu pedido</button>`;
+                const container = document.getElementById('orders-container');
+                const emptyState = document.getElementById('empty-state');
+
+                if (myOrders.length === 0) {
+                    emptyState.style.display = 'block';
+                    container.innerHTML = '';
+                    return;
                 }
 
-                return `
-                <div class="order-card">
-                    <div class="order-header">
-                        <span class="order-store">${order.storeName}</span>
-                        <span class="order-date">${order.date}</span>
-                    </div>
-                    <ul class="order-items">${itemsHtml}</ul>
-                    <div class="order-footer">
-                        <span class="order-total">R$ ${(order.total || 0).toFixed(2)}</span>
-                        <span class="status-badge ${badgeClass}">${statusText}</span>
-                    </div>
-                    ${actionButton}
-                </div>`;
-            }).join('');
-        }
+                emptyState.style.display = 'none';
 
-        // Função que o cliente clica para confirmar que recebeu
-        window.confirmCustomerReceipt = async (orderId) => {
-            if(confirm("Confirma que o pedido já está com você?")) {
-                try {
-                    await updateDoc(doc(db, "orders", orderId), { status: "Concluído" });
-                    alert("Obrigado por confirmar! Bom apetite.");
-                } catch(e) {
-                    alert("Erro ao confirmar. Tente novamente.");
-                }
-            }
+                // Ordena do mais recente para o mais antigo
+                myOrders.sort((a, b) => b.timestamp - a.timestamp);
+
+                container.innerHTML = myOrders.map(order => {
+                    // 🟢 GERA O CÓDIGO CURTO DO PEDIDO (IGUAL AO DO LOJISTA) 🟢
+                    const shortId = order.id.substring(0, 6).toUpperCase();
+
+                    // Formata os itens
+                    const itemsHtml = order.items.map(i => {
+                        let details = i.variant ? `(${i.variant})` : ''; 
+                        return `<li><span class="item-qty">${i.qty}x</span> ${i.name} ${details}</li>`;
+                    }).join('');
+
+                    // Define as cores e textos do Status
+                    let statusClass = 'status-pendente';
+                    let statusText = '⏳ Aguardando Loja Aceitar';
+                    
+                    if (order.status === 'Em Preparo') {
+                        statusClass = 'status-preparo';
+                        statusText = '🍳 Sendo Preparado';
+                    } else if (order.status === 'Aguardando Entregador') {
+                        statusClass = 'status-preparo';
+                        statusText = '🛎️ Aguardando Entregador';
+                    } else if (order.status === 'Saiu para Entrega') {
+                        statusClass = 'status-rota';
+                        statusText = '🛵 Saiu para Entrega!';
+                    } else if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
+                        statusClass = 'status-entregue';
+                        statusText = '✅ Finalizado';
+                    }
+
+                    // Verifica se é Entrega ou Retirada
+                    const isPickup = order.orderType === 'retirada' || (order.customer.address && order.customer.address.includes('RETIRADA'));
+                    const typeBadge = isPickup 
+                        ? `<div class="type-badge type-retirada">🚶‍♂️ RETIRAR NA LOJA</div>` 
+                        : `<div class="type-badge type-entrega">🛵 ENTREGA</div>`;
+
+                    return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="store-name">🏪 ${order.storeName}</span>
+                            <span class="order-id">#${shortId}</span>
+                        </div>
+                        <div class="order-body">
+                            <div class="status-badge ${statusClass}">${statusText}</div>
+                            <div class="order-date">${order.date || ''}</div>
+                            
+                            <ul class="items-list">
+                                ${itemsHtml}
+                            </ul>
+                            
+                            ${typeBadge}
+                        </div>
+                        <div class="order-footer">
+                            <span style="color: #777; font-size: 0.85rem;">${order.paymentMethod}</span>
+                            <span class="order-total">R$ ${(order.total || 0).toFixed(2)}</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            });
         };
     </script>
 </body>
