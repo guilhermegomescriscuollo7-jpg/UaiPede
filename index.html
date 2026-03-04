@@ -107,6 +107,9 @@
         .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
+        /* =========================================================
+           MODAL DA LOJA E CUPONS
+           ========================================================= */
         #menu-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8f8f8; z-index: 10000; transform: translateY(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 20px; display: block; }
         #menu-modal.active { transform: translateY(0); }
         .store-cover { height: 160px; background-color: #ea1d2c; background-size: cover; background-position: center; position: relative; }
@@ -121,6 +124,15 @@
         .store-stats-modal { display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.85rem; color: #717171; }
         .store-stats-modal .dot { color: #ccc; font-size: 0.6rem; margin-top: 2px;}
         
+        /* 🟢 ESTILOS DOS CUPONS NA LOJA 🟢 */
+        .store-coupons-container { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 15px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .store-coupons-container::-webkit-scrollbar { display: none; }
+        .store-coupon-card { background: #fff0f0; border: 1px dashed #ea1d2c; border-radius: 8px; padding: 12px; min-width: 140px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(234, 29, 44, 0.05);}
+        .store-coupon-card:active { transform: scale(0.95); background: #fbd5d5; }
+        .store-coupon-code { font-weight: 900; color: #ea1d2c; font-size: 1.1rem; margin-bottom: 2px; }
+        .store-coupon-desc { font-size: 0.75rem; color: #ea1d2c; text-align: center; line-height: 1.2; font-weight: 500;}
+        .store-coupon-copy { position: absolute; top: -10px; right: -5px; background: #ea1d2c; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
         .store-menu-filters { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; padding: 15px 20px; background: #fff; border-bottom: 1px solid #f2f2f2; position: sticky; top: 0; z-index: 100; scrollbar-width: none; -webkit-overflow-scrolling: touch; box-shadow: 0 2px 5px rgba(0,0,0,0.02); width: 100%; }
         .store-cat-btn { flex: 0 0 auto; background: #f2f2f2; border: none; padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; color: #555; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; }
         .store-cat-btn.active { background: #ea1d2c; color: #fff; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
@@ -182,17 +194,17 @@
         .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
         
-        /* 🟢 CARRINHO FLUTUANTE ATUALIZADO (FUNDO VERMELHO, CARRINHO BRANCO) 🟢 */
+        /* 🟢 CARRINHO FLUTUANTE ATUALIZADO 🟢 */
         .floating-cart {
             position: fixed;
             bottom: 80px;
             right: 20px;
-            background: #ea1d2c; /* Fundo Vermelho */
+            background: #ea1d2c;
             color: #fff;
             width: 55px;
             height: 55px;
             border-radius: 50%;
-            display: none; /* Controlado via JS */
+            display: none; 
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4);
@@ -206,7 +218,7 @@
             position: absolute;
             top: -5px;
             right: -5px;
-            background: #111; /* Bolinha preta para contrastar com o fundo vermelho */
+            background: #111; 
             color: #fff;
             font-size: 0.75rem;
             font-weight: bold;
@@ -305,7 +317,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -477,7 +489,7 @@
                 
                 return `
                 <div class="${cardClass}" onclick="${onClickAction}">
-                    <img src="${s.logo || 'https://via.placeholder.com/60'}" class="store-logo" alt="Logo">
+                    <img src="${s.logo || 'https://via.placeholder.com/80'}" class="store-logo" alt="Logo">
                     <div class="store-info">
                         <h3>${s.name}</h3>
                         <div class="store-details"><span>${s.cat || 'Geral'}</span><span class="dot">•</span><span style="font-weight: bold; color: ${statusColor};">${statusText}</span></div>
@@ -498,9 +510,19 @@
             window.renderStores();
         };
 
-        window.openMenu = (storeId, storeName, storeLogo, storeCat, storeStatus) => {
+        // 🟢 FUNÇÃO PARA COPIAR O CUPOM 🟢
+        window.copyCoupon = (code) => {
+            navigator.clipboard.writeText(code).then(() => {
+                alert(`Cupom ${code} copiado! Você pode colar no carrinho.`);
+            }).catch(err => {
+                alert(`Código do cupom: ${code}`); 
+            });
+        };
+
+        window.openMenu = async (storeId, storeName, storeLogo, storeCat, storeStatus) => {
             activeStore = { id: storeId, name: storeName, logo: storeLogo, status: storeStatus || 'Aberto' };
             const coverImage = storeLogo !== 'https://via.placeholder.com/60' ? storeLogo : 'https://via.placeholder.com/600x300';
+            
             document.getElementById('modal-content').innerHTML = `
                 <div class="store-cover" style="background-image: url('${coverImage}');">
                     <div class="cover-btns">
@@ -510,13 +532,28 @@
                 <div style="padding: 40px; text-align: center; color: #777;">Carregando cardápio...</div>
             `;
             document.getElementById('menu-modal').classList.add('active');
+
+            // 🟢 BUSCA OS CUPONS DA LOJA 🟢
+            let storeCoupons = [];
+            try {
+                const qCoupons = query(collection(db, "coupons"), where("storeId", "==", storeId), where("active", "==", true));
+                const snapCoupons = await getDocs(qCoupons);
+                snapCoupons.forEach(doc => {
+                    const c = doc.data();
+                    if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) {
+                        storeCoupons.push(c);
+                    }
+                });
+            } catch(e) { console.error("Erro ao buscar cupons da loja", e); }
+
             onSnapshot(query(collection(db, "products"), where("storeId", "==", storeId)), (snapshot) => {
                 currentStoreProducts = []; snapshot.forEach(doc => currentStoreProducts.push({ id: doc.id, ...doc.data() }));
-                window.renderMenuHtml(storeName, storeLogo, storeCat, storeStatus, coverImage);
+                // Passa os cupons para a função de renderizar
+                window.renderMenuHtml(storeName, storeLogo, storeCat, storeStatus, coverImage, storeCoupons);
             });
         };
 
-        window.renderMenuHtml = (storeName, storeLogo, storeCat, storeStatus, coverImage) => {
+        window.renderMenuHtml = (storeName, storeLogo, storeCat, storeStatus, coverImage, storeCoupons) => {
             let productsHTML = '';
             const availableProducts = currentStoreProducts.filter(p => p.isActive !== false);
 
@@ -561,13 +598,32 @@
                 productsHTML = filtersHTML + '<div id="store-menu-items" style="background:#fff; padding-bottom: 20px;">' + itemsHTML + '</div>';
             }
 
+            // 🟢 RENDERIZA OS CUPONS SE EXISTIREM 🟢
+            let couponsHTML = '';
+            if (storeCoupons && storeCoupons.length > 0) {
+                couponsHTML = `
+                <div class="store-coupons-container">
+                    ${storeCoupons.map(c => {
+                        let descText = c.type === 'percentage' ? `${c.value}% OFF` : `R$ ${c.value.toFixed(2)} OFF`;
+                        let minText = c.minOrder > 0 ? `Acima de R$ ${c.minOrder.toFixed(2)}` : 'Sem valor mínimo';
+                        return `
+                        <div class="store-coupon-card" onclick="window.copyCoupon('${c.code}')">
+                            <div class="store-coupon-code">${c.code}</div>
+                            <div class="store-coupon-desc">${descText}<br>${minText}</div>
+                            <div class="store-coupon-copy" title="Copiar">📋</div>
+                        </div>`;
+                    }).join('')}
+                </div>`;
+            }
+
             document.getElementById('modal-content').innerHTML = `
                 <div class="store-cover" style="background-image: url('${coverImage}');">
                     <div class="cover-btns">
                         <button class="btn-circle" onclick="window.closeMenu()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
                     </div>
                 </div>
-                <div class="store-card-overlay"><img src="${storeLogo || 'https://via.placeholder.com/80'}" class="overlay-logo"><h2 class="store-title-modal">${storeName} <span class="arrow-right">›</span></h2><p class="store-sub-modal">${storeCat || 'Categoria não definida'} • ${storeStatus === 'Fechado' ? 'Fechada Agora' : 'Aberta'}</p><div class="store-stats-modal"><span style="color:#717171;">Entrega em</span><span class="dot">•</span><span>30-40 min</span><span class="dot">•</span><span style="color:#00a14b; font-weight:500;">Grátis</span></div></div>
+                <div class="store-card-overlay"><img src="${storeLogo || 'https://via.placeholder.com/80'}" class="overlay-logo"><h2 class="store-title-modal">${storeName}</h2><p class="store-sub-modal">${storeCat || 'Categoria não definida'} • ${storeStatus === 'Fechado' ? 'Fechada Agora' : 'Aberta'}</p><div class="store-stats-modal"><span style="color:#717171;">Entrega em</span><span class="dot">•</span><span>30-40 min</span><span class="dot">•</span><span style="color:#00a14b; font-weight:500;">Grátis</span></div></div>
+                ${couponsHTML}
                 ${productsHTML}
             `;
             window.updateCartBadge(); 
