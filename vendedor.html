@@ -9,7 +9,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f4f5f7; display: flex; height: 100vh; color: #333; overflow: hidden; }
         
-        /* SIDEBAR */
+        /* 🟢 HEADER MOBILE EXCLUSIVO 🟢 */
+        .mobile-header { display: none; }
+
+        /* SIDEBAR (DESKTOP) */
         .sidebar { width: 260px; background: #fff; border-right: 1px solid #eee; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.02); z-index: 10; flex-shrink: 0; }
         .store-header { padding: 25px 20px; border-bottom: 1px solid #f2f2f2; text-align: center; }
         .store-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #ea1d2c; margin-bottom: 10px; }
@@ -193,110 +196,109 @@
         .top-stats { text-align: right; font-size: 0.85rem; color: #777; display: flex; flex-direction: column; }
         .top-stats strong { color: #00a14b; font-size: 1.1rem; margin-top: 2px; }
 
-        /* 🟢 NOVO ESTILO DE CUPONS (TICKET VERMELHO) 🟢 */
+        /* CUPONS */
         .coupon-layout { display: flex; gap: 20px; align-items: flex-start; }
         .coupon-form { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 350px; flex-shrink: 0; }
         .coupon-list-area { flex: 1; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         
         /* Design do Ticket */
         .ticket-coupon {
-            display: flex;
-            background: #ea1d2c;
-            color: #fff;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            position: relative;
-            box-shadow: 0 4px 10px rgba(234, 29, 44, 0.2);
-            transition: 0.2s;
+            display: flex; background: #ea1d2c; color: #fff; border-radius: 8px; margin-bottom: 15px;
+            position: relative; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.2); transition: 0.2s;
         }
-        /* Recortes nas laterais (efeito ingresso) */
         .ticket-coupon::before, .ticket-coupon::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 24px;
-            height: 24px;
-            background-color: #fff; /* Fundo branco para mesclar com o painel */
-            border-radius: 50%;
-            z-index: 2;
+            content: ''; position: absolute; top: 50%; transform: translateY(-50%);
+            width: 24px; height: 24px; background-color: #fff; border-radius: 50%; z-index: 2;
         }
         .ticket-coupon::before { left: -12px; }
         .ticket-coupon::after { right: -12px; }
         
-        /* Lado esquerdo do ticket (Informações) */
-        .ticket-left {
-            flex: 1;
-            padding: 15px 20px 15px 30px;
-            border-right: 2px dashed rgba(255, 255, 255, 0.5); /* A linha tracejada */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        /* Lado direito do ticket (Ações) */
-        .ticket-right {
-            padding: 15px 30px 15px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            min-width: 120px;
-        }
+        .ticket-left { flex: 1; padding: 15px 20px 15px 30px; border-right: 2px dashed rgba(255, 255, 255, 0.5); display: flex; flex-direction: column; justify-content: center; }
+        .ticket-right { padding: 15px 30px 15px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-width: 120px; }
         
-        /* Textos dentro do Ticket */
         .t-title { font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 2px; }
         .t-value { font-size: 2.2rem; font-weight: 900; line-height: 1; margin-bottom: 8px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
         .t-code { background: #fff; color: #ea1d2c; font-weight: 900; font-size: 1rem; padding: 4px 12px; border-radius: 4px; display: inline-block; width: fit-content; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 5px; letter-spacing: 1px;}
         .t-info { font-size: 0.75rem; opacity: 0.9; font-weight: 500;}
         
-        /* Botões do Ticket */
         .t-btn-toggle { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; border: none; width: 100%; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         .t-btn-toggle.active { background: #fff; color: #00a14b; }
         .t-btn-toggle.inactive { background: #333; color: #fff; }
         .t-btn-del { background: none; border: none; color: #fff; opacity: 0.7; font-size: 1.2rem; cursor: pointer; transition: 0.2s;}
         .t-btn-del:hover { opacity: 1; transform: scale(1.1); }
 
-        /* RESPONSIVIDADE */
-        @media (max-width: 1024px) {
-            .kanban-board { display: flex; flex-direction: column; height: auto; gap: 15px; }
-            .kanban-col { height: auto; max-height: none; }
+        /* =========================================================
+           🟢 AJUSTES EXTREMOS DE RESPONSIVIDADE (MOBILE) 🟢
+           ========================================================= */
+        @media (max-width: 850px) {
+            body { flex-direction: column; }
+            
+            /* Sidebar vira Nav Inferior */
+            .sidebar { 
+                position: fixed; bottom: 0; left: 0; width: 100%; height: auto; 
+                flex-direction: row; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+                padding-bottom: env(safe-area-inset-bottom); background: #fff; border-right: none; border-top: 1px solid #eee;
+            }
+            .store-header { display: none; } /* Oculta cabeçalho gigante da loja no menu */
+            .btn-logout { display: none; } /* Oculta botão de sair do menu inferior */
+            
+            .nav-menu { display: flex; width: 100%; margin: 0; padding: 0; justify-content: space-between; }
+            .nav-item { 
+                flex: 1; flex-direction: column; padding: 8px 2px; font-size: 0.6rem; 
+                justify-content: center; gap: 4px; border: none !important; text-align: center;
+            }
+            .nav-item.active { background: #fff5f5; color: #ea1d2c; border-top: 3px solid #ea1d2c !important; }
+
+            /* Novo Cabeçalho Mobile Compacto no Topo */
+            .mobile-header { 
+                display: flex; justify-content: space-between; align-items: center;
+                background: #fff; padding: 10px 15px; border-bottom: 1px solid #eee;
+                position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            }
+            .mobile-logo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;}
+            .m-status-btn { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; border: none; }
+            .m-status-open { background: #e6f4ea; color: #00a14b; }
+            .m-status-closed { background: #fef0f0; color: #ea1d2c; }
+
+            /* Ajustes no Conteúdo Principal */
+            .main-content { padding: 15px; height: calc(100vh - 60px - 60px); overflow-y: auto; padding-bottom: 80px; }
+            
+            /* Kanban Horizontal Scroll no Mobile (MÁGICA) */
+            .kanban-board { 
+                display: flex; flex-direction: row; gap: 15px; overflow-x: auto; 
+                scroll-snap-type: x mandatory; padding-bottom: 10px; height: calc(100vh - 190px);
+            }
+            .kanban-board::-webkit-scrollbar { display: none; }
+            .kanban-col { 
+                flex: 0 0 85vw; scroll-snap-align: center; height: 100%; overflow-y: auto;
+            }
+            
+            /* Menus e Cupons Responsivos */
+            .menu-layout { flex-direction: column; display: block; height: auto; }
+            .menu-list-area { height: 400px; margin-bottom: 20px; }
+            .menu-edit-area { width: 100%; height: auto; }
+            
             .coupon-layout { flex-direction: column; }
             .coupon-form { width: 100%; }
-        }
-        
-        @media (max-width: 850px) {
-            body { flex-direction: column; overflow-y: auto; height: auto; }
-            .sidebar { width: 100%; border-right: none; border-bottom: 2px solid #eee; display: flex; flex-direction: column; height: auto; flex-shrink: 0; }
-            .store-header { padding: 15px; display: flex; flex-direction: column; align-items: center; }
-            .nav-menu { display: flex; flex-direction: row; overflow-x: auto; margin-top: 0; white-space: nowrap; padding-bottom: 5px; }
-            .nav-item { padding: 12px 15px; border-left: none; border-bottom: 3px solid transparent; }
-            .nav-item.active { border-left: none; border-bottom: 3px solid #ea1d2c; }
-            .btn-logout { margin: 10px; padding: 10px; }
-            
-            .main-content { padding: 15px; height: auto; overflow: visible; }
-            .menu-layout { flex-direction: column; height: auto; }
-            .menu-list-area { height: auto; max-height: 400px; }
-            .menu-edit-area { width: 100%; height: auto; margin-top: 15px; }
-            
-            .editor-top { flex-direction: column; align-items: center; text-align: center; }
-            .top-fields { width: 100%; text-align: left; }
-            .card-header-flex { flex-direction: column; align-items: flex-start; gap: 10px; }
-            
-            .toast-notification { position: fixed; right: 10px; top: 10px; width: calc(100% - 20px); }
-            
-            .mod-modal-content { width: 95%; height: 95vh; padding: 0; }
-            .mod-header { flex-direction: column; gap: 10px; align-items: flex-start; }
-            .mod-header-actions { width: 100%; justify-content: space-between; flex-wrap: wrap; }
-            .mod-cat-header-drag { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .mod-cat-title-input { width: 100%; }
-            .mod-rule-group { flex-direction: column; align-items: flex-start; gap: 5px; margin-bottom: 10px; }
-            .mod-opt-row { flex-wrap: wrap; }
-            .mod-opt-input-group { width: 100%; flex: unset; }
+
+            /* Modal de Modificadores em Tela Cheia no Mobile */
+            .mod-modal-content { width: 100%; height: 100vh; border-radius: 0; max-height: none; }
+            .ticket-coupon::before, .ticket-coupon::after { background-color: #f4f5f7; } /* Mescla com o fundo cinza */
         }
     </style>
 </head>
 <body>
+
+    <div class="mobile-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img src="https://via.placeholder.com/80" id="mobile-store-logo" class="mobile-logo">
+            <h3 id="mobile-store-name" style="font-size:1rem; margin:0; max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Loja</h3>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button id="mobile-btn-toggle" class="m-status-btn m-status-open" onclick="window.toggleStoreStatus()">Carregando...</button>
+            <button onclick="window.logoutStore()" style="background:none; border:none; font-size:1.4rem; color:#ea1d2c; cursor:pointer;">🚪</button>
+        </div>
+    </div>
 
     <aside class="sidebar">
         <div class="store-header">
@@ -305,8 +307,8 @@
             <button id="btn-toggle-status" class="store-status-toggle status-open" onclick="window.toggleStoreStatus()">🟢 Loja Aberta</button>
         </div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="window.switchTab('pedidos', this)">📋 Gestão de Pedidos</li>
-            <li class="nav-item" onclick="window.switchTab('cardapio', this)">🍔 Meu Cardápio</li>
+            <li class="nav-item active" onclick="window.switchTab('pedidos', this)">📋 Pedidos</li>
+            <li class="nav-item" onclick="window.switchTab('cardapio', this)">🍔 Cardápio</li>
             <li class="nav-item" onclick="window.switchTab('cupons', this)">🎟️ Cupons</li>
             <li class="nav-item" onclick="window.switchTab('configuracoes', this)">⚙️ Configurações</li>
             <li class="nav-item" onclick="window.switchTab('relatorios', this)">📊 Relatórios</li>
@@ -325,8 +327,8 @@
         </div>
 
         <section id="pedidos" class="section active">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 25px;">
-                <h2 style="margin:0;">Pedidos em Tempo Real</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 15px;">
+                <h2 style="margin:0;">Painel de Pedidos</h2>
                 <button onclick="window.requestNotificationPermission()" style="background:#eef4ff; color:#0d6efd; border:1px solid #b6d4fe; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.85rem;">
                     Ativar Alertas de Áudio
                 </button>
@@ -365,6 +367,7 @@
         </section>
 
         <section id="cardapio" class="section">
+            <h2 style="margin-bottom: 15px;">Gestão do Cardápio</h2>
             <div class="menu-layout">
                 <div class="menu-list-area">
                     <div class="list-header-tabs">
@@ -643,11 +646,15 @@
             window.location.href = 'login-vendedor.html'; 
         }
 
+        // Atualiza a info da loja no desktop E no mobile
         document.getElementById('ui-store-name').innerText = loggedStore.name;
         document.getElementById('ui-store-logo').src = loggedStore.logo || 'https://via.placeholder.com/80';
+        document.getElementById('mobile-store-name').innerText = loggedStore.name;
+        document.getElementById('mobile-store-logo').src = loggedStore.logo || 'https://via.placeholder.com/80';
         
         window.updateStatusBtn = () => {
             const btn = document.getElementById('btn-toggle-status');
+            const mBtn = document.getElementById('mobile-btn-toggle');
             
             let isScheduleOpen = true;
             if (loggedStore.schedule) {
@@ -676,13 +683,16 @@
                 if (isScheduleOpen) {
                     btn.className = 'store-status-toggle status-open'; 
                     btn.innerHTML = '🟢 Loja Aberta <br><span style="font-size:0.65rem;font-weight:normal;">(Funcionamento normal)</span>';
+                    if(mBtn) { mBtn.className = 'm-status-btn m-status-open'; mBtn.innerHTML = '🟢 Aberta'; }
                 } else {
                     btn.className = 'store-status-toggle status-closed'; 
                     btn.innerHTML = '🔴 Loja Fechada <br><span style="font-size:0.65rem;font-weight:normal;">Fora do horário configurado</span>';
+                    if(mBtn) { mBtn.className = 'm-status-btn m-status-closed'; mBtn.innerHTML = '🔴 Fechada'; }
                 }
             } else {
                 btn.className = 'store-status-toggle status-closed'; 
                 btn.innerHTML = '🔴 Loja Fechada <br><span style="font-size:0.65rem;font-weight:normal;">Fechada manualmente</span>';
+                if(mBtn) { mBtn.className = 'm-status-btn m-status-closed'; mBtn.innerHTML = '🔴 Fechada'; }
             }
         };
 
@@ -705,11 +715,8 @@
 
             if ("Notification" in window) {
                 Notification.requestPermission().then(function (permission) {
-                    if (permission === "granted") {
-                        alert("Notificações ativadas!");
-                    } else {
-                        alert("Notificações bloqueadas, mas o som tentará tocar.");
-                    }
+                    if (permission === "granted") { alert("Notificações ativadas!"); } 
+                    else { alert("Notificações bloqueadas, mas o som tentará tocar."); }
                 });
             }
         };
@@ -868,9 +875,7 @@
 
         window.callPlatformDriver = async (orderId) => {
             if(confirm("Chamar o entregador da plataforma destina R$ 5,00 desta corrida para ele. Confirmar chamada?")) {
-                try {
-                    await updateDoc(doc(db, "orders", orderId), { status: 'Aguardando Entregador', platformDriverFee: 5.00 });
-                } catch(e) {}
+                try { await updateDoc(doc(db, "orders", orderId), { status: 'Aguardando Entregador', platformDriverFee: 5.00 }); } catch(e) {}
             }
         };
 
@@ -1049,7 +1054,7 @@
             }
         };
 
-        // 🟢 LÓGICA DE CUPONS COM LIMITE DE USO 🟢
+        // LÓGICA DE CUPONS COM LIMITE DE USO
         const qCoupons = query(collection(db, "coupons"), where("storeId", "==", loggedStore.id));
         onSnapshot(qCoupons, (snapshot) => {
             globalCoupons = [];
@@ -1099,7 +1104,6 @@
             }
         };
 
-        // 🟢 RENDERIZAR OS CUPONS COM O NOVO DESIGN DE TICKET VERMELHO 🟢
         window.renderCoupons = () => {
             const container = document.getElementById('coupon-list-render');
             container.innerHTML = '';
@@ -1116,9 +1120,9 @@
                 let limitHtml = '';
                 if (coupon.usageLimit) {
                     const esgotado = coupon.usedCount >= coupon.usageLimit;
-                    limitHtml = `<div class="t-info">Usos: ${coupon.usedCount || 0} / ${coupon.usageLimit} ${esgotado ? '(Esgotado)' : ''}</div>`;
+                    limitHtml = `<div class="t-info" style="margin-top: 5px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; display: inline-block;">Usos: ${coupon.usedCount || 0} / ${coupon.usageLimit} ${esgotado ? '(Esgotado)' : ''}</div>`;
                 } else {
-                    limitHtml = `<div class="t-info">Uso Ilimitado</div>`;
+                    limitHtml = `<div class="t-info" style="margin-top: 5px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; display: inline-block;">Uso Ilimitado</div>`;
                 }
 
                 let toggleBtn = coupon.active 
@@ -1152,9 +1156,7 @@
             }
         };
 
-        // ==========================================
-        // GESTÃO DO CARDÁPIO (MANTIDO INTACTO)
-        // ==========================================
+        // GESTÃO DO CARDÁPIO
         let currentEditingId = null; let editorImageBase64 = ''; let currentPriceType = 'simples'; let editingVariants = []; let editingModifiers = []; 
         let globalProducts = [];
         let myCategories = ['Geral', 'Destaques'];
