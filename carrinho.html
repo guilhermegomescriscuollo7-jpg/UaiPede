@@ -60,7 +60,8 @@
         .row .form-group { flex: 1; }
 
         /* CAIXA DE AVISO DE RETIRADA */
-        .pickup-info { display: none; background: #eef4ff; border: 1px solid #b6d4fe; padding: 15px; border-radius: 8px; color: #084298; font-size: 0.9rem; line-height: 1.4; }
+        .pickup-info { display: none; background: #eef4ff; border: 1px solid #b6d4fe; padding: 15px; border-radius: 8px; color: #084298; font-size: 0.9rem; line-height: 1.5; }
+        .pickup-address-box { background: #fff; padding: 10px; border-radius: 6px; border: 1px solid #cce0ff; margin-top: 10px; color: #333; font-weight: 500; font-size: 0.95rem; }
 
         /* OPÇÕES DE PAGAMENTO */
         .payment-options { display: flex; flex-direction: column; gap: 10px; }
@@ -146,7 +147,10 @@
 
                     <div id="pickup-container" class="pickup-info">
                         <strong>📍 Você escolheu Retirada no Local</strong><br><br>
-                        Não será cobrada taxa de entrega. Vá até o estabelecimento para retirar seu pedido informando seu nome ou número do pedido.
+                        Não será cobrada taxa de entrega. Vá até o estabelecimento abaixo para retirar o seu pedido:
+                        <div class="pickup-address-box">
+                            <span id="store-full-address">Carregando endereço da loja...</span>
+                        </div>
                     </div>
                 </div>
 
@@ -201,10 +205,10 @@
         let finalTotal = 0;
         let subtotalStore = 0;
         
-        let originalDeliveryFee = 0; // Taxa real cobrada pela loja
-        let currentDeliveryFee = 0;  // Taxa aplicada no momento (0 se for retirada)
+        let originalDeliveryFee = 0; 
+        let currentDeliveryFee = 0;  
         
-        let currentMethod = 'entrega'; // 'entrega' ou 'retirada'
+        let currentMethod = 'entrega'; 
 
         const loggedCustomer = JSON.parse(localStorage.getItem('loggedCustomer'));
         const isLogged = !!loggedCustomer || localStorage.getItem('isLogged') === 'true'; 
@@ -222,7 +226,7 @@
             }
         };
 
-        // 🟢 ALTERAR FORMA DE RECEBIMENTO 🟢
+        // ALTERAR FORMA DE RECEBIMENTO
         window.setDeliveryMethod = (method) => {
             currentMethod = method;
             const btnEntrega = document.getElementById('btn-method-entrega');
@@ -247,7 +251,7 @@
             window.updateTotalsUI();
         };
 
-        // 🟢 ATUALIZAR VISUAL DOS VALORES 🟢
+        // ATUALIZAR VISUAL DOS VALORES
         window.updateTotalsUI = () => {
             const feeTextElement = document.getElementById('delivery-fee-val');
             
@@ -304,18 +308,35 @@
 
             document.getElementById('subtotal-val').innerText = `R$ ${subtotalStore.toFixed(2)}`;
 
-            // LÓGICA DE BUSCAR TAXA NA LOJA
+            // LÓGICA DE BUSCAR TAXA E ENDEREÇO DA LOJA
             try {
                 const storeRef = doc(db, "stores", storeId);
                 const storeSnap = await getDoc(storeRef);
                 
-                if (storeSnap.exists() && storeSnap.data().deliveryFee) {
-                    originalDeliveryFee = parseFloat(storeSnap.data().deliveryFee);
+                if (storeSnap.exists()) {
+                    const storeData = storeSnap.data();
+                    
+                    // Pega a taxa
+                    if (storeData.deliveryFee) {
+                        originalDeliveryFee = parseFloat(storeData.deliveryFee);
+                    } else {
+                        originalDeliveryFee = 0; 
+                    }
+
+                    // 🟢 PUXA O ENDEREÇO DA LOJA PARA A TELA DE RETIRADA 🟢
+                    let fullAddress = storeData.street || 'Endereço não cadastrado pela loja';
+                    if (storeData.city) fullAddress += `, ${storeData.city}`;
+                    if (storeData.state) fullAddress += ` - ${storeData.state}`;
+                    if (storeData.cep) fullAddress += ` (CEP: ${storeData.cep})`;
+
+                    document.getElementById('store-full-address').innerText = fullAddress;
+
                 } else {
                     originalDeliveryFee = 0; 
+                    document.getElementById('store-full-address').innerText = 'Endereço indisponível';
                 }
             } catch (error) {
-                console.error("Erro ao buscar a taxa de entrega da loja:", error);
+                console.error("Erro ao buscar dados da loja:", error);
                 originalDeliveryFee = 0;
             }
 
@@ -327,7 +348,7 @@
                 document.getElementById('checkout-form').style.display = 'block';
                 document.getElementById('login-alert').style.display = 'none';
 
-                // PUXAR ENDEREÇO DO PERFIL (se for entrega)
+                // PUXAR ENDEREÇO DO PERFIL DO CLIENTE (para a entrega)
                 try {
                     if(userEmail) {
                         const q = query(collection(db, "customers"), where("email", "==", userEmail));
@@ -364,7 +385,7 @@
         window.finishOrder = async () => {
             let addressString = "";
 
-            // VALIDAÇÃO: Se escolheu Entrega, obriga endereço. Se escolheu Retirada, ignora.
+            // VALIDAÇÃO
             if (currentMethod === 'entrega') {
                 const rua = document.getElementById('end-rua').value.trim();
                 const num = document.getElementById('end-num').value.trim();
