@@ -73,20 +73,14 @@
         .effect-slide.active { transform: translateY(0); }
 
         /* =========================================================
-           CABEÇALHO E MÓDULOS DE COMPRA 
+           CABEÇALHO
            ========================================================= */
         .brand-header { background: #fff; padding: 20px 20px; position: relative; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; }
         .brand-logo-container { display: flex; align-items: center; gap: 8px; flex-grow: 1; }
         .brand-swoosh { width: 35px; height: auto; transform: rotate(-10deg); }
         .brand-text { font-size: 1.6rem; font-weight: 700; color: #ea1d2c; letter-spacing: -1px; margin: 0; }
         
-        .header-cart-btn {
-            position: relative; width: 45px; height: 45px; border-radius: 50%; background: #fff; color: #ea1d2c;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f2f2f2; flex-shrink: 0;
-        }
-        .header-cart-btn:active { transform: scale(0.9); background: #fdfdfd; }
-        .cart-badge { position: absolute; top: -5px; right: -5px; background: #ea1d2c; color: white; font-size: 0.75rem; padding: 2px 7px; border-radius: 50%; border: 2px solid #fff; font-weight: bold; display: none; }
+        /* Carrinho do topo removido conforme solicitado */
 
         .banner-carousel-wrapper { background: #f8f8f8; padding: 15px 15px 0; display: none; }
         .banner-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 12px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
@@ -190,10 +184,43 @@
         .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
         
-        /* 🟢 CARRINHO FLUTUANTE 🟢 */
-        .floating-cart { position: fixed; bottom: 80px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 10003; text-decoration: none; transition: 0.3s;}
+        /* 🟢 CARRINHO FLUTUANTE ATUALIZADO (FUNDO VERMELHO, CARRINHO BRANCO) 🟢 */
+        .floating-cart {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #ea1d2c; /* Fundo Vermelho */
+            color: #fff;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: none; /* Controlado via JS */
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4);
+            z-index: 10003;
+            text-decoration: none;
+            transition: 0.3s;
+        }
         .floating-cart:active { transform: scale(0.9); }
-        .cart-badge-float { position: absolute; top: -5px; right: -5px; background: #111; color: #fff; font-size: 0.75rem; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+        
+        /* Ajuste da bolinha de quantidade para não conflitar com o novo estilo */
+        .cart-badge-float {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #111; /* Bolinha preta para contrastar com o fundo vermelho */
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: bold;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+        }
     </style>
 </head>
 <body>
@@ -219,11 +246,7 @@
             <h1 class="brand-text">Dores Delivery</h1>
         </div>
         
-        <div class="header-cart-btn" onclick="window.location.href='carrinho.html'">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            <span class="cart-badge" id="cart-count">0</span>
         </div>
-    </div>
 
     <div id="install-banner">
         <div>
@@ -280,7 +303,7 @@
     </nav>
 
     <a href="carrinho.html" class="floating-cart" id="floating-cart">
-        🛒
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         <div class="cart-badge-float" id="floating-cart-count">0</div>
     </a>
 
@@ -458,7 +481,7 @@
                 
                 return `
                 <div class="${cardClass}" onclick="${onClickAction}">
-                    <img src="${s.logo || 'https://via.placeholder.com/60'}" class="store-logo" alt="Logo">
+                    <img src="${s.logo || 'https://via.placeholder.com/80'}" class="store-logo" alt="Logo">
                     <div class="store-info">
                         <h3>${s.name}</h3>
                         <div class="store-details"><span>${s.cat || 'Geral'}</span><span class="dot">•</span><span style="font-weight: bold; color: ${statusColor};">${statusText}</span></div>
@@ -623,22 +646,24 @@
         window.updateCartBadge = () => {
             const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
             
-            const mainBadge = document.getElementById('cart-count'); 
+            // Referência ao badge do carrinho dentro do modal da loja (se estiver aberto)
             const modalBadge = document.getElementById('modal-cart-count');
+            
+            // Referências ao carrinho flutuante da tela principal
             const floatingCart = document.getElementById('floating-cart');
             const floatingBadge = document.getElementById('floating-cart-count');
 
             if (currentCart.length > 0) {
-                if (mainBadge) { mainBadge.style.display = 'flex'; mainBadge.innerText = currentCart.length; }
+                // Atualiza o contador dentro do modal da loja
                 if (modalBadge) { modalBadge.style.display = 'flex'; modalBadge.innerText = currentCart.length; }
                 
-                // Exibe a bolinha grande flutuante na tela inicial
+                // Exibe o botão flutuante vermelho na tela inicial
                 if (floatingCart) { 
                     floatingCart.style.display = 'flex'; 
                     floatingBadge.innerText = currentCart.length;
                 }
             } else {
-                if (mainBadge) mainBadge.style.display = 'none';
+                // Esconde se estiver vazio
                 if (modalBadge) modalBadge.style.display = 'none';
                 if (floatingCart) floatingCart.style.display = 'none';
             }
