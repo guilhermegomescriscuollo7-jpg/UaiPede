@@ -34,7 +34,7 @@
         .order-body { padding: 15px; }
         .order-date { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
         
-        /* 🟢 BARRA DE PROGRESSO VISUAL 🟢 */
+        /* BARRA DE PROGRESSO VISUAL */
         .progress-container { margin: 20px 0; padding: 0 10px; }
         .progress-track { display: flex; justify-content: space-between; position: relative; margin-bottom: 10px; }
         .progress-track::before { content: ""; position: absolute; top: 12px; left: 0; width: 100%; height: 4px; background: #eee; z-index: 1; }
@@ -120,7 +120,7 @@
         const isLogged = !!loggedCustomer || localStorage.getItem('isLogged') === 'true'; 
         const userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
 
-        // 🟢 FUNÇÃO CANCELAR PEDIDO 🟢
+        // FUNÇÃO CANCELAR PEDIDO
         window.cancelOrder = async (orderId) => {
             if(confirm("Deseja realmente cancelar este pedido?")) {
                 try {
@@ -130,7 +130,7 @@
             }
         };
 
-        // 🟢 FUNÇÃO PEDIR NOVAMENTE 🟢
+        // FUNÇÃO PEDIR NOVAMENTE
         window.reorderItems = (itemsJson) => {
             const items = JSON.parse(decodeURIComponent(itemsJson));
             if(confirm("Deseja adicionar estes mesmos itens ao seu carrinho e pedir novamente?")) {
@@ -183,7 +183,7 @@
                         actionButtons = `<button class="btn-reorder" onclick="window.reorderItems('${itemsEncoded}')">🔄 Pedir Novamente</button>`;
                     }
 
-                    const isPickup = order.orderType === 'retirada' || (order.customer.address && order.customer.address.includes('RETIRADA'));
+                    const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
 
                     // Caso esteja cancelado, não mostra barra de progresso, mostra aviso
                     let progressHtml = `
@@ -206,6 +206,16 @@
                         progressHtml = `<div style="background:#fff0f0; color:#ea1d2c; text-align:center; padding:10px; border-radius:8px; font-weight:bold; font-size:0.8rem; margin:15px 0;">❌ PEDIDO CANCELADO</div>`;
                     }
 
+                    // 🟢 LINHA DO CUPOM DE DESCONTO 🟢
+                    let discountHtml = '';
+                    if (order.discount && order.discount > 0) {
+                        discountHtml = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed #eee; margin-top: 10px; font-size: 0.85rem;">
+                            <span style="color: #00a14b; font-weight: bold;">🎟️ Cupom aplicado (${order.couponCode})</span>
+                            <span style="color: #00a14b; font-weight: bold;">- R$ ${order.discount.toFixed(2)}</span>
+                        </div>`;
+                    }
+
                     return `
                     <div class="order-card" style="${order.status === 'Cancelado' ? 'opacity: 0.7' : ''}">
                         <div class="order-header">
@@ -223,6 +233,8 @@
                             <ul class="items-list">
                                 ${itemsHtml}
                             </ul>
+                            
+                            ${discountHtml}
                         </div>
                         
                         ${actionButtons ? `<div class="order-actions">${actionButtons}</div>` : ''}
