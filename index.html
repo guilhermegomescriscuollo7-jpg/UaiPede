@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dores Delivery - Início</title>
     <link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
     <script>
         if (sessionStorage.getItem('splashShown') === 'true') {
@@ -65,15 +65,13 @@
 
         .effect-fade { opacity: 0; transition: opacity 0.6s ease; }
         .effect-fade.active { opacity: 1; }
-
         .effect-zoom { opacity: 0; transform: scale(0.8); transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
         .effect-zoom.active { opacity: 1; transform: scale(1); }
-
         .effect-slide { transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
         .effect-slide.active { transform: translateY(0); }
 
         /* =========================================================
-           CABEÇALHO
+           CABEÇALHO E LISTA INICIAL
            ========================================================= */
         .brand-header { background: #fff; padding: 20px 20px; position: relative; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; }
         .brand-logo-container { display: flex; align-items: center; gap: 8px; flex-grow: 1; }
@@ -94,6 +92,7 @@
         .button-item.active { background-color: #ea1d2c; border-color: #ea1d2c; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
         .button-item.active span { color: #fff; }
         .button-item.active .filter-icon { color: #fff; } 
+        
         .section-title { padding: 5px 15px 10px; font-size: 1.1rem; font-weight: 700; color: #333; }
 
         .store-list { padding: 0 15px; }
@@ -108,7 +107,7 @@
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
         /* =========================================================
-           MODAL DA LOJA E CUPONS
+           MODAL DA LOJA
            ========================================================= */
         #menu-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8f8f8; z-index: 10000; transform: translateY(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 20px; display: block; }
         #menu-modal.active { transform: translateY(0); }
@@ -116,23 +115,72 @@
         .cover-btns { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: flex-start; z-index: 10; }
         .btn-circle { width: 38px; height: 38px; border-radius: 50%; background: #fff; color: #ea1d2c; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: 0.2s; }
         .btn-circle:active { transform: scale(0.9); }
-        .store-card-overlay { background: #fff; position: relative; margin-top: -20px; border-radius: 20px 20px 0 0; padding: 45px 20px 20px; text-align: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
+        .store-card-overlay { background: #fff; position: relative; margin-top: -20px; border-radius: 20px 20px 0 0; padding: 45px 20px 15px; text-align: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
         .overlay-logo { width: 76px; height: 76px; border-radius: 50%; border: 3px solid #fff; position: absolute; top: -38px; left: 50%; transform: translateX(-50%); object-fit: cover; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .store-title-modal { font-size: 1.4rem; color: #111; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; }
-        .arrow-right { color: #ea1d2c; font-size: 1.2rem; margin-top: -2px; }
         .store-sub-modal { font-size: 0.85rem; color: #717171; margin-bottom: 12px; font-weight: 500; }
         .store-stats-modal { display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.85rem; color: #717171; }
         .store-stats-modal .dot { color: #ccc; font-size: 0.6rem; margin-top: 2px;}
-        
-        /* 🟢 ESTILOS DOS CUPONS NA LOJA 🟢 */
-        .store-coupons-container { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 15px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        .store-coupons-container::-webkit-scrollbar { display: none; }
-        .store-coupon-card { background: #fff0f0; border: 1px dashed #ea1d2c; border-radius: 8px; padding: 12px; min-width: 140px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(234, 29, 44, 0.05);}
-        .store-coupon-card:active { transform: scale(0.95); background: #fbd5d5; }
-        .store-coupon-code { font-weight: 900; color: #ea1d2c; font-size: 1.1rem; margin-bottom: 2px; }
-        .store-coupon-desc { font-size: 0.75rem; color: #ea1d2c; text-align: center; line-height: 1.2; font-weight: 500;}
-        .store-coupon-copy { position: absolute; top: -10px; right: -5px; background: #ea1d2c; color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
+        /* 🟢 DESIGN DO CUPOM TICKET NA TELA DO CLIENTE 🟢 */
+        .store-coupons-container { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .store-coupons-container::-webkit-scrollbar { display: none; }
+        
+        .ticket-coupon {
+            display: flex;
+            background: #ea1d2c;
+            color: #fff;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(234, 29, 44, 0.2);
+            transition: 0.2s;
+            cursor: pointer;
+            flex-shrink: 0;
+            min-width: 260px;
+        }
+        .ticket-coupon:active { transform: scale(0.96); }
+        
+        /* O efeito de "corte" de ingresso nas laterais */
+        .ticket-coupon::before, .ticket-coupon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        .ticket-coupon::before { left: -10px; }
+        .ticket-coupon::after { right: -10px; }
+        
+        /* Lado Esquerdo do Ticket */
+        .ticket-left {
+            flex: 1;
+            padding: 15px 15px 15px 25px;
+            border-right: 2px dashed rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* Lado Direito do Ticket */
+        .ticket-right {
+            padding: 15px 25px 15px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .t-title { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 2px; }
+        .t-value { font-size: 1.8rem; font-weight: 900; line-height: 1; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .t-code { background: #fff; color: #ea1d2c; font-weight: 900; font-size: 0.85rem; padding: 3px 8px; border-radius: 4px; display: inline-block; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 5px; text-align: center;}
+        .t-info { font-size: 0.7rem; opacity: 0.9; font-weight: 500; }
+        .t-click { font-size: 0.7rem; font-weight: bold; margin-top: 5px; background: rgba(0,0,0,0.15); padding: 4px 8px; border-radius: 12px; }
+
+        /* MÓDULO DE PRODUTOS */
         .store-menu-filters { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; padding: 15px 20px; background: #fff; border-bottom: 1px solid #f2f2f2; position: sticky; top: 0; z-index: 100; scrollbar-width: none; -webkit-overflow-scrolling: touch; box-shadow: 0 2px 5px rgba(0,0,0,0.02); width: 100%; }
         .store-cat-btn { flex: 0 0 auto; background: #f2f2f2; border: none; padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; color: #555; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; }
         .store-cat-btn.active { background: #ea1d2c; color: #fff; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
@@ -159,6 +207,9 @@
         .prod-card-grid .desc { font-size: 0.75rem; color: #717171; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; }
         .prod-card-grid .price { font-weight: 700; color: #ea1d2c; font-size: 0.95rem; margin-top: auto; }
 
+        /* =========================================================
+           MODAL DO PRODUTO (ADD AO CARRINHO)
+           ========================================================= */
         #product-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 10001; transform: translateY(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 100px; display: block; }
         #product-modal.active { transform: translateY(0); }
         .prod-img-header { position: relative; width: 100%; height: 300px; background: #f2f2f2; }
@@ -194,7 +245,7 @@
         .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
         
-        /* 🟢 CARRINHO FLUTUANTE ATUALIZADO 🟢 */
+        /* 🟢 CARRINHO FLUTUANTE 🟢 */
         .floating-cart {
             position: fixed;
             bottom: 80px;
@@ -513,7 +564,7 @@
         // 🟢 FUNÇÃO PARA COPIAR O CUPOM 🟢
         window.copyCoupon = (code) => {
             navigator.clipboard.writeText(code).then(() => {
-                alert(`Cupom ${code} copiado! Você pode colar no carrinho.`);
+                alert(`Cupom ${code} copiado! Cole na tela de Carrinho para aplicar o desconto.`);
             }).catch(err => {
                 alert(`Código do cupom: ${code}`); 
             });
@@ -533,7 +584,6 @@
             `;
             document.getElementById('menu-modal').classList.add('active');
 
-            // 🟢 BUSCA OS CUPONS DA LOJA 🟢
             let storeCoupons = [];
             try {
                 const qCoupons = query(collection(db, "coupons"), where("storeId", "==", storeId), where("active", "==", true));
@@ -548,7 +598,6 @@
 
             onSnapshot(query(collection(db, "products"), where("storeId", "==", storeId)), (snapshot) => {
                 currentStoreProducts = []; snapshot.forEach(doc => currentStoreProducts.push({ id: doc.id, ...doc.data() }));
-                // Passa os cupons para a função de renderizar
                 window.renderMenuHtml(storeName, storeLogo, storeCat, storeStatus, coverImage, storeCoupons);
             });
         };
@@ -598,19 +647,26 @@
                 productsHTML = filtersHTML + '<div id="store-menu-items" style="background:#fff; padding-bottom: 20px;">' + itemsHTML + '</div>';
             }
 
-            // 🟢 RENDERIZA OS CUPONS SE EXISTIREM 🟢
+            // 🟢 INJETA O BILHETE VERMELHO SE HOUVER CUPONS ATIVOS 🟢
             let couponsHTML = '';
             if (storeCoupons && storeCoupons.length > 0) {
                 couponsHTML = `
                 <div class="store-coupons-container">
                     ${storeCoupons.map(c => {
-                        let descText = c.type === 'percentage' ? `${c.value}% OFF` : `R$ ${c.value.toFixed(2)} OFF`;
+                        let valText = c.type === 'percentage' ? `${c.value}%` : `R$ ${c.value.toFixed(2)}`;
                         let minText = c.minOrder > 0 ? `Acima de R$ ${c.minOrder.toFixed(2)}` : 'Sem valor mínimo';
+                        
                         return `
-                        <div class="store-coupon-card" onclick="window.copyCoupon('${c.code}')">
-                            <div class="store-coupon-code">${c.code}</div>
-                            <div class="store-coupon-desc">${descText}<br>${minText}</div>
-                            <div class="store-coupon-copy" title="Copiar">📋</div>
+                        <div class="ticket-coupon" onclick="window.copyCoupon('${c.code}')">
+                            <div class="ticket-left">
+                                <div class="t-title">CUPOM DE DESCONTO</div>
+                                <div class="t-value">${valText}</div>
+                                <div class="t-info">${minText}</div>
+                            </div>
+                            <div class="ticket-right">
+                                <div class="t-code">${c.code}</div>
+                                <div class="t-click">COPIAR</div>
+                            </div>
                         </div>`;
                     }).join('')}
                 </div>`;
@@ -622,7 +678,12 @@
                         <button class="btn-circle" onclick="window.closeMenu()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
                     </div>
                 </div>
-                <div class="store-card-overlay"><img src="${storeLogo || 'https://via.placeholder.com/80'}" class="overlay-logo"><h2 class="store-title-modal">${storeName}</h2><p class="store-sub-modal">${storeCat || 'Categoria não definida'} • ${storeStatus === 'Fechado' ? 'Fechada Agora' : 'Aberta'}</p><div class="store-stats-modal"><span style="color:#717171;">Entrega em</span><span class="dot">•</span><span>30-40 min</span><span class="dot">•</span><span style="color:#00a14b; font-weight:500;">Grátis</span></div></div>
+                <div class="store-card-overlay">
+                    <img src="${storeLogo || 'https://via.placeholder.com/80'}" class="overlay-logo">
+                    <h2 class="store-title-modal">${storeName}</h2>
+                    <p class="store-sub-modal">${storeCat || 'Categoria não definida'} • ${storeStatus === 'Fechado' ? 'Fechada Agora' : 'Aberta'}</p>
+                    <div class="store-stats-modal" style="margin-bottom: 15px;"><span style="color:#717171;">Entrega em</span><span class="dot">•</span><span>30-40 min</span><span class="dot">•</span><span style="color:#00a14b; font-weight:500;">Grátis</span></div>
+                </div>
                 ${couponsHTML}
                 ${productsHTML}
             `;
