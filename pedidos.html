@@ -24,41 +24,52 @@
         .btn-primary { background: #ea1d2c; color: #fff; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; width: 100%; text-align: center; display: inline-block; text-decoration: none; cursor: pointer; transition: 0.2s; border: none; }
         .btn-primary:active { background: #c81824; transform: scale(0.98); }
 
-        /* CARD DE PEDIDO */
-        .order-card { background: #fff; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; overflow: hidden; }
+        /* CARD DE PEDIDO (Com borda vermelha) */
+        .order-card { background: #fff; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; border-left: 5px solid #ea1d2c; overflow: hidden; }
         
         .order-header { padding: 15px; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
         .store-name { font-weight: 700; color: #111; font-size: 1.05rem; display: flex; align-items: center; gap: 6px; }
         .order-id { font-weight: 900; color: #ea1d2c; font-size: 0.85rem; background: #fff0f0; padding: 4px 8px; border-radius: 6px; border: 1px solid #fbd5d5; }
 
         .order-body { padding: 15px; }
-        .order-date { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
+        .order-date { font-size: 0.8rem; color: #888; margin-bottom: 5px; text-align: right; }
         
-        /* BARRA DE PROGRESSO VISUAL */
-        .progress-container { margin: 20px 0; padding: 0 10px; }
+        /* 🟢 BARRA DE PROGRESSO VISUAL (Vermelho Dores Delivery) 🟢 */
+        .progress-container { margin: 25px 0 20px; padding: 0 10px; }
         .progress-track { display: flex; justify-content: space-between; position: relative; margin-bottom: 10px; }
-        .progress-track::before { content: ""; position: absolute; top: 12px; left: 0; width: 100%; height: 4px; background: #eee; z-index: 1; }
-        .progress-step { width: 28px; height: 28px; background: #eee; border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; border: 3px solid #fff; transition: 0.3s; }
-        .progress-step.active { background: #00a14b; color: #fff; box-shadow: 0 0 10px rgba(0,161,75,0.3); }
+        
+        /* Linha Cinza de Fundo */
+        .progress-track::before { content: ""; position: absolute; top: 12px; left: 0; width: 100%; height: 4px; background: #eee; z-index: 1; border-radius: 2px;}
+        
+        /* Linha Vermelha que Preenche */
+        .progress-fill { position: absolute; top: 12px; left: 0; height: 4px; background: #ea1d2c; z-index: 1; transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 2px; }
+        
+        /* Bolinhas */
+        .progress-step { width: 28px; height: 28px; background: #eee; border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; border: 3px solid #fff; transition: 0.4s; }
+        .progress-step.active { background: #ea1d2c; color: #fff; box-shadow: 0 0 10px rgba(234, 29, 44, 0.3); border-color: #fff; }
+        
+        /* Textos da Barra */
         .progress-labels { display: flex; justify-content: space-between; }
-        .progress-labels span { font-size: 0.65rem; color: #999; font-weight: bold; text-align: center; width: 60px; }
-        .progress-labels span.active { color: #00a14b; }
+        .progress-labels span { font-size: 0.65rem; color: #999; font-weight: 600; text-align: center; width: 60px; line-height: 1.2; }
+        .progress-labels span.active { color: #ea1d2c; font-weight: bold; }
 
+        /* LISTA DE ITENS */
         .items-list { list-style: none; padding: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555; border-top: 1px solid #f9f9f9; padding-top: 15px; }
-        .items-list li { margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .items-list li { margin-bottom: 8px; display: flex; justify-content: space-between; }
         .item-qty { font-weight: bold; color: #111; margin-right: 5px; }
         
         /* BOTÕES DE AÇÃO */
         .order-actions { padding: 15px; display: flex; gap: 10px; border-top: 1px dashed #eee; }
         .btn-cancel { background: #fff; color: #ea1d2c; border: 1px solid #ea1d2c; padding: 10px; border-radius: 8px; flex: 1; font-size: 0.85rem; font-weight: bold; cursor: pointer; }
-        .btn-reorder { background: #eef4ff; color: #0d6efd; border: 1px solid #b6d4fe; padding: 10px; border-radius: 8px; flex: 1; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-reorder { background: #fff0f0; color: #ea1d2c; border: 1px solid #fbd5d5; padding: 10px; border-radius: 8px; flex: 1; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
 
-        .order-footer { padding: 15px; background: #fafafa; display: flex; justify-content: space-between; align-items: center; }
+        .order-footer { padding: 15px; background: #fafafa; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee;}
         .order-total { font-size: 1.1rem; font-weight: 900; color: #111; }
         
-        .type-badge { font-size: 0.7rem; font-weight: bold; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
-        .type-entrega { background: #eef4ff; color: #0d6efd; }
-        .type-retirada { background: #fff3cd; color: #856404; }
+        /* BADGES DE TIPO DE RECEBIMENTO (Adaptado para cores da marca) */
+        .type-badge { font-size: 0.8rem; font-weight: bold; padding: 6px 12px; border-radius: 8px; display: block; margin-bottom: 10px; text-align: center; }
+        .type-entrega { background: #f4f5f7; color: #333; border: 1px solid #e0e0e0;}
+        .type-retirada { background: #ea1d2c; color: #fff; box-shadow: 0 2px 4px rgba(234, 29, 44, 0.2); }
 
         /* MENU INFERIOR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 150; padding-bottom: calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 10px rgba(0,0,0,0.02);}
@@ -167,12 +178,25 @@
                     const shortId = order.id.substring(0, 6).toUpperCase();
                     const itemsHtml = order.items.map(i => `<li><div><span class="item-qty">${i.qty}x</span> ${i.name}</div> <span>R$ ${i.price.toFixed(2)}</span></li>`).join('');
 
-                    // Lógica da Barra de Progresso
-                    let stepIndex = 0; // 0: Pendente, 1: Preparo, 2: Rota, 3: Entregue
-                    if (order.status === 'Em Preparo' || order.status === 'Aguardando Entregador') stepIndex = 1;
-                    if (order.status === 'Saiu para Entrega') stepIndex = 2;
-                    if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') stepIndex = 3;
-                    if (order.status === 'Cancelado') stepIndex = -1;
+                    // 🟢 LÓGICA DA BARRA DE PROGRESSO PREENCHIDA 🟢
+                    let stepIndex = 0; 
+                    let progressWidth = '0%'; // Pedido Realizado
+                    
+                    if (order.status === 'Aceito' || order.status === 'Em Preparo' || order.status === 'Aguardando Entregador') {
+                        stepIndex = 1;
+                        progressWidth = '33%'; // Até o segundo ícone
+                    }
+                    if (order.status === 'Saiu para Entrega' || order.status === 'Pronto para Retirada') {
+                        stepIndex = 2;
+                        progressWidth = '66%'; // Até o terceiro ícone
+                    }
+                    if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
+                        stepIndex = 3;
+                        progressWidth = '100%'; // Completa a barra
+                    }
+                    if (order.status === 'Cancelado') {
+                        stepIndex = -1;
+                    }
 
                     // Lógica dos Botões
                     let actionButtons = '';
@@ -185,19 +209,20 @@
 
                     const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
 
-                    // Barra de progresso HTML
+                    // HTML Da Barra de Progresso com Preenchimento Dinâmico
                     let progressHtml = `
                         <div class="progress-container">
                             <div class="progress-track">
+                                <div class="progress-fill" style="width: ${progressWidth};"></div>
                                 <div class="progress-step ${stepIndex >= 0 ? 'active' : ''}">✓</div>
                                 <div class="progress-step ${stepIndex >= 1 ? 'active' : ''}">🍳</div>
                                 <div class="progress-step ${stepIndex >= 2 ? 'active' : ''}">🛵</div>
                                 <div class="progress-step ${stepIndex >= 3 ? 'active' : ''}">⭐</div>
                             </div>
                             <div class="progress-labels">
-                                <span class="${stepIndex >= 0 ? 'active' : ''}">Pedido Realizado</span>
-                                <span class="${stepIndex >= 1 ? 'active' : ''}">Em Preparo</span>
-                                <span class="${stepIndex >= 2 ? 'active' : ''}">${isPickup ? 'Pronto p/ Retirar' : 'Saiu p/ Entrega'}</span>
+                                <span class="${stepIndex >= 0 ? 'active' : ''}">Pedido<br>Realizado</span>
+                                <span class="${stepIndex >= 1 ? 'active' : ''}">Em<br>Preparo</span>
+                                <span class="${stepIndex >= 2 ? 'active' : ''}">${isPickup ? 'Pronto p/<br>Retirar' : 'Saiu p/<br>Entrega'}</span>
                                 <span class="${stepIndex >= 3 ? 'active' : ''}">Finalizado</span>
                             </div>
                         </div>`;
@@ -206,9 +231,9 @@
                         progressHtml = `<div style="background:#fff0f0; color:#ea1d2c; text-align:center; padding:10px; border-radius:8px; font-weight:bold; font-size:0.8rem; margin:15px 0;">❌ PEDIDO CANCELADO</div>`;
                     }
 
-                    // 🟢 LINHA DA TAXA DE ENTREGA 🟢
+                    // LINHA DA TAXA DE ENTREGA
                     let deliveryFeeHtml = '';
-                    if (order.deliveryFee !== undefined) {
+                    if (order.deliveryFee !== undefined && !isPickup) {
                         const feeText = order.deliveryFee > 0 ? `R$ ${parseFloat(order.deliveryFee).toFixed(2)}` : 'Grátis';
                         const feeColor = order.deliveryFee > 0 ? '#111' : '#00a14b';
                         deliveryFeeHtml = `
@@ -223,8 +248,8 @@
                     if (order.discount && order.discount > 0) {
                         discountHtml = `
                         <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed #eee; margin-top: 10px; font-size: 0.85rem;">
-                            <span style="color: #00a14b; font-weight: bold;">🎟️ Cupom aplicado (${order.couponCode})</span>
-                            <span style="color: #00a14b; font-weight: bold;">- R$ ${order.discount.toFixed(2)}</span>
+                            <span style="color: #ea1d2c; font-weight: bold;">🎟️ Cupom aplicado (${order.couponCode})</span>
+                            <span style="color: #ea1d2c; font-weight: bold;">- R$ ${order.discount.toFixed(2)}</span>
                         </div>`;
                     }
 
@@ -237,7 +262,7 @@
                         <div class="order-body">
                             <div class="order-date">${order.date || ''}</div>
                             <div class="type-badge ${isPickup ? 'type-retirada' : 'type-entrega'}">
-                                ${isPickup ? '🚶‍♂️ RETIRADA NO LOCAL' : '🛵 ENTREGA EM CASA'}
+                                ${isPickup ? '🚶‍♂️ RETIRAR NA LOJA' : '🛵 ENTREGA EM CASA'}
                             </div>
 
                             ${progressHtml}
@@ -253,7 +278,7 @@
                         ${actionButtons ? `<div class="order-actions">${actionButtons}</div>` : ''}
 
                         <div class="order-footer">
-                            <span style="color: #777; font-size: 0.8rem;">Pago via ${order.paymentMethod.split(' ')[0]}</span>
+                            <span style="color: #777; font-size: 0.8rem; font-weight: bold;">💎 ${order.paymentMethod.split(' ')[0]}</span>
                             <span class="order-total">R$ ${(order.total || 0).toFixed(2)}</span>
                         </div>
                     </div>`;
