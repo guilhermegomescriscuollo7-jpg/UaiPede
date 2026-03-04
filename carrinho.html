@@ -43,7 +43,7 @@
         .summary-line { display: flex; justify-content: space-between; font-size: 0.95rem; color: #555; margin-bottom: 10px; }
         .summary-total { display: flex; justify-content: space-between; font-size: 1.1rem; color: #111; font-weight: 700; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
 
-        /* 🟢 ÁREA DO CUPOM 🟢 */
+        /* 🟢 ÁREA DO CUPOM E LISTA 🟢 */
         .coupon-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; }
         .coupon-input-group { display: flex; gap: 10px; }
         .coupon-input-group input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; text-transform: uppercase; font-size: 0.9rem; outline: none; }
@@ -52,6 +52,14 @@
         .btn-coupon:active { background: #000; transform: scale(0.95); }
         #coupon-message { font-size: 0.8rem; margin-top: 8px; display: none; font-weight: bold; }
         .btn-remove-coupon { background: none; border: none; color: #ea1d2c; text-decoration: underline; font-size: 0.75rem; cursor: pointer; margin-left: 10px; }
+
+        .btn-show-coupons { color: #ea1d2c; font-size: 0.85rem; font-weight: bold; cursor: pointer; margin-top: 15px; display: inline-block; padding: 5px 0;}
+        .available-coupons-container { margin-top: 10px; display: none; flex-direction: column; gap: 8px; }
+        .avail-coupon-card { border: 1px dashed #ccc; border-radius: 8px; padding: 12px; background: #fafafa; display: flex; justify-content: space-between; align-items: center; }
+        .avail-coupon-info strong { font-size: 1rem; color: #111; display: block; margin-bottom: 2px;}
+        .avail-coupon-info span { font-size: 0.75rem; color: #777; }
+        .btn-apply-avail { background: #eef4ff; color: #0d6efd; border: 1px solid #b6d4fe; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+        .btn-apply-avail:active { background: #d0e3ff; }
 
         /* FORMS E SEÇÕES */
         .checkout-section { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
@@ -129,6 +137,9 @@
                         <button class="btn-coupon" onclick="window.applyCoupon()">Aplicar</button>
                     </div>
                     <div id="coupon-message"></div>
+
+                    <div id="show-coupons-toggle" class="btn-show-coupons" onclick="window.fetchAvailableCoupons()">🎟️ Ver cupons disponíveis desta loja</div>
+                    <div id="available-coupons-list" class="available-coupons-container"></div>
                 </div>
 
             </div>
@@ -185,7 +196,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -207,7 +218,6 @@
         let currentDeliveryFee = 0;  
         let currentMethod = 'entrega'; 
 
-        // VARIÁVEIS DE CUPOM
         let appliedCoupon = null;
         let discountAmount = 0;
 
@@ -242,7 +252,70 @@
             window.updateTotalsUI();
         };
 
-        // LÓGICA DE APLICAR O CUPOM
+        // 🟢 BUSCAR E MOSTRAR CUPONS DISPONÍVEIS DA LOJA 🟢
+        window.fetchAvailableCoupons = async () => {
+            const container = document.getElementById('available-coupons-list');
+            const toggleBtn = document.getElementById('show-coupons-toggle');
+            
+            // Se já estiver aberto, esconde
+            if (container.style.display === 'flex') {
+                container.style.display = 'none';
+                toggleBtn.innerText = '🎟️ Ver cupons disponíveis desta loja';
+                return;
+            }
+
+            container.innerHTML = '<div style="font-size:0.85rem; color:#777; text-align:center; padding:10px;">Buscando cupons mágicos...</div>';
+            container.style.display = 'flex';
+            toggleBtn.innerText = 'Esconder cupons';
+
+            try {
+                const storeId = cart[0].storeId;
+                const q = query(collection(db, "coupons"), where("storeId", "==", storeId), where("active", "==", true));
+                const snap = await getDocs(q);
+
+                let validCoupons = [];
+                snap.forEach(doc => {
+                    const c = doc.data();
+                    // Filtra para mostrar apenas os que AINDA NÃO ESGOTARAM
+                    if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) {
+                        validCoupons.push(c);
+                    }
+                });
+
+                if (validCoupons.length === 0) {
+                    container.innerHTML = '<div style="font-size:0.85rem; color:#999; padding: 15px; border: 1px dashed #ddd; border-radius: 8px; text-align: center;">Nenhum cupom disponível no momento.</div>';
+                    return;
+                }
+
+                container.innerHTML = validCoupons.map(c => {
+                    let descText = c.type === 'percentage' ? `${c.value}% OFF` : `R$ ${c.value.toFixed(2)} OFF`;
+                    let minText = c.minOrder > 0 ? `Acima de R$ ${c.minOrder.toFixed(2)}` : 'Sem valor mínimo';
+                    
+                    return `
+                    <div class="avail-coupon-card">
+                        <div class="avail-coupon-info">
+                            <strong>${c.code}</strong>
+                            <span>${descText} - ${minText}</span>
+                        </div>
+                        <button class="btn-apply-avail" onclick="window.useCouponFromList('${c.code}')">Usar</button>
+                    </div>`;
+                }).join('');
+
+            } catch (e) {
+                container.innerHTML = '<div style="font-size:0.85rem; color:#ea1d2c; text-align:center;">Erro ao carregar cupons.</div>';
+            }
+        };
+
+        // Função que preenche o input e clica em aplicar
+        window.useCouponFromList = (code) => {
+            document.getElementById('coupon-code').value = code;
+            window.applyCoupon();
+            
+            // Esconde a lista depois de clicar
+            document.getElementById('available-coupons-list').style.display = 'none';
+            document.getElementById('show-coupons-toggle').innerText = '🎟️ Ver cupons disponíveis desta loja';
+        };
+
         window.applyCoupon = async () => {
             const codeInput = document.getElementById('coupon-code').value.trim().toUpperCase();
             const msg = document.getElementById('coupon-message');
@@ -256,7 +329,6 @@
 
             try {
                 const storeId = cart[0].storeId;
-                
                 const q = query(collection(db, "coupons"), where("storeId", "==", storeId), where("code", "==", codeInput), where("active", "==", true));
                 const snap = await getDocs(q);
 
@@ -267,6 +339,13 @@
                 }
 
                 const coupon = snap.docs[0].data();
+                coupon.id = snap.docs[0].id; 
+
+                if (coupon.usageLimit && (coupon.usedCount || 0) >= coupon.usageLimit) {
+                    msg.style.color = '#ea1d2c'; msg.innerText = 'Este cupom já atingiu o limite de usos (Esgotado).';
+                    window.removeCoupon(false);
+                    return;
+                }
 
                 if (coupon.minOrder && subtotalStore < parseFloat(coupon.minOrder)) {
                     msg.style.color = '#ea1d2c'; msg.innerText = `Para usar este cupom, o pedido mínimo é de R$ ${parseFloat(coupon.minOrder).toFixed(2)}`;
@@ -276,8 +355,11 @@
 
                 appliedCoupon = coupon;
                 msg.style.color = '#00a14b'; 
-                msg.innerHTML = `Cupom aplicado! <button class="btn-remove-coupon" onclick="window.removeCoupon(true)">Remover</button>`;
+                msg.innerHTML = `Cupom aplicado com sucesso! <button class="btn-remove-coupon" onclick="window.removeCoupon(true)">Remover</button>`;
+                
                 document.getElementById('coupon-input-group').style.display = 'none'; 
+                document.getElementById('show-coupons-toggle').style.display = 'none'; // Esconde botão de mostrar lista
+                document.getElementById('available-coupons-list').style.display = 'none'; // Esconde a lista se tiver aberta
                 
                 window.updateTotalsUI();
 
@@ -292,6 +374,7 @@
             discountAmount = 0;
             if (resetUI) {
                 document.getElementById('coupon-input-group').style.display = 'flex';
+                document.getElementById('show-coupons-toggle').style.display = 'inline-block';
                 document.getElementById('coupon-code').value = '';
                 document.getElementById('coupon-message').style.display = 'none';
             }
@@ -309,7 +392,6 @@
                 feeTextElement.style.color = '#00a14b'; feeTextElement.style.fontWeight = 'bold';
             }
 
-            // CALCULA O DESCONTO
             if (appliedCoupon) {
                 if (appliedCoupon.type === 'fixed') {
                     discountAmount = parseFloat(appliedCoupon.value);
@@ -483,6 +565,14 @@
 
             try {
                 await addDoc(collection(db, "orders"), newOrder);
+                
+                if (appliedCoupon && appliedCoupon.id) {
+                    const couponRef = doc(db, "coupons", appliedCoupon.id);
+                    await updateDoc(couponRef, {
+                        usedCount: increment(1) 
+                    });
+                }
+
                 localStorage.removeItem('cart');
                 alert("Pedido realizado com sucesso! A loja já foi notificada.");
                 window.location.href = "pedidos.html";
