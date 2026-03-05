@@ -4,188 +4,291 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - Dores Delivery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f4f5f7; display: flex; height: 100vh; }
-        
-        .sidebar { width: 250px; background: #111; color: #fff; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; font-weight: bold; font-size: 1.2rem; color: #ea1d2c; }
-        .nav-menu { list-style: none; flex: 1; margin-top: 10px; }
-        .nav-item { padding: 15px 20px; cursor: pointer; color: #aaa; transition: 0.2s; }
-        .nav-item:hover, .nav-item.active { background: #222; color: #fff; border-left: 4px solid #ea1d2c; }
-        
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .section { display: none; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .section.active { display: block; }
-        h2 { margin-bottom: 20px; color: #111; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; }
-        
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.9rem; margin-bottom: 5px; color: #555; font-weight: 500; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
-        input[type="range"] { padding: 0; border: none; cursor: pointer; }
-        
-        .btn { background: #ea1d2c; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn:hover { background: #c81824; }
-        .btn-secondary { background: #ccc; color: #333; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; display: none; margin-left: 10px; }
-        
-        .item-list { margin-top: 20px; display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .card-item { border: 1px solid #eee; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; background: #fff; }
-        .card-item.suspended { background: #fff0f0; border-color: #fbd5d5; } 
-        .card-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: #eee; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;}
-        
-        .actions-col { display: flex; gap: 15px; margin-left: auto; align-items: center; }
-        .btn-edit { color: #0d6efd; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .btn-suspend { color: #ea1d2c; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .btn-reactivate { color: #00a14b; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .btn-del { color: #999; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: 0.2s;}
-        .btn-del:hover { color: #ea1d2c; }
+        body { background-color: #f4f5f7; display: flex; height: 100vh; color: #333; overflow: hidden; }
 
-        .badge-status { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-top: 4px;}
-        .badge-active { background: #e6f4ea; color: #00a14b; }
-        .badge-suspended { background: #fef0f0; color: #ea1d2c; }
+        /* HEADER MOBILE */
+        .mobile-header { display: none; }
+
+        /* SIDEBAR ADMIN */
+        .sidebar { width: 260px; background: #111; color: #fff; display: flex; flex-direction: column; z-index: 100; flex-shrink: 0; height: 100vh; }
+        .admin-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid #222; }
+        .admin-logo { width: 60px; height: auto; margin-bottom: 10px; }
+        .admin-title { font-size: 1.2rem; font-weight: 900; color: #ea1d2c; letter-spacing: -0.5px; }
+        .admin-sub { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .nav-menu { list-style: none; flex: 1; margin-top: 15px; overflow-y: auto; }
+        .nav-item { padding: 18px 25px; cursor: pointer; color: #aaa; transition: 0.2s; font-weight: 500; display: flex; align-items: center; gap: 10px; border-left: 4px solid transparent; }
+        .nav-item:hover, .nav-item.active { background: #222; color: #fff; border-left: 4px solid #ea1d2c; }
+        .btn-logout { margin: 20px; padding: 12px; background: #222; color: #ea1d2c; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-logout:hover { background: #ea1d2c; color: #fff; }
+
+        /* CONTEÚDO PRINCIPAL */
+        .main-content { flex: 1; height: 100vh; overflow-y: auto; padding: 30px; background: #f4f5f7; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        h2 { font-size: 1.8rem; color: #111; margin-bottom: 5px; font-weight: 900; }
+        .section-desc { font-size: 0.95rem; color: #777; margin-bottom: 30px; }
+
+        /* CARDS DE MÉTRICAS */
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .metric-card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; position: relative; overflow: hidden; }
+        .metric-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: #ea1d2c; }
+        .metric-card.purple::before { background: #8e44ad; }
+        .metric-card.blue::before { background: #0d6efd; }
+        .metric-card.green::before { background: #00a14b; }
+        
+        .m-title { font-size: 0.8rem; color: #777; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between;}
+        .m-value { font-size: 2.2rem; font-weight: 900; color: #111; }
+        .m-value.green { color: #00a14b; }
+        .m-value.purple { color: #8e44ad; }
+
+        /* LISTA DE LOJAS GERAL */
+        .store-table { width: 100%; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; overflow: hidden; border-collapse: collapse; }
+        .store-table th, .store-table td { padding: 15px 20px; text-align: left; border-bottom: 1px solid #eee; }
+        .store-table th { background: #fafafa; font-size: 0.85rem; color: #777; text-transform: uppercase; }
+        .store-table td { font-size: 0.95rem; color: #333; font-weight: 500; }
+        .store-info-cell { display: flex; align-items: center; gap: 15px; }
+        .store-info-cell img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd; }
+        
+        .badge-status { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .b-active { background: #e6f4ea; color: #00a14b; }
+        .b-inactive { background: #fef0f0; color: #ea1d2c; }
+
+        .btn-toggle-store { padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-suspend { background: #fff0f0; color: #ea1d2c; border: 1px solid #fbd5d5; }
+        .btn-suspend:hover { background: #ea1d2c; color: #fff; }
+        .btn-activate { background: #e6f4ea; color: #00a14b; border: 1px solid #badbcc; }
+        .btn-activate:hover { background: #00a14b; color: #fff; }
+
+        /* 🟢 RANKING (FATURAMENTO) 🟢 */
+        .ranking-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+        .ranking-item { background: #fff; padding: 15px 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; transition: 0.2s; }
+        .ranking-item:hover { transform: scale(1.01); border-color: #ddd; }
+        .r-medal { font-size: 1.8rem; width: 40px; text-align: center; font-weight: 900; color: #999; }
+        .r-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #f4f5f7; margin-right: 15px; }
+        .r-info { flex: 1; }
+        .r-name { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 2px; }
+        .r-orders { font-size: 0.8rem; color: #777; font-weight: 500; }
+        .r-revenue { text-align: right; }
+        .r-revenue-val { font-size: 1.2rem; font-weight: 900; color: #00a14b; }
+        .r-revenue-tax { font-size: 0.75rem; color: #8e44ad; font-weight: bold; margin-top: 2px; }
+
+        /* MARKETING */
+        .marketing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .form-box { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; margin-bottom: 20px; }
+        .form-box h3 { font-size: 1.2rem; color: #111; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 5px; font-weight: bold; }
+        .form-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; }
+        .form-input:focus { border-color: #ea1d2c; outline: none; }
+        .img-upload-area { width: 100%; height: 120px; border: 2px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; background: #fafafa; cursor: pointer; overflow: hidden; margin-bottom: 15px; }
+        .img-upload-area img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; z-index: 1; }
+        .img-upload-area span { position: relative; z-index: 2; color: #777; font-weight: bold; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 6px; }
+        .img-upload-area input { position: absolute; top:0; left:0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 3; }
+        .btn-primary { background: #111; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.98); }
+        .item-list-container { display: flex; flex-direction: column; gap: 10px; }
+        .mkt-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #fafafa; border: 1px solid #eee; border-radius: 8px; }
+        .mkt-item img { width: 80px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }
+        .btn-del-mkt { background: #fff0f0; color: #ea1d2c; border: 1px solid #fbd5d5; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+
+        /* RESPONSIVIDADE MOBILE */
+        @media screen and (max-width: 850px) {
+            body { flex-direction: column; }
+            .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; flex-direction: row; border-top: 1px solid #222; z-index: 9999; padding-bottom: env(safe-area-inset-bottom); }
+            .admin-header, .btn-logout { display: none !important; }
+            .nav-menu { display: flex; width: 100%; margin: 0; padding: 0; flex-direction: row; justify-content: space-around; }
+            .nav-item { flex: 1; flex-direction: column; padding: 10px 2px; font-size: 0.65rem; justify-content: center; gap: 4px; border: none !important; text-align: center; }
+            .nav-item.active { background: #222; border-top: 3px solid #ea1d2c !important; }
+
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; background: #111; color: #fff; padding: 15px; position: sticky; top: 0; z-index: 9000; }
+            .main-content { padding: 15px; height: calc(100vh - 60px - 60px); }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .marketing-grid { grid-template-columns: 1fr; }
+            
+            .store-table thead { display: none; }
+            .store-table tbody tr { display: flex; flex-direction: column; background: #fff; margin-bottom: 15px; border-radius: 8px; border: 1px solid #eee; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+            .store-table td { padding: 5px 0; border: none; display: flex; justify-content: space-between; align-items: center;}
+            .store-table td::before { content: attr(data-label); font-weight: bold; color: #777; font-size: 0.8rem; text-transform: uppercase; }
+            .store-info-cell { justify-content: flex-end; }
+
+            .ranking-item { flex-wrap: wrap; }
+            .r-revenue { text-align: left; width: 100%; margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;}
+        }
     </style>
 </head>
 <body>
 
+    <script>
+        const pass = prompt("Digite a senha do Administrador:");
+        if(pass !== "doresadm") {
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <div class="mobile-header">
+        <h1 style="font-size: 1.2rem; font-weight: 900; color: #ea1d2c; margin: 0;">DORES ADMIN</h1>
+        <button onclick="window.location.href='index.html'" style="background:none; border:none; font-size:1.4rem; color:#fff; cursor:pointer;">🚪</button>
+    </div>
+
     <aside class="sidebar">
-        <div class="sidebar-header">⚙️ Admin Dores</div>
+        <div class="admin-header">
+            <svg class="admin-logo" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/>
+            </svg>
+            <div class="admin-title">DORES ADMIN</div>
+            <div class="admin-sub">Controlo Geral</div>
+        </div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="window.switchTab('lojas', this)">🏪 Lojas Parceiras</li>
-            <li class="nav-item" onclick="window.switchTab('entregadores', this)">🛵 Entregadores</li>
-            <li class="nav-item" onclick="window.switchTab('banners', this)">🖼️ Banners Home</li>
-            <li class="nav-item" onclick="window.switchTab('patrocinadores', this)">🌟 Patrocinadores</li>
+            <li class="nav-item active" onclick="window.switchTab('dashboard', this)">📊 <span>Dashboard</span></li>
+            <li class="nav-item" onclick="window.switchTab('faturamento', this)">💰 <span>Faturamento</span></li>
+            <li class="nav-item" onclick="window.switchTab('lojas', this)">🏪 <span>Lojas</span></li>
+            <li class="nav-item" onclick="window.switchTab('marketing', this)">🚀 <span>Marketing</span></li>
         </ul>
+        <div class="btn-logout" onclick="window.location.href='index.html'">Sair do Painel</div>
     </aside>
 
     <main class="main-content">
-        <section id="lojas" class="section active">
-            <h2 id="form-store-title">Cadastrar Nova Loja</h2>
-            
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 2;">
-                    <label>Nome da Loja</label>
-                    <input type="text" id="s-name" placeholder="Ex: Hakuna Batata">
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>CNPJ ou CPF do Responsável</label>
-                    <input type="text" id="s-doc" placeholder="000.000.000-00">
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>CEP</label>
-                    <input type="text" id="s-cep" placeholder="00000-000">
-                </div>
-                <div class="form-group" style="flex: 3;">
-                    <label>Endereço Completo (Rua, Número e Bairro)</label>
-                    <input type="text" id="s-street" placeholder="Rua Exemplo, 123 - Centro">
-                </div>
-            </div>
+        
+        <section id="dashboard" class="section active">
+            <h2>Visão Geral</h2>
+            <p class="section-desc">Métricas em tempo real de toda a plataforma.</p>
 
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 2;">
-                    <label>Cidade</label>
-                    <input type="text" id="s-city" placeholder="Ex: Doresópolis">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="m-title">Lojas Cadastradas</div>
+                    <div class="m-value" id="adm-total-stores">0</div>
                 </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Estado</label>
-                    <input type="text" id="s-state" placeholder="Ex: MG" maxlength="2">
+                <div class="metric-card green">
+                    <div class="m-title">Lojas Ativas Agora</div>
+                    <div class="m-value green" id="adm-active-stores">0</div>
                 </div>
-            </div>
-
-            <div style="display: flex; gap: 15px; border-top: 1px dashed #eee; padding-top: 15px; margin-top: 5px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>E-mail (Login do Lojista)</label>
-                    <input type="email" id="s-email" placeholder="loja@email.com">
+                <div class="metric-card blue">
+                    <div class="m-title">Pedidos Totais Realizados</div>
+                    <div class="m-value" style="color: #0d6efd;" id="adm-total-orders">0</div>
                 </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Senha de Acesso</label>
-                    <input type="text" id="s-pass" placeholder="Defina a senha (ex: loja123)"> 
+                <div class="metric-card purple">
+                    <div class="m-title">Faturamento Global</div>
+                    <div class="m-value purple" id="adm-total-revenue">R$ 0,00</div>
                 </div>
             </div>
-
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Categoria principal</label>
-                    <select id="s-cat">
-                        <option>Restaurantes</option><option>Lanches</option><option>Bares</option>
-                        <option>Sorveterias</option><option>Mercados</option><option>Farmácias</option>
-                        <option>Loja de Roupas</option><option>Açougue</option><option>Utilidades</option>
-                    </select>
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Logo da Loja (Opcional na edição)</label>
-                    <input type="file" id="s-logo" accept="image/*">
-                </div>
-            </div>
-            
-            <button class="btn" id="btn-save-store" onclick="window.saveStore()">Registrar Loja</button>
-            <button class="btn-secondary" id="btn-cancel-edit" onclick="window.cancelEdit()">Cancelar Edição</button>
-            
-            <h3 style="margin-top: 40px; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Lojas Cadastradas</h3>
-            <div class="item-list" id="store-list-container"></div>
         </section>
 
-        <section id="entregadores" class="section">
-            <h2 id="form-driver-title">Cadastrar Entregador</h2>
-            <div class="form-group"><label>Nome Completo</label><input type="text" id="d-name" placeholder="Ex: Carlos Silva"></div>
-            <div class="form-group"><label>WhatsApp / Telefone</label><input type="tel" id="d-phone" placeholder="Ex: (37) 99999-9999"></div>
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;"><label>E-mail (Login)</label><input type="email" id="d-email" placeholder="entregador@email.com"></div>
-                <div class="form-group" style="flex: 1;"><label>Senha</label><input type="text" id="d-pass" placeholder="Senha do app"></div>
-            </div>
-            <button class="btn" id="btn-save-driver" onclick="window.saveDriver()">Registrar Entregador</button>
-            <button class="btn-secondary" id="btn-cancel-driver-edit" onclick="window.cancelEditDriver()">Cancelar Edição</button>
-            <h3 style="margin-top: 40px; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Entregadores Cadastrados</h3>
-            <div class="item-list" id="driver-list-container"></div>
-        </section>
-
-        <section id="banners" class="section">
-            <h2>Gerenciar Banners do Aplicativo</h2>
-            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Estes banners aparecem girando na tela inicial dos clientes. Recomendado imagens compridas (ex: 800x300).</p>
-            <div class="form-group"><label>Imagem do Banner</label><input type="file" id="b-image" accept="image/*"></div>
-            <button class="btn" onclick="window.saveBanner()">Adicionar ao Carrossel</button>
-            <h3 style="margin-top: 30px; font-size: 1rem;">Banners Ativos</h3>
-            <div class="item-list" id="banner-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
-        </section>
-
-        <section id="patrocinadores" class="section">
-            <h2>Patrocinadores da Abertura (Splash Screen)</h2>
-            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Se adicionar mais de uma imagem, o aplicativo irá mostrá-las em sequência na tela inicial.</p>
-            
-            <div class="form-group">
-                <label>Imagem do Patrocinador (Formato vertical celular)</label>
-                <input type="file" id="sp-image" accept="image/*">
-            </div>
-
-            <div class="form-group" style="background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #eee;">
-                <label style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    Tempo de Exibição na Tela: <span id="dur-val" style="color:#ea1d2c; font-weight:bold; font-size:1.1rem;">2 Segundos</span>
-                </label>
-                <input type="range" id="sp-duration" min="1" max="10" value="2" step="1" style="width:100%; accent-color:#ea1d2c;" oninput="document.getElementById('dur-val').innerText = this.value + ' Segundos'">
-            </div>
-
-            <div class="form-group">
-                <label>Efeito de Transição (Como a imagem entra na tela)</label>
-                <select id="sp-transition" style="font-weight:bold; color:#111;">
-                    <option value="fade">Esmaecer (Surge Suavemente)</option>
-                    <option value="zoom">Aproximar (Efeito Zoom In)</option>
-                    <option value="slide">Deslizar de Baixo (Sobe pela tela)</option>
+        <section id="faturamento" class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0; padding: 0;">Desempenho & Faturamento</h2>
+                <select id="filter-faturamento" onchange="window.renderFaturamento()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #111;">
+                    <option value="hoje" selected>Hoje</option>
+                    <option value="7dias">Últimos 7 Dias</option>
+                    <option value="mes">Último Mês</option>
+                    <option value="todos">Todo o Histórico</option>
                 </select>
             </div>
+            
+            <p class="section-desc">Acompanhe as vendas das lojas e identifique os seus maiores parceiros (Power Sellers).</p>
 
-            <button class="btn" id="btn-save-sponsor" onclick="window.saveSponsor()" style="width:100%; padding:15px; font-size:1.1rem;">Gravar Patrocinador</button>
+            <div class="metrics-grid">
+                <div class="metric-card green">
+                    <div class="m-title">Vendas Totais do App</div>
+                    <div class="m-value green" id="fat-total-vendas">R$ 0,00</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="m-title"><span>Estimativa Taxa App (2%)</span><span title="Cálculo base para comissionamento">ℹ️</span></div>
+                    <div class="m-value purple" id="fat-taxa-app">R$ 0,00</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="m-title">Pedidos Concluídos</div>
+                    <div class="m-value" style="color: #0d6efd;" id="fat-pedidos">0</div>
+                </div>
+            </div>
 
-            <h3 style="margin-top: 30px; font-size: 1rem;">Patrocinadores Ativos na Abertura</h3>
-            <div class="item-list" id="sponsor-list-container" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));"></div>
+            <h3 style="font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 15px; margin-top: 20px;">🏆 Ranking de Lojas (Power Sellers)</h3>
+            <ul class="ranking-list" id="ranking-list-render">
+                </ul>
         </section>
+
+        <section id="lojas" class="section">
+            <h2>Gestão de Lojas</h2>
+            <p class="section-desc">Aprove, bloqueie ou visualize as lojas cadastradas na plataforma.</p>
+
+            <table class="store-table">
+                <thead>
+                    <tr>
+                        <th>Loja</th>
+                        <th>Status Atual</th>
+                        <th>Pedidos Realizados</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-stores-list">
+                    </tbody>
+            </table>
+        </section>
+
+        <section id="marketing" class="section">
+            <h2>Marketing & Publicidade</h2>
+            <p class="section-desc">Faça a gestão dos banners da tela inicial e do Splash Screen (Tela de entrada).</p>
+
+            <div class="marketing-grid">
+                <div>
+                    <div class="form-box">
+                        <h3>🖼️ Novo Banner (Tela Inicial)</h3>
+                        <div class="img-upload-area">
+                            <img src="" id="banner-preview" style="display:none;">
+                            <span>Clica para escolher a imagem</span>
+                            <input type="file" id="banner-file" accept="image/*">
+                        </div>
+                        <button class="btn-primary" onclick="window.saveBanner()">Publicar Banner</button>
+                    </div>
+
+                    <h4 style="margin-bottom: 10px; color: #555;">Banners Ativos</h4>
+                    <div class="item-list-container" id="banner-list-render"></div>
+                </div>
+
+                <div>
+                    <div class="form-box">
+                        <h3>📱 Novo Patrocinador (Tela de Entrada)</h3>
+                        <div class="img-upload-area">
+                            <img src="" id="sponsor-preview" style="display:none;">
+                            <span>Clica para escolher a imagem</span>
+                            <input type="file" id="sponsor-file" accept="image/*">
+                        </div>
+                        
+                        <div style="display:flex; gap:10px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Duração (Segundos)</label>
+                                <input type="number" id="sponsor-dur" class="form-input" value="3" min="1">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Efeito Visual</label>
+                                <select id="sponsor-eff" class="form-input">
+                                    <option value="fade">Esmaecer (Fade)</option>
+                                    <option value="zoom">Aproximar (Zoom)</option>
+                                    <option value="slide">Deslizar (Slide)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" onclick="window.saveSponsor()">Publicar Patrocinador</button>
+                    </div>
+
+                    <h4 style="margin-bottom: 10px; color: #555;">Patrocinadores Ativos</h4>
+                    <div class="item-list-container" id="sponsor-list-render"></div>
+                </div>
+
+            </div>
+        </section>
+
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -199,10 +302,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allStores = []; let allDrivers = []; let globalBanners = []; let globalSponsors = [];
-        let storeImgBase64 = ''; let bannerImgBase64 = ''; let sponsorImgBase64 = '';
-        let editingStoreId = null; let editingDriverId = null;
+        // VARIÁVEIS GLOBAIS
+        let adminStores = [];
+        let adminOrders = [];
+        let bannerBase64 = '';
+        let sponsorBase64 = '';
 
+        // TABS
         window.switchTab = (tabId, el) => {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -210,232 +316,247 @@
             el.classList.add('active');
         };
 
-        function resizeAndCompressImage(file, callback) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width; let height = img.height;
-                    const MAX_WIDTH = 800; 
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    canvas.width = width; canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/jpeg', 0.7));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+        // COMPRESSÃO DE IMAGENS
+        function handleImageUpload(inputId, previewId, callback) {
+            document.getElementById(inputId).addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 800; 
+                            let width = img.width; let height = img.height;
+
+                            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                            canvas.width = width; canvas.height = height;
+                            
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                            document.getElementById(previewId).src = compressedBase64;
+                            document.getElementById(previewId).style.display = 'block';
+                            callback(compressedBase64);
+                        }
+                        img.src = evt.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
         }
 
-        // ==========================================
-        // MÓDULO DE PATROCINADORES
-        // ==========================================
-        document.getElementById('sp-image').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) { resizeAndCompressImage(file, (compressedBase64) => { sponsorImgBase64 = compressedBase64; }); }
+        handleImageUpload('banner-file', 'banner-preview', (b64) => { bannerBase64 = b64; });
+        handleImageUpload('sponsor-file', 'sponsor-preview', (b64) => { sponsorBase64 = b64; });
+
+        // CARREGAR DADOS GERAIS DO FIREBASE
+        onSnapshot(collection(db, "stores"), (snapshot) => {
+            adminStores = [];
+            snapshot.forEach(doc => adminStores.push({ id: doc.id, ...doc.data() }));
+            renderDashboard();
+            renderStoreList();
+            renderFaturamento(); // Atualiza Ranking se a logo da loja mudar
         });
 
-        onSnapshot(collection(db, "sponsors"), (snapshot) => {
-            globalSponsors = [];
-            snapshot.forEach(doc => globalSponsors.push({ id: doc.id, ...doc.data() }));
-            globalSponsors.sort((a,b) => a.timestamp - b.timestamp);
-            renderSponsors();
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            adminOrders = [];
+            snapshot.forEach(doc => adminOrders.push({ id: doc.id, ...doc.data() }));
+            renderDashboard();
+            renderStoreList(); 
+            renderFaturamento(); // Atualiza Faturamento e Ranking em tempo real
         });
 
-        window.saveSponsor = async () => {
-            if(!sponsorImgBase64) return alert("Selecione uma imagem!");
-            const btn = document.getElementById('btn-save-sponsor');
-            btn.innerText = "Gravando..."; btn.disabled = true;
-            try {
-                await addDoc(collection(db, "sponsors"), { 
-                    image: sponsorImgBase64,
-                    duration: parseInt(document.getElementById('sp-duration').value),
-                    transition: document.getElementById('sp-transition').value,
-                    timestamp: Date.now()
-                });
-                sponsorImgBase64 = ''; document.getElementById('sp-image').value = '';
-                alert("Patrocinador gravado com sucesso! Ele permanecerá ativo até ser removido.");
-            } catch(e) {
-                alert("Erro ao salvar. Verifique sua conexão.");
-            } finally {
-                btn.innerText = "Gravar Patrocinador"; btn.disabled = false;
+        function renderDashboard() {
+            document.getElementById('adm-total-stores').innerText = adminStores.length;
+            document.getElementById('adm-active-stores').innerText = adminStores.filter(s => s.isActive !== false && s.status === 'Aberto').length;
+            
+            document.getElementById('adm-total-orders').innerText = adminOrders.length;
+            
+            let totalRev = 0;
+            adminOrders.forEach(o => { if(o.status !== 'Cancelado') totalRev += (o.total || 0); });
+            document.getElementById('adm-total-revenue').innerText = `R$ ${totalRev.toFixed(2)}`;
+        }
+
+        // 🟢 CÁLCULO DE FATURAMENTO E RANKING 🟢
+        window.renderFaturamento = () => {
+            if (!adminOrders || !adminStores) return;
+
+            const filterValue = document.getElementById('filter-faturamento').value;
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+
+            let totalVendasApp = 0;
+            let totalPedidosApp = 0;
+            const storeStatsMap = {};
+
+            adminOrders.forEach(order => {
+                // Não contabiliza pedidos cancelados no faturamento/ranking
+                if (order.status === 'Cancelado') return;
+
+                let showOrder = true;
+                if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
+                else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
+                else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
+                
+                if (!showOrder) return;
+
+                const vTotal = order.total || 0;
+                totalVendasApp += vTotal;
+                totalPedidosApp++;
+
+                // Agrupa por Loja
+                const sId = order.storeId;
+                if (!storeStatsMap[sId]) {
+                    storeStatsMap[sId] = { 
+                        id: sId, 
+                        name: order.storeName || 'Loja Desconhecida', 
+                        revenue: 0, 
+                        ordersCount: 0 
+                    };
+                }
+                storeStatsMap[sId].revenue += vTotal;
+                storeStatsMap[sId].ordersCount++;
+            });
+
+            // Atualiza os Cards de Cima
+            document.getElementById('fat-total-vendas').innerText = `R$ ${totalVendasApp.toFixed(2)}`;
+            document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.02).toFixed(2)}`;
+            document.getElementById('fat-pedidos').innerText = totalPedidosApp;
+
+            // Ordena o Ranking (Maior Faturamento primeiro)
+            const rankingArray = Object.values(storeStatsMap).sort((a, b) => b.revenue - a.revenue);
+            const listRender = document.getElementById('ranking-list-render');
+            listRender.innerHTML = '';
+
+            if (rankingArray.length === 0) {
+                listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 20px; background:#fff; border-radius:12px; text-align:center;">Nenhuma venda contabilizada neste período.</li>';
+                return;
+            }
+
+            const medals = ['🥇', '🥈', '🥉'];
+            
+            rankingArray.forEach((storeObj, index) => {
+                let medalDisplay = index < 3 ? medals[index] : `<span style="font-size:1.2rem;">${index + 1}º</span>`;
+                
+                // Busca a foto atual da loja
+                const lojaData = adminStores.find(s => s.id === storeObj.id);
+                const logoImg = lojaData && lojaData.logo ? lojaData.logo : 'https://via.placeholder.com/50';
+
+                // Cálculo da Taxa de 2% sobre aquela loja específica
+                const tax2percent = storeObj.revenue * 0.02;
+
+                listRender.innerHTML += `
+                    <li class="ranking-item">
+                        <div class="r-medal">${medalDisplay}</div>
+                        <img src="${logoImg}" class="r-logo">
+                        <div class="r-info">
+                            <div class="r-name">${storeObj.name}</div>
+                            <div class="r-orders">${storeObj.ordersCount} pedidos concluídos</div>
+                        </div>
+                        <div class="r-revenue">
+                            <div class="r-revenue-val">R$ ${storeObj.revenue.toFixed(2)}</div>
+                            <div class="r-revenue-tax">Taxa App: R$ ${tax2percent.toFixed(2)}</div>
+                        </div>
+                    </li>
+                `;
+            });
+        };
+
+        // LISTA DE LOJAS
+        window.renderStoreList = () => {
+            const tbody = document.getElementById('admin-stores-list');
+            tbody.innerHTML = '';
+
+            if (adminStores.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhuma loja cadastrada.</td></tr>';
+                return;
+            }
+
+            adminStores.forEach(store => {
+                const storeOrderCount = adminOrders.filter(o => o.storeId === store.id).length;
+                const isSuspended = store.isActive === false;
+                const statusBadge = isSuspended 
+                    ? `<span class="badge-status b-inactive">Bloqueada</span>` 
+                    : `<span class="badge-status b-active">Ativa</span>`;
+                
+                const actionBtn = isSuspended
+                    ? `<button class="btn-toggle-store btn-activate" onclick="window.toggleStoreActivity('${store.id}', true)">Aprovar / Ativar</button>`
+                    : `<button class="btn-toggle-store btn-suspend" onclick="window.toggleStoreActivity('${store.id}', false)">Bloquear Loja</button>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td data-label="Loja">
+                            <div class="store-info-cell">
+                                <img src="${store.logo || 'https://via.placeholder.com/60'}" alt="Logo">
+                                <div>
+                                    <strong>${store.name}</strong><br>
+                                    <span style="font-size:0.75rem; color:#888;">${store.email || 'Sem e-mail'}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="Status">${statusBadge}</td>
+                        <td data-label="Pedidos">${storeOrderCount} pedidos</td>
+                        <td data-label="Ação">${actionBtn}</td>
+                    </tr>
+                `;
+            });
+        };
+
+        window.toggleStoreActivity = async (storeId, makeActive) => {
+            const msg = makeActive ? "Deseja reativar esta loja para que ela apareça no aplicativo?" : "Deseja BLOQUEAR esta loja? Ela sumirá do app imediatamente.";
+            if(confirm(msg)) {
+                try { await updateDoc(doc(db, "stores", storeId), { isActive: makeActive }); } catch(e) { alert("Erro ao alterar status da loja."); }
             }
         };
 
-        function renderSponsors() {
-            const container = document.getElementById('sponsor-list-container');
-            container.innerHTML = globalSponsors.map((s, index) => {
-                let effectName = 'Esmaecer';
-                if(s.transition === 'zoom') effectName = 'Aproximar (Zoom)';
-                if(s.transition === 'slide') effectName = 'Deslizar (Slide)';
-
-                return `
-                <div class="card-item" style="flex-direction:column; align-items:flex-start; width: 100%; max-width: 250px;">
-                    <div style="background:#111; color:white; padding:4px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; margin-bottom:5px;">Ordem: ${index + 1}º</div>
-                    <img src="${s.image}" style="width:100%; height:250px; object-fit:cover; border-radius:6px; border: 1px solid #ccc;">
-                    <div style="font-size:0.8rem; color:#555; margin-top:10px;">
-                        ⏳ Duração: <strong>${s.duration || 2}s</strong><br>
-                        ✨ Efeito: <strong>${effectName}</strong>
-                    </div>
-                    <button class="btn-del" onclick="window.deleteSponsor('${s.id}')" style="margin-left:0; margin-top:15px; width:100%; border: 1px solid #eee; padding:8px;">🗑️ Remover</button>
-                </div>
-            `;
-            }).join('');
-        }
-        window.deleteSponsor = async (id) => { if(confirm("Remover este patrocinador da tela de abertura?")) await deleteDoc(doc(db, "sponsors", id)); };
-
-        // ==========================================
-        // MÓDULO BANNERS 
-        // ==========================================
-        document.getElementById('b-image').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) { resizeAndCompressImage(file, (compressedBase64) => { bannerImgBase64 = compressedBase64; }); }
+        // MARKETING
+        onSnapshot(collection(db, "banners"), (snapshot) => {
+            const container = document.getElementById('banner-list-render'); container.innerHTML = '';
+            snapshot.forEach(docSnap => {
+                const b = docSnap.data();
+                container.innerHTML += `
+                    <div class="mkt-item"><div style="display:flex; align-items:center; gap:10px;"><img src="${b.image}"><span style="font-size:0.8rem; color:#555;">Banner App</span></div><button class="btn-del-mkt" onclick="window.deleteMarketing('banners', '${docSnap.id}')">Excluir</button></div>`;
+            });
         });
-        onSnapshot(collection(db, "banners"), (snapshot) => { globalBanners = []; snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() })); renderBanners(); });
-        window.saveBanner = async () => { if(!bannerImgBase64) return alert("Selecione uma imagem!"); await addDoc(collection(db, "banners"), { image: bannerImgBase64 }); bannerImgBase64 = ''; document.getElementById('b-image').value = ''; alert("Banner adicionado!"); };
-        function renderBanners() { const container = document.getElementById('banner-list-container'); container.innerHTML = globalBanners.map(b => `<div class="card-item" style="flex-direction:column; align-items:flex-start;"><img src="${b.image}" style="width:100%; height:80px; object-fit:cover; border-radius:6px;"><button class="btn-del" onclick="window.deleteBanner('${b.id}')" style="margin-left:0; margin-top:10px;">Excluir Banner</button></div>`).join(''); }
-        window.deleteBanner = async (id) => { if(confirm("Remover este banner do aplicativo?")) { await deleteDoc(doc(db, "banners", id)); } };
 
-        // ==========================================
-        // MÓDULO LOJAS (COM NOVOS CAMPOS)
-        // ==========================================
-        document.getElementById('s-logo').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); }
+        onSnapshot(collection(db, "sponsors"), (snapshot) => {
+            const container = document.getElementById('sponsor-list-render'); container.innerHTML = '';
+            snapshot.forEach(docSnap => {
+                const s = docSnap.data();
+                container.innerHTML += `
+                    <div class="mkt-item"><div style="display:flex; align-items:center; gap:10px;"><img src="${s.image}"><div style="display:flex; flex-direction:column;"><span style="font-size:0.8rem; color:#111; font-weight:bold;">${s.duration} Segundos</span><span style="font-size:0.7rem; color:#888;">Efeito: ${s.transition}</span></div></div><button class="btn-del-mkt" onclick="window.deleteMarketing('sponsors', '${docSnap.id}')">Excluir</button></div>`;
+            });
         });
-        
-        onSnapshot(collection(db, "stores"), (snapshot) => { allStores = []; snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); renderStoreList(); });
-        
-        window.saveStore = async () => { 
-            const name = document.getElementById('s-name').value.trim(); 
-            const docId = document.getElementById('s-doc').value.trim();
-            const cep = document.getElementById('s-cep').value.trim();
-            const street = document.getElementById('s-street').value.trim();
-            const city = document.getElementById('s-city').value.trim();
-            const state = document.getElementById('s-state').value.trim();
 
-            const email = document.getElementById('s-email').value.trim(); 
-            const pass = document.getElementById('s-pass').value.trim(); 
-            const cat = document.getElementById('s-cat').value; 
-
-            if(!name || !email || !pass) return alert("Preencha ao menos nome, e-mail e senha da loja."); 
-            
-            const storeData = { 
-                name, email, password: pass, cat,
-                doc: docId, cep, street, city, state 
-            };
-
-            if (editingStoreId) { 
-                const emailExists = allStores.find(s => s.email === email && s.id !== editingStoreId); 
-                if(emailExists) return alert("Já existe outra loja usando este e-mail."); 
-                
-                if (storeImgBase64) storeData.logo = storeImgBase64; 
-                await updateDoc(doc(db, "stores", editingStoreId), storeData); 
-                alert("Loja atualizada com sucesso!"); 
-            } else { 
-                const emailExists = allStores.find(s => s.email === email); 
-                if(emailExists) return alert("Já existe uma loja cadastrada com este e-mail."); 
-                
-                storeData.status = 'Aberto';
-                storeData.isActive = true;
-                storeData.logo = storeImgBase64 || 'https://via.placeholder.com/60';
-                
-                await addDoc(collection(db, "stores"), storeData); 
-                alert("Loja cadastrada com sucesso!"); 
-            } 
-            window.cancelEdit(); 
+        window.saveBanner = async () => {
+            if(!bannerBase64) return alert("Selecione uma imagem primeiro.");
+            try {
+                await addDoc(collection(db, "banners"), { image: bannerBase64, timestamp: Date.now() });
+                bannerBase64 = ''; document.getElementById('banner-preview').style.display = 'none'; document.getElementById('banner-file').value = '';
+                alert("Banner publicado no aplicativo!");
+            } catch(e) { alert("Erro ao publicar banner."); }
         };
 
-        window.editStore = (id) => { 
-            editingStoreId = id; 
-            const store = allStores.find(s => s.id === id); 
-            if(!store) return; 
-            
-            document.getElementById('s-name').value = store.name; 
-            document.getElementById('s-doc').value = store.doc || ''; 
-            document.getElementById('s-cep').value = store.cep || ''; 
-            document.getElementById('s-street').value = store.street || ''; 
-            document.getElementById('s-city').value = store.city || ''; 
-            document.getElementById('s-state').value = store.state || ''; 
-
-            document.getElementById('s-email').value = store.email; 
-            document.getElementById('s-pass').value = store.password; 
-            document.getElementById('s-cat').value = store.cat || 'Restaurantes'; 
-            document.getElementById('s-logo').value = ''; 
-            storeImgBase64 = ''; 
-            
-            document.getElementById('form-store-title').innerText = "Editar Loja"; 
-            document.getElementById('btn-save-store').innerText = "Salvar Alterações"; 
-            document.getElementById('btn-save-store').style.backgroundColor = "#0d6efd"; 
-            document.getElementById('btn-cancel-edit').style.display = "inline-block"; 
-            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
+        window.saveSponsor = async () => {
+            if(!sponsorBase64) return alert("Selecione uma imagem primeiro.");
+            const dur = parseInt(document.getElementById('sponsor-dur').value) || 3;
+            const eff = document.getElementById('sponsor-eff').value;
+            try {
+                await addDoc(collection(db, "sponsors"), { image: sponsorBase64, duration: dur, transition: eff, timestamp: Date.now() });
+                sponsorBase64 = ''; document.getElementById('sponsor-preview').style.display = 'none'; document.getElementById('sponsor-file').value = '';
+                alert("Patrocinador publicado na tela inicial!");
+            } catch(e) { alert("Erro ao publicar patrocinador."); }
         };
 
-        window.cancelEdit = () => { 
-            editingStoreId = null; 
-            document.getElementById('s-name').value = ''; 
-            document.getElementById('s-doc').value = ''; 
-            document.getElementById('s-cep').value = ''; 
-            document.getElementById('s-street').value = ''; 
-            document.getElementById('s-city').value = ''; 
-            document.getElementById('s-state').value = ''; 
-            document.getElementById('s-email').value = ''; 
-            document.getElementById('s-pass').value = ''; 
-            document.getElementById('s-logo').value = ''; 
-            storeImgBase64 = ''; 
-
-            document.getElementById('form-store-title').innerText = "Cadastrar Nova Loja"; 
-            document.getElementById('btn-save-store').innerText = "Registrar Loja"; 
-            document.getElementById('btn-save-store').style.backgroundColor = "#ea1d2c"; 
-            document.getElementById('btn-cancel-edit').style.display = "none"; 
+        window.deleteMarketing = async (collectionName, id) => {
+            if(confirm("Remover esta imagem permanentemente do aplicativo?")) {
+                try { await deleteDoc(doc(db, collectionName, id)); } catch(e) {}
+            }
         };
 
-        window.toggleSubscription = async (id) => { const store = allStores.find(s => s.id === id); if (store) { const newStatus = store.isActive === false ? true : false; await updateDoc(doc(db, "stores", id), { isActive: newStatus }); } };
-        window.deleteStore = async (id) => { if(confirm("Tem certeza que deseja apagar esta loja PERMANENTEMENTE?\n\nIsso também apagará todos os produtos dela!")) { await deleteDoc(doc(db, "stores", id)); const q = query(collection(db, "products"), where("storeId", "==", id)); const querySnapshot = await getDocs(q); querySnapshot.forEach(async (document) => { await deleteDoc(doc(db, "products", document.id)); }); } };
-
-        function renderStoreList() { 
-            const container = document.getElementById('store-list-container'); 
-            if(allStores.length === 0) { container.innerHTML = `<p style="font-size:0.85rem; color:#999;">Nenhuma loja cadastrada.</p>`; return; } 
-            container.innerHTML = allStores.map(s => { 
-                const isActive = s.isActive !== false; 
-                const cardClass = isActive ? 'card-item' : 'card-item suspended'; 
-                const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; 
-                const badgeText = isActive ? '✅ Ativa' : '❌ Bloqueada'; 
-                const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; 
-                const toggleBtnText = isActive ? '⏸️ Bloquear' : '▶️ Desbloquear'; 
-                
-                return ` 
-                <div class="${cardClass}"> 
-                    <img src="${s.logo}" class="card-img"> 
-                    <div style="flex-grow: 1;"> 
-                        <strong style="font-size: 1.1rem; color: #111;">${s.name}</strong><br> 
-                        <span style="font-size:0.8rem; color:#888;">📄 CNPJ/CPF: ${s.doc || 'Não informado'} | 📍 ${s.city || 'Cidade'} - ${s.state || ''}</span><br>
-                        <span style="font-size:0.85rem; color:#555;">✉️ ${s.email} | 🔑 ${s.password}</span><br> 
-                        <span class="${badgeClass}">${badgeText}</span> 
-                    </div> 
-                    <div class="actions-col"> 
-                        <button class="btn-edit" onclick="window.editStore('${s.id}')">✏️ Editar</button> 
-                        <button class="${toggleBtnClass}" onclick="window.toggleSubscription('${s.id}')">${toggleBtnText}</button> 
-                        <span style="color:#ddd;">|</span> 
-                        <button class="btn-del" onclick="window.deleteStore('${s.id}')">🗑️ Apagar</button> 
-                    </div> 
-                </div> 
-                `; 
-            }).join(''); 
-        }
-
-        // ==========================================
-        // MÓDULO ENTREGADORES
-        // ==========================================
-        onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
-        window.saveDriver = async () => { const name = document.getElementById('d-name').value.trim(); const phone = document.getElementById('d-phone').value.trim(); const email = document.getElementById('d-email').value.trim(); const pass = document.getElementById('d-pass').value.trim(); if(!name || !email || !pass || !phone) return alert("Preencha todos os dados."); if (editingDriverId) { const emailExists = allDrivers.find(d => d.email === email && d.id !== editingDriverId); if(emailExists) return alert("Já existe outro entregador usando este e-mail."); await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass }); alert("Entregador atualizado!"); } else { const emailExists = allDrivers.find(d => d.email === email); if(emailExists) return alert("Já existe um entregador com este e-mail."); await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, isActive: true }); alert("Entregador cadastrado!"); } window.cancelEditDriver(); };
-        window.editDriver = (id) => { editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; document.getElementById('d-name').value = driver.name; document.getElementById('d-phone').value = driver.phone; document.getElementById('d-email').value = driver.email; document.getElementById('d-pass').value = driver.password; document.getElementById('form-driver-title').innerText = "Editar Entregador"; document.getElementById('btn-save-driver').innerText = "Salvar Alterações"; document.getElementById('btn-save-driver').style.backgroundColor = "#0d6efd"; document.getElementById('btn-cancel-driver-edit').style.display = "inline-block"; document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); };
-        window.cancelEditDriver = () => { editingDriverId = null; document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; document.getElementById('d-email').value = ''; document.getElementById('d-pass').value = ''; document.getElementById('form-driver-title').innerText = "Cadastrar Entregador"; document.getElementById('btn-save-driver').innerText = "Registrar Entregador"; document.getElementById('btn-save-driver').style.backgroundColor = "#ea1d2c"; document.getElementById('btn-cancel-driver-edit').style.display = "none"; };
-        window.toggleDriverStatus = async (id) => { const driver = allDrivers.find(d => d.id === id); if (driver) { const newStatus = driver.isActive === false ? true : false; await updateDoc(doc(db, "drivers", id), { isActive: newStatus }); } };
-        window.deleteDriver = async (id) => { if(confirm("Tem certeza que deseja remover este entregador do sistema?")) { await deleteDoc(doc(db, "drivers", id)); } };
-        function renderDriverList() { const container = document.getElementById('driver-list-container'); if(allDrivers.length === 0) { container.innerHTML = `<p style="font-size:0.85rem; color:#999;">Nenhum entregador cadastrado.</p>`; return; } container.innerHTML = allDrivers.map(d => { const isActive = d.isActive !== false; const cardClass = isActive ? 'card-item' : 'card-item suspended'; const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; const badgeText = isActive ? '✅ Liberado' : '❌ Bloqueado'; const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; const toggleBtnText = isActive ? '⏸️ Bloquear' : '▶️ Desbloquear'; return ` <div class="${cardClass}"> <div class="card-img">🛵</div> <div style="flex-grow: 1;"> <strong style="font-size: 1.1rem; color: #111;">${d.name}</strong><br> <span style="font-size:0.85rem; color:#555;">📞 ${d.phone} | ✉️ ${d.email} | 🔑 ${d.password}</span><br> <span class="${badgeClass}">${badgeText}</span> </div> <div class="actions-col"> <button class="btn-edit" onclick="window.editDriver('${d.id}')">✏️ Editar</button> <button class="${toggleBtnClass}" onclick="window.toggleDriverStatus('${d.id}')">${toggleBtnText}</button> <span style="color:#ddd;">|</span> <button class="btn-del" onclick="window.deleteDriver('${d.id}')">🗑️ Apagar</button> </div> </div> `; }).join(''); }
     </script>
 </body>
 </html>
