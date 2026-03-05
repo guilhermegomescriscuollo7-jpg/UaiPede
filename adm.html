@@ -44,6 +44,30 @@
         .badge-status { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-top: 4px;}
         .badge-active { background: #e6f4ea; color: #00a14b; }
         .badge-suspended { background: #fef0f0; color: #ea1d2c; }
+
+        /* 🟢 ESTILOS EXCLUSIVOS DA NOVA ABA DE FATURAMENTO E RANKING 🟢 */
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; position: relative; overflow: hidden; }
+        .metric-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: #ea1d2c; }
+        .metric-card.purple::before { background: #8e44ad; }
+        .metric-card.blue::before { background: #0d6efd; }
+        .metric-card.green::before { background: #00a14b; }
+        .m-title { font-size: 0.8rem; color: #777; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between;}
+        .m-value { font-size: 2.2rem; font-weight: 900; color: #111; }
+        .m-value.green { color: #00a14b; }
+        .m-value.purple { color: #8e44ad; }
+
+        .ranking-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+        .ranking-item { background: #fff; padding: 15px 20px; border-radius: 12px; border: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; }
+        .ranking-item:hover { transform: scale(1.01); border-color: #ddd; }
+        .r-medal { font-size: 1.8rem; width: 40px; text-align: center; font-weight: 900; color: #999; }
+        .r-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #f4f5f7; margin-right: 15px; }
+        .r-info { flex: 1; }
+        .r-name { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 2px; }
+        .r-orders { font-size: 0.8rem; color: #777; font-weight: 500; }
+        .r-revenue { text-align: right; }
+        .r-revenue-val { font-size: 1.2rem; font-weight: 900; color: #00a14b; }
+        .r-revenue-tax { font-size: 0.75rem; color: #8e44ad; font-weight: bold; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -52,6 +76,7 @@
         <div class="sidebar-header">⚙️ Admin Dores</div>
         <ul class="nav-menu">
             <li class="nav-item active" onclick="window.switchTab('lojas', this)">🏪 Lojas Parceiras</li>
+            <li class="nav-item" onclick="window.switchTab('faturamento', this)">💰 Faturamento</li>
             <li class="nav-item" onclick="window.switchTab('entregadores', this)">🛵 Entregadores</li>
             <li class="nav-item" onclick="window.switchTab('banners', this)">🖼️ Banners Home</li>
             <li class="nav-item" onclick="window.switchTab('patrocinadores', this)">🌟 Patrocinadores</li>
@@ -128,6 +153,39 @@
             <div class="item-list" id="store-list-container"></div>
         </section>
 
+        <section id="faturamento" class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="border: none; padding: 0; margin: 0;">Desempenho & Faturamento</h2>
+                <select id="filter-faturamento" onchange="window.renderFaturamento()" style="width: auto; padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #111;">
+                    <option value="hoje" selected>Hoje</option>
+                    <option value="7dias">Últimos 7 Dias</option>
+                    <option value="mes">Último Mês</option>
+                    <option value="todos">Todo o Histórico</option>
+                </select>
+            </div>
+            
+            <p style="font-size: 0.95rem; color: #777; margin-bottom: 30px;">Acompanhe as vendas das lojas e identifique os seus maiores parceiros (Power Sellers).</p>
+
+            <div class="metrics-grid">
+                <div class="metric-card green">
+                    <div class="m-title">Vendas Totais do App</div>
+                    <div class="m-value green" id="fat-total-vendas">R$ 0,00</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="m-title"><span>Estimativa Taxa App (2%)</span></div>
+                    <div class="m-value purple" id="fat-taxa-app">R$ 0,00</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="m-title">Pedidos Concluídos</div>
+                    <div class="m-value" style="color: #0d6efd;" id="fat-pedidos">0</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 15px; margin-top: 20px;">🏆 Ranking de Lojas (Power Sellers)</h3>
+            <ul class="ranking-list" id="ranking-list-render">
+                </ul>
+        </section>
+
         <section id="entregadores" class="section">
             <h2 id="form-driver-title">Cadastrar Entregador</h2>
             <div class="form-group"><label>Nome Completo</label><input type="text" id="d-name" placeholder="Ex: Carlos Silva"></div>
@@ -202,6 +260,9 @@
         let allStores = []; let allDrivers = []; let globalBanners = []; let globalSponsors = [];
         let storeImgBase64 = ''; let bannerImgBase64 = ''; let sponsorImgBase64 = '';
         let editingStoreId = null; let editingDriverId = null;
+        
+        // 🟢 NOVA VARIÁVEL GERAL DE PEDIDOS 🟢
+        let allOrders = [];
 
         window.switchTab = (tabId, el) => {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -228,6 +289,93 @@
             };
             reader.readAsDataURL(file);
         }
+
+        // ==========================================
+        // 🟢 MÓDULO DE FATURAMENTO (NOVO) 🟢
+        // ==========================================
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            allOrders = [];
+            snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
+            window.renderFaturamento();
+        });
+
+        window.renderFaturamento = () => {
+            if (!allOrders || !allStores) return;
+
+            const filterValue = document.getElementById('filter-faturamento').value;
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+
+            let totalVendasApp = 0;
+            let totalPedidosApp = 0;
+            const storeStatsMap = {};
+
+            allOrders.forEach(order => {
+                if (order.status === 'Cancelado') return;
+
+                let showOrder = true;
+                if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
+                else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
+                else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
+                
+                if (!showOrder) return;
+
+                const vTotal = order.total || 0;
+                totalVendasApp += vTotal;
+                totalPedidosApp++;
+
+                const sId = order.storeId;
+                if (!storeStatsMap[sId]) {
+                    storeStatsMap[sId] = { 
+                        id: sId, 
+                        name: order.storeName || 'Loja Desconhecida', 
+                        revenue: 0, 
+                        ordersCount: 0 
+                    };
+                }
+                storeStatsMap[sId].revenue += vTotal;
+                storeStatsMap[sId].ordersCount++;
+            });
+
+            document.getElementById('fat-total-vendas').innerText = `R$ ${totalVendasApp.toFixed(2)}`;
+            document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.02).toFixed(2)}`;
+            document.getElementById('fat-pedidos').innerText = totalPedidosApp;
+
+            const rankingArray = Object.values(storeStatsMap).sort((a, b) => b.revenue - a.revenue);
+            const listRender = document.getElementById('ranking-list-render');
+            listRender.innerHTML = '';
+
+            if (rankingArray.length === 0) {
+                listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 20px; background:#fff; border-radius:12px; text-align:center;">Nenhuma venda contabilizada neste período.</li>';
+                return;
+            }
+
+            const medals = ['🥇', '🥈', '🥉'];
+            
+            rankingArray.forEach((storeObj, index) => {
+                let medalDisplay = index < 3 ? medals[index] : `<span style="font-size:1.2rem;">${index + 1}º</span>`;
+                const lojaData = allStores.find(s => s.id === storeObj.id);
+                const logoImg = lojaData && lojaData.logo ? lojaData.logo : 'https://via.placeholder.com/50';
+                const tax2percent = storeObj.revenue * 0.02;
+
+                listRender.innerHTML += `
+                    <li class="ranking-item">
+                        <div class="r-medal">${medalDisplay}</div>
+                        <img src="${logoImg}" class="r-logo">
+                        <div class="r-info">
+                            <div class="r-name">${storeObj.name}</div>
+                            <div class="r-orders">${storeObj.ordersCount} pedidos concluídos</div>
+                        </div>
+                        <div class="r-revenue">
+                            <div class="r-revenue-val">R$ ${storeObj.revenue.toFixed(2)}</div>
+                            <div class="r-revenue-tax">Taxa App: R$ ${tax2percent.toFixed(2)}</div>
+                        </div>
+                    </li>
+                `;
+            });
+        };
 
         // ==========================================
         // MÓDULO DE PATROCINADORES
@@ -299,14 +447,19 @@
         window.deleteBanner = async (id) => { if(confirm("Remover este banner do aplicativo?")) { await deleteDoc(doc(db, "banners", id)); } };
 
         // ==========================================
-        // MÓDULO LOJAS (COM NOVOS CAMPOS)
+        // MÓDULO LOJAS
         // ==========================================
         document.getElementById('s-logo').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); }
         });
         
-        onSnapshot(collection(db, "stores"), (snapshot) => { allStores = []; snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); renderStoreList(); });
+        onSnapshot(collection(db, "stores"), (snapshot) => { 
+            allStores = []; 
+            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
+            renderStoreList(); 
+            window.renderFaturamento(); // Atualiza logomarca no ranking se alterar
+        });
         
         window.saveStore = async () => { 
             const name = document.getElementById('s-name').value.trim(); 
