@@ -100,7 +100,7 @@
         .qty-number { font-size: 1.1rem; font-weight: 500; color: #333; }
         .btn-add-cart { background: #ea1d2c; color: #fff; border: none; border-radius: 8px; padding: 14px 20px; font-weight: 500; font-size: 1rem; flex: 1; margin-left: 15px; display: flex; justify-content: space-between; cursor: pointer; transition: background 0.2s; }
         
-        /* 🟢 CARRINHO FLUTUANTE 🟢 */
+        /* CARRINHO FLUTUANTE */
         .floating-cart {
             position: fixed; bottom: 30px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 9998; text-decoration: none; transition: 0.3s;
         }
@@ -179,8 +179,11 @@
                 // CALCULA SE ESTÁ ABERTA
                 let dynamicStatus = s.status || 'Aberto';
                 if (dynamicStatus === 'Aberto' && s.schedule) {
-                    const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+                    const now = new Date(); 
+                    const currentMins = now.getHours() * 60 + now.getMinutes(); // 🟢 CORREÇÃO: Variável do horário adicionada 🟢
+                    const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
                     const todaySch = s.schedule[daysMap[now.getDay()]];
+                    
                     if (!todaySch || !todaySch.active) { dynamicStatus = 'Fechado'; } 
                     else {
                         const [oH, oM] = (todaySch.open || '00:00').split(':').map(Number);
@@ -331,12 +334,12 @@
             
             window.calculateModalPrice(); 
             document.getElementById('product-modal').classList.add('active');
-            document.getElementById('floating-cart').style.display = 'none'; // Esconde carrinho ao abrir produto
+            document.getElementById('floating-cart').style.display = 'none'; 
         };
 
         window.closeProductModal = () => { 
             document.getElementById('product-modal').classList.remove('active');
-            window.updateCartBadge(); // Mostra carrinho se tiver itens
+            window.updateCartBadge(); 
         };
         window.changeQty = (amount) => { prodQty += amount; if (prodQty < 1) prodQty = 1; document.getElementById('p-modal-qty').innerText = prodQty; window.calculateModalPrice(); };
         window.updateObsCount = () => { const obs = document.getElementById('p-modal-obs').value; document.getElementById('obs-count').innerText = `${obs.length}/140`; };
@@ -364,7 +367,6 @@
             
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             
-            // Verifica se está adicionando itens de lojas diferentes e avisa
             if (cart.length > 0 && cart[0].storeId !== activeStore.id) {
                 if (confirm("Você já tem itens de outra loja no carrinho. Deseja limpar e adicionar este?")) {
                     cart = [];
@@ -391,7 +393,6 @@
             }
         };
 
-        // INICIALIZA
         window.addEventListener('load', loadStoreData);
 
     </script>
