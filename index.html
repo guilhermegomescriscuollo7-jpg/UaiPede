@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dores Delivery - Início</title>
+    <title>UaiPede - Início</title>
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
@@ -92,7 +92,7 @@
             <svg class="splash-swoosh" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/>
             </svg>
-            <h1 class="splash-text">Dores Delivery</h1>
+            <h1 class="splash-text">UaiPede</h1>
         </div>
     </div>
 
@@ -101,12 +101,12 @@
     <div class="brand-header">
         <div class="brand-logo-container">
             <svg class="brand-swoosh" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/></svg>
-            <h1 class="brand-text">Dores Delivery</h1>
+            <h1 class="brand-text">UaiPede</h1>
         </div>
     </div>
 
     <div id="install-banner">
-        <div><strong>Dores Delivery</strong><br><span style="color:#aaa; font-size:0.8rem;">Instale o app para pedir mais rápido!</span></div>
+        <div><strong>UaiPede</strong><br><span style="color:#aaa; font-size:0.8rem;">Instale o app para pedir mais rápido!</span></div>
         <button class="btn-install" id="btn-install-app">Instalar</button>
     </div>
 
@@ -277,7 +277,6 @@
                 let statusText = s.dynamicStatus; let statusColor = isClosed ? '#717171' : '#00a14b'; 
                 if (isSuspended) { statusText = 'Indisponível'; statusColor = '#ea1d2c'; } 
                 
-                // 🟢 REDIRECIONAMENTO PARA A NOVA PÁGINA DE LOJA 🟢
                 const onClickAction = isSuspended ? `alert('Esta loja está indisponível.');` : `window.location.href='loja.html?id=${s.id}'`;
                 
                 return `
