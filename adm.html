@@ -45,7 +45,7 @@
         .badge-active { background: #e6f4ea; color: #00a14b; }
         .badge-suspended { background: #fef0f0; color: #ea1d2c; }
 
-        /* 🟢 ESTILOS EXCLUSIVOS DA NOVA ABA DE FATURAMENTO E RANKING 🟢 */
+        /* ABA FATURAMENTO E RANKING */
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .metric-card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; position: relative; overflow: hidden; }
         .metric-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: #ea1d2c; }
@@ -84,6 +84,7 @@
     </aside>
 
     <main class="main-content">
+        
         <section id="lojas" class="section active">
             <h2 id="form-store-title">Cadastrar Nova Loja</h2>
             
@@ -156,23 +157,30 @@
         <section id="faturamento" class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h2 style="border: none; padding: 0; margin: 0;">Desempenho & Faturamento</h2>
-                <select id="filter-faturamento" onchange="window.renderFaturamento()" style="width: auto; padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #111;">
-                    <option value="hoje" selected>Hoje</option>
-                    <option value="7dias">Últimos 7 Dias</option>
-                    <option value="mes">Último Mês</option>
-                    <option value="todos">Todo o Histórico</option>
-                </select>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    
+                    <select id="filter-store-fat" onchange="window.renderFaturamento()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #ea1d2c;">
+                        <option value="all">Ver Todas as Lojas</option>
+                        </select>
+
+                    <select id="filter-faturamento" onchange="window.renderFaturamento()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #111;">
+                        <option value="hoje" selected>Hoje</option>
+                        <option value="7dias">Últimos 7 Dias</option>
+                        <option value="mes">Último Mês</option>
+                        <option value="todos">Todo o Histórico</option>
+                    </select>
+                </div>
             </div>
             
-            <p style="font-size: 0.95rem; color: #777; margin-bottom: 30px;">Acompanhe as vendas das lojas e identifique os seus maiores parceiros (Power Sellers).</p>
+            <p style="font-size: 0.95rem; color: #777; margin-bottom: 30px;">Acompanhe as vendas, identifique Power Sellers e calcule a taxa da plataforma.</p>
 
             <div class="metrics-grid">
                 <div class="metric-card green">
-                    <div class="m-title">Vendas Totais do App</div>
+                    <div class="m-title" id="fat-card-title-vendas">Vendas Totais</div>
                     <div class="m-value green" id="fat-total-vendas">R$ 0,00</div>
                 </div>
                 <div class="metric-card purple">
-                    <div class="m-title"><span>Estimativa Taxa App (2%)</span></div>
+                    <div class="m-title"><span>Sua Taxa (2%)</span></div>
                     <div class="m-value purple" id="fat-taxa-app">R$ 0,00</div>
                 </div>
                 <div class="metric-card blue">
@@ -181,7 +189,7 @@
                 </div>
             </div>
 
-            <h3 style="font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 15px; margin-top: 20px;">🏆 Ranking de Lojas (Power Sellers)</h3>
+            <h3 style="font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 15px; margin-top: 20px;">🏆 Detalhamento de Lojas</h3>
             <ul class="ranking-list" id="ranking-list-render">
                 </ul>
         </section>
@@ -260,8 +268,6 @@
         let allStores = []; let allDrivers = []; let globalBanners = []; let globalSponsors = [];
         let storeImgBase64 = ''; let bannerImgBase64 = ''; let sponsorImgBase64 = '';
         let editingStoreId = null; let editingDriverId = null;
-        
-        // 🟢 NOVA VARIÁVEL GERAL DE PEDIDOS 🟢
         let allOrders = [];
 
         window.switchTab = (tabId, el) => {
@@ -290,8 +296,28 @@
             reader.readAsDataURL(file);
         }
 
+        // 🟢 CARREGAMENTO E ALIMENTAÇÃO DO FILTRO DE LOJAS 🟢
+        onSnapshot(collection(db, "stores"), (snapshot) => { 
+            allStores = []; 
+            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
+            renderStoreList(); 
+            populateStoreFilter();
+            window.renderFaturamento(); 
+        });
+
+        function populateStoreFilter() {
+            const select = document.getElementById('filter-store-fat');
+            const currentVal = select.value;
+            let html = '<option value="all">Ver Todas as Lojas</option>';
+            allStores.forEach(s => {
+                html += `<option value="${s.id}">${s.name}</option>`;
+            });
+            select.innerHTML = html;
+            if(allStores.some(s => s.id === currentVal)) select.value = currentVal;
+        }
+
         // ==========================================
-        // 🟢 MÓDULO DE FATURAMENTO (NOVO) 🟢
+        // MÓDULO DE FATURAMENTO INTELIGENTE
         // ==========================================
         onSnapshot(collection(db, "orders"), (snapshot) => {
             allOrders = [];
@@ -302,7 +328,9 @@
         window.renderFaturamento = () => {
             if (!allOrders || !allStores) return;
 
-            const filterValue = document.getElementById('filter-faturamento').value;
+            const filterDate = document.getElementById('filter-faturamento').value;
+            const filterStore = document.getElementById('filter-store-fat').value; // PEGA A LOJA SELECIONADA
+
             const nowTime = Date.now();
             const startOfToday = new Date().setHours(0,0,0,0);
             const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
@@ -316,11 +344,14 @@
                 if (order.status === 'Cancelado') return;
 
                 let showOrder = true;
-                if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
-                else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
-                else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
+                if (filterDate === 'hoje') showOrder = order.timestamp >= startOfToday;
+                else if (filterDate === '7dias') showOrder = order.timestamp >= startOf7Days;
+                else if (filterDate === 'mes') showOrder = order.timestamp >= startOfMonth;
                 
                 if (!showOrder) return;
+
+                // SELECIONA APENAS A LOJA DO FILTRO
+                if (filterStore !== 'all' && order.storeId !== filterStore) return;
 
                 const vTotal = order.total || 0;
                 totalVendasApp += vTotal;
@@ -343,6 +374,14 @@
             document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.02).toFixed(2)}`;
             document.getElementById('fat-pedidos').innerText = totalPedidosApp;
 
+            // MUDA O TÍTULO PARA FICAR CLARO DE QUEM É AQUELE VALOR
+            if (filterStore === 'all') {
+                document.getElementById('fat-card-title-vendas').innerText = 'Vendas Totais do App';
+            } else {
+                const sName = allStores.find(s => s.id === filterStore)?.name || 'Loja';
+                document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${sName}`;
+            }
+
             const rankingArray = Object.values(storeStatsMap).sort((a, b) => b.revenue - a.revenue);
             const listRender = document.getElementById('ranking-list-render');
             listRender.innerHTML = '';
@@ -355,7 +394,10 @@
             const medals = ['🥇', '🥈', '🥉'];
             
             rankingArray.forEach((storeObj, index) => {
-                let medalDisplay = index < 3 ? medals[index] : `<span style="font-size:1.2rem;">${index + 1}º</span>`;
+                // Se filtrou por loja, não mostra medalha, mostra só um ícone
+                let medalDisplay = index < 3 && filterStore === 'all' ? medals[index] : `<span style="font-size:1.2rem;">${index + 1}º</span>`;
+                if (filterStore !== 'all') medalDisplay = '🏪'; 
+
                 const lojaData = allStores.find(s => s.id === storeObj.id);
                 const logoImg = lojaData && lojaData.logo ? lojaData.logo : 'https://via.placeholder.com/50';
                 const tax2percent = storeObj.revenue * 0.02;
@@ -370,7 +412,7 @@
                         </div>
                         <div class="r-revenue">
                             <div class="r-revenue-val">R$ ${storeObj.revenue.toFixed(2)}</div>
-                            <div class="r-revenue-tax">Taxa App: R$ ${tax2percent.toFixed(2)}</div>
+                            <div class="r-revenue-tax">Taxa (2%): R$ ${tax2percent.toFixed(2)}</div>
                         </div>
                     </li>
                 `;
@@ -452,13 +494,6 @@
         document.getElementById('s-logo').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); }
-        });
-        
-        onSnapshot(collection(db, "stores"), (snapshot) => { 
-            allStores = []; 
-            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
-            renderStoreList(); 
-            window.renderFaturamento(); // Atualiza logomarca no ranking se alterar
         });
         
         window.saveStore = async () => { 
