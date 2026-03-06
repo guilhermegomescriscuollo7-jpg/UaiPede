@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardápio - Dores Delivery</title>
+    <title>Cardápio - UaiPede</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
@@ -18,24 +18,24 @@
         .store-title { font-size: 1.4rem; color: #111; margin-bottom: 4px; font-weight: 900; letter-spacing: -0.5px;}
         .store-sub { font-size: 0.85rem; color: #717171; margin-bottom: 20px; font-weight: 500; }
         
-        /* 🟢 NOVA BARRA DE INFORMAÇÕES (DELIVERY, RETIRADA, MÍNIMO) 🟢 */
+        /* BARRA DE INFORMAÇÕES (DELIVERY, RETIRADA, MÍNIMO) */
         .store-info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #f2f2f2; padding-bottom: 15px;}
         .info-box { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .info-icon { font-size: 1.4rem; margin-bottom: 4px; color: #ea1d2c; }
+        .info-icon { margin-bottom: 6px; display: flex; align-items: center; justify-content: center;}
         .info-label { font-size: 0.7rem; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;}
         .info-value { font-size: 0.85rem; color: #111; font-weight: 800; }
 
-        /* 🟢 NOVOS BOTÕES DE AÇÃO (PAGAMENTO, TAXA, INFO) 🟢 */
+        /* BOTÕES DE AÇÃO (PAGAMENTO, TAXA, INFO) */
         .store-actions-row { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .store-actions-row::-webkit-scrollbar { display: none; }
         .action-btn { flex: 1; min-width: 110px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #333; font-size: 0.75rem; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
         .action-btn:active { background: #f2f2f2; transform: scale(0.98); }
 
-        /* 🟢 BANNER DE STATUS (ABERTO/FECHADO) 🟢 */
+        /* BANNER DE STATUS (ABERTO/FECHADO) */
         .status-banner { background: #00a14b; color: #fff; border-radius: 50px; padding: 10px 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0, 161, 75, 0.3);}
         .status-banner.closed { background: #ea1d2c; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.3);}
 
-        /* 🟢 BARRA DE PESQUISA FUNCIONAL 🟢 */
+        /* BARRA DE PESQUISA FUNCIONAL */
         .search-bar-container { position: relative; margin-bottom: 5px; }
         .search-input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #ddd; border-radius: 50px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; font-family: 'Roboto', sans-serif;}
         .search-input:focus { background: #fff; border-color: #ea1d2c; box-shadow: 0 0 0 3px rgba(234,29,44,0.1); }
@@ -90,7 +90,7 @@
         .prod-card-grid .desc { font-size: 0.75rem; color: #717171; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; }
         .prod-card-grid .price { font-weight: 700; color: #ea1d2c; font-size: 0.95rem; margin-top: auto; }
 
-        /* MODAL DO PRODUTO (ADD AO CARRINHO) */
+        /* MODAL DO PRODUTO */
         #product-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 10001; transform: translateY(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 100px; display: block; }
         #product-modal.active { transform: translateY(0); }
         .prod-img-header { position: relative; width: 100%; height: 300px; background: #f2f2f2; }
@@ -127,6 +127,20 @@
         }
         .floating-cart:active { transform: scale(0.9); }
         .cart-badge-float { position: absolute; top: -5px; right: -5px; background: #111; color: #fff; font-size: 0.75rem; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+
+        /* 🟢 BOTTOM SHEET MODAL (GAVETA DE INFORMAÇÕES) 🟢 */
+        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10005; display: none; align-items: flex-end; justify-content: center; }
+        .bottom-sheet-overlay.active { display: flex; animation: fadeInBg 0.3s forwards; }
+        .bottom-sheet-content { background: #fff; width: 100%; max-width: 600px; max-height: 85vh; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; animation: slideUp 0.3s forwards; }
+        .bottom-sheet-header { padding: 20px; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; }
+        .bottom-sheet-header h3 { font-size: 1.1rem; color: #111; display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 800; }
+        .bottom-sheet-header button { background: #f2f2f2; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .bottom-sheet-header button:active { transform: scale(0.9); }
+        .bottom-sheet-body { padding: 20px; overflow-y: auto; font-size: 0.95rem; color: #555; line-height: 1.5; padding-bottom: calc(20px + env(safe-area-inset-bottom));}
+        
+        @keyframes fadeInBg { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
     </style>
 </head>
 <body>
@@ -155,6 +169,17 @@
         </div>
     </div>
 
+    <div id="bottom-sheet" class="bottom-sheet-overlay">
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 id="bs-title">Título</h3>
+                <button onclick="document.getElementById('bottom-sheet').classList.remove('active')">✕</button>
+            </div>
+            <div class="bottom-sheet-body" id="bs-body">
+                </div>
+        </div>
+    </div>
+
     <a href="carrinho.html" class="floating-cart" id="floating-cart">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         <div class="cart-badge-float" id="floating-cart-count">0</div>
@@ -177,14 +202,13 @@
 
         let currentStoreProducts = []; let activeProduct = null; let activeStore = {};
         let prodQty = 1; let basePriceCalc = 0; let storeCoupons = [];
+        window.currentStoreModalContent = {};
 
-        // OBTÉM O ID DA LOJA PELA URL (loja.html?id=ABCD)
         const params = new URLSearchParams(window.location.search);
         const storeIdParam = params.get('id');
 
         if (!storeIdParam) { window.location.href = 'index.html'; }
 
-        // CARREGA A LOJA
         const loadStoreData = async () => {
             try {
                 const storeRef = doc(db, "stores", storeIdParam);
@@ -197,7 +221,6 @@
 
                 const s = storeSnap.data();
                 
-                // CALCULA SE ESTÁ ABERTA
                 let dynamicStatus = s.status || 'Aberto';
                 if (dynamicStatus === 'Aberto' && s.schedule) {
                     const now = new Date(); 
@@ -217,7 +240,6 @@
 
                 activeStore = { id: storeIdParam, name: s.name, logo: s.logo, status: dynamicStatus };
                 
-                // CARREGA CUPONS
                 const qCoupons = query(collection(db, "coupons"), where("storeId", "==", storeIdParam), where("active", "==", true));
                 const snapCoupons = await getDocs(qCoupons);
                 snapCoupons.forEach(docC => {
@@ -225,7 +247,6 @@
                     if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { storeCoupons.push(c); }
                 });
 
-                // CARREGA PRODUTOS
                 onSnapshot(query(collection(db, "products"), where("storeId", "==", storeIdParam)), (snapshot) => {
                     currentStoreProducts = []; snapshot.forEach(docP => currentStoreProducts.push({ id: docP.id, ...docP.data() }));
                     renderFullStore(s, dynamicStatus);
@@ -234,7 +255,6 @@
             } catch (error) { console.error("Erro ao carregar loja:", error); }
         };
 
-        // 🟢 FUNÇÃO DE BUSCA DE PRODUTOS 🟢
         window.filterProducts = (query) => {
             const q = query.toLowerCase();
             document.querySelectorAll('.store-category-group').forEach(group => {
@@ -249,9 +269,15 @@
                         card.style.display = 'none';
                     }
                 });
-                // Esconde a categoria se não houver produtos visíveis
                 group.style.display = hasVisibleProduct ? 'block' : 'none';
             });
+        };
+
+        // 🟢 FUNÇÃO PARA ABRIR A GAVETA DE INFORMAÇÕES 🟢
+        window.openBottomSheet = (title, content) => {
+            document.getElementById('bs-title').innerText = title;
+            document.getElementById('bs-body').innerHTML = content;
+            document.getElementById('bottom-sheet').classList.add('active');
         };
 
         const renderFullStore = (storeData, dynamicStatus) => {
@@ -325,14 +351,72 @@
                 </div>`;
             }
 
-            // 🟢 PREPARAÇÃO DAS INFORMAÇÕES PADRÃO (Serão substituídas pelos dados do painel do vendedor depois) 🟢
+            // PREPARAÇÃO DOS DADOS DA LOJA
             const deliveryTime = storeData.deliveryTime || '30 ~ 50 min';
             const pickupTime = storeData.pickupTime || '30 ~ 50 min';
             const minOrderText = storeData.minOrder && storeData.minOrder > 0 ? `R$ ${parseFloat(storeData.minOrder).toFixed(2)}` : 'Sem mínimo';
             
             const paymentMethods = storeData.paymentMethods || 'Dinheiro, Pix e Cartões de Crédito/Débito';
             const deliveryFeeText = storeData.deliveryFee && storeData.deliveryFee > 0 ? `R$ ${parseFloat(storeData.deliveryFee).toFixed(2)}` : 'Grátis';
-            const moreInfoText = storeData.moreInfo || 'Bem-vindo ao nosso restaurante! Preparamos tudo com muito carinho.';
+            const aboutStore = storeData.moreInfo || 'Bem-vindo ao nosso estabelecimento! Preparamos tudo com muito carinho para você.';
+
+            // 🟢 LÓGICA DE HORÁRIOS PARA O MODAL 🟢
+            const daysMapFull = [
+                { id: 'dom', name: 'Domingo' }, { id: 'seg', name: 'Segunda-feira' },
+                { id: 'ter', name: 'Terça-feira' }, { id: 'qua', name: 'Quarta-feira' },
+                { id: 'qui', name: 'Quinta-feira' }, { id: 'sex', name: 'Sexta-feira' },
+                { id: 'sab', name: 'Sábado' }
+            ];
+            
+            let scheduleHTML = '<ul style="list-style:none; padding:0; margin:0;">';
+            if(storeData.schedule) {
+                daysMapFull.forEach(day => {
+                    const s = storeData.schedule[day.id];
+                    if(s && s.active) {
+                        scheduleHTML += `<li style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;"><span>${day.name}</span> <strong style="color:#111;">${s.open} às ${s.close}</strong></li>`;
+                    } else {
+                        scheduleHTML += `<li style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee; color:#999;"><span>${day.name}</span> <strong style="color:#ea1d2c;">Fechado</strong></li>`;
+                    }
+                });
+            } else {
+                scheduleHTML += `<li style="padding:10px 0; color:#777;">Horários não configurados.</li>`;
+            }
+            scheduleHTML += '</ul>';
+
+            // 🟢 CONTEÚDOS DOS MODAIS (INJETADOS NO BOTTOM SHEET) 🟢
+            window.currentStoreModalContent = {
+                pagamento: `
+                    <div style="text-align:center; padding: 20px 0;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                        <h4 style="font-size:1.2rem; color:#111; margin-bottom:10px; font-weight:800;">Formas de Pagamento</h4>
+                        <p style="color:#333; font-size:1rem; line-height: 1.5;">${paymentMethods}</p>
+                        <p style="font-size:0.85rem; color:#888; margin-top:20px; background: #f9f9f9; padding: 10px; border-radius: 8px;">O pagamento é feito diretamente ao entregador na hora da entrega.</p>
+                    </div>`,
+                
+                taxa: `
+                    <div style="text-align:center; padding: 20px 0;">
+                        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px;"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><polyline points="9 9 9 9"></polyline><polyline points="15 9 15 9"></polyline></svg>
+                        <h4 style="font-size:1.2rem; color:#111; margin-bottom:10px; font-weight:800;">Taxa de Entrega</h4>
+                        <p style="color:#ea1d2c; font-size:2rem; font-weight:900;">${deliveryFeeText}</p>
+                        <p style="font-size:0.85rem; color:#888; margin-top:20px; background: #f9f9f9; padding: 10px; border-radius: 8px;">A taxa informada é válida para entregas dentro do perímetro urbano.</p>
+                    </div>`,
+                
+                info: `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color:#ea1d2c; font-size:0.9rem; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:6px; font-weight: 800;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> 
+                            Sobre a Loja
+                        </h4>
+                        <p style="color: #333; line-height: 1.5; font-size: 0.95rem;">${aboutStore}</p>
+                    </div>
+                    <div>
+                        <h4 style="color:#ea1d2c; font-size:0.9rem; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:6px; font-weight: 800;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            Horário de Funcionamento
+                        </h4>
+                        ${scheduleHTML}
+                    </div>`
+            };
 
             let statusBannerHTML = dynamicStatus === 'Aberto' 
                 ? `<div class="status-banner">😀 Uhul, estabelecimento aberto!</div>`
@@ -352,31 +436,40 @@
                     
                     <div class="store-info-grid">
                         <div class="info-box">
-                            <span class="info-icon">🛵</span>
+                            <span class="info-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 1 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            </span>
                             <span class="info-label">Delivery</span>
                             <span class="info-value">${deliveryTime}</span>
                         </div>
-                        <div class="info-box">
-                            <span class="info-icon">🚶</span>
+                        <div class="info-box" style="border-left: 1px solid #f2f2f2; border-right: 1px solid #f2f2f2;">
+                            <span class="info-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                            </span>
                             <span class="info-label">Retirada</span>
                             <span class="info-value">${pickupTime}</span>
                         </div>
                         <div class="info-box">
-                            <span class="info-icon">💵</span>
+                            <span class="info-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+                            </span>
                             <span class="info-label">Pedido Mín.</span>
                             <span class="info-value">${minOrderText}</span>
                         </div>
                     </div>
 
                     <div class="store-actions-row">
-                        <button class="action-btn" onclick="alert('💳 Formas de Pagamento:\\n\\n${paymentMethods}')">
-                            💲 Pagamento
+                        <button class="action-btn" onclick="window.openBottomSheet('Pagamento', window.currentStoreModalContent.pagamento)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 
+                            Pagamento
                         </button>
-                        <button class="action-btn" onclick="alert('🛵 Taxa de Entrega:\\n\\n${deliveryFeeText}')">
-                            🥞 Taxa
+                        <button class="action-btn" onclick="window.openBottomSheet('Entrega', window.currentStoreModalContent.taxa)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> 
+                            Taxa
                         </button>
-                        <button class="action-btn" onclick="alert('ℹ️ Mais Informações:\\n\\n${moreInfoText}')">
-                            ➕ Mais info
+                        <button class="action-btn" onclick="window.openBottomSheet('Informações da Loja', window.currentStoreModalContent.info)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> 
+                            Mais info
                         </button>
                     </div>
 
