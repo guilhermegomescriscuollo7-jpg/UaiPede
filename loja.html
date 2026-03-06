@@ -15,10 +15,31 @@
         .btn-back-home { background: #fff; color: #ea1d2c; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 0.9rem;}
         .store-card-overlay { background: #fff; position: relative; margin-top: -20px; border-radius: 20px 20px 0 0; padding: 45px 20px 15px; text-align: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
         .overlay-logo { width: 76px; height: 76px; border-radius: 50%; border: 3px solid #fff; position: absolute; top: -38px; left: 50%; transform: translateX(-50%); object-fit: cover; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .store-title { font-size: 1.4rem; color: #111; margin-bottom: 4px; font-weight: 700; }
-        .store-sub { font-size: 0.85rem; color: #717171; margin-bottom: 12px; font-weight: 500; }
-        .store-stats { display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.85rem; color: #717171; margin-bottom: 15px;}
-        .store-stats .dot { color: #ccc; font-size: 0.6rem; margin-top: 2px;}
+        .store-title { font-size: 1.4rem; color: #111; margin-bottom: 4px; font-weight: 900; letter-spacing: -0.5px;}
+        .store-sub { font-size: 0.85rem; color: #717171; margin-bottom: 20px; font-weight: 500; }
+        
+        /* 🟢 NOVA BARRA DE INFORMAÇÕES (DELIVERY, RETIRADA, MÍNIMO) 🟢 */
+        .store-info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #f2f2f2; padding-bottom: 15px;}
+        .info-box { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .info-icon { font-size: 1.4rem; margin-bottom: 4px; color: #ea1d2c; }
+        .info-label { font-size: 0.7rem; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;}
+        .info-value { font-size: 0.85rem; color: #111; font-weight: 800; }
+
+        /* 🟢 NOVOS BOTÕES DE AÇÃO (PAGAMENTO, TAXA, INFO) 🟢 */
+        .store-actions-row { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .store-actions-row::-webkit-scrollbar { display: none; }
+        .action-btn { flex: 1; min-width: 110px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #333; font-size: 0.75rem; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .action-btn:active { background: #f2f2f2; transform: scale(0.98); }
+
+        /* 🟢 BANNER DE STATUS (ABERTO/FECHADO) 🟢 */
+        .status-banner { background: #00a14b; color: #fff; border-radius: 50px; padding: 10px 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0, 161, 75, 0.3);}
+        .status-banner.closed { background: #ea1d2c; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.3);}
+
+        /* 🟢 BARRA DE PESQUISA FUNCIONAL 🟢 */
+        .search-bar-container { position: relative; margin-bottom: 5px; }
+        .search-input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #ddd; border-radius: 50px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; font-family: 'Roboto', sans-serif;}
+        .search-input:focus { background: #fff; border-color: #ea1d2c; box-shadow: 0 0 0 3px rgba(234,29,44,0.1); }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: #999; }
 
         /* CUPONS NA LOJA (TICKET VERMELHO) */
         .store-coupons-container { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
@@ -180,7 +201,7 @@
                 let dynamicStatus = s.status || 'Aberto';
                 if (dynamicStatus === 'Aberto' && s.schedule) {
                     const now = new Date(); 
-                    const currentMins = now.getHours() * 60 + now.getMinutes(); // 🟢 CORREÇÃO: Variável do horário adicionada 🟢
+                    const currentMins = now.getHours() * 60 + now.getMinutes(); 
                     const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
                     const todaySch = s.schedule[daysMap[now.getDay()]];
                     
@@ -211,6 +232,26 @@
                 });
 
             } catch (error) { console.error("Erro ao carregar loja:", error); }
+        };
+
+        // 🟢 FUNÇÃO DE BUSCA DE PRODUTOS 🟢
+        window.filterProducts = (query) => {
+            const q = query.toLowerCase();
+            document.querySelectorAll('.store-category-group').forEach(group => {
+                let hasVisibleProduct = false;
+                group.querySelectorAll('.prod-card-list, .prod-card-grid').forEach(card => {
+                    const name = card.querySelector('.name').innerText.toLowerCase();
+                    const desc = card.querySelector('.desc').innerText.toLowerCase();
+                    if(name.includes(q) || desc.includes(q)) {
+                        card.style.display = 'flex';
+                        hasVisibleProduct = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                // Esconde a categoria se não houver produtos visíveis
+                group.style.display = hasVisibleProduct ? 'block' : 'none';
+            });
         };
 
         const renderFullStore = (storeData, dynamicStatus) => {
@@ -284,6 +325,20 @@
                 </div>`;
             }
 
+            // 🟢 PREPARAÇÃO DAS INFORMAÇÕES PADRÃO (Serão substituídas pelos dados do painel do vendedor depois) 🟢
+            const deliveryTime = storeData.deliveryTime || '30 ~ 50 min';
+            const pickupTime = storeData.pickupTime || '30 ~ 50 min';
+            const minOrderText = storeData.minOrder && storeData.minOrder > 0 ? `R$ ${parseFloat(storeData.minOrder).toFixed(2)}` : 'Sem mínimo';
+            
+            const paymentMethods = storeData.paymentMethods || 'Dinheiro, Pix e Cartões de Crédito/Débito';
+            const deliveryFeeText = storeData.deliveryFee && storeData.deliveryFee > 0 ? `R$ ${parseFloat(storeData.deliveryFee).toFixed(2)}` : 'Grátis';
+            const moreInfoText = storeData.moreInfo || 'Bem-vindo ao nosso restaurante! Preparamos tudo com muito carinho.';
+
+            let statusBannerHTML = dynamicStatus === 'Aberto' 
+                ? `<div class="status-banner">😀 Uhul, estabelecimento aberto!</div>`
+                : `<div class="status-banner closed">😴 Poxa, estamos fechados agora.</div>`;
+
+            // INJETA TODO O DESIGN NOVO NO CORPO DA LOJA
             document.getElementById('store-page-content').innerHTML = `
                 <div class="store-cover" style="background-image: url('${coverImage}');">
                     <div class="cover-btns">
@@ -293,8 +348,45 @@
                 <div class="store-card-overlay">
                     <img src="${storeData.logo || 'https://via.placeholder.com/80'}" class="overlay-logo">
                     <h2 class="store-title">${storeData.name}</h2>
-                    <p class="store-sub">${storeData.cat || 'Geral'} • ${dynamicStatus === 'Fechado' ? 'Fechada Agora' : 'Aberta'}</p>
-                    <div class="store-stats"><span style="color:#717171;">Entrega em</span><span class="dot">•</span><span>30-40 min</span><span class="dot">•</span><span style="color:#00a14b; font-weight:500;">Grátis</span></div>
+                    <p class="store-sub">${storeData.cat || 'Geral'}</p>
+                    
+                    <div class="store-info-grid">
+                        <div class="info-box">
+                            <span class="info-icon">🛵</span>
+                            <span class="info-label">Delivery</span>
+                            <span class="info-value">${deliveryTime}</span>
+                        </div>
+                        <div class="info-box">
+                            <span class="info-icon">🚶</span>
+                            <span class="info-label">Retirada</span>
+                            <span class="info-value">${pickupTime}</span>
+                        </div>
+                        <div class="info-box">
+                            <span class="info-icon">💵</span>
+                            <span class="info-label">Pedido Mín.</span>
+                            <span class="info-value">${minOrderText}</span>
+                        </div>
+                    </div>
+
+                    <div class="store-actions-row">
+                        <button class="action-btn" onclick="alert('💳 Formas de Pagamento:\\n\\n${paymentMethods}')">
+                            💲 Pagamento
+                        </button>
+                        <button class="action-btn" onclick="alert('🛵 Taxa de Entrega:\\n\\n${deliveryFeeText}')">
+                            🥞 Taxa
+                        </button>
+                        <button class="action-btn" onclick="alert('ℹ️ Mais Informações:\\n\\n${moreInfoText}')">
+                            ➕ Mais info
+                        </button>
+                    </div>
+
+                    ${statusBannerHTML}
+
+                    <div class="search-bar-container">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Buscar por produto ou ingrediente" oninput="window.filterProducts(this.value)">
+                    </div>
+
                 </div>
                 ${couponsHTML}
                 ${productsHTML}
