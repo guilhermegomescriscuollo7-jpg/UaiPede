@@ -67,6 +67,10 @@
         .btn-accept { background: #00a14b; } 
         .btn-dispatch { background: #0d6efd; }
         .btn-call-driver { background: #8e44ad; }
+        
+        /* BOTÃO DE CHAT NO KANBAN */
+        .btn-chat-kanban { width: 100%; background: #fff; border: 1px solid #ccc; color: #333; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 8px; cursor: pointer; transition: 0.2s;}
+        .btn-chat-kanban:hover { background: #f4f5f7; border-color: #bbb; }
 
         /* LAYOUT MEU CARDÁPIO E EDITOR */
         .menu-layout { display: flex; gap: 20px; flex: 1; min-height: 0; }
@@ -162,6 +166,32 @@
         .toast-notification { position: fixed; top: 30px; right: -400px; width: 340px; background: #fff; border-left: 6px solid #ea1d2c; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 15px 20px; display: flex; align-items: center; gap: 15px; z-index: 9999; transition: right 0.5s ease; }
         .toast-notification.show { right: 30px; }
 
+        /* MODAL DE CHAT DA LOJA */
+        .chat-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001; display: none; align-items: center; justify-content: center; }
+        .chat-modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
+        .chat-content { background: #e5ded8; width: 100%; max-width: 450px; height: 90vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .chat-header { background: #ea1d2c; color: #fff; padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .chat-back { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; }
+        .chat-header-info { flex: 1; }
+        .chat-header-name { font-weight: bold; font-size: 1.1rem; color: #fff; }
+        .chat-header-id { font-size: 0.8rem; opacity: 0.9; color: #fff; }
+
+        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .chat-sys-msg { background: rgba(0,0,0,0.5); color: #fff; text-align: center; padding: 10px; border-radius: 8px; font-size: 0.75rem; margin-bottom: 10px; align-self: center; max-width: 90%; line-height: 1.4;}
+
+        .msg-bubble { max-width: 80%; padding: 10px 12px; border-radius: 12px; font-size: 0.95rem; position: relative; line-height: 1.3;}
+        .msg-time { font-size: 0.65rem; opacity: 0.7; text-align: right; margin-top: 4px; display: block; }
+
+        .msg-customer { background: #fff; color: #333; align-self: flex-start; border-top-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .msg-customer .msg-sender { font-size: 0.75rem; font-weight: bold; color: #ea1d2c; margin-bottom: 4px; display: block;}
+
+        .msg-store { background: #dcf8c6; color: #111; align-self: flex-end; border-top-right-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        .chat-input-area { background: #f0f0f0; padding: 10px 15px; display: flex; gap: 10px; align-items: center; }
+        .chat-input { flex: 1; background: #fff; border: none; padding: 12px 15px; border-radius: 25px; font-size: 1rem; outline: none; }
+        .chat-send-btn { background: #ea1d2c; border: none; width: 45px; height: 45px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;}
+        .chat-send-btn:active { transform: scale(0.95); }
+
         /* RESPONSIVIDADE MOBILE */
         @media screen and (max-width: 850px) {
             body { display: block; overflow-y: auto; }
@@ -191,6 +221,7 @@
 
             .ticket-coupon::before, .ticket-coupon::after { background-color: #f4f5f7; }
             .mod-modal-content { width: 100%; height: 100vh; border-radius: 0; }
+            .chat-content { width: 100%; height: 100vh; border-radius: 0; }
         }
     </style>
 </head>
@@ -601,9 +632,33 @@
         </div>
     </div>
 
+    <div class="chat-modal-overlay" id="chat-modal">
+        <div class="chat-content">
+            <div class="chat-header">
+                <button class="chat-back" onclick="window.closeChatModal()">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <div class="chat-header-info">
+                    <div class="chat-header-name" id="chat-customer-name">Cliente</div>
+                    <div class="chat-header-id" id="chat-order-id">#ID</div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages-container">
+                </div>
+
+            <form class="chat-input-area" id="chat-form">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Mensagem para o cliente..." required autocomplete="off">
+                <button type="submit" class="chat-send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, addDoc, deleteDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -620,6 +675,9 @@
         let globalOrders = []; 
         let previousOrderCount = -1;
         let globalCoupons = []; 
+
+        let chatUnsubscribe = null;
+        let currentChatOrderId = null;
 
         const loggedStore = JSON.parse(localStorage.getItem('loggedStore'));
         if (!loggedStore || !loggedStore.id) { 
@@ -933,6 +991,8 @@
         };
 
         function buildOrderCard(order) {
+            const shortId = order.id.substring(0, 6).toUpperCase();
+            
             const itemsList = order.items.map(i => {
                 let details = i.variant ? `(${i.variant})` : ''; 
                 let obs = i.observation ? `<span class="item-obs" style="color:#ea1d2c">Obs: ${i.observation}</span>` : '';
@@ -985,7 +1045,7 @@
                     const feeArg = order.deliveryFee ? order.deliveryFee : 0;
                     actionBtn = `
                     <div style="display:flex; flex-direction:column; gap:8px;">
-                        <button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 1 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg> Saiu p/ Entrega (Próprio)</button>
+                        <button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 0 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg> Saiu p/ Entrega (Próprio)</button>
                         <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver('${order.id}', ${feeArg})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Solicitar Entregador</button>
                     </div>`; 
                 }
@@ -1012,7 +1072,7 @@
                 sellerBadge = `<span style="color:#f59e0b; font-size:0.75rem; font-weight:bold;">Em Rota</span>`;
                 actionBtn = `
                 <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #f59e0b; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:6px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 1 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 0 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
                     Com o Entregador
                 </div>
                 <button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Marcar como Entregue</button>`;
@@ -1025,17 +1085,15 @@
                 sellerBadge = `<span style="color:#ea1d2c; font-size:0.75rem; font-weight:bold;">Cancelado</span>`;
                 actionBtn = `<div style="text-align:center; color:#ea1d2c; font-weight:bold; font-size:0.9rem; display:flex; align-items:center; justify-content:center; gap:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Cancelado</div>`;
             }
-            
-            const shortId = order.id.substring(0, 6).toUpperCase();
 
-            // 🟢 LÓGICA PARA EXIBIR DATA E HORA DE FORMA ALINHADA 🟢
-            let orderDatePart = '';
-            let orderTimePart = '';
-            if (order.date) {
-                const dateParts = order.date.split(' ');
-                orderDatePart = dateParts[0] || '';
-                orderTimePart = dateParts[1] || '';
-            }
+            const safeCustomerName = order.customerName ? order.customerName.replace(/'/g, "\\'") : 'Cliente';
+
+            const chatBtn = `
+                <button class="btn-chat-kanban" onclick="window.openChatModal('${order.id}', '${safeCustomerName}')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    Chat com o Cliente
+                </button>
+            `;
 
             return `
             <div class="order-card" ${isPickup ? 'style="border-left: 5px solid #ffc107;"' : ''}>
@@ -1045,8 +1103,8 @@
                         <div style="margin-top:3px;">${sellerBadge}</div>
                     </div>
                     <div class="order-time" style="font-size:0.75rem; color:#888; text-align: right; display: flex; flex-direction: column; gap: 2px;">
-                        <strong style="color: #555;">${orderDatePart}</strong>
-                        <span>${orderTimePart}</span>
+                        <strong style="color: #555;">${order.date.split(' ')[0]}</strong>
+                        <span>${order.date.split(' ')[1] || ''}</span>
                     </div>
                 </div>
                 <div class="customer-info">
@@ -1055,6 +1113,7 @@
                         ${order.customerName}
                     </strong>
                     ${addressHtml}
+                    ${chatBtn}
                 </div>
                 <ul class="order-items" style="list-style:none; padding:0;">${itemsList}</ul>
                 ${paymentBadge}
@@ -1063,10 +1122,80 @@
                 ${actionBtn}
             </div>`;
         }
-        
-        window.updateOrderStatus = async (orderId, newStatus) => {
-            try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); } catch(e) { console.error(e); }
+
+        // ==========================================
+        // LÓGICA DO CHAT (VISÃO DA LOJA)
+        // ==========================================
+        window.openChatModal = (orderId, customerName) => {
+            currentChatOrderId = orderId;
+            const shortId = orderId.substring(0, 6).toUpperCase();
+            
+            document.getElementById('chat-customer-name').innerText = customerName;
+            document.getElementById('chat-order-id').innerText = '#' + shortId;
+            document.getElementById('chat-modal').classList.add('active');
+
+            const qMsg = query(collection(db, "orders", currentChatOrderId, "messages"), orderBy("timestamp", "asc"));
+            chatUnsubscribe = onSnapshot(qMsg, (snapshot) => {
+                const container = document.getElementById('chat-messages-container');
+                let msgsHtml = `
+                    <div class="chat-sys-msg">
+                        Início da conversa com o cliente.<br>Seja cordial e tire todas as dúvidas!
+                    </div>
+                `;
+                
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    if(msg.sender === 'store') {
+                        msgsHtml += `
+                        <div class="msg-bubble msg-store">
+                            ${msg.text}
+                            <span class="msg-time">${msg.timeString} ✔</span>
+                        </div>`;
+                    } else {
+                        msgsHtml += `
+                        <div class="msg-bubble msg-customer">
+                            <span class="msg-sender">${customerName}</span>
+                            ${msg.text}
+                            <span class="msg-time">${msg.timeString}</span>
+                        </div>`;
+                    }
+                });
+
+                container.innerHTML = msgsHtml;
+                container.scrollTop = container.scrollHeight; 
+            });
         };
+
+        window.closeChatModal = () => {
+            document.getElementById('chat-modal').classList.remove('active');
+            if(chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
+            currentChatOrderId = null;
+        };
+
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text || !currentChatOrderId) return;
+
+            input.value = ''; 
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+            try {
+                await addDoc(collection(db, "orders", currentChatOrderId, "messages"), {
+                    text: text,
+                    sender: 'store', 
+                    timestamp: Date.now(),
+                    timeString: timeString
+                });
+            } catch(error) {
+                console.error("Erro ao enviar mensagem:", error);
+                alert("Falha ao enviar mensagem.");
+            }
+        });
+
 
         window.renderReports = () => {
             if(!globalOrders) return; 
