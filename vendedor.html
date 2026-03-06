@@ -1028,6 +1028,15 @@
             
             const shortId = order.id.substring(0, 6).toUpperCase();
 
+            // 🟢 LÓGICA PARA EXIBIR DATA E HORA DE FORMA ALINHADA 🟢
+            let orderDatePart = '';
+            let orderTimePart = '';
+            if (order.date) {
+                const dateParts = order.date.split(' ');
+                orderDatePart = dateParts[0] || '';
+                orderTimePart = dateParts[1] || '';
+            }
+
             return `
             <div class="order-card" ${isPickup ? 'style="border-left: 5px solid #ffc107;"' : ''}>
                 <div class="order-header">
@@ -1035,7 +1044,10 @@
                         <span class="order-id">#${shortId} ${orderTypeBadge}</span>
                         <div style="margin-top:3px;">${sellerBadge}</div>
                     </div>
-                    <span class="order-time" style="font-size:0.8rem; color:#888;">${order.date.split(' ')[1] || ''}</span>
+                    <div class="order-time" style="font-size:0.75rem; color:#888; text-align: right; display: flex; flex-direction: column; gap: 2px;">
+                        <strong style="color: #555;">${orderDatePart}</strong>
+                        <span>${orderTimePart}</span>
+                    </div>
                 </div>
                 <div class="customer-info">
                     <strong style="display:flex; align-items:center; gap:6px;">
@@ -1333,7 +1345,9 @@
                         <span class="drag-handle" style="font-size: 1rem; margin:0;">⋮⋮</span>
                         <input type="text" placeholder="Ex: Pequeno" value="${v.name}" oninput="window.updateVarData(${index}, 'name', this.value)">
                         <input type="number" class="var-price" placeholder="R$ 0,00" value="${v.price}" step="0.01" oninput="window.updateVarData(${index}, 'price', this.value)">
-                        <button class="btn-rem-var" onclick="window.removeVariantRow(${index})" style="background:none; border:none; color:#ea1d2c; cursor:pointer;">✕</button>
+                        <button class="btn-rem-var" onclick="window.removeVariantRow(${index})" style="background:none; border:none; color:#ea1d2c; cursor:pointer;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
                     </div>`;
             });
         };
