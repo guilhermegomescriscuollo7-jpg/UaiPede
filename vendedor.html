@@ -113,7 +113,7 @@
         .btn-del-prod { background: none; border: none; color: #ea1d2c; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
         .btn-save-prod { background: #ea1d2c; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
 
-        /* CUPONS (TICKET VERMELHO) */
+        /* CUPONS */
         .coupon-layout { display: flex; gap: 20px; flex: 1; min-height: 0; }
         .coupon-form { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; width: 350px; flex-shrink: 0; overflow-y: auto;}
         .coupon-list-area { flex: 1; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eee; overflow-y: auto;}
@@ -149,7 +149,7 @@
         .mod-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #fff; border-bottom: 1px solid #e0e0e0; }
         .mod-body { flex: 1; overflow-y: auto; padding: 25px; }
 
-        /* TOAST NOTIFICATION AVISO */
+        /* TOAST NOTIFICATION */
         .toast-notification { position: fixed; top: 30px; right: -400px; width: 340px; background: #fff; border-left: 6px solid #00a14b; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 15px 20px; display: flex; align-items: center; gap: 15px; z-index: 9999; transition: right 0.5s ease; }
         .toast-notification.show { right: 30px; }
 
@@ -173,7 +173,7 @@
             .kanban-board { display: flex; flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 15px; gap: 15px; }
             .kanban-board::-webkit-scrollbar { display: none; }
             .kanban-col { flex: 0 0 88vw; scroll-snap-align: center; max-height: none; height: auto; }
-            .kanban-list-scroll { overflow-y: visible; }
+            .kanban-list-scroll { overflow-y: visible; } 
 
             .menu-layout, .coupon-layout { flex-direction: column; display: block; height: auto; }
             .menu-list-area, .coupon-list-area { min-height: 400px; max-height: none; margin-bottom: 20px; overflow: visible;}
@@ -208,7 +208,7 @@
             <li class="nav-item active" onclick="window.switchTab('pedidos', this)">📋 <span>Pedidos</span></li>
             <li class="nav-item" onclick="window.switchTab('cardapio', this)">🍔 <span>Cardápio</span></li>
             <li class="nav-item" onclick="window.switchTab('cupons', this)">🎟️ <span>Cupons</span></li>
-            <li class="nav-item" onclick="window.switchTab('configuracoes', this)">⚙️ <span>Ajustes</span></li>
+            <li class="nav-item" onclick="window.switchTab('configuracoes', this)">⚙️ <span>Ajustes da Loja</span></li>
             <li class="nav-item" onclick="window.switchTab('relatorios', this)">📊 <span>Métricas</span></li>
         </ul>
         <div class="btn-logout" onclick="window.logoutStore()">Sair do Sistema</div>
@@ -434,29 +434,57 @@
         </section>
 
         <section id="configuracoes" class="section config-scroll">
-            <h2 style="flex-shrink: 0;">Configurações da Loja</h2>
+            <h2 style="flex-shrink: 0;">Ajustes e Informações da Loja</h2>
             
-            <div class="editor-card">
-                <div class="card-header-flex">
-                    <span class="card-title" style="font-size: 1.1rem;">🛵 Taxa de Entrega da Loja</span>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div class="editor-card" style="flex: 1; min-width: 300px;">
+                    <div class="card-header-flex">
+                        <span class="card-title" style="font-size: 1.1rem;">🛵 Configurações de Entrega</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor da Taxa de Entrega (R$)</label>
+                        <input type="number" id="cfg-delivery-fee" class="form-input" step="0.01" placeholder="Ex: 5.00 ou deixe em branco para Grátis">
+                    </div>
+                    <div class="form-group">
+                        <label>Tempo Estimado de Delivery</label>
+                        <input type="text" id="cfg-delivery-time" class="form-input" placeholder="Ex: 30 ~ 50 min">
+                    </div>
+                    <div class="form-group">
+                        <label>Tempo Estimado para Retirada no Local</label>
+                        <input type="text" id="cfg-pickup-time" class="form-input" placeholder="Ex: 15 ~ 20 min">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor do Pedido Mínimo (R$)</label>
+                        <input type="number" id="cfg-min-order" class="form-input" step="0.01" placeholder="Ex: 15.00 ou deixe em branco">
+                    </div>
                 </div>
-                <p style="font-size: 0.85rem; color: #777; margin-bottom: 15px;">Defina o valor da entrega cobrado aos seus clientes.</p>
-                <div class="form-group">
-                    <label>Valor da Taxa (R$)</label>
-                    <input type="number" id="cfg-delivery-fee" class="form-input" step="0.01" placeholder="Ex: 5.00 ou deixe 0 para Grátis">
+
+                <div class="editor-card" style="flex: 1; min-width: 300px;">
+                    <div class="card-header-flex">
+                        <span class="card-title" style="font-size: 1.1rem;">ℹ️ Informações para o Cliente</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Formas de Pagamento Aceitas</label>
+                        <textarea id="cfg-payment-methods" class="form-input" rows="2" placeholder="Ex: Dinheiro, Pix, Cartões de Crédito e Débito na entrega."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Mais informações sobre a Loja (Sobre Nós)</label>
+                        <textarea id="cfg-more-info" class="form-input" rows="4" placeholder="Ex: Bem-vindo à Pizzaria do Zé! Preparamos tudo com muito amor e ingredientes frescos..."></textarea>
+                    </div>
                 </div>
-                <button class="btn-save-prod" onclick="window.saveDeliveryFee()" style="margin-top: 10px; width: 100%; padding: 15px; font-size: 1rem;">Salvar Taxa</button>
             </div>
+
+            <button class="btn-save-prod" onclick="window.saveStoreSettings()" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-bottom: 30px; background-color: #0d6efd;">Salvar Todas as Configurações da Loja</button>
 
             <div class="editor-card" style="margin-top: 20px;">
                 <div class="card-header-flex">
-                    <span class="card-title" style="font-size: 1.1rem;">⏳ Horário de Funcionamento</span>
+                    <span class="card-title" style="font-size: 1.1rem;">⏳ Horário de Funcionamento Fixo</span>
                 </div>
-                <p style="font-size: 0.85rem; color: #777; margin-bottom: 20px;">Defina os dias e horários padrão em que a sua loja atende aos clientes.</p>
+                <p style="font-size: 0.85rem; color: #777; margin-bottom: 20px;">Defina os dias e horários padrão em que a sua loja atende aos clientes. O app fechará a loja automaticamente fora desses horários.</p>
                 
                 <div id="schedule-container"></div>
                 
-                <button class="btn-save-prod" onclick="window.saveSchedule()" style="margin-top: 20px; width: 100%; padding: 15px; font-size: 1rem;">Salvar Horários</button>
+                <button class="btn-save-prod" onclick="window.saveSchedule()" style="margin-top: 20px; width: 100%; padding: 15px; font-size: 1rem;">Salvar Apenas Horários</button>
             </div>
         </section>
 
@@ -542,7 +570,6 @@
             window.location.href = 'login-vendedor.html'; 
         }
 
-        // Atualiza a info da loja
         document.getElementById('ui-store-name').innerText = loggedStore.name;
         document.getElementById('ui-store-logo').src = loggedStore.logo || 'https://via.placeholder.com/80';
         document.getElementById('mobile-store-name').innerText = loggedStore.name;
@@ -667,7 +694,31 @@
             }
         };
 
-        // HORÁRIOS E TAXAS
+        // 🟢 CARREGAMENTO DAS NOVAS CONFIGURAÇÕES DA LOJA 🟢
+        onSnapshot(doc(db, "stores", loggedStore.id), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                loggedStore.schedule = data.schedule || null;
+                loggedStore.status = data.status || 'Aberto';
+                localStorage.setItem('loggedStore', JSON.stringify(loggedStore));
+                
+                // Preenche os campos do painel
+                document.getElementById('cfg-delivery-fee').value = data.deliveryFee !== undefined ? data.deliveryFee : '';
+                document.getElementById('cfg-delivery-time').value = data.deliveryTime || '';
+                document.getElementById('cfg-pickup-time').value = data.pickupTime || '';
+                document.getElementById('cfg-min-order').value = data.minOrder !== undefined ? data.minOrder : '';
+                document.getElementById('cfg-payment-methods').value = data.paymentMethods || '';
+                document.getElementById('cfg-more-info').value = data.moreInfo || '';
+
+                if (data.categories && Array.isArray(data.categories)) { myCategories = data.categories; }
+                
+                window.renderScheduleUI(data.schedule || {});
+                window.updateStatusBtn();
+                window.loadCategoriesAndProducts();
+            }
+        });
+
+        // HORÁRIOS DE FUNCIONAMENTO
         const daysOfWeek = [
             { id: 'seg', name: 'Segunda-feira' }, { id: 'ter', name: 'Terça-feira' }, { id: 'qua', name: 'Quarta-feira' },
             { id: 'qui', name: 'Quinta-feira' }, { id: 'sex', name: 'Sexta-feira' }, { id: 'sab', name: 'Sábado' }, { id: 'dom', name: 'Domingo' }
@@ -707,10 +758,30 @@
             try { await updateDoc(doc(db, "stores", loggedStore.id), { schedule: newSchedule }); alert("Horários atualizados com sucesso!"); } catch(e) { alert("Ocorreu um erro ao salvar os horários."); }
         };
 
-        window.saveDeliveryFee = async () => {
-            const feeInput = document.getElementById('cfg-delivery-fee').value;
-            const fee = feeInput === '' ? 0 : parseFloat(feeInput);
-            try { await updateDoc(doc(db, "stores", loggedStore.id), { deliveryFee: fee }); alert("Taxa de entrega atualizada com sucesso!"); } catch(e) { alert("Erro ao salvar."); }
+        // 🟢 NOVA FUNÇÃO QUE SALVA TODAS AS CONFIGURAÇÕES 🟢
+        window.saveStoreSettings = async () => {
+            const deliveryFee = document.getElementById('cfg-delivery-fee').value;
+            const deliveryTime = document.getElementById('cfg-delivery-time').value.trim();
+            const pickupTime = document.getElementById('cfg-pickup-time').value.trim();
+            const minOrder = document.getElementById('cfg-min-order').value;
+            const paymentMethods = document.getElementById('cfg-payment-methods').value.trim();
+            const moreInfo = document.getElementById('cfg-more-info').value.trim();
+
+            const dataToUpdate = {
+                deliveryFee: deliveryFee === '' ? 0 : parseFloat(deliveryFee),
+                deliveryTime: deliveryTime,
+                pickupTime: pickupTime,
+                minOrder: minOrder === '' ? 0 : parseFloat(minOrder),
+                paymentMethods: paymentMethods,
+                moreInfo: moreInfo
+            };
+
+            try { 
+                await updateDoc(doc(db, "stores", loggedStore.id), dataToUpdate); 
+                alert("As configurações da loja foram atualizadas com sucesso e já aparecem para os clientes!"); 
+            } catch(e) { 
+                alert("Erro ao salvar as configurações."); 
+            }
         };
 
         // KANBAN COM 4 COLUNAS
@@ -1074,20 +1145,6 @@
         let globalProducts = [];
         let myCategories = ['Geral', 'Destaques'];
 
-        onSnapshot(doc(db, "stores", loggedStore.id), (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                loggedStore.schedule = data.schedule || null;
-                loggedStore.status = data.status || 'Aberto';
-                localStorage.setItem('loggedStore', JSON.stringify(loggedStore));
-                document.getElementById('cfg-delivery-fee').value = data.deliveryFee || '';
-                if (data.categories && Array.isArray(data.categories)) { myCategories = data.categories; }
-                window.renderScheduleUI(data.schedule || {});
-                window.updateStatusBtn();
-                window.loadCategoriesAndProducts();
-            }
-        });
-
         const qProducts = query(collection(db, "products"), where("storeId", "==", loggedStore.id));
         onSnapshot(qProducts, (snapshot) => {
             globalProducts = [];
@@ -1095,7 +1152,7 @@
             window.loadCategoriesAndProducts();
         });
 
-        // 🟢 MÁGICA DA COMPRESSÃO DE IMAGENS 🟢
+        // 🟢 COMPRESSÃO DE IMAGENS 🟢
         document.getElementById('ed-img-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -1104,7 +1161,7 @@
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 600; // Tamanho máximo perfeito para delivery
+                        const MAX_WIDTH = 600; 
                         const MAX_HEIGHT = 600;
                         let width = img.width;
                         let height = img.height;
@@ -1118,7 +1175,6 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Transforma a imagem pesada num JPEG leve (70% qualidade)
                         editorImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
                         
                         document.getElementById('ed-img-preview').src = editorImageBase64;
@@ -1345,7 +1401,6 @@
                 }
                 window.clearEditor();
             } catch(e) { 
-                // 🟢 ALERTA MAIS PRECISO PARA DEBUG 🟢
                 alert("Erro ao salvar produto: " + e.message);
                 console.error("Firebase Error:", e);
             }
