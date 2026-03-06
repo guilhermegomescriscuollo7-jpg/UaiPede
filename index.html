@@ -2,26 +2,56 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UaiPede - Delivery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UaiPede - Início</title>
+    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        if (sessionStorage.getItem('splashShown') === 'true') {
+            document.documentElement.classList.add('skip-splash');
+        }
+    </script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f8f8f8; color: #333; padding-top: 70px; padding-bottom: 80px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; }
 
-        /* 🟢 CABEÇALHO COM SELETOR DE CIDADE 🟢 */
-        .app-header { position: fixed; top: 0; left: 0; width: 100%; height: 70px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000; }
-        .logo-area { display: flex; align-items: center; font-size: 1.4rem; font-weight: 900; color: #ea1d2c; letter-spacing: -0.5px;}
+        .skip-splash #splash-screen, 
+        .skip-splash #sponsor-wrapper { display: none !important; }
+
+        /* BANNER APP */
+        #install-banner { display: none; background: #111; color: #fff; padding: 12px 20px; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+        .btn-install { background: #ea1d2c; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         
-        .city-selector-btn { display: flex; align-items: center; gap: 6px; background: #fff5f5; border: 1px solid #fbd5d5; padding: 8px 12px; border-radius: 50px; color: #ea1d2c; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; max-width: 180px;}
-        .city-selector-btn:active { transform: scale(0.95); background: #ffebeb; }
-        .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+        /* SPLASH & SPONSOR */
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
+        #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .splash-logo-container { display: flex; align-items: center; gap: 12px; animation: pulseSplash 1.5s ease-in-out infinite alternate; }
+        @keyframes pulseSplash { 0% { transform: scale(0.95); } 100% { transform: scale(1.05); } }
+        .splash-swoosh { width: 60px; height: auto; transform: rotate(-10deg); }
+        .splash-text { font-size: 2.5rem; font-weight: 700; color: #ea1d2c; letter-spacing: -1.5px; margin: 0; }
+        
+        #sponsor-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99998; display: none; align-items: center; justify-content: center; }
+        #sponsor-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        #sponsor-content img { width: 100%; height: 100%; object-fit: cover; }
+        .effect-fade { opacity: 0; transition: opacity 0.6s ease; }
+        .effect-fade.active { opacity: 1; }
 
-        .cart-icon { position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #f4f5f7; color: #555; text-decoration: none;}
-        .cart-badge { position: absolute; top: -2px; right: -2px; background: #ea1d2c; color: #fff; font-size: 0.7rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+        /* HEADER & BANNERS (ATUALIZADO COM SELETOR DE CIDADE) */
+        .brand-header { background: #fff; padding: 15px 20px; position: sticky; top: 0; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
+        
+        .city-selector-btn { display: flex; align-items: center; gap: 6px; background: #fff5f5; border: 1px solid #fbd5d5; padding: 8px 15px; border-radius: 50px; color: #ea1d2c; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.2s; max-width: 250px;}
+        .city-selector-btn:active { transform: scale(0.95); background: #ffebeb; }
+        .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+
+        .banner-carousel-wrapper { background: #f8f8f8; padding: 15px 15px 0; display: none; }
+        .banner-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 12px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .banner-track::-webkit-scrollbar { display: none; }
+        .banner-slide { flex: 0 0 100%; height: 150px; border-radius: 12px; object-fit: cover; scroll-snap-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 
         /* 🟢 MODAL DE ESCOLHA DE CIDADE 🟢 */
-        .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+        .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; }
         .city-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
         .city-modal-content { background: #fff; width: 90%; max-width: 400px; border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; position: relative;}
         .city-modal-close { position: absolute; top: 15px; right: 15px; background: #f4f5f7; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; display: none; align-items: center; justify-content: center; cursor: pointer; color: #555;}
@@ -39,33 +69,40 @@
         .city-item-btn svg { color: #ccc; }
         .city-item-btn:active svg { color: #ea1d2c; }
 
-        /* BANNERS */
-        .banners-container { display: flex; overflow-x: auto; padding: 15px; gap: 15px; scroll-snap-type: x mandatory; scrollbar-width: none; }
-        .banners-container::-webkit-scrollbar { display: none; }
-        .banner-item { flex: 0 0 85vw; max-width: 400px; height: 140px; border-radius: 16px; overflow: hidden; scroll-snap-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); background: #eee; position: relative;}
-        .banner-item img { width: 100%; height: 100%; object-fit: cover; }
+        /* CATEGORIAS */
+        .button-scroll-container { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; padding: 15px; background: #f8f8f8; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
+        .button-scroll-container::-webkit-scrollbar { display: none; }
+        .button-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; padding: 12px 5px; border-radius: 16px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; flex: 0 0 auto; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .button-item:active { transform: scale(0.95); }
+        .filter-icon { width: 32px; height: 32px; margin-bottom: 8px; color: #ea1d2c; transition: color 0.3s ease; }
+        .button-item span { font-size: 0.75rem; color: #717171; font-weight: 600; line-height: 1.1; transition: color 0.3s ease; white-space: nowrap;}
+        .button-item.active { background-color: #ea1d2c; border-color: #ea1d2c; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
+        .button-item.active span { color: #fff; }
+        .button-item.active .filter-icon { color: #fff; } 
+        
+        .section-title { padding: 5px 15px 10px; font-size: 1.1rem; font-weight: 700; color: #333; }
 
         /* LISTA DE LOJAS */
-        .section-title { font-size: 1.1rem; font-weight: 800; color: #111; margin: 10px 15px 15px; display: flex; align-items: center; gap: 8px;}
-        .stores-list { display: flex; flex-direction: column; gap: 15px; padding: 0 15px; }
-        
-        .store-card { background: #fff; border-radius: 16px; padding: 15px; display: flex; gap: 15px; text-decoration: none; color: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f2f2f2; transition: 0.2s;}
-        .store-card:active { transform: scale(0.98); background: #fdfdfd; }
-        .store-card.closed { opacity: 0.6; filter: grayscale(100%); }
-        
-        .store-logo { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 1px solid #eee; flex-shrink: 0; }
-        .store-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .store-name { font-size: 1.1rem; font-weight: 800; color: #111; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;}
-        .store-cat { font-size: 0.8rem; color: #777; margin-bottom: 8px; }
-        .store-meta { display: flex; align-items: center; gap: 10px; font-size: 0.75rem; font-weight: 600; color: #555; }
-        .store-meta span { display: flex; align-items: center; gap: 4px; }
-        .store-meta .free-delivery { color: #00a14b; }
+        .store-list { padding: 0 15px; }
+        .store-card { display: flex; align-items: center; padding: 15px; margin-bottom: 12px; border-radius: 12px; cursor: pointer; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #f2f2f2; transition: 0.2s; text-decoration: none; }
+        .store-card:active { transform: scale(0.98); background-color: #f9f9f9; }
+        .store-card.closed { opacity: 0.55; filter: grayscale(100%); }
+        .store-card.closed:active { transform: none; background-color: #fff; }
+        .store-logo { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 1px solid #eee; object-fit: cover; flex-shrink: 0;}
+        .store-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
+        .store-info h3 { font-size: 1rem; color: #111; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+        .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
-        /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #fff; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; padding-bottom: env(safe-area-inset-bottom); z-index: 900; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #999; font-size: 0.65rem; font-weight: 600; text-decoration: none; flex: 1; height: 100%;}
-        .nav-item.active { color: #ea1d2c; }
-        .nav-item svg { stroke: currentColor; }
+        /* MENU INFERIOR & CARRINHO FLUTUANTE */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
+        .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
+        .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
+        .nav-link.active { color: #ea1d2c; font-weight: bold; }
+        
+        .floating-cart { position: fixed; bottom: 80px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 9998; text-decoration: none; transition: 0.3s; }
+        .floating-cart:active { transform: scale(0.9); }
+        .cart-badge-float { position: absolute; top: -5px; right: -5px; background: #111; color: #fff; font-size: 0.75rem; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
 
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -77,58 +114,69 @@
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="logo-area">
-            UaiPede
+    <div id="splash-screen">
+        <div class="splash-logo-container">
+            <svg class="splash-swoosh" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/>
+            </svg>
+            <h1 class="splash-text">UaiPede</h1>
         </div>
-        
-        <button class="city-selector-btn" onclick="openCityModal(true)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span class="city-name-label" id="header-city-name">Carregando...</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </button>
+    </div>
 
-        <a href="carrinho.html" class="cart-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            <div class="cart-badge" id="cart-count">0</div>
-        </a>
+    <div id="sponsor-wrapper"><div id="sponsor-content"></div></div>
+
+    <div id="install-banner">
+        <div><strong>UaiPede</strong><br><span style="color:#aaa; font-size:0.8rem;">Instale o app para pedir mais rápido!</span></div>
+        <button class="btn-install" id="btn-install-app">Instalar</button>
+    </div>
+
+    <header class="brand-header">
+        <button class="city-selector-btn" onclick="window.openCityModal(true)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span class="city-name-label" id="header-city-name">Carregando...</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
     </header>
 
     <main id="main-content" style="display: none;">
-        <div class="banners-container" id="banners-container">
-            </div>
+        <div class="banner-carousel-wrapper" id="banner-wrapper"><div class="banner-track" id="banner-track"></div></div>
 
-        <h2 class="section-title">
-            Lojas em sua região
-        </h2>
-        <div class="stores-list" id="stores-container">
-            </div>
+        <section class="button-scroll-container" id="category-filters">
+            <div class="button-item active" onclick="window.filterCategory('Todos', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg><span>Todos</span></div>
+            <div class="button-item" onclick="window.filterCategory('Restaurantes', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg><span>Restaurantes</span></div>
+            <div class="button-item" onclick="window.filterCategory('Lanches', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 10.93c-.15-2.92-2.31-5.38-5.18-5.83C15.22 4.41 13.68 4 12 4s-3.22.41-4.81 1.1c-2.87.45-5.03 2.91-5.18 5.83H2v2h2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4h2v-2h-.01zM18 17H6v-4h12v4z"/></svg><span>Lanches</span></div>
+            <div class="button-item" onclick="window.filterCategory('Bares', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg><span>Bares</span></div>
+            <div class="button-item" onclick="window.filterCategory('Sorveterias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M12 2C8.69 2 6 4.69 6 8c0 3.08 2.31 5.64 5.25 5.95V22h1.5v-8.05C15.69 13.64 18 11.08 18 8c0-3.31-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg><span>Sorveterias</span></div>
+            <div class="button-item" onclick="window.filterCategory('Mercados', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Mercados</span></div>
+            <div class="button-item" onclick="window.filterCategory('Farmácias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span>Farmácias</span></div>
+            <div class="button-item" onclick="window.filterCategory('Loja de Roupas', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v2h2v11h16V10h2V8zM12 3.19l7 3.91V8h-2v11H7V8H5V7.1l7-3.91z"/></svg><span>Moda</span></div>
+            <div class="button-item" onclick="window.filterCategory('Açougue', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20.5 3.5l-6 6c-.39-.39-1.02-.39-1.41 0L3.5 19.09l1.41 1.41 9.59-9.59c.39.39 1.02.39 1.41 0l6-6V3.5h-1.41z"/></svg><span>Açougue</span></div>
+            <div class="button-item" onclick="window.filterCategory('Utilidades', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg><span>Utilidades</span></div>
+        </section>
+
+        <h2 class="section-title" id="list-title">Lojas</h2>
+        <main class="store-list" id="store-list-container"></main>
     </main>
 
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            Início
-        </a>
-        <a href="pedidos.html" class="nav-item">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Pedidos
-        </a>
-        <a href="perfil.html" class="nav-item">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            Perfil
-        </a>
+        <a href="index.html" class="nav-link active"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img" alt="Início"><span>Início</span></a>
+        <a href="pedidos.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1150/1150592.png" class="nav-icon-img" alt="Pedidos"><span>Pedidos</span></a>
+        <a href="perfil.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="nav-icon-img" alt="Perfil"><span>Perfil</span></a>
     </nav>
+
+    <a href="carrinho.html" class="floating-cart" id="floating-cart">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <div class="cart-badge-float" id="floating-cart-count">0</div>
+    </a>
 
     <div id="city-modal" class="city-modal-overlay">
         <div class="city-modal-content">
-            <button class="city-modal-close" id="btn-close-city-modal" onclick="closeCityModal()">✕</button>
+            <button class="city-modal-close" id="btn-close-city-modal" onclick="window.closeCityModal()">✕</button>
             <div class="city-modal-icon">
                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
             </div>
             <h2 class="city-modal-title">Onde você está?</h2>
-            <p class="city-modal-desc">Selecione sua cidade para ver os melhores lanches perto de você.</p>
-            
+            <p class="city-modal-desc">Selecione sua cidade para ver os melhores estabelecimentos perto de você.</p>
             <div class="city-list" id="modal-city-list">
                 <p style="color:#aaa; font-size:0.9rem;">Buscando cidades...</p>
             </div>
@@ -137,7 +185,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -150,38 +198,101 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let allStores = []; 
+        let currentCategoryFilter = null; 
+        
+        let deferredPrompt;
+        const installBanner = document.getElementById('install-banner');
+        const installBtn = document.getElementById('btn-install-app');
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBanner.style.display = 'flex'; });
+        installBtn.addEventListener('click', async () => { installBanner.style.display = 'none'; if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; } });
+        
         let userCity = localStorage.getItem('userCity');
         let globalCities = [];
+        let allActiveSponsors = [];
 
-        // Atualizar crachá do carrinho
-        function updateCartBadge() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const badge = document.getElementById('cart-count');
-            if(cart.length > 0) { badge.style.display = 'flex'; badge.innerText = cart.length; } 
-            else { badge.style.display = 'none'; }
-        }
+        // 🟢 ATUALIZADO: Carrega patrocinadores Globais e da Cidade 🟢
+        const loadSponsors = async () => {
+            const sponsorsSnap = await getDocs(collection(db, "sponsors"));
+            allActiveSponsors = []; 
+            sponsorsSnap.forEach(doc => {
+                const s = doc.data();
+                if (!s.city || s.city === 'all' || s.city === userCity) {
+                    allActiveSponsors.push(s);
+                }
+            });
+            allActiveSponsors.sort((a,b) => a.timestamp - b.timestamp);
+        };
 
-        // 🟢 INICIALIZAÇÃO E LÓGICA DE CIDADE 🟢
-        async function initApp() {
-            updateCartBadge();
-            
+        window.addEventListener('load', async () => {
+            const splash = document.getElementById('splash-screen');
+            const sponsorWrapper = document.getElementById('sponsor-wrapper');
+            const sponsorContent = document.getElementById('sponsor-content');
+
+            window.updateCartBadge();
+
             // Busca cidades do banco
             const citiesSnap = await getDocs(collection(db, "cities"));
-            citiesSnap.forEach(doc => {
-                globalCities.push({ id: doc.id, ...doc.data() });
-            });
+            citiesSnap.forEach(doc => { globalCities.push({ id: doc.id, ...doc.data() }); });
             globalCities.sort((a,b) => a.name.localeCompare(b.name));
 
-            if (!userCity) {
-                // Primeira vez: Força a abrir o modal sem botão de fechar
-                openCityModal(false);
-            } else {
-                // Já tem cidade salva
-                document.getElementById('header-city-name').innerText = userCity.split(' - ')[0]; // Mostra só o nome da cidade no topo
-                loadCityContent();
+            // Lógica de Splash e Modal
+            if (sessionStorage.getItem('splashShown') === 'true') {
+                if (splash) splash.style.display = 'none';
+                if (sponsorWrapper) sponsorWrapper.style.display = 'none';
+                if (!userCity) { window.openCityModal(false); } else { 
+                    document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
+                    window.loadCityContent(); 
+                }
+                return;
             }
-        }
 
+            sessionStorage.setItem('splashShown', 'true');
+            
+            if(!userCity) {
+                // Mostra splash rápido e depois abre modal de cidade obrigatório
+                setTimeout(() => {
+                    if (splash) { splash.classList.add('hidden'); setTimeout(() => { splash.style.display = 'none'; window.openCityModal(false); }, 500); }
+                }, 1500);
+            } else {
+                // Tem cidade, mostra patrocinador da cidade e segue
+                await loadSponsors();
+                document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
+                
+                setTimeout(() => {
+                    if (splash) {
+                        if(allActiveSponsors.length > 0 && sponsorWrapper) { sponsorWrapper.style.display = 'flex'; }
+                        splash.classList.add('hidden'); 
+                        setTimeout(() => { 
+                            splash.style.display = 'none'; 
+                            if(allActiveSponsors.length > 0 && sponsorWrapper) {
+                                let indexAtual = 0;
+                                function mostrarProximoPatrocinador() {
+                                    if (indexAtual >= allActiveSponsors.length) {
+                                        sponsorWrapper.style.transition = "opacity 0.5s ease"; sponsorWrapper.style.opacity = "0";
+                                        setTimeout(() => { sponsorWrapper.style.display = 'none'; window.loadCityContent(); }, 500); return;
+                                    }
+                                    const spAtual = allActiveSponsors[indexAtual];
+                                    const classEfeito = `effect-${spAtual.transition || 'fade'}`;
+                                    const tempoMs = (spAtual.duration || 2) * 1000;
+                                    sponsorContent.className = classEfeito; 
+                                    sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador">`;
+                                    void sponsorContent.offsetWidth; 
+                                    sponsorContent.classList.add('active'); 
+                                    setTimeout(() => {
+                                        sponsorContent.classList.remove('active'); 
+                                        setTimeout(() => { indexAtual++; mostrarProximoPatrocinador(); }, 600); 
+                                    }, tempoMs); 
+                                }
+                                mostrarProximoPatrocinador(); 
+                            } else if (sponsorWrapper) { sponsorWrapper.style.display = 'none'; window.loadCityContent(); }
+                        }, 500); 
+                    }
+                }, 1500); 
+            }
+        });
+
+        // 🟢 FUNÇÕES DO MODAL DE CIDADES 🟢
         window.openCityModal = (canClose = true) => {
             const modal = document.getElementById('city-modal');
             const closeBtn = document.getElementById('btn-close-city-modal');
@@ -207,64 +318,83 @@
             modal.classList.add('active');
         };
 
-        window.closeCityModal = () => {
-            document.getElementById('city-modal').classList.remove('active');
-        };
+        window.closeCityModal = () => { document.getElementById('city-modal').classList.remove('active'); };
 
         window.selectCity = (cityString) => {
             userCity = cityString;
             localStorage.setItem('userCity', cityString);
             document.getElementById('header-city-name').innerText = cityString.split(' - ')[0];
             closeCityModal();
-            loadCityContent();
+            window.loadCityContent();
         };
 
         // 🟢 CARREGA LOJAS E BANNERS DA CIDADE ESCOLHIDA 🟢
-        async function loadCityContent() {
+        window.loadCityContent = async () => {
             document.getElementById('main-content').style.display = 'block';
-            document.getElementById('stores-container').innerHTML = '<div style="text-align:center; padding: 40px; color:#999;">Procurando lojas...</div>';
+            document.getElementById('stores-container').innerHTML = '<div style="text-align:center; padding: 40px; color:#999;">Buscando as melhores opções na sua cidade...</div>';
             
-            // 1. CARREGAR BANNERS (Filtrando por cidade atual ou 'all')
-            const bannerContainer = document.getElementById('banners-container');
+            // CARREGAR BANNERS (Filtrando por cidade atual ou 'all')
+            const bannerContainer = document.getElementById('banner-wrapper');
+            const track = document.getElementById('banner-track');
             const bSnap = await getDocs(collection(db, "banners"));
             let bannersHtml = '';
             bSnap.forEach(doc => {
                 const b = doc.data();
                 if (!b.city || b.city === 'all' || b.city === userCity) {
-                    bannersHtml += `<div class="banner-item"><img src="${b.image}" alt="Banner Promocional"></div>`;
+                    bannersHtml += `<img src="${b.image}" class="banner-slide">`;
                 }
             });
+            
             if(bannersHtml === '') { bannerContainer.style.display = 'none'; } 
-            else { bannerContainer.style.display = 'flex'; bannerContainer.innerHTML = bannersHtml; }
+            else { 
+                bannerContainer.style.display = 'block'; 
+                track.innerHTML = bannersHtml; 
+                let currentIndex = 0;
+                setInterval(() => {
+                    if (track.children.length > 1) {
+                        currentIndex++;
+                        if(currentIndex >= track.children.length) currentIndex = 0;
+                        track.scrollTo({ left: (track.clientWidth + 12) * currentIndex, behavior: 'smooth' });
+                    }
+                }, 3500);
+            }
 
-            // 2. CARREGAR LOJAS DA CIDADE
+            // CARREGAR LOJAS DA CIDADE
             const storesContainer = document.getElementById('stores-container');
-            // Query: Buscar lojas onde a city seja exatamente a escolhida
             const qStores = query(collection(db, "stores"), where("city", "==", userCity), where("isActive", "==", true));
             const sSnap = await getDocs(qStores);
             
-            let storesList = [];
-            sSnap.forEach(doc => storesList.push({ id: doc.id, ...doc.data() }));
+            allStores = [];
+            sSnap.forEach(doc => allStores.push({ id: doc.id, ...doc.data() }));
 
-            if (storesList.length === 0) {
-                storesContainer.innerHTML = `
+            window.renderStores();
+        }
+
+        window.renderStores = () => {
+            const container = document.getElementById('stores-container');
+            if (allStores.length === 0) {
+                container.innerHTML = `
                     <div class="empty-state">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                         <h3>Poxa, ainda não chegamos aí!</h3>
-                        <p>Nenhuma loja cadastrada em ${userCity.split(' - ')[0]} no momento.</p>
+                        <p>Nenhuma loja cadastrada em ${userCity ? userCity.split(' - ')[0] : 'sua cidade'} no momento.</p>
                     </div>`;
                 return;
             }
 
-            // Função para verificar se a loja está aberta no momento (com base no schedule)
-            const checkStoreStatus = (store) => {
-                let dynamicStatus = store.status || 'Aberto';
-                if (dynamicStatus === 'Aberto' && store.schedule) {
-                    const now = new Date(); 
-                    const currentMins = now.getHours() * 60 + now.getMinutes(); 
-                    const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
-                    const todaySch = store.schedule[daysMap[now.getDay()]];
-                    
+            let filteredStores = allStores;
+
+            if (currentCategoryFilter && currentCategoryFilter !== 'Todos') {
+                filteredStores = filteredStores.filter(s => s.cat && s.cat.toLowerCase().includes(currentCategoryFilter.toLowerCase()));
+            }
+
+            const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+            const currentDayStr = daysMap[now.getDay()]; const currentMins = now.getHours() * 60 + now.getMinutes();
+
+            filteredStores = filteredStores.map(s => {
+                let dynamicStatus = s.status || 'Aberto';
+                if (dynamicStatus === 'Aberto' && s.schedule) {
+                    const todaySch = s.schedule[currentDayStr];
                     if (!todaySch || !todaySch.active) { dynamicStatus = 'Fechado'; } 
                     else {
                         const [oH, oM] = (todaySch.open || '00:00').split(':').map(Number);
@@ -274,41 +404,53 @@
                         if (!isOpen) dynamicStatus = 'Fechado';
                     }
                 }
-                return dynamicStatus;
-            };
-
-            // Ordenar: Abertas primeiro
-            storesList.sort((a, b) => {
-                const aOpen = checkStoreStatus(a) === 'Aberto' ? 0 : 1;
-                const bOpen = checkStoreStatus(b) === 'Aberto' ? 0 : 1;
-                return aOpen - bOpen;
+                return { ...s, dynamicStatus };
             });
 
-            storesContainer.innerHTML = storesList.map(s => {
-                const isOpen = checkStoreStatus(s) === 'Aberto';
-                const statusBadge = isOpen 
-                    ? `<span style="color:#00a14b; font-size:0.75rem; display:flex; align-items:center; gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Aberto</span>` 
-                    : `<span style="color:#ea1d2c; font-size:0.75rem; display:flex; align-items:center; gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Fechado</span>`;
-                
-                const feeText = (!s.deliveryFee || s.deliveryFee === 0) ? '<span class="free-delivery">Entrega Grátis</span>' : `Entrega R$ ${s.deliveryFee.toFixed(2)}`;
-                const timeText = s.deliveryTime || '30-45 min';
+            filteredStores.sort((a, b) => {
+                const getWeight = (store) => { if (store.isActive === false) return 2; if (store.dynamicStatus === 'Fechado') return 1; return 0; };
+                return getWeight(a) - getWeight(b);
+            });
 
+            if (filteredStores.length === 0) { container.innerHTML = `<p style="padding: 30px 0; color: #999; text-align: center;">Nenhuma loja encontrada nesta categoria.</p>`; return; }
+
+            container.innerHTML = filteredStores.map(s => {
+                const isClosed = s.dynamicStatus === 'Fechado';
+                const cardClass = isClosed ? 'store-card closed' : 'store-card';
+                let statusText = s.dynamicStatus; let statusColor = isClosed ? '#717171' : '#00a14b'; 
+                
                 return `
-                <a href="loja.html?id=${s.id}" class="store-card ${!isOpen ? 'closed' : ''}">
+                <a href="loja.html?id=${s.id}" class="${cardClass}">
                     <img src="${s.logo || 'https://via.placeholder.com/80'}" class="store-logo" alt="Logo">
                     <div class="store-info">
-                        <div class="store-name">${s.name} ${statusBadge}</div>
-                        <div class="store-cat">${s.cat || 'Restaurante'}</div>
-                        <div class="store-meta">
-                            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${timeText}</span> • 
-                            <span>${feeText}</span>
-                        </div>
+                        <div class="store-name">${s.name}</div>
+                        <div class="store-details"><span>${s.cat || 'Geral'}</span><span class="dot">•</span><span style="font-weight: bold; color: ${statusColor};">${statusText}</span></div>
                     </div>
                 </a>`;
             }).join('');
-        }
+        };
 
-        window.addEventListener('load', initApp);
+        window.filterCategory = (categoryName, element) => {
+            document.querySelectorAll('#category-filters .button-item').forEach(btn => btn.classList.remove('active'));
+            if (categoryName === 'Todos' || currentCategoryFilter === categoryName) {
+                currentCategoryFilter = null; document.querySelector('#category-filters .button-item').classList.add('active'); document.getElementById('list-title').innerText = "Lojas";
+            } else {
+                element.classList.add('active'); currentCategoryFilter = categoryName; document.getElementById('list-title').innerText = "Lojas - " + element.querySelector('span').innerText;
+            }
+            window.renderStores();
+        };
+
+        window.updateCartBadge = () => {
+            const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+            const floatingCart = document.getElementById('floating-cart');
+            const floatingBadge = document.getElementById('floating-cart-count');
+
+            if (currentCart.length > 0) {
+                if (floatingCart) { floatingCart.style.display = 'flex'; floatingBadge.innerText = currentCart.length; }
+            } else {
+                if (floatingCart) floatingCart.style.display = 'none';
+            }
+        };
     </script>
 </body>
 </html>
