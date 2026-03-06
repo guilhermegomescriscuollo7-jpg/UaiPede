@@ -15,7 +15,7 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; padding-top: 70px; }
+        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; }
 
         .skip-splash #splash-screen, 
         .skip-splash #sponsor-wrapper { display: none !important; }
@@ -38,32 +38,11 @@
         .effect-fade { opacity: 0; transition: opacity 0.6s ease; }
         .effect-fade.active { opacity: 1; }
 
-        /* 🟢 CABEÇALHO COM SELETOR DE CIDADE 🟢 */
-        .brand-header { background: #fff; padding: 0 15px; height: 70px; position: fixed; top: 0; left: 0; width: 100%; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
-        .brand-logo-container { display: flex; align-items: center; font-size: 1.4rem; font-weight: 900; color: #ea1d2c; letter-spacing: -0.5px; }
-        
-        .city-selector-btn { display: flex; align-items: center; gap: 6px; background: #fff5f5; border: 1px solid #fbd5d5; padding: 8px 12px; border-radius: 50px; color: #ea1d2c; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; max-width: 160px;}
-        .city-selector-btn:active { transform: scale(0.95); background: #ffebeb; }
-        .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
-
-        /* 🟢 MODAL DE ESCOLHA DE CIDADE 🟢 */
-        .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; }
-        .city-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
-        .city-modal-content { background: #fff; width: 90%; max-width: 400px; border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; position: relative;}
-        .city-modal-close { position: absolute; top: 15px; right: 15px; background: #f4f5f7; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; display: none; align-items: center; justify-content: center; cursor: pointer; color: #555;}
-        
-        .city-modal-icon { width: 60px; height: 60px; background: #fff5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ea1d2c; margin: 0 auto 15px; }
-        .city-modal-title { font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 8px; }
-        .city-modal-desc { font-size: 0.9rem; color: #777; margin-bottom: 25px; line-height: 1.4; }
-        
-        .city-list { display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 5px; }
-        .city-list::-webkit-scrollbar { width: 4px; }
-        .city-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
-        
-        .city-item-btn { width: 100%; background: #f9f9f9; border: 1px solid #eee; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 700; color: #333; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; text-align: left;}
-        .city-item-btn:active { background: #fff5f5; border-color: #ea1d2c; transform: scale(0.98); }
-        .city-item-btn svg { color: #ccc; }
-        .city-item-btn:active svg { color: #ea1d2c; }
+        /* HEADER & BANNERS */
+        .brand-header { background: #fff; padding: 20px 20px; position: relative; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; }
+        .brand-logo-container { display: flex; align-items: center; gap: 8px; flex-grow: 1; }
+        .brand-swoosh { width: 35px; height: auto; transform: rotate(-10deg); }
+        .brand-text { font-size: 1.6rem; font-weight: 700; color: #ea1d2c; letter-spacing: -1px; margin: 0; }
 
         .banner-carousel-wrapper { background: #f8f8f8; padding: 15px 15px 0; display: none; }
         .banner-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 12px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
@@ -104,13 +83,6 @@
         .floating-cart { position: fixed; bottom: 80px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 9998; text-decoration: none; transition: 0.3s; }
         .floating-cart:active { transform: scale(0.9); }
         .cart-badge-float { position: absolute; top: -5px; right: -5px; background: #111; color: #fff; font-size: 0.75rem; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
-
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .empty-state { text-align: center; padding: 40px 20px; color: #777; }
-        .empty-state svg { color: #ccc; margin-bottom: 15px; }
-        .empty-state h3 { color: #111; font-size: 1.1rem; margin-bottom: 5px; font-weight: 800;}
     </style>
 </head>
 <body>
@@ -126,42 +98,35 @@
 
     <div id="sponsor-wrapper"><div id="sponsor-content"></div></div>
 
+    <div class="brand-header">
+        <div class="brand-logo-container">
+            <svg class="brand-swoosh" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/></svg>
+            <h1 class="brand-text">UaiPede</h1>
+        </div>
+    </div>
+
     <div id="install-banner">
         <div><strong>UaiPede</strong><br><span style="color:#aaa; font-size:0.8rem;">Instale o app para pedir mais rápido!</span></div>
         <button class="btn-install" id="btn-install-app">Instalar</button>
     </div>
 
-    <header class="brand-header">
-        <div class="brand-logo-container">
-            UaiPede
-        </div>
-        
-        <button class="city-selector-btn" onclick="window.openCityModal(true)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span class="city-name-label" id="header-city-name">Carregando...</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </button>
-    </header>
+    <div class="banner-carousel-wrapper" id="banner-wrapper"><div class="banner-track" id="banner-track"></div></div>
 
-    <main id="main-content" style="display: none;">
-        <div class="banner-carousel-wrapper" id="banner-wrapper"><div class="banner-track" id="banner-track"></div></div>
+    <section class="button-scroll-container" id="category-filters">
+        <div class="button-item active" onclick="window.filterCategory('Todos', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg><span>Todos</span></div>
+        <div class="button-item" onclick="window.filterCategory('Restaurantes', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg><span>Restaurantes</span></div>
+        <div class="button-item" onclick="window.filterCategory('Lanches', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 10.93c-.15-2.92-2.31-5.38-5.18-5.83C15.22 4.41 13.68 4 12 4s-3.22.41-4.81 1.1c-2.87.45-5.03 2.91-5.18 5.83H2v2h2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4h2v-2h-.01zM18 17H6v-4h12v4z"/></svg><span>Lanches</span></div>
+        <div class="button-item" onclick="window.filterCategory('Bares', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg><span>Bares</span></div>
+        <div class="button-item" onclick="window.filterCategory('Sorveterias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M12 2C8.69 2 6 4.69 6 8c0 3.08 2.31 5.64 5.25 5.95V22h1.5v-8.05C15.69 13.64 18 11.08 18 8c0-3.31-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg><span>Sorveterias</span></div>
+        <div class="button-item" onclick="window.filterCategory('Mercados', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Mercados</span></div>
+        <div class="button-item" onclick="window.filterCategory('Farmácias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span>Farmácias</span></div>
+        <div class="button-item" onclick="window.filterCategory('Loja de Roupas', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v2h2v11h16V10h2V8zM12 3.19l7 3.91V8h-2v11H7V8H5V7.1l7-3.91z"/></svg><span>Moda</span></div>
+        <div class="button-item" onclick="window.filterCategory('Açougue', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20.5 3.5l-6 6c-.39-.39-1.02-.39-1.41 0L3.5 19.09l1.41 1.41 9.59-9.59c.39.39 1.02.39 1.41 0l6-6V3.5h-1.41z"/></svg><span>Açougue</span></div>
+        <div class="button-item" onclick="window.filterCategory('Utilidades', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg><span>Utilidades</span></div>
+    </section>
 
-        <section class="button-scroll-container" id="category-filters">
-            <div class="button-item active" onclick="window.filterCategory('Todos', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg><span>Todos</span></div>
-            <div class="button-item" onclick="window.filterCategory('Restaurantes', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg><span>Restaurantes</span></div>
-            <div class="button-item" onclick="window.filterCategory('Lanches', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 10.93c-.15-2.92-2.31-5.38-5.18-5.83C15.22 4.41 13.68 4 12 4s-3.22.41-4.81 1.1c-2.87.45-5.03 2.91-5.18 5.83H2v2h2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4h2v-2h-.01zM18 17H6v-4h12v4z"/></svg><span>Lanches</span></div>
-            <div class="button-item" onclick="window.filterCategory('Bares', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg><span>Bares</span></div>
-            <div class="button-item" onclick="window.filterCategory('Sorveterias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M12 2C8.69 2 6 4.69 6 8c0 3.08 2.31 5.64 5.25 5.95V22h1.5v-8.05C15.69 13.64 18 11.08 18 8c0-3.31-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg><span>Sorveterias</span></div>
-            <div class="button-item" onclick="window.filterCategory('Mercados', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Mercados</span></div>
-            <div class="button-item" onclick="window.filterCategory('Farmácias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span>Farmácias</span></div>
-            <div class="button-item" onclick="window.filterCategory('Loja de Roupas', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v2h2v11h16V10h2V8zM12 3.19l7 3.91V8h-2v11H7V8H5V7.1l7-3.91z"/></svg><span>Moda</span></div>
-            <div class="button-item" onclick="window.filterCategory('Açougue', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20.5 3.5l-6 6c-.39-.39-1.02-.39-1.41 0L3.5 19.09l1.41 1.41 9.59-9.59c.39.39 1.02.39 1.41 0l6-6V3.5h-1.41z"/></svg><span>Açougue</span></div>
-            <div class="button-item" onclick="window.filterCategory('Utilidades', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg><span>Utilidades</span></div>
-        </section>
-
-        <h2 class="section-title" id="list-title">Lojas</h2>
-        <main class="store-list" id="store-list-container"></main>
-    </main>
+    <h2 class="section-title" id="list-title">Lojas</h2>
+    <main class="store-list" id="store-list-container"></main>
 
     <nav class="bottom-nav">
         <a href="index.html" class="nav-link active"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img" alt="Início"><span>Início</span></a>
@@ -174,23 +139,9 @@
         <div class="cart-badge-float" id="floating-cart-count">0</div>
     </a>
 
-    <div id="city-modal" class="city-modal-overlay">
-        <div class="city-modal-content">
-            <button class="city-modal-close" id="btn-close-city-modal" onclick="window.closeCityModal()">✕</button>
-            <div class="city-modal-icon">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            </div>
-            <h2 class="city-modal-title">Onde você está?</h2>
-            <p class="city-modal-desc">Selecione sua cidade para ver os melhores estabelecimentos perto de você.</p>
-            <div class="city-list" id="modal-city-list">
-                <p style="color:#aaa; font-size:0.9rem;">Buscando cidades...</p>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -212,181 +163,83 @@
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBanner.style.display = 'flex'; });
         installBtn.addEventListener('click', async () => { installBanner.style.display = 'none'; if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; } });
         
-        let userCity = localStorage.getItem('userCity');
-        let globalCities = [];
         let allActiveSponsors = [];
-        let bannerInterval; 
-
-        const loadSponsors = async () => {
-            const sponsorsSnap = await getDocs(collection(db, "sponsors"));
-            allActiveSponsors = []; 
-            sponsorsSnap.forEach(doc => {
-                const s = doc.data();
-                if (!s.city || s.city === 'all' || s.city === userCity) {
-                    allActiveSponsors.push(s);
-                }
-            });
+        onSnapshot(collection(db, "sponsors"), (snapshot) => {
+            allActiveSponsors = []; snapshot.forEach(doc => allActiveSponsors.push(doc.data()));
             allActiveSponsors.sort((a,b) => a.timestamp - b.timestamp);
-        };
+        });
 
-        window.addEventListener('load', async () => {
+        window.addEventListener('load', () => {
             const splash = document.getElementById('splash-screen');
             const sponsorWrapper = document.getElementById('sponsor-wrapper');
             const sponsorContent = document.getElementById('sponsor-content');
 
-            window.updateCartBadge();
-
-            const citiesSnap = await getDocs(collection(db, "cities"));
-            citiesSnap.forEach(doc => { globalCities.push({ id: doc.id, ...doc.data() }); });
-            globalCities.sort((a,b) => a.name.localeCompare(b.name));
-
             if (sessionStorage.getItem('splashShown') === 'true') {
                 if (splash) splash.style.display = 'none';
                 if (sponsorWrapper) sponsorWrapper.style.display = 'none';
-                if (!userCity) { window.openCityModal(false); } else { 
-                    document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
-                    window.loadCityContent(); 
-                }
-                return;
+                window.updateCartBadge(); return;
             }
 
             sessionStorage.setItem('splashShown', 'true');
-            
-            if(!userCity) {
-                setTimeout(() => {
-                    if (splash) { splash.classList.add('hidden'); setTimeout(() => { splash.style.display = 'none'; window.openCityModal(false); }, 500); }
-                }, 1500);
-            } else {
-                await loadSponsors();
-                document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
-                
-                setTimeout(() => {
-                    if (splash) {
-                        if(allActiveSponsors.length > 0 && sponsorWrapper) { sponsorWrapper.style.display = 'flex'; }
-                        splash.classList.add('hidden'); 
-                        setTimeout(() => { 
-                            splash.style.display = 'none'; 
-                            if(allActiveSponsors.length > 0 && sponsorWrapper) {
-                                let indexAtual = 0;
-                                function mostrarProximoPatrocinador() {
-                                    if (indexAtual >= allActiveSponsors.length) {
-                                        sponsorWrapper.style.transition = "opacity 0.5s ease"; sponsorWrapper.style.opacity = "0";
-                                        setTimeout(() => { sponsorWrapper.style.display = 'none'; window.loadCityContent(); }, 500); return;
-                                    }
-                                    const spAtual = allActiveSponsors[indexAtual];
-                                    const classEfeito = `effect-${spAtual.transition || 'fade'}`;
-                                    const tempoMs = (spAtual.duration || 2) * 1000;
-                                    sponsorContent.className = classEfeito; 
-                                    sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador">`;
-                                    void sponsorContent.offsetWidth; 
-                                    sponsorContent.classList.add('active'); 
-                                    setTimeout(() => {
-                                        sponsorContent.classList.remove('active'); 
-                                        setTimeout(() => { indexAtual++; mostrarProximoPatrocinador(); }, 600); 
-                                    }, tempoMs); 
+            setTimeout(() => {
+                if (splash) {
+                    if(allActiveSponsors.length > 0 && sponsorWrapper) { sponsorWrapper.style.display = 'flex'; }
+                    splash.classList.add('hidden'); 
+                    setTimeout(() => { 
+                        splash.style.display = 'none'; 
+                        if(allActiveSponsors.length > 0 && sponsorWrapper) {
+                            let indexAtual = 0;
+                            function mostrarProximoPatrocinador() {
+                                if (indexAtual >= allActiveSponsors.length) {
+                                    sponsorWrapper.style.transition = "opacity 0.5s ease"; sponsorWrapper.style.opacity = "0";
+                                    setTimeout(() => sponsorWrapper.style.display = 'none', 500); return;
                                 }
-                                mostrarProximoPatrocinador(); 
-                            } else if (sponsorWrapper) { sponsorWrapper.style.display = 'none'; window.loadCityContent(); }
-                        }, 500); 
-                    }
-                }, 1500); 
-            }
+                                const spAtual = allActiveSponsors[indexAtual];
+                                const classEfeito = `effect-${spAtual.transition || 'fade'}`;
+                                const tempoMs = (spAtual.duration || 2) * 1000;
+                                sponsorContent.className = classEfeito; 
+                                sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador">`;
+                                void sponsorContent.offsetWidth; 
+                                sponsorContent.classList.add('active'); 
+                                setTimeout(() => {
+                                    sponsorContent.classList.remove('active'); 
+                                    setTimeout(() => { indexAtual++; mostrarProximoPatrocinador(); }, 600); 
+                                }, tempoMs); 
+                            }
+                            mostrarProximoPatrocinador(); 
+                        } else if (sponsorWrapper) { sponsorWrapper.style.display = 'none'; }
+                    }, 500); 
+                }
+            }, 1500); 
+            window.updateCartBadge();
         });
 
-        window.openCityModal = (canClose = true) => {
-            const modal = document.getElementById('city-modal');
-            const closeBtn = document.getElementById('btn-close-city-modal');
-            const listContainer = document.getElementById('modal-city-list');
-            
-            if (canClose && userCity) { closeBtn.style.display = 'flex'; } 
-            else { closeBtn.style.display = 'none'; }
-
-            if (globalCities.length === 0) {
-                listContainer.innerHTML = '<p style="color:#aaa;">Nenhuma cidade cadastrada ainda.</p>';
-            } else {
-                listContainer.innerHTML = globalCities.map(c => {
-                    const cityString = `${c.name} - ${c.state}`;
-                    const isSelected = userCity === cityString;
-                    return `
-                    <button class="city-item-btn" onclick="window.selectCity('${cityString}')" ${isSelected ? 'style="border-color:#ea1d2c; background:#fff5f5;"' : ''}>
-                        <span>${c.name} <span style="font-size:0.8rem; color:#888; font-weight:normal;">(${c.state})</span></span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${isSelected ? '#ea1d2c' : 'currentColor'}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                    `;
-                }).join('');
-            }
-            modal.classList.add('active');
-        };
-
-        window.closeCityModal = () => { document.getElementById('city-modal').classList.remove('active'); };
-
-        window.selectCity = (cityString) => {
-            userCity = cityString;
-            localStorage.setItem('userCity', cityString);
-            document.getElementById('header-city-name').innerText = cityString.split(' - ')[0];
-            closeCityModal();
-            window.loadCityContent();
-        };
-
-        window.loadCityContent = () => {
-            document.getElementById('main-content').style.display = 'block';
-            document.getElementById('stores-container').innerHTML = '<div style="text-align:center; padding: 40px; color:#999;">Buscando as melhores opções na sua cidade...</div>';
-            
-            // 1. CARREGAR BANNERS
-            onSnapshot(collection(db, "banners"), (snapshot) => {
-                const bannerContainer = document.getElementById('banner-wrapper');
-                const track = document.getElementById('banner-track');
-                let bannersHtml = '';
-                snapshot.forEach(doc => {
-                    const b = doc.data();
-                    if (!b.city || b.city === 'all' || b.city === userCity) {
-                        bannersHtml += `<img src="${b.image}" class="banner-slide">`;
+        onSnapshot(collection(db, "banners"), (snapshot) => {
+            const track = document.getElementById('banner-track');
+            const wrapper = document.getElementById('banner-wrapper');
+            const banners = [];
+            snapshot.forEach(doc => banners.push(doc.data()));
+            if(banners.length > 0) {
+                wrapper.style.display = 'block';
+                track.innerHTML = banners.map(b => `<img src="${b.image}" class="banner-slide">`).join('');
+                let currentIndex = 0;
+                setInterval(() => {
+                    if (track.children.length > 1) {
+                        currentIndex++;
+                        if(currentIndex >= track.children.length) currentIndex = 0;
+                        track.scrollTo({ left: (track.clientWidth + 12) * currentIndex, behavior: 'smooth' });
                     }
-                });
-                
-                if(bannersHtml === '') { 
-                    bannerContainer.style.display = 'none'; 
-                } else { 
-                    bannerContainer.style.display = 'block'; 
-                    track.innerHTML = bannersHtml; 
-                    clearInterval(bannerInterval);
-                    let currentIndex = 0;
-                    bannerInterval = setInterval(() => {
-                        if (track.children.length > 1) {
-                            currentIndex++;
-                            if(currentIndex >= track.children.length) currentIndex = 0;
-                            track.scrollTo({ left: (track.clientWidth + 12) * currentIndex, behavior: 'smooth' });
-                        }
-                    }, 3500);
-                }
-            });
+                }, 3500);
+            } else { wrapper.style.display = 'none'; }
+        });
 
-            // 2. CARREGAR LOJAS (Usando apenas o filtro da cidade para evitar o erro de índice no Firebase)
-            const qStores = query(collection(db, "stores"), where("city", "==", userCity));
-            onSnapshot(qStores, (snapshot) => {
-                allStores = [];
-                snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() }));
-                window.renderStores();
-            });
-        }
+        onSnapshot(collection(db, "stores"), (snapshot) => {
+            allStores = []; snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); window.renderStores();
+        });
 
         window.renderStores = () => {
-            const container = document.getElementById('stores-container');
-            
-            // Filtra no Javascript as lojas que estão ativas
-            let activeStoresOnly = allStores.filter(s => s.isActive !== false);
-
-            if (activeStoresOnly.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                        <h3>Poxa, ainda não chegamos aí!</h3>
-                        <p>Nenhuma loja cadastrada em ${userCity ? userCity.split(' - ')[0] : 'sua cidade'} no momento.</p>
-                    </div>`;
-                return;
-            }
-
-            let filteredStores = activeStoresOnly;
+            const container = document.getElementById('store-list-container');
+            let filteredStores = allStores.filter(s => s.isActive !== false);
 
             if (currentCategoryFilter && currentCategoryFilter !== 'Todos') {
                 filteredStores = filteredStores.filter(s => s.cat && s.cat.toLowerCase().includes(currentCategoryFilter.toLowerCase()));
@@ -412,22 +265,25 @@
             });
 
             filteredStores.sort((a, b) => {
-                const getWeight = (store) => { if (store.dynamicStatus === 'Fechado') return 1; return 0; };
+                const getWeight = (store) => { if (store.isActive === false) return 2; if (store.dynamicStatus === 'Fechado') return 1; return 0; };
                 return getWeight(a) - getWeight(b);
             });
 
-            if (filteredStores.length === 0) { container.innerHTML = `<p style="padding: 30px 0; color: #999; text-align: center;">Nenhuma loja encontrada nesta categoria.</p>`; return; }
+            if (filteredStores.length === 0) { container.innerHTML = `<p style="padding: 30px 0; color: #999; text-align: center;">Nenhuma loja encontrada.</p>`; return; }
 
             container.innerHTML = filteredStores.map(s => {
-                const isClosed = s.dynamicStatus === 'Fechado';
-                const cardClass = isClosed ? 'store-card closed' : 'store-card';
+                const isSuspended = s.isActive === false; const isClosed = s.dynamicStatus === 'Fechado';
+                const cardClass = (isClosed || isSuspended) ? 'store-card closed' : 'store-card';
                 let statusText = s.dynamicStatus; let statusColor = isClosed ? '#717171' : '#00a14b'; 
+                if (isSuspended) { statusText = 'Indisponível'; statusColor = '#ea1d2c'; } 
                 
+                const onClickAction = isSuspended ? `alert('Esta loja está indisponível.');` : `window.location.href='loja.html?id=${s.id}'`;
+                me 
                 return `
-                <a href="loja.html?id=${s.id}" class="${cardClass}">
+                <a href="javascript:void(0)" class="${cardClass}" onclick="${onClickAction}">
                     <img src="${s.logo || 'https://via.placeholder.com/80'}" class="store-logo" alt="Logo">
                     <div class="store-info">
-                        <div class="store-name">${s.name}</div>
+                        <h3>${s.name}</h3>
                         <div class="store-details"><span>${s.cat || 'Geral'}</span><span class="dot">•</span><span style="font-weight: bold; color: ${statusColor};">${statusText}</span></div>
                     </div>
                 </a>`;
