@@ -46,9 +46,6 @@
         .city-selector-btn:active { transform: scale(0.95); background: #ffebeb; }
         .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
 
-        .cart-icon { position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #f4f5f7; color: #555; text-decoration: none;}
-        .cart-badge { position: absolute; top: -2px; right: -2px; background: #ea1d2c; color: #fff; font-size: 0.7rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
-
         /* MODAL DE ESCOLHA DE CIDADE */
         .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; }
         .city-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
@@ -94,11 +91,14 @@
         .store-card.closed:active { transform: none; background-color: #fff; }
         .store-logo { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 1px solid #eee; object-fit: cover; flex-shrink: 0;}
         .store-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
-        .store-info h3 { font-size: 1rem; color: #111; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* COR DO NOME DA LOJA (PADRÃO APP) */
+        .store-name { font-size: 1.1rem; font-weight: 800; color: #ea1d2c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
+        
         .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
-        /* MENU INFERIOR */
+        /* MENU INFERIOR & CARRINHO FLUTUANTE */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
         .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
         .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
@@ -144,11 +144,6 @@
             <span class="city-name-label" id="header-city-name">Carregando...</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
-
-        <a href="carrinho.html" class="cart-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            <div class="cart-badge" id="cart-count">0</div>
-        </a>
     </header>
 
     <main id="main-content" style="display: none;">
@@ -198,7 +193,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -208,11 +203,10 @@
             messagingSenderId: "1029498697239",
             appId: "1:1029498697239:web:3ebc070bbd65048bd9ce52"
         };
-        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // VARIÁVEIS GLOBAIS (Em Memória para evitar erro de Index do Firebase)
+        // VARIÁVEIS GLOBAIS
         let allStores = []; 
         let allBanners = [];
         let globalCities = [];
@@ -229,13 +223,12 @@
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBanner.style.display = 'flex'; });
         installBtn.addEventListener('click', async () => { installBanner.style.display = 'none'; if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; } });
         
-        // 🟢 MÁGICA EM TEMPO REAL (Carrega tudo instantaneamente) 🟢
+        // CARREGAMENTO EM TEMPO REAL 
         onSnapshot(collection(db, "cities"), (snapshot) => {
             globalCities = [];
             snapshot.forEach(doc => globalCities.push({ id: doc.id, ...doc.data() }));
             globalCities.sort((a,b) => a.name.localeCompare(b.name));
             
-            // Se o modal estiver aberto, atualiza a lista na hora
             if(document.getElementById('city-modal').classList.contains('active')) {
                 window.openCityModal(!(!userCity)); 
             }
@@ -259,15 +252,13 @@
             allActiveSponsors.sort((a,b) => a.timestamp - b.timestamp);
         });
 
-
-        // 🟢 INICIALIZAÇÃO DA TELA 🟢
+        // INICIALIZAÇÃO DA TELA 
         window.addEventListener('load', () => {
             window.updateCartBadge();
             const splash = document.getElementById('splash-screen');
             const sponsorWrapper = document.getElementById('sponsor-wrapper');
             const sponsorContent = document.getElementById('sponsor-content');
 
-            // Se já abriu o app nessa sessão, pula o splash screen
             if (sessionStorage.getItem('splashShown') === 'true') {
                 if (splash) splash.style.display = 'none';
                 if (sponsorWrapper) sponsorWrapper.style.display = 'none';
@@ -283,7 +274,6 @@
 
             sessionStorage.setItem('splashShown', 'true');
             
-            // Primeira vez abrindo (mostra Splash)
             setTimeout(() => {
                 if (splash) splash.classList.add('hidden'); 
                 
@@ -295,7 +285,6 @@
                     } else {
                         document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
                         
-                        // Lógica do Patrocinador
                         const citySponsors = allActiveSponsors.filter(s => !s.city || s.city === 'all' || s.city === userCity);
                         if(citySponsors.length > 0 && sponsorWrapper) {
                             sponsorWrapper.style.display = 'flex';
@@ -329,7 +318,7 @@
             }, 1500); 
         });
 
-        // 🟢 FUNÇÕES DO MODAL DE CIDADES 🟢
+        // FUNÇÕES DO MODAL DE CIDADES 
         window.openCityModal = (canClose = true) => {
             const modal = document.getElementById('city-modal');
             const closeBtn = document.getElementById('btn-close-city-modal');
@@ -365,7 +354,7 @@
             window.loadCityContent();
         };
 
-        // 🟢 RENDERIZAÇÃO CENTRAL (Feita 100% no JS, Sem Erros de Firebase) 🟢
+        // RENDERIZAÇÃO CENTRAL 
         window.loadCityContent = () => {
             document.getElementById('main-content').style.display = 'block';
             window.renderBanners();
@@ -405,10 +394,7 @@
             const container = document.getElementById('store-list-container');
             if(!userCity) return;
 
-            // 1. Filtra as Lojas para a Cidade Escolhida
             let filteredStores = allStores.filter(s => s.city === userCity);
-            
-            // 2. Exclui lojas bloqueadas/inativas
             filteredStores = filteredStores.filter(s => s.isActive !== false);
 
             if (filteredStores.length === 0) {
@@ -417,12 +403,10 @@
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                         <h3>Poxa, ainda não chegamos aí!</h3>
                         <p>Nenhuma loja ativa cadastrada em ${userCity.split(' - ')[0]} no momento.</p>
-                        <p style="font-size:0.8rem; margin-top:15px; color:#ea1d2c; font-weight:bold;">⚠️ Aviso p/ Admin: Vá na edição de lojas e vincule a loja a esta cidade!</p>
                     </div>`;
                 return;
             }
 
-            // 3. Filtro de Categorias (Lanches, Pizzas, etc)
             if (currentCategoryFilter && currentCategoryFilter !== 'Todos') {
                 filteredStores = filteredStores.filter(s => s.cat && s.cat.toLowerCase().includes(currentCategoryFilter.toLowerCase()));
                 if(filteredStores.length === 0) {
@@ -434,7 +418,6 @@
             const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
             const currentDayStr = daysMap[now.getDay()]; const currentMins = now.getHours() * 60 + now.getMinutes();
 
-            // 4. Lógica de Aberto/Fechado
             filteredStores = filteredStores.map(s => {
                 let dynamicStatus = s.status || 'Aberto';
                 if (dynamicStatus === 'Aberto' && s.schedule) {
@@ -451,7 +434,6 @@
                 return { ...s, dynamicStatus };
             });
 
-            // Ordena as Abertas para cima
             filteredStores.sort((a, b) => {
                 const getWeight = (store) => { if (store.dynamicStatus === 'Fechado') return 1; return 0; };
                 return getWeight(a) - getWeight(b);
