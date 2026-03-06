@@ -39,7 +39,7 @@
         .search-bar-container { position: relative; margin-bottom: 5px; }
         .search-input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #ddd; border-radius: 50px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; font-family: 'Roboto', sans-serif;}
         .search-input:focus { background: #fff; border-color: #ea1d2c; box-shadow: 0 0 0 3px rgba(234,29,44,0.1); }
-        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: #999; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; }
 
         /* CUPONS NA LOJA (TICKET VERMELHO) */
         .store-coupons-container { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
@@ -68,7 +68,7 @@
         .store-cat-btn { flex: 0 0 auto; background: #f2f2f2; border: none; padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; color: #555; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; }
         .store-cat-btn.active { background: #ea1d2c; color: #fff; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
 
-        /* 🟢 TÍTULO DA CATEGORIA EM VERMELHO 🟢 */
+        /* TÍTULO DA CATEGORIA EM VERMELHO */
         .menu-section-title { font-size: 1.2rem; font-weight: 800; color: #ea1d2c; margin: 20px 15px 10px; }
         
         .products-vertical { display: flex; flex-direction: column; padding: 0; background: #fff; }
@@ -482,7 +482,9 @@
                     ${statusBannerHTML}
 
                     <div class="search-bar-container">
-                        <span class="search-icon">🔍</span>
+                        <span class="search-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </span>
                         <input type="text" class="search-input" placeholder="Buscar por produto ou ingrediente" oninput="window.filterProducts(this.value)">
                     </div>
 
