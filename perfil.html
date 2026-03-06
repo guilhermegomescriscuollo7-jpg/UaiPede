@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil - Dores Delivery</title>
+    <title>Meu Perfil - UaiPede</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
@@ -42,8 +42,8 @@
         
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 5px; font-weight: bold; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; }
-        .form-group input:focus { border-color: #ea1d2c; background: #fff; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; color: #333; font-family: 'Roboto', sans-serif;}
+        .form-group input:focus, .form-group select:focus { border-color: #ea1d2c; background: #fff; }
         .row { display: flex; gap: 10px; }
         .row .form-group { flex: 1; }
 
@@ -93,13 +93,10 @@
                     </div>
                 </div>
                 
-                <div class="row">
-                    <div class="form-group" style="flex: 0.7;">
-                        <input type="text" id="p-cidade" placeholder="Cidade" value="Doresópolis">
-                    </div>
-                    <div class="form-group" style="flex: 0.3;">
-                        <input type="text" id="p-estado" placeholder="UF" value="MG" maxlength="2" style="text-transform: uppercase;">
-                    </div>
+                <div class="form-group">
+                    <select id="p-cidade">
+                        <option value="">Carregando cidades...</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -186,6 +183,32 @@
         let userDocId = null;
         let fullUserData = null; 
 
+        // 🟢 CARREGAR CIDADES NO DROPDOWN 🟢
+        async function loadCities(userSavedCity) {
+            const citySelect = document.getElementById('p-cidade');
+            try {
+                const citiesSnap = await getDocs(collection(db, "cities"));
+                let cities = [];
+                citiesSnap.forEach(doc => { cities.push(doc.data()); });
+                cities.sort((a, b) => a.name.localeCompare(b.name));
+
+                let html = '<option value="">Selecione sua cidade...</option>';
+                cities.forEach(c => {
+                    const cityString = `${c.name} - ${c.state}`;
+                    html += `<option value="${cityString}">${cityString}</option>`;
+                });
+                citySelect.innerHTML = html;
+
+                // Se o usuário já tiver uma cidade salva, seleciona ela automaticamente
+                if (userSavedCity) {
+                    citySelect.value = userSavedCity;
+                }
+            } catch (error) {
+                console.error("Erro ao carregar cidades:", error);
+                citySelect.innerHTML = '<option value="">Erro ao carregar cidades</option>';
+            }
+        }
+
         window.onload = async () => {
             if (!isLogged) {
                 document.getElementById('unlogged-state').style.display = 'block';
@@ -208,15 +231,23 @@
                             userDocId = documento.id; 
                             fullUserData = documento.data(); 
                             
+                            // Tenta pegar a cidade da raiz do cadastro novo, se não achar tenta do endereço antigo
+                            let savedCity = fullUserData.city || '';
+                            
                             if(fullUserData.address) {
                                 document.getElementById('p-rua').value = fullUserData.address.rua || '';
                                 document.getElementById('p-num').value = fullUserData.address.num || '';
                                 document.getElementById('p-bairro').value = fullUserData.address.bairro || '';
                                 document.getElementById('p-comp').value = fullUserData.address.comp || '';
-                                // Puxa Cidade e Estado se já existirem, ou mantém o padrão Doresópolis/MG
-                                document.getElementById('p-cidade').value = fullUserData.address.cidade || 'Doresópolis';
-                                document.getElementById('p-estado').value = fullUserData.address.estado || 'MG';
+                                
+                                // Puxa do endereço antigo se a raiz estiver vazia
+                                if(!savedCity && fullUserData.address.cidade) {
+                                    savedCity = fullUserData.address.cidade;
+                                }
                             }
+                            
+                            // Carrega a lista de cidades e já preenche com a cidade atual do usuário
+                            loadCities(savedCity);
                         });
                     }
                 } catch(e) {
@@ -225,17 +256,16 @@
             }
         };
 
-        // Função para salvar o endereço no Firebase (AGORA COM CIDADE E ESTADO)
+        // Função para salvar o endereço no Firebase
         window.saveAddress = async () => {
             const rua = document.getElementById('p-rua').value.trim();
             const num = document.getElementById('p-num').value.trim();
             const bairro = document.getElementById('p-bairro').value.trim();
-            const cidade = document.getElementById('p-cidade').value.trim();
-            const estado = document.getElementById('p-estado').value.trim().toUpperCase();
+            const cidade = document.getElementById('p-cidade').value; // Pega do dropdown
             const comp = document.getElementById('p-comp').value.trim();
 
-            if (!rua || !num || !bairro || !cidade || !estado) {
-                alert("Por favor, preencha Rua, Número, Bairro, Cidade e Estado.");
+            if (!rua || !num || !bairro || !cidade) {
+                alert("Por favor, preencha Rua, Número, Bairro e Cidade.");
                 return;
             }
 
@@ -250,8 +280,13 @@
 
             try {
                 await updateDoc(doc(db, "customers", userDocId), {
-                    address: { rua, num, bairro, cidade, estado, comp }
+                    city: cidade, // Mantém a cidade sincronizada com o painel inicial
+                    address: { rua, num, bairro, cidade, comp }
                 });
+                
+                // Atualiza o localStorage para refletir a nova cidade imediatamente na tela principal
+                localStorage.setItem('userCity', cidade);
+                
                 alert("Endereço salvo com sucesso! Ele será usado automaticamente em suas próximas compras.");
             } catch(e) {
                 console.error("Erro ao salvar endereço", e);
@@ -363,6 +398,7 @@
                     localStorage.removeItem('isLogged');
                     localStorage.removeItem('userName');
                     localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userCity');
                     
                     window.location.href = 'index.html';
                 } catch (error) {
