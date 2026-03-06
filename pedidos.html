@@ -2,74 +2,110 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Pedidos - Dores Delivery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meus Pedidos - UaiPede</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent;}
+        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; }
 
         /* HEADER */
-        header { background: #fff; padding: 20px; text-align: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        header h1 { font-size: 1.2rem; font-weight: 700; color: #111; }
+        header { background: #fff; padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: center; gap: 8px;}
+        header h1 { font-size: 1.1rem; font-weight: 800; color: #ea1d2c; text-transform: uppercase; letter-spacing: 0.5px;}
 
         .container { padding: 15px; max-width: 600px; margin: 0 auto; }
 
         /* ESTADO VAZIO */
         .empty-state { text-align: center; padding: 60px 20px; display: none; }
-        .empty-state span { font-size: 3rem; display: block; margin-bottom: 15px; }
-        .empty-state h3 { color: #111; margin-bottom: 10px; font-size: 1.2rem; }
+        .empty-state svg { color: #ccc; margin-bottom: 15px; }
+        .empty-state h3 { color: #111; margin-bottom: 10px; font-size: 1.2rem; font-weight: 800;}
         .empty-state p { color: #717171; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.4; }
         
-        .btn-primary { background: #ea1d2c; color: #fff; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; width: 100%; text-align: center; display: inline-block; text-decoration: none; cursor: pointer; transition: 0.2s; border: none; }
-        .btn-primary:active { background: #c81824; transform: scale(0.98); }
+        .btn-primary { background: #ea1d2c; color: #fff; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; width: 100%; text-align: center; display: inline-block; text-decoration: none; cursor: pointer; transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.98); }
 
-        /* CARD DE PEDIDO (Com borda vermelha) */
-        .order-card { background: #fff; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; border-left: 5px solid #ea1d2c; overflow: hidden; }
+        /* CARD DE PEDIDO (IDÊNTICO À IMAGEM) */
+        .order-card { background: #fff; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 20px 15px; border: 1px solid #f2f2f2; }
         
-        .order-header { padding: 15px; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
-        .store-name { font-weight: 700; color: #111; font-size: 1.05rem; display: flex; align-items: center; gap: 6px; }
-        .order-id { font-weight: 900; color: #ea1d2c; font-size: 0.85rem; background: #fff0f0; padding: 4px 8px; border-radius: 6px; border: 1px solid #fbd5d5; }
+        .store-name { color: #ea1d2c; font-size: 1.25rem; font-weight: 900; text-align: center; margin-bottom: 15px; }
+        
+        .oc-row-1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+        .oc-id { font-size: 0.9rem; color: #555; }
+        .oc-id strong { color: #111; font-weight: 900; }
+        .oc-badge { background: #00a14b; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .oc-badge.orange { background: #f39c12; }
+        .oc-badge.red { background: #ea1d2c; }
+        .btn-details { background: #fff; border: 1px solid #ccc; color: #555; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
 
-        .order-body { padding: 15px; }
-        .order-date { font-size: 0.8rem; color: #888; margin-bottom: 5px; text-align: right; }
-        
-        /* 🟢 BARRA DE PROGRESSO VISUAL (Vermelho Dores Delivery) 🟢 */
-        .progress-container { margin: 25px 0 20px; padding: 0 10px; }
-        .progress-track { display: flex; justify-content: space-between; position: relative; margin-bottom: 10px; }
-        
-        /* Linha Cinza de Fundo */
-        .progress-track::before { content: ""; position: absolute; top: 12px; left: 0; width: 100%; height: 4px; background: #eee; z-index: 1; border-radius: 2px;}
-        
-        /* Linha Vermelha que Preenche */
-        .progress-fill { position: absolute; top: 12px; left: 0; height: 4px; background: #ea1d2c; z-index: 1; transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 2px; }
-        
-        /* Bolinhas */
-        .progress-step { width: 28px; height: 28px; background: #eee; border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; border: 3px solid #fff; transition: 0.4s; }
-        .progress-step.active { background: #ea1d2c; color: #fff; box-shadow: 0 0 10px rgba(234, 29, 44, 0.3); border-color: #fff; }
-        
-        /* Textos da Barra */
-        .progress-labels { display: flex; justify-content: space-between; }
-        .progress-labels span { font-size: 0.65rem; color: #999; font-weight: 600; text-align: center; width: 60px; line-height: 1.2; }
-        .progress-labels span.active { color: #ea1d2c; font-weight: bold; }
+        .oc-row-info { display: flex; justify-content: space-around; align-items: center; margin-bottom: 20px; }
+        .info-item { display: flex; align-items: center; gap: 5px; font-size: 0.95rem; color: #555; font-weight: 500; }
+        .info-item svg { color: #999; }
 
-        /* LISTA DE ITENS */
-        .items-list { list-style: none; padding: 0; margin-bottom: 15px; font-size: 0.9rem; color: #555; border-top: 1px solid #f9f9f9; padding-top: 15px; }
-        .items-list li { margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .item-qty { font-weight: bold; color: #111; margin-right: 5px; }
+        /* BARRA DE PROGRESSO */
+        .progress-wrapper { position: relative; padding: 0 10px; margin-bottom: 5px;}
+        .progress-line-bg { position: absolute; top: 8px; left: 10%; right: 10%; height: 4px; background: #eee; z-index: 1; border-radius: 2px;}
+        .progress-line-fill { position: absolute; top: 8px; left: 10%; height: 4px; background: #00a14b; z-index: 2; transition: width 0.4s; border-radius: 2px;}
+        .progress-dots { display: flex; justify-content: space-between; position: relative; z-index: 3; }
+        .p-dot { width: 20px; height: 20px; background: #eee; border-radius: 50%; border: 3px solid #fff; }
+        .p-dot.active { background: #00a14b; }
         
-        /* BOTÕES DE AÇÃO */
-        .order-actions { padding: 15px; display: flex; gap: 10px; border-top: 1px dashed #eee; }
-        .btn-cancel { background: #fff; color: #ea1d2c; border: 1px solid #ea1d2c; padding: 10px; border-radius: 8px; flex: 1; font-size: 0.85rem; font-weight: bold; cursor: pointer; }
-        .btn-reorder { background: #fff0f0; color: #ea1d2c; border: 1px solid #fbd5d5; padding: 10px; border-radius: 8px; flex: 1; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .progress-texts { display: flex; justify-content: space-between; margin-top: 8px; }
+        .p-text-group { display: flex; flex-direction: column; align-items: center; width: 33%; text-align: center; }
+        .p-label { font-size: 0.7rem; color: #999; font-weight: 500; line-height: 1.2;}
+        .p-time { font-size: 0.7rem; color: #555; font-weight: bold; margin-top: 2px;}
 
-        .order-footer { padding: 15px; background: #fafafa; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee;}
-        .order-total { font-size: 1.1rem; font-weight: 900; color: #111; }
+        /* MODAL DE DETALHES DO PEDIDO */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .modal-content { background: #fff; width: 100%; max-width: 600px; max-height: 90vh; border-radius: 20px 20px 0 0; padding: 20px; overflow-y: auto; animation: slideUp 0.3s; position: relative; padding-bottom: calc(20px + env(safe-area-inset-bottom));}
         
-        /* BADGES DE TIPO DE RECEBIMENTO (Adaptado para cores da marca) */
-        .type-badge { font-size: 0.8rem; font-weight: bold; padding: 6px 12px; border-radius: 8px; display: block; margin-bottom: 10px; text-align: center; }
-        .type-entrega { background: #f4f5f7; color: #333; border: 1px solid #e0e0e0;}
-        .type-retirada { background: #ea1d2c; color: #fff; box-shadow: 0 2px 4px rgba(234, 29, 44, 0.2); }
+        .md-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .md-title { font-size: 1.1rem; font-weight: 900; color: #ea1d2c; }
+        .md-close { background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; }
+
+        .md-store-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .md-store-name { font-size: 1.3rem; font-weight: 900; color: #ea1d2c; }
+
+        .md-btn-chat { width: 100%; border: 2px solid #00a14b; color: #00a14b; background: #fff; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
+        .md-btn-call { width: 100%; border: 2px solid #ea1d2c; color: #ea1d2c; background: #fff; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 0.95rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none;}
+
+        .md-items { list-style: none; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px;}
+        .md-item { font-size: 0.95rem; color: #555; margin-bottom: 8px; }
+        .md-item-name { font-weight: bold; color: #333; }
+        .md-item-obs { font-size: 0.8rem; color: #888; display: block; margin-top: 2px;}
+
+        .md-totals { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; font-size: 0.95rem; color: #777;}
+        .md-tot-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .md-tot-final { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 900; color: #00a14b; margin-top: 10px; }
+
+        .md-footer-info { font-size: 0.85rem; color: #888; line-height: 1.5; }
+        .md-footer-info strong { color: #555; }
+
+        /* MODAL DE CHAT */
+        .chat-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e5ded8; z-index: 10001; display: none; flex-direction: column; }
+        .chat-modal.active { display: flex; animation: fadeIn 0.2s; }
+        .chat-header { background: #ea1d2c; color: #fff; padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding-top: calc(15px + env(safe-area-inset-top));}
+        .chat-back { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; }
+        .chat-header-info { flex: 1; }
+        .chat-header-name { font-weight: bold; font-size: 1.1rem; }
+        .chat-header-id { font-size: 0.8rem; opacity: 0.9; }
+
+        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .chat-sys-msg { background: #555; color: #fff; text-align: center; padding: 12px; border-radius: 8px; font-size: 0.8rem; margin-bottom: 10px; align-self: center; max-width: 90%; line-height: 1.4;}
+        
+        .msg-bubble { max-width: 80%; padding: 10px 12px; border-radius: 12px; font-size: 0.95rem; position: relative; line-height: 1.3;}
+        .msg-time { font-size: 0.65rem; opacity: 0.7; text-align: right; margin-top: 4px; display: block; }
+        
+        .msg-store { background: #fff; color: #333; align-self: flex-start; border-top-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .msg-store .msg-sender { font-size: 0.75rem; font-weight: bold; color: #ea1d2c; margin-bottom: 4px; display: block;}
+        
+        .msg-user { background: #ea1d2c; color: #fff; align-self: flex-end; border-top-right-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        .chat-input-area { background: #f0f0f0; padding: 10px 15px; display: flex; gap: 10px; align-items: center; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+        .chat-input { flex: 1; background: #fff; border: none; padding: 12px 15px; border-radius: 25px; font-size: 1rem; outline: none; }
+        .chat-send-btn { background: #ea1d2c; border: none; width: 45px; height: 45px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;}
+        .chat-send-btn:active { transform: scale(0.95); }
 
         /* MENU INFERIOR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 150; padding-bottom: calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 10px rgba(0,0,0,0.02);}
@@ -77,34 +113,99 @@
         .nav-icon-img { width: 24px; height: 24px; filter: invert(40%); }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
         .nav-link.active .nav-icon-img { filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <header>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#ea1d2c;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
         <h1>Meus Pedidos</h1>
     </header>
 
     <main class="container">
         
         <div id="unlogged-state" class="empty-state">
-            <span>👤</span>
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             <h3>Você não está logado</h3>
             <p>Faça login para ver o histórico e o status dos seus pedidos.</p>
             <a href="login.html" class="btn-primary">Fazer Login</a>
         </div>
 
-        <div id="empty-state" class="empty-state" style="display: none;">
-            <span>🛵</span>
+        <div id="empty-state" class="empty-state">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             <h3>Nenhum pedido ainda</h3>
-            <p>Você ainda não fez nenhum pedido no Dores Delivery.</p>
+            <p>Você ainda não fez nenhum pedido no UaiPede.</p>
             <a href="index.html" class="btn-primary">Ver Lojas</a>
         </div>
 
-        <div id="orders-container">
-            </div>
+        <div id="orders-container"></div>
 
     </main>
+
+    <div class="modal-overlay" id="details-modal">
+        <div class="modal-content">
+            <div class="md-header">
+                <span class="md-title" id="md-title-id">Detalhes do pedido</span>
+                <button class="md-close" onclick="closeDetailsModal()">✕</button>
+            </div>
+            
+            <div class="md-store-row">
+                <span class="md-store-name" id="md-store-name">Loja</span>
+                <span class="oc-badge" id="md-badge">Status</span>
+            </div>
+
+            <button class="md-btn-chat" id="md-btn-chat" onclick="openChatFromDetails()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Conversar com o estabelecimento
+            </button>
+            
+            <a href="#" class="md-btn-call" id="md-btn-call">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                Ligar para o estabelecimento
+            </a>
+
+            <ul class="md-items" id="md-items-list"></ul>
+
+            <div class="md-totals">
+                <div class="md-tot-row"><span>Subtotal:</span> <span id="md-subtotal">R$ 0,00</span></div>
+                <div class="md-tot-row"><span>Taxa de entrega:</span> <span id="md-tax">R$ 0,00</span></div>
+                <div class="md-tot-row"><span>Cupom de descontos:</span> <span id="md-discount">Sem cupom</span></div>
+                <div class="md-tot-final"><span>Total:</span> <span id="md-total">R$ 0,00</span></div>
+            </div>
+
+            <div class="md-footer-info" id="md-footer-text"></div>
+        </div>
+    </div>
+
+    <div class="chat-modal" id="chat-modal">
+        <div class="chat-header">
+            <button class="chat-back" onclick="closeChatModal()">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div class="chat-header-info">
+                <div class="chat-header-name" id="chat-store-name">Loja</div>
+                <div class="chat-header-id" id="chat-order-id">#ID</div>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages-container">
+            <div class="chat-sys-msg">
+                <strong>Mensagem automática</strong><br>
+                Se o pagamento já foi feito pelo app, não realize pagamento adicional na entrega.<br>
+                Sua segurança é prioridade!
+            </div>
+            </div>
+
+        <form class="chat-input-area" id="chat-form">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Digite sua mensagem..." required autocomplete="off">
+            <button type="submit" class="chat-send-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </form>
+    </div>
 
     <nav class="bottom-nav">
         <a href="index.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img" alt="Início"><span>Início</span></a>
@@ -114,7 +215,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, getDoc, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -131,24 +232,10 @@
         const isLogged = !!loggedCustomer || localStorage.getItem('isLogged') === 'true'; 
         const userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
 
-        // FUNÇÃO CANCELAR PEDIDO
-        window.cancelOrder = async (orderId) => {
-            if(confirm("Deseja realmente cancelar este pedido?")) {
-                try {
-                    await updateDoc(doc(db, "orders", orderId), { status: 'Cancelado' });
-                    alert("Pedido cancelado com sucesso.");
-                } catch(e) { alert("Erro ao cancelar."); }
-            }
-        };
-
-        // FUNÇÃO PEDIR NOVAMENTE
-        window.reorderItems = (itemsJson) => {
-            const items = JSON.parse(decodeURIComponent(itemsJson));
-            if(confirm("Deseja adicionar estes mesmos itens ao seu carrinho e pedir novamente?")) {
-                localStorage.setItem('cart', JSON.stringify(items));
-                window.location.href = "carrinho.html";
-            }
-        };
+        let globalOrders = [];
+        let currentChatOrderId = null;
+        let chatUnsubscribe = null;
+        let activeOrderForDetails = null;
 
         window.onload = () => {
             if (!isLogged) {
@@ -159,132 +246,251 @@
             const q = query(collection(db, "orders"), where("customer.email", "==", userEmail));
             
             onSnapshot(q, (snapshot) => {
-                const myOrders = [];
-                snapshot.forEach(doc => myOrders.push({ id: doc.id, ...doc.data() }));
+                globalOrders = [];
+                snapshot.forEach(doc => globalOrders.push({ id: doc.id, ...doc.data() }));
 
                 const container = document.getElementById('orders-container');
                 const emptyState = document.getElementById('empty-state');
 
-                if (myOrders.length === 0) {
+                if (globalOrders.length === 0) {
                     emptyState.style.display = 'block';
                     container.innerHTML = '';
                     return;
                 }
 
                 emptyState.style.display = 'none';
-                myOrders.sort((a, b) => b.timestamp - a.timestamp);
+                globalOrders.sort((a, b) => b.timestamp - a.timestamp);
 
-                container.innerHTML = myOrders.map(order => {
-                    const shortId = order.id.substring(0, 6).toUpperCase();
-                    const itemsHtml = order.items.map(i => `<li><div><span class="item-qty">${i.qty}x</span> ${i.name}</div> <span>R$ ${i.price.toFixed(2)}</span></li>`).join('');
-
-                    // 🟢 LÓGICA DA BARRA DE PROGRESSO PREENCHIDA 🟢
-                    let stepIndex = 0; 
-                    let progressWidth = '0%'; // Pedido Realizado
+                container.innerHTML = globalOrders.map(order => {
+                    const shortId = order.id.substring(0, 8).toUpperCase();
                     
-                    if (order.status === 'Aceito' || order.status === 'Em Preparo' || order.status === 'Aguardando Entregador') {
-                        stepIndex = 1;
-                        progressWidth = '33%'; // Até o segundo ícone
-                    }
-                    if (order.status === 'Saiu para Entrega' || order.status === 'Pronto para Retirada') {
-                        stepIndex = 2;
-                        progressWidth = '66%'; // Até o terceiro ícone
-                    }
-                    if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
-                        stepIndex = 3;
-                        progressWidth = '100%'; // Completa a barra
-                    }
-                    if (order.status === 'Cancelado') {
-                        stepIndex = -1;
+                    // Separa data e hora
+                    let orderDatePart = ''; let orderTimePart = '';
+                    if (order.date) {
+                        const parts = order.date.split(' ');
+                        orderDatePart = parts[0] || '';
+                        orderTimePart = parts[1] || '';
                     }
 
-                    // Lógica dos Botões
-                    let actionButtons = '';
+                    // Configura Badge de Status e Progresso
+                    let badgeClass = 'oc-badge';
+                    let badgeText = order.status;
+                    let stepIndex = 0; 
+                    let p1Time = orderTimePart; let p2Time = ''; let p3Time = '';
+                    let progressWidth = '10%'; // Ponto inicial
+                    
                     if (order.status === 'Pendente') {
-                        actionButtons = `<button class="btn-cancel" onclick="window.cancelOrder('${order.id}')">🚫 Cancelar Pedido</button>`;
-                    } else if (stepIndex === 3 || stepIndex === -1) {
-                        const itemsEncoded = encodeURIComponent(JSON.stringify(order.items));
-                        actionButtons = `<button class="btn-reorder" onclick="window.reorderItems('${itemsEncoded}')">🔄 Pedir Novamente</button>`;
+                        badgeClass += ' orange'; badgeText = 'Aguardando Loja';
+                    } else if (order.status === 'Aceito' || order.status === 'Em Preparo') {
+                        badgeClass += ' orange'; stepIndex = 1; progressWidth = '50%';
+                        p2Time = '--:--'; // Simulado, idealmente salvaríamos no banco
+                    } else if (order.status === 'Saiu para Entrega' || order.status === 'Pronto para Retirada' || order.status === 'Aguardando Entregador') {
+                        badgeClass += ' orange'; stepIndex = 2; progressWidth = '90%';
+                        p2Time = '--:--'; p3Time = '--:--';
+                    } else if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
+                        badgeText = 'Pedido aprovado'; // Texto igual à imagem
+                        stepIndex = 2; progressWidth = '100%';
+                    } else if (order.status === 'Cancelado') {
+                        badgeClass += ' red'; stepIndex = -1; progressWidth = '0%';
                     }
 
                     const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
 
-                    // HTML Da Barra de Progresso com Preenchimento Dinâmico
-                    let progressHtml = `
-                        <div class="progress-container">
-                            <div class="progress-track">
-                                <div class="progress-fill" style="width: ${progressWidth};"></div>
-                                <div class="progress-step ${stepIndex >= 0 ? 'active' : ''}">✓</div>
-                                <div class="progress-step ${stepIndex >= 1 ? 'active' : ''}">🍳</div>
-                                <div class="progress-step ${stepIndex >= 2 ? 'active' : ''}">🛵</div>
-                                <div class="progress-step ${stepIndex >= 3 ? 'active' : ''}">⭐</div>
-                            </div>
-                            <div class="progress-labels">
-                                <span class="${stepIndex >= 0 ? 'active' : ''}">Pedido<br>Realizado</span>
-                                <span class="${stepIndex >= 1 ? 'active' : ''}">Em<br>Preparo</span>
-                                <span class="${stepIndex >= 2 ? 'active' : ''}">${isPickup ? 'Pronto p/<br>Retirar' : 'Saiu p/<br>Entrega'}</span>
-                                <span class="${stepIndex >= 3 ? 'active' : ''}">Finalizado</span>
-                            </div>
-                        </div>`;
-
-                    if(order.status === 'Cancelado') {
-                        progressHtml = `<div style="background:#fff0f0; color:#ea1d2c; text-align:center; padding:10px; border-radius:8px; font-weight:bold; font-size:0.8rem; margin:15px 0;">❌ PEDIDO CANCELADO</div>`;
-                    }
-
-                    // LINHA DA TAXA DE ENTREGA
-                    let deliveryFeeHtml = '';
-                    if (order.deliveryFee !== undefined && !isPickup) {
-                        const feeText = order.deliveryFee > 0 ? `R$ ${parseFloat(order.deliveryFee).toFixed(2)}` : 'Grátis';
-                        const feeColor = order.deliveryFee > 0 ? '#111' : '#00a14b';
-                        deliveryFeeHtml = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed #eee; margin-top: 10px; font-size: 0.85rem;">
-                            <span style="color: #555;">🛵 Taxa de Entrega</span>
-                            <span style="color: ${feeColor}; font-weight: bold;">${feeText}</span>
-                        </div>`;
-                    }
-
-                    // LINHA DO CUPOM DE DESCONTO
-                    let discountHtml = '';
-                    if (order.discount && order.discount > 0) {
-                        discountHtml = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed #eee; margin-top: 10px; font-size: 0.85rem;">
-                            <span style="color: #ea1d2c; font-weight: bold;">🎟️ Cupom aplicado (${order.couponCode})</span>
-                            <span style="color: #ea1d2c; font-weight: bold;">- R$ ${order.discount.toFixed(2)}</span>
-                        </div>`;
-                    }
-
                     return `
-                    <div class="order-card" style="${order.status === 'Cancelado' ? 'opacity: 0.7' : ''}">
-                        <div class="order-header">
-                            <span class="store-name">🏪 ${order.storeName}</span>
-                            <span class="order-id">#${shortId}</span>
-                        </div>
-                        <div class="order-body">
-                            <div class="order-date">${order.date || ''}</div>
-                            <div class="type-badge ${isPickup ? 'type-retirada' : 'type-entrega'}">
-                                ${isPickup ? '🚶‍♂️ RETIRAR NA LOJA' : '🛵 ENTREGA EM CASA'}
-                            </div>
-
-                            ${progressHtml}
-                            
-                            <ul class="items-list">
-                                ${itemsHtml}
-                            </ul>
-
-                            ${deliveryFeeHtml}
-                            ${discountHtml}
-                        </div>
+                    <div class="order-card" style="${order.status === 'Cancelado' ? 'opacity: 0.6;' : ''}">
+                        <div class="store-name">${order.storeName}</div>
                         
-                        ${actionButtons ? `<div class="order-actions">${actionButtons}</div>` : ''}
+                        <div class="oc-row-1">
+                            <div class="oc-id">Pedido: <strong>${shortId}</strong></div>
+                            <div class="${badgeClass}">${badgeText}</div>
+                            <button class="btn-details" onclick="window.openDetailsModal('${order.id}')">Ver detalhes do pedido</button>
+                        </div>
 
-                        <div class="order-footer">
-                            <span style="color: #777; font-size: 0.8rem; font-weight: bold;">💎 ${order.paymentMethod.split(' ')[0]}</span>
-                            <span class="order-total">R$ ${(order.total || 0).toFixed(2)}</span>
+                        <div class="oc-row-info">
+                            <div class="info-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                R$ ${(order.total || 0).toFixed(2)}
+                            </div>
+                            <div class="info-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                ${orderDatePart}
+                            </div>
+                            <div class="info-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                ${orderTimePart}
+                            </div>
+                        </div>
+
+                        <div class="progress-wrapper" style="${stepIndex === -1 ? 'display:none;' : ''}">
+                            <div class="progress-line-bg"></div>
+                            <div class="progress-line-fill" style="width: ${progressWidth};"></div>
+                            <div class="progress-dots">
+                                <div class="p-dot ${stepIndex >= 0 ? 'active' : ''}"></div>
+                                <div class="p-dot ${stepIndex >= 1 ? 'active' : ''}"></div>
+                                <div class="p-dot ${stepIndex >= 2 ? 'active' : ''}"></div>
+                            </div>
+                            <div class="progress-texts">
+                                <div class="p-text-group"><span class="p-label ${stepIndex >= 0 ? 'active' : ''}">Pedido visualizado</span><span class="p-time">(${p1Time})</span></div>
+                                <div class="p-text-group"><span class="p-label ${stepIndex >= 1 ? 'active' : ''}">Pedido aprovado</span><span class="p-time">${p2Time ? `(${p2Time})` : ''}</span></div>
+                                <div class="p-text-group"><span class="p-label ${stepIndex >= 2 ? 'active' : ''}">${isPickup ? 'Pronto p/ retirar' : 'Saiu para entrega'}</span><span class="p-time">${p3Time ? `(${p3Time})` : ''}</span></div>
+                            </div>
                         </div>
                     </div>`;
                 }).join('');
             });
         };
+
+        // ==========================================
+        // LÓGICA DO MODAL DE DETALHES
+        // ==========================================
+        window.openDetailsModal = async (orderId) => {
+            const order = globalOrders.find(o => o.id === orderId);
+            if(!order) return;
+            activeOrderForDetails = order;
+
+            document.getElementById('md-title-id').innerText = `Detalhes do pedido ${order.id.substring(0, 8).toUpperCase()}`;
+            document.getElementById('md-store-name').innerText = order.storeName;
+            
+            let badgeClass = 'oc-badge'; let badgeText = order.status;
+            if(order.status === 'Cancelado') { badgeClass += ' red'; }
+            else if(order.status === 'Entregue' || order.status === 'Concluído') { badgeText = 'Pedido aprovado'; }
+            else { badgeClass += ' orange'; }
+            document.getElementById('md-badge').className = badgeClass;
+            document.getElementById('md-badge').innerText = badgeText;
+
+            // Busca o telefone da loja para o botão de ligar
+            try {
+                const storeSnap = await getDoc(doc(db, "stores", order.storeId));
+                if (storeSnap.exists() && storeSnap.data().phone) {
+                    document.getElementById('md-btn-call').href = `tel:${storeSnap.data().phone}`;
+                } else {
+                    document.getElementById('md-btn-call').onclick = () => alert("Telefone da loja não disponível.");
+                    document.getElementById('md-btn-call').removeAttribute('href');
+                }
+            } catch(e) {}
+
+            // Renderiza Itens
+            let subtotal = 0;
+            const itemsHtml = order.items.map(i => {
+                let details = i.variant ? `(${i.variant})` : ''; 
+                let addonsHtml = i.addons && i.addons.length > 0 ? `<span class="md-item-obs">Adicionais: ${i.addons.join(', ')}</span>` : '';
+                let obsHtml = i.observation ? `<span class="md-item-obs">Observações: ${i.observation}</span>` : '';
+                subtotal += (i.price * i.qty);
+                return `
+                <li class="md-item">
+                    <div><span class="md-item-name">(${i.qty}x) ${i.name} ${details}</span> <span style="float:right;">R$ ${i.price.toFixed(2)}</span></div>
+                    ${addonsHtml}
+                    ${obsHtml}
+                </li>`;
+            }).join('');
+            document.getElementById('md-items-list').innerHTML = itemsHtml;
+
+            // Totais
+            const tax = order.deliveryFee || 0;
+            const discount = order.discount || 0;
+            document.getElementById('md-subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
+            document.getElementById('md-tax').innerText = tax > 0 ? `R$ ${tax.toFixed(2)}` : 'Grátis';
+            document.getElementById('md-discount').innerText = discount > 0 ? `- R$ ${discount.toFixed(2)}` : 'Sem cupom';
+            document.getElementById('md-total').innerText = `R$ ${(order.total || 0).toFixed(2)}`;
+
+            // Footer
+            let footerHtml = `
+                <strong>Data do pedido:</strong> ${order.date ? order.date.split(' ')[0] : ''}<br>
+                <strong>Forma de pagamento:</strong> ${order.paymentMethod}<br><br>
+                <strong>Pedido realizado:</strong> ${order.date ? order.date.split(' ')[1] : ''}<br><br>
+                <strong>Endereço de entrega:</strong> ${order.customer.address || 'Retirada na loja'}<br>
+            `;
+            document.getElementById('md-footer-text').innerHTML = footerHtml;
+
+            document.getElementById('details-modal').classList.add('active');
+        };
+
+        window.closeDetailsModal = () => {
+            document.getElementById('details-modal').classList.remove('active');
+            activeOrderForDetails = null;
+        };
+
+        // ==========================================
+        // LÓGICA DO CHAT
+        // ==========================================
+        window.openChatFromDetails = () => {
+            if(!activeOrderForDetails) return;
+            const order = activeOrderForDetails;
+            window.closeDetailsModal();
+            
+            currentChatOrderId = order.id;
+            document.getElementById('chat-store-name').innerText = order.storeName;
+            document.getElementById('chat-order-id').innerText = '#' + order.id.substring(0, 8).toUpperCase();
+            document.getElementById('chat-modal').classList.add('active');
+
+            // Inscreve no Firebase para mensagens em tempo real
+            const qMsg = query(collection(db, "orders", currentChatOrderId, "messages"), orderBy("timestamp", "asc"));
+            chatUnsubscribe = onSnapshot(qMsg, (snapshot) => {
+                const container = document.getElementById('chat-messages-container');
+                // Mantém a mensagem de sistema
+                let msgsHtml = `
+                    <div class="chat-sys-msg">
+                        <strong>Mensagem automática</strong><br>
+                        Se o pagamento já foi feito pelo app, não realize pagamento adicional na entrega.<br>
+                        Além disso, nunca compartilhe dados pessoais com terceiros.<br>
+                        Sua segurança é prioridade!
+                    </div>
+                `;
+                
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    if(msg.sender === 'store') {
+                        msgsHtml += `
+                        <div class="msg-bubble msg-store">
+                            <span class="msg-sender">${order.storeName}</span>
+                            ${msg.text}
+                            <span class="msg-time">${msg.timeString}</span>
+                        </div>`;
+                    } else {
+                        msgsHtml += `
+                        <div class="msg-bubble msg-user">
+                            ${msg.text}
+                            <span class="msg-time" style="color:rgba(255,255,255,0.8);">${msg.timeString} ✔</span>
+                        </div>`;
+                    }
+                });
+
+                container.innerHTML = msgsHtml;
+                container.scrollTop = container.scrollHeight; // Desce pro final
+            });
+        };
+
+        window.closeChatModal = () => {
+            document.getElementById('chat-modal').classList.remove('active');
+            if(chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
+            currentChatOrderId = null;
+        };
+
+        // Enviar mensagem
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text || !currentChatOrderId) return;
+
+            input.value = ''; // Limpa o campo
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+            try {
+                await addDoc(collection(db, "orders", currentChatOrderId, "messages"), {
+                    text: text,
+                    sender: 'customer',
+                    timestamp: Date.now(),
+                    timeString: timeString
+                });
+            } catch(error) {
+                console.error("Erro ao enviar mensagem:", error);
+                alert("Falha ao enviar mensagem.");
+            }
+        });
+
     </script>
 </body>
 </html>
