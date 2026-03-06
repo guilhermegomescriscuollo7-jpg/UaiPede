@@ -17,12 +17,14 @@
         
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
         .section { display: none; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .section.active { display: block; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
         h2 { margin-bottom: 20px; color: #111; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; display: flex; align-items: center; gap: 8px;}
         
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 0.9rem; margin-bottom: 5px; color: #555; font-weight: 500; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; font-family: 'Roboto', sans-serif;}
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; font-family: 'Roboto', sans-serif; background: #fff;}
         input:focus, select:focus { border-color: #ea1d2c; }
         input[type="range"] { padding: 0; border: none; cursor: pointer; }
         
@@ -45,6 +47,7 @@
         .badge-status { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-top: 4px;}
         .badge-active { background: #e6f4ea; color: #00a14b; }
         .badge-suspended { background: #fef0f0; color: #ea1d2c; }
+        .badge-city { background: #eef4ff; color: #0d6efd; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; border: 1px solid #b6d4fe; display: inline-flex; align-items: center; gap: 4px;}
 
         /* ABA FATURAMENTO E RANKING */
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
@@ -64,7 +67,7 @@
         .r-medal { font-size: 1.8rem; width: 40px; text-align: center; font-weight: 900; color: #999; }
         .r-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #f4f5f7; margin-right: 15px; }
         .r-info { flex: 1; }
-        .r-name { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 2px; }
+        .r-name { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 2px; display: flex; align-items: center; gap: 8px;}
         .r-orders { font-size: 0.8rem; color: #777; font-weight: 500; }
         .r-revenue { text-align: right; }
         .r-revenue-val { font-size: 1.2rem; font-weight: 900; color: #00a14b; }
@@ -85,7 +88,7 @@
             </li>
             <li class="nav-item" onclick="window.switchTab('cidades', this)">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                Cidades
+                Cidades Atendidas
             </li>
             <li class="nav-item" onclick="window.switchTab('faturamento', this)">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -113,7 +116,7 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 Regiões de Atendimento
             </h2>
-            <p style="font-size: 0.95rem; color: #777; margin-bottom: 25px;">Cadastre as cidades onde o UaiPede funciona. Essas cidades aparecerão como opção na hora de registrar uma loja.</p>
+            <p style="font-size: 0.95rem; color: #777; margin-bottom: 25px;">Cadastre as cidades onde o UaiPede funciona. Essa cidade será vinculada a lojas, entregadores e banners.</p>
             
             <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px;">
                 <div class="form-group" style="flex: 2; margin-bottom: 0;">
@@ -131,8 +134,7 @@
             </div>
 
             <h3 style="font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Cidades Ativas no Aplicativo</h3>
-            <div class="item-list" id="city-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
-                </div>
+            <div class="item-list" id="city-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
         </section>
 
         <section id="lojas" class="section active">
@@ -170,7 +172,6 @@
                         <option value="">Cadastre uma cidade primeiro...</option>
                     </select>
                 </div>
-                
                 <div class="form-group" style="flex: 1;">
                     <label>Categoria principal</label>
                     <select id="s-cat">
@@ -212,7 +213,12 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                     Desempenho & Faturamento
                 </h2>
+                
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <select id="filter-city-fat" onchange="window.onCityFatChange()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #111;">
+                        <option value="all">Todas as Cidades</option>
+                    </select>
+
                     <select id="filter-store-fat" onchange="window.renderFaturamento()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #ea1d2c;">
                         <option value="all">Ver Todas as Lojas</option>
                     </select>
@@ -244,8 +250,7 @@
             </div>
 
             <h3 style="font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 15px; margin-top: 20px;">🏆 Detalhamento de Lojas</h3>
-            <ul class="ranking-list" id="ranking-list-render">
-                </ul>
+            <ul class="ranking-list" id="ranking-list-render"></ul>
         </section>
 
         <section id="entregadores" class="section">
@@ -253,14 +258,18 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 Cadastrar Entregador
             </h2>
-            <div class="form-group"><label>Nome Completo</label><input type="text" id="d-name" placeholder="Ex: Carlos Silva"></div>
-            <div class="form-group"><label>WhatsApp / Telefone</label><input type="tel" id="d-phone" placeholder="Ex: (37) 99999-9999"></div>
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 2;"><label>Nome Completo</label><input type="text" id="d-name" placeholder="Ex: Carlos Silva"></div>
+                <div class="form-group" style="flex: 1;"><label>WhatsApp / Telefone</label><input type="tel" id="d-phone" placeholder="Ex: (37) 99999-9999"></div>
+                <div class="form-group" style="flex: 1;"><label>Cidade de Atuação</label><select id="d-city"><option value="">Selecione...</option></select></div>
+            </div>
             <div style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 1;"><label>E-mail (Login)</label><input type="email" id="d-email" placeholder="entregador@email.com"></div>
                 <div class="form-group" style="flex: 1;"><label>Senha</label><input type="text" id="d-pass" placeholder="Senha do app"></div>
             </div>
             <button class="btn" id="btn-save-driver" onclick="window.saveDriver()">Registrar Entregador</button>
             <button class="btn-secondary" id="btn-cancel-driver-edit" onclick="window.cancelEditDriver()">Cancelar Edição</button>
+            
             <h3 style="margin-top: 40px; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Entregadores Cadastrados</h3>
             <div class="item-list" id="driver-list-container"></div>
         </section>
@@ -270,9 +279,19 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 Banners do Aplicativo
             </h2>
-            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Estes banners aparecem girando na tela inicial dos clientes. Recomendado imagens compridas (ex: 800x300).</p>
-            <div class="form-group"><label>Imagem do Banner</label><input type="file" id="b-image" accept="image/*"></div>
+            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Estes banners aparecem girando na tela inicial dos clientes. Você pode definir para qual cidade o banner será exibido.</p>
+            
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;"><label>Imagem do Banner</label><input type="file" id="b-image" accept="image/*"></div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Cidade de Exibição</label>
+                    <select id="b-city">
+                        <option value="all">Todas as Cidades (Global)</option>
+                    </select>
+                </div>
+            </div>
             <button class="btn" onclick="window.saveBanner()">Adicionar ao Carrossel</button>
+            
             <h3 style="margin-top: 30px; font-size: 1rem;">Banners Ativos</h3>
             <div class="item-list" id="banner-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
         </section>
@@ -282,32 +301,42 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                 Patrocinadores da Abertura
             </h2>
-            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Se adicionar mais de uma imagem, o aplicativo irá mostrá-las em sequência na tela inicial (Splash Screen).</p>
+            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Aparecem na tela inicial (Splash Screen) ao abrir o app. Especifique a cidade para publicidade local.</p>
             
-            <div class="form-group">
-                <label>Imagem do Patrocinador (Formato vertical celular)</label>
-                <input type="file" id="sp-image" accept="image/*">
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex:1;">
+                    <label>Imagem do Patrocinador (Vertical)</label>
+                    <input type="file" id="sp-image" accept="image/*">
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label>Cidade de Exibição</label>
+                    <select id="sp-city">
+                        <option value="all">Todas as Cidades (Global)</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="form-group" style="background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #eee;">
-                <label style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    Tempo de Exibição na Tela: <span id="dur-val" style="color:#ea1d2c; font-weight:bold; font-size:1.1rem;">2 Segundos</span>
-                </label>
-                <input type="range" id="sp-duration" min="1" max="10" value="2" step="1" style="width:100%; accent-color:#ea1d2c;" oninput="document.getElementById('dur-val').innerText = this.value + ' Segundos'">
-            </div>
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex:1; background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #eee;">
+                    <label style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        Tempo de Exibição: <span id="dur-val" style="color:#ea1d2c; font-weight:bold;">2 Segundos</span>
+                    </label>
+                    <input type="range" id="sp-duration" min="1" max="10" value="2" step="1" style="width:100%; accent-color:#ea1d2c;" oninput="document.getElementById('dur-val').innerText = this.value + ' Segundos'">
+                </div>
 
-            <div class="form-group">
-                <label>Efeito de Transição</label>
-                <select id="sp-transition" style="font-weight:bold; color:#111;">
-                    <option value="fade">Esmaecer (Surge Suavemente)</option>
-                    <option value="zoom">Aproximar (Efeito Zoom In)</option>
-                    <option value="slide">Deslizar de Baixo (Sobe pela tela)</option>
-                </select>
+                <div class="form-group" style="flex:1;">
+                    <label>Efeito de Transição</label>
+                    <select id="sp-transition" style="font-weight:bold; color:#111;">
+                        <option value="fade">Esmaecer (Surge Suavemente)</option>
+                        <option value="zoom">Aproximar (Efeito Zoom In)</option>
+                        <option value="slide">Deslizar de Baixo (Sobe pela tela)</option>
+                    </select>
+                </div>
             </div>
 
             <button class="btn" id="btn-save-sponsor" onclick="window.saveSponsor()" style="width:100%; padding:15px; font-size:1.1rem; justify-content:center;">Gravar Patrocinador</button>
 
-            <h3 style="margin-top: 30px; font-size: 1rem;">Patrocinadores Ativos na Abertura</h3>
+            <h3 style="margin-top: 30px; font-size: 1rem;">Patrocinadores Ativos</h3>
             <div class="item-list" id="sponsor-list-container" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));"></div>
         </section>
     </main>
@@ -360,15 +389,12 @@
         }
 
         // ==========================================
-        // 🟢 NOVO MÓDULO: CIDADES 🟢
+        // MÓDULO CIDADES
         // ==========================================
         onSnapshot(collection(db, "cities"), (snapshot) => {
             globalCities = [];
             snapshot.forEach(doc => globalCities.push({ id: doc.id, ...doc.data() }));
-            
-            // Ordena alfabeticamente
             globalCities.sort((a, b) => a.name.localeCompare(b.name));
-            
             renderCitiesList();
             populateCityDropdowns();
         });
@@ -379,7 +405,6 @@
             
             if(!name || !state) return alert("Preencha o nome da cidade e a sigla do estado.");
             
-            // Verifica se a cidade já existe
             const exists = globalCities.find(c => c.name.toLowerCase() === name.toLowerCase() && c.state === state);
             if(exists) return alert("Esta cidade já está cadastrada!");
 
@@ -404,7 +429,6 @@
                 container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade cadastrada ainda.</p>`;
                 return;
             }
-
             container.innerHTML = globalCities.map(c => `
                 <div class="card-item" style="justify-content: space-between;">
                     <div style="display:flex; align-items:center; gap:10px;">
@@ -419,21 +443,36 @@
         }
 
         function populateCityDropdowns() {
-            // Dropdown do formulário de Loja
-            const selectStore = document.getElementById('s-city');
-            const currentStoreVal = selectStore.value;
-            
-            let htmlStore = '<option value="">Selecione a cidade...</option>';
-            globalCities.forEach(c => {
-                const cityStr = `${c.name} - ${c.state}`;
-                htmlStore += `<option value="${cityStr}">${cityStr}</option>`;
-            });
-            selectStore.innerHTML = htmlStore;
-            if(currentStoreVal) selectStore.value = currentStoreVal;
+            const cityOptions = globalCities.map(c => `<option value="${c.name} - ${c.state}">${c.name} - ${c.state}</option>`).join('');
+
+            // Loja
+            const currentStoreVal = document.getElementById('s-city').value;
+            document.getElementById('s-city').innerHTML = '<option value="">Selecione a cidade...</option>' + cityOptions;
+            if(currentStoreVal) document.getElementById('s-city').value = currentStoreVal;
+
+            // Entregadores
+            const currentDriverVal = document.getElementById('d-city').value;
+            document.getElementById('d-city').innerHTML = '<option value="">Selecione a cidade...</option>' + cityOptions;
+            if(currentDriverVal) document.getElementById('d-city').value = currentDriverVal;
+
+            // Banners
+            const currentBannerVal = document.getElementById('b-city').value;
+            document.getElementById('b-city').innerHTML = '<option value="all">Todas as Cidades (Global)</option>' + cityOptions;
+            if(currentBannerVal) document.getElementById('b-city').value = currentBannerVal;
+
+            // Patrocinadores
+            const currentSponsorVal = document.getElementById('sp-city').value;
+            document.getElementById('sp-city').innerHTML = '<option value="all">Todas as Cidades (Global)</option>' + cityOptions;
+            if(currentSponsorVal) document.getElementById('sp-city').value = currentSponsorVal;
+
+            // Filtro de Faturamento
+            const currentCityFat = document.getElementById('filter-city-fat').value;
+            document.getElementById('filter-city-fat').innerHTML = '<option value="all">Todas as Cidades</option>' + cityOptions;
+            if(currentCityFat) document.getElementById('filter-city-fat').value = currentCityFat;
         }
 
         // ==========================================
-        // MÓDULO DE FATURAMENTO INTELIGENTE
+        // MÓDULO DE FATURAMENTO
         // ==========================================
         onSnapshot(collection(db, "orders"), (snapshot) => {
             allOrders = [];
@@ -441,11 +480,27 @@
             window.renderFaturamento();
         });
 
+        // Evento ao mudar a cidade no Faturamento
+        window.onCityFatChange = () => {
+            const selectedCity = document.getElementById('filter-city-fat').value;
+            const selectStore = document.getElementById('filter-store-fat');
+            
+            selectStore.innerHTML = '<option value="all">Ver Todas as Lojas</option>';
+
+            allStores.forEach(s => {
+                if (selectedCity === 'all' || s.city === selectedCity) {
+                    selectStore.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+                }
+            });
+            window.renderFaturamento();
+        };
+
         window.renderFaturamento = () => {
             if (!allOrders || !allStores) return;
 
             const filterDate = document.getElementById('filter-faturamento').value;
             const filterStore = document.getElementById('filter-store-fat').value; 
+            const filterCityFat = document.getElementById('filter-city-fat').value;
 
             const nowTime = Date.now();
             const startOfToday = new Date().setHours(0,0,0,0);
@@ -466,6 +521,12 @@
                 
                 if (!showOrder) return;
 
+                const storeOfOrder = allStores.find(s => s.id === order.storeId);
+                
+                // Filtro por cidade
+                if (filterCityFat !== 'all' && (!storeOfOrder || storeOfOrder.city !== filterCityFat)) return;
+                
+                // Filtro por loja
                 if (filterStore !== 'all' && order.storeId !== filterStore) return;
 
                 const vTotal = order.total || 0;
@@ -489,8 +550,10 @@
             document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.02).toFixed(2)}`;
             document.getElementById('fat-pedidos').innerText = totalPedidosApp;
 
-            if (filterStore === 'all') {
+            if (filterStore === 'all' && filterCityFat === 'all') {
                 document.getElementById('fat-card-title-vendas').innerText = 'Vendas Totais do App';
+            } else if (filterStore === 'all' && filterCityFat !== 'all') {
+                document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${filterCityFat}`;
             } else {
                 const sName = allStores.find(s => s.id === filterStore)?.name || 'Loja';
                 document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${sName}`;
@@ -549,6 +612,8 @@
 
         window.saveSponsor = async () => {
             if(!sponsorImgBase64) return alert("Selecione uma imagem!");
+            const city = document.getElementById('sp-city').value;
+
             const btn = document.getElementById('btn-save-sponsor');
             btn.innerText = "Gravando..."; btn.disabled = true;
             try {
@@ -556,6 +621,7 @@
                     image: sponsorImgBase64,
                     duration: parseInt(document.getElementById('sp-duration').value),
                     transition: document.getElementById('sp-transition').value,
+                    city: city,
                     timestamp: Date.now()
                 });
                 sponsorImgBase64 = ''; document.getElementById('sp-image').value = '';
@@ -563,7 +629,7 @@
             } catch(e) {
                 alert("Erro ao salvar. Verifique sua conexão.");
             } finally {
-                btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Gravar Patrocinador`; 
+                btn.innerHTML = `Gravar Patrocinador`; 
                 btn.disabled = false;
             }
         };
@@ -575,11 +641,14 @@
                 if(s.transition === 'zoom') effectName = 'Aproximar (Zoom)';
                 if(s.transition === 'slide') effectName = 'Deslizar (Slide)';
 
+                let cityBadge = s.city === 'all' ? 'Global (Todas as cidades)' : s.city;
+
                 return `
                 <div class="card-item" style="flex-direction:column; align-items:flex-start; width: 100%; max-width: 250px;">
                     <div style="background:#111; color:white; padding:4px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; margin-bottom:5px;">Ordem: ${index + 1}º</div>
                     <img src="${s.image}" style="width:100%; height:250px; object-fit:cover; border-radius:6px; border: 1px solid #ccc;">
-                    <div style="font-size:0.8rem; color:#555; margin-top:10px;">
+                    <div style="font-size:0.8rem; color:#555; margin-top:10px; width: 100%;">
+                        <span class="badge-city" style="width: 100%; justify-content: center; margin-bottom: 5px;">📍 ${cityBadge}</span><br>
                         ⏳ Duração: <strong>${s.duration || 2}s</strong><br>
                         ✨ Efeito: <strong>${effectName}</strong>
                     </div>
@@ -600,13 +669,39 @@
             const file = e.target.files[0];
             if (file) { resizeAndCompressImage(file, (compressedBase64) => { bannerImgBase64 = compressedBase64; }); }
         });
-        onSnapshot(collection(db, "banners"), (snapshot) => { globalBanners = []; snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() })); renderBanners(); });
-        window.saveBanner = async () => { if(!bannerImgBase64) return alert("Selecione uma imagem!"); await addDoc(collection(db, "banners"), { image: bannerImgBase64 }); bannerImgBase64 = ''; document.getElementById('b-image').value = ''; alert("Banner adicionado!"); };
-        function renderBanners() { const container = document.getElementById('banner-list-container'); container.innerHTML = globalBanners.map(b => `<div class="card-item" style="flex-direction:column; align-items:flex-start;"><img src="${b.image}" style="width:100%; height:80px; object-fit:cover; border-radius:6px;"><button class="btn-del" onclick="window.deleteBanner('${b.id}')" style="margin-left:0; margin-top:10px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Excluir</button></div>`).join(''); }
+        
+        onSnapshot(collection(db, "banners"), (snapshot) => { 
+            globalBanners = []; 
+            snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() })); 
+            renderBanners(); 
+        });
+        
+        window.saveBanner = async () => { 
+            if(!bannerImgBase64) return alert("Selecione uma imagem!"); 
+            const city = document.getElementById('b-city').value;
+            await addDoc(collection(db, "banners"), { image: bannerImgBase64, city: city }); 
+            bannerImgBase64 = ''; document.getElementById('b-image').value = ''; alert("Banner adicionado!"); 
+        };
+        
+        function renderBanners() { 
+            const container = document.getElementById('banner-list-container'); 
+            container.innerHTML = globalBanners.map(b => {
+                let cityBadge = (!b.city || b.city === 'all') ? 'Global (Todas)' : b.city;
+                return `
+                <div class="card-item" style="flex-direction:column; align-items:flex-start;">
+                    <img src="${b.image}" style="width:100%; height:120px; object-fit:cover; border-radius:6px;">
+                    <span class="badge-city" style="margin-top: 10px; width: 100%; justify-content: center;">📍 ${cityBadge}</span>
+                    <button class="btn-del" onclick="window.deleteBanner('${b.id}')" style="margin-left:0; margin-top:10px; width:100%; justify-content:center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Excluir
+                    </button>
+                </div>`;
+            }).join(''); 
+        }
+        
         window.deleteBanner = async (id) => { if(confirm("Remover este banner do aplicativo?")) { await deleteDoc(doc(db, "banners", id)); } };
 
         // ==========================================
-        // 🟢 MÓDULO LOJAS (ATUALIZADO COM CIDADES) 🟢
+        // MÓDULO LOJAS
         // ==========================================
         document.getElementById('s-logo').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -617,16 +712,7 @@
             allStores = []; 
             snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
             renderStoreList(); 
-            
-            // Popula o filtro de lojas na aba Faturamento
-            const selectFat = document.getElementById('filter-store-fat');
-            const currentFatVal = selectFat.value;
-            let htmlFat = '<option value="all">Ver Todas as Lojas</option>';
-            allStores.forEach(s => { htmlFat += `<option value="${s.id}">${s.name}</option>`; });
-            selectFat.innerHTML = htmlFat;
-            if(allStores.some(s => s.id === currentFatVal)) selectFat.value = currentFatVal;
-            
-            window.renderFaturamento(); 
+            window.onCityFatChange(); // Atualiza dropdown do faturamento
         });
         
         window.saveStore = async () => { 
@@ -637,8 +723,6 @@
             const email = document.getElementById('s-email').value.trim(); 
             const pass = document.getElementById('s-pass').value.trim(); 
             const cat = document.getElementById('s-cat').value; 
-
-            // 🟢 Pega a cidade do dropdown 🟢
             const cityDropdownVal = document.getElementById('s-city').value;
 
             if(!name || !email || !pass) return alert("Preencha ao menos nome, e-mail e senha da loja."); 
@@ -679,18 +763,15 @@
             document.getElementById('s-doc').value = store.doc || ''; 
             document.getElementById('s-cep').value = store.cep || ''; 
             document.getElementById('s-street').value = store.street || ''; 
-            
-            // 🟢 Seta a cidade no dropdown 🟢
             document.getElementById('s-city').value = store.city || ''; 
-
             document.getElementById('s-email').value = store.email; 
             document.getElementById('s-pass').value = store.password; 
             document.getElementById('s-cat').value = store.cat || 'Restaurantes'; 
             document.getElementById('s-logo').value = ''; 
             storeImgBase64 = ''; 
             
-            document.getElementById('form-store-title').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar Loja`; 
-            document.getElementById('btn-save-store').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Salvar Alterações`; 
+            document.getElementById('form-store-title').innerHTML = `Editar Loja`; 
+            document.getElementById('btn-save-store').innerHTML = `Salvar Alterações`; 
             document.getElementById('btn-save-store').style.backgroundColor = "#0d6efd"; 
             document.getElementById('btn-cancel-edit').style.display = "inline-flex"; 
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
@@ -708,8 +789,8 @@
             document.getElementById('s-logo').value = ''; 
             storeImgBase64 = ''; 
 
-            document.getElementById('form-store-title').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Cadastrar Nova Loja`; 
-            document.getElementById('btn-save-store').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Registrar Loja`; 
+            document.getElementById('form-store-title').innerHTML = `Cadastrar Nova Loja`; 
+            document.getElementById('btn-save-store').innerHTML = `Registrar Loja`; 
             document.getElementById('btn-save-store').style.backgroundColor = "#ea1d2c"; 
             document.getElementById('btn-cancel-edit').style.display = "none"; 
         };
@@ -733,7 +814,7 @@
                     <img src="${s.logo}" class="card-img"> 
                     <div style="flex-grow: 1;"> 
                         <strong style="font-size: 1.1rem; color: #111;">${s.name}</strong><br> 
-                        <span style="font-size:0.8rem; color:#888;">📄 CNPJ/CPF: ${s.doc || 'Não informado'} | 📍 ${s.city || 'Cidade não definida'}</span><br>
+                        <span style="font-size:0.8rem; color:#888;">📄 CNPJ/CPF: ${s.doc || 'Não informado'} | <span class="badge-city">📍 ${s.city || 'Cidade não definida'}</span></span><br>
                         <span style="font-size:0.85rem; color:#555;">✉️ ${s.email} | 🔑 ${s.password}</span><br> 
                         <span class="${badgeClass}">${badgeText}</span> 
                     </div> 
@@ -752,12 +833,89 @@
         // MÓDULO ENTREGADORES
         // ==========================================
         onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
-        window.saveDriver = async () => { const name = document.getElementById('d-name').value.trim(); const phone = document.getElementById('d-phone').value.trim(); const email = document.getElementById('d-email').value.trim(); const pass = document.getElementById('d-pass').value.trim(); if(!name || !email || !pass || !phone) return alert("Preencha todos os dados."); if (editingDriverId) { const emailExists = allDrivers.find(d => d.email === email && d.id !== editingDriverId); if(emailExists) return alert("Já existe outro entregador usando este e-mail."); await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass }); alert("Entregador atualizado!"); } else { const emailExists = allDrivers.find(d => d.email === email); if(emailExists) return alert("Já existe um entregador com este e-mail."); await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, isActive: true }); alert("Entregador cadastrado!"); } window.cancelEditDriver(); };
-        window.editDriver = (id) => { editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; document.getElementById('d-name').value = driver.name; document.getElementById('d-phone').value = driver.phone; document.getElementById('d-email').value = driver.email; document.getElementById('d-pass').value = driver.password; document.getElementById('form-driver-title').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar Entregador`; document.getElementById('btn-save-driver').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Salvar Alterações`; document.getElementById('btn-save-driver').style.backgroundColor = "#0d6efd"; document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); };
-        window.cancelEditDriver = () => { editingDriverId = null; document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; document.getElementById('d-email').value = ''; document.getElementById('d-pass').value = ''; document.getElementById('form-driver-title').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Cadastrar Entregador`; document.getElementById('btn-save-driver').innerHTML = `Registrar Entregador`; document.getElementById('btn-save-driver').style.backgroundColor = "#ea1d2c"; document.getElementById('btn-cancel-driver-edit').style.display = "none"; };
+        
+        window.saveDriver = async () => { 
+            const name = document.getElementById('d-name').value.trim(); 
+            const phone = document.getElementById('d-phone').value.trim(); 
+            const email = document.getElementById('d-email').value.trim(); 
+            const pass = document.getElementById('d-pass').value.trim(); 
+            const city = document.getElementById('d-city').value;
+
+            if(!name || !email || !pass || !phone) return alert("Preencha todos os dados."); 
+            if(!city) return alert("Selecione a cidade do entregador.");
+
+            if (editingDriverId) { 
+                const emailExists = allDrivers.find(d => d.email === email && d.id !== editingDriverId); 
+                if(emailExists) return alert("Já existe outro entregador usando este e-mail."); 
+                await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass, city }); 
+                alert("Entregador atualizado!"); 
+            } else { 
+                const emailExists = allDrivers.find(d => d.email === email); 
+                if(emailExists) return alert("Já existe um entregador com este e-mail."); 
+                await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); 
+                alert("Entregador cadastrado!"); 
+            } 
+            window.cancelEditDriver(); 
+        };
+
+        window.editDriver = (id) => { 
+            editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; 
+            document.getElementById('d-name').value = driver.name; 
+            document.getElementById('d-phone').value = driver.phone; 
+            document.getElementById('d-email').value = driver.email; 
+            document.getElementById('d-pass').value = driver.password; 
+            document.getElementById('d-city').value = driver.city || '';
+            document.getElementById('form-driver-title').innerHTML = `Editar Entregador`; 
+            document.getElementById('btn-save-driver').innerHTML = `Salvar Alterações`; 
+            document.getElementById('btn-save-driver').style.backgroundColor = "#0d6efd"; 
+            document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; 
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
+        };
+
+        window.cancelEditDriver = () => { 
+            editingDriverId = null; 
+            document.getElementById('d-name').value = ''; 
+            document.getElementById('d-phone').value = ''; 
+            document.getElementById('d-email').value = ''; 
+            document.getElementById('d-pass').value = ''; 
+            document.getElementById('d-city').value = '';
+            document.getElementById('form-driver-title').innerHTML = `Cadastrar Entregador`; 
+            document.getElementById('btn-save-driver').innerHTML = `Registrar Entregador`; 
+            document.getElementById('btn-save-driver').style.backgroundColor = "#ea1d2c"; 
+            document.getElementById('btn-cancel-driver-edit').style.display = "none"; 
+        };
+
         window.toggleDriverStatus = async (id) => { const driver = allDrivers.find(d => d.id === id); if (driver) { const newStatus = driver.isActive === false ? true : false; await updateDoc(doc(db, "drivers", id), { isActive: newStatus }); } };
         window.deleteDriver = async (id) => { if(confirm("Tem certeza que deseja remover este entregador do sistema?")) { await deleteDoc(doc(db, "drivers", id)); } };
-        function renderDriverList() { const container = document.getElementById('driver-list-container'); if(allDrivers.length === 0) { container.innerHTML = `<p style="font-size:0.85rem; color:#999;">Nenhum entregador cadastrado.</p>`; return; } container.innerHTML = allDrivers.map(d => { const isActive = d.isActive !== false; const cardClass = isActive ? 'card-item' : 'card-item suspended'; const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; const badgeText = isActive ? '✅ Liberado' : '❌ Bloqueado'; const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear'; return ` <div class="${cardClass}"> <div class="card-img" style="color:#0d6efd;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div> <div style="flex-grow: 1;"> <strong style="font-size: 1.1rem; color: #111;">${d.name}</strong><br> <span style="font-size:0.85rem; color:#555;">📞 ${d.phone} | ✉️ ${d.email} | 🔑 ${d.password}</span><br> <span class="${badgeClass}">${badgeText}</span> </div> <div class="actions-col"> <button class="btn-edit" onclick="window.editDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> <button class="${toggleBtnClass}" onclick="window.toggleDriverStatus('${d.id}')">${toggleBtnText}</button> <span style="color:#ddd;">|</span> <button class="btn-del" onclick="window.deleteDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Apagar</button> </div> </div> `; }).join(''); }
+        
+        function renderDriverList() { 
+            const container = document.getElementById('driver-list-container'); 
+            if(allDrivers.length === 0) { container.innerHTML = `<p style="font-size:0.85rem; color:#999;">Nenhum entregador cadastrado.</p>`; return; } 
+            container.innerHTML = allDrivers.map(d => { 
+                const isActive = d.isActive !== false; 
+                const cardClass = isActive ? 'card-item' : 'card-item suspended'; 
+                const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; 
+                const badgeText = isActive ? '✅ Liberado' : '❌ Bloqueado'; 
+                const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; 
+                const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear'; 
+                return ` 
+                <div class="${cardClass}"> 
+                    <div class="card-img" style="color:#0d6efd;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div> 
+                    <div style="flex-grow: 1;"> 
+                        <strong style="font-size: 1.1rem; color: #111;">${d.name}</strong><br> 
+                        <span style="font-size:0.85rem; color:#555;">📞 ${d.phone} | <span class="badge-city">📍 ${d.city || 'Não definida'}</span></span><br>
+                        <span style="font-size:0.85rem; color:#555;">✉️ ${d.email} | 🔑 ${d.password}</span><br> 
+                        <span class="${badgeClass}">${badgeText}</span> 
+                    </div> 
+                    <div class="actions-col"> 
+                        <button class="btn-edit" onclick="window.editDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> 
+                        <button class="${toggleBtnClass}" onclick="window.toggleDriverStatus('${d.id}')">${toggleBtnText}</button> 
+                        <span style="color:#ddd;">|</span> 
+                        <button class="btn-del" onclick="window.deleteDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Apagar</button> 
+                    </div> 
+                </div> `; 
+            }).join(''); 
+        }
     </script>
 </body>
 </html>
