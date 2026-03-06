@@ -46,6 +46,9 @@
         .city-selector-btn:active { transform: scale(0.95); background: #ffebeb; }
         .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
 
+        .cart-icon { position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #f4f5f7; color: #555; text-decoration: none;}
+        .cart-badge { position: absolute; top: -2px; right: -2px; background: #ea1d2c; color: #fff; font-size: 0.7rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+
         /* MODAL DE ESCOLHA DE CIDADE */
         .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; }
         .city-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
@@ -92,13 +95,13 @@
         .store-logo { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 1px solid #eee; object-fit: cover; flex-shrink: 0;}
         .store-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
         
-        /* COR DO NOME DA LOJA (PADRÃO APP) */
-        .store-name { font-size: 1.1rem; font-weight: 800; color: #ea1d2c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
+        /* 🟢 COR DO NOME DA LOJA (PRETO) 🟢 */
+        .store-name { font-size: 1.1rem; font-weight: 800; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
         
         .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
-        /* MENU INFERIOR & CARRINHO FLUTUANTE */
+        /* MENU INFERIOR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
         .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
         .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
@@ -144,6 +147,11 @@
             <span class="city-name-label" id="header-city-name">Carregando...</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
+
+        <a href="carrinho.html" class="cart-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <div class="cart-badge" id="cart-count">0</div>
+        </a>
     </header>
 
     <main id="main-content" style="display: none;">
@@ -403,6 +411,7 @@
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                         <h3>Poxa, ainda não chegamos aí!</h3>
                         <p>Nenhuma loja ativa cadastrada em ${userCity.split(' - ')[0]} no momento.</p>
+                        <p style="font-size:0.8rem; margin-top:15px; color:#ea1d2c; font-weight:bold;">⚠️ Aviso p/ Admin: Vá na edição de lojas e vincule a loja a esta cidade!</p>
                     </div>`;
                 return;
             }
