@@ -22,8 +22,8 @@
 
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 0.85rem; color: #555; font-weight: 500; margin-bottom: 6px; }
-        .form-group input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; background: #f9f9f9; transition: 0.2s; }
-        .form-group input:focus { border-color: #ea1d2c; background: #fff; }
+        .form-group input, .form-group select { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; background: #f9f9f9; transition: 0.2s; color: #333; font-family: 'Roboto', sans-serif;}
+        .form-group input:focus, .form-group select:focus { border-color: #ea1d2c; background: #fff; }
 
         /* Botão vermelho principal */
         .btn-primary { width: 100%; background: #ea1d2c; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: 10px; }
@@ -65,6 +65,12 @@
                     <label>Celular / WhatsApp</label>
                     <input type="tel" id="phone" placeholder="(37) 99999-9999">
                 </div>
+                <div class="form-group">
+                    <label>Sua Cidade</label>
+                    <select id="regCity">
+                        <option value="">Carregando cidades...</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group">
@@ -80,7 +86,7 @@
         </form>
 
         <div class="toggle-mode" id="toggle-text">
-            Ainda não tem conta? <span class="toggle-link" onclick="toggleMode()">Cadastre-se</span>
+            Ainda não tem conta? <span class="toggle-link" onclick="window.toggleMode()">Cadastre-se</span>
         </div>
 
         <a href="index.html" class="back-link">← Voltar para a página inicial</a>
@@ -108,6 +114,34 @@
             window.location.href = "index.html";
         }
 
+        // 🟢 CARREGAR AS CIDADES DO FIREBASE PARA O CADASTRO 🟢
+        const citySelect = document.getElementById('regCity');
+        async function loadCities() {
+            try {
+                const citiesSnap = await getDocs(collection(db, "cities"));
+                let cities = [];
+                citiesSnap.forEach(doc => { cities.push(doc.data()); });
+                
+                // Organiza por ordem alfabética
+                cities.sort((a, b) => a.name.localeCompare(b.name));
+
+                if (cities.length === 0) {
+                    citySelect.innerHTML = '<option value="">Nenhuma cidade disponível</option>';
+                    return;
+                }
+
+                // Monta o menu dropdown
+                citySelect.innerHTML = '<option value="">Selecione sua cidade...</option>' + 
+                    cities.map(c => `<option value="${c.name} - ${c.state}">${c.name} - ${c.state}</option>`).join('');
+            } catch (error) {
+                console.error("Erro ao carregar cidades:", error);
+                citySelect.innerHTML = '<option value="">Erro ao carregar</option>';
+            }
+        }
+        
+        // Executa a função imediatamente ao abrir a página
+        loadCities();
+
         // Controle de Modo (Login ou Cadastro)
         let isRegisterMode = false;
         
@@ -128,6 +162,7 @@
                 // Torna campos de cadastro obrigatórios
                 document.getElementById('name').required = true;
                 document.getElementById('phone').required = true;
+                document.getElementById('regCity').required = true;
             } else {
                 title.innerText = "Bem-vindo(a)";
                 btnSubmit.innerText = "Entrar";
@@ -137,6 +172,7 @@
                 // Remove obrigatoriedade dos campos de cadastro
                 document.getElementById('name').required = false;
                 document.getElementById('phone').required = false;
+                document.getElementById('regCity').required = false;
             }
         };
 
@@ -154,11 +190,17 @@
             localStorage.setItem('loggedCustomer', JSON.stringify({ 
                 name: userData.name, 
                 email: userData.email, 
-                phone: userData.phone || '' 
+                phone: userData.phone || '',
+                city: userData.city || ''
             }));
             localStorage.setItem('isLogged', 'true');
             localStorage.setItem('userEmail', userData.email);
             localStorage.setItem('userName', userData.name);
+            
+            // 🟢 Garante que a cidade escolhida no cadastro vire a cidade ativa na home 🟢
+            if (userData.city) {
+                localStorage.setItem('userCity', userData.city);
+            }
         }
 
         // Lógica de Submit (Login ou Cadastro)
@@ -184,6 +226,14 @@
                     // === MODO CADASTRO ===
                     const name = document.getElementById('name').value.trim();
                     const phone = document.getElementById('phone').value.trim();
+                    const city = document.getElementById('regCity').value;
+
+                    if (!city) {
+                        showAlert("❌ Por favor, selecione sua cidade.", "error");
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerText = "Cadastrar";
+                        return;
+                    }
 
                     // Verifica se o e-mail já existe
                     const qCheck = query(collection(db, "customers"), where("email", "==", email));
@@ -197,7 +247,7 @@
                     }
 
                     // Salva novo cliente no Firebase
-                    const newUser = { name, email, phone, password: pass };
+                    const newUser = { name, email, phone, city, password: pass };
                     await addDoc(collection(db, "customers"), newUser);
 
                     // Salva a sessão e redireciona
@@ -239,4 +289,3 @@
     </script>
 </body>
 </html>
-
