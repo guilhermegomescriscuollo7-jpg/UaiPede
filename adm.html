@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - Dores Delivery</title>
+    <title>Painel Admin - UaiPede</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f4f5f7; display: flex; height: 100vh; }
         
         .sidebar { width: 250px; background: #111; color: #fff; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; font-weight: bold; font-size: 1.2rem; color: #ea1d2c; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; font-weight: bold; font-size: 1.2rem; color: #ea1d2c; display: flex; align-items: center; gap: 8px;}
         .nav-menu { list-style: none; flex: 1; margin-top: 10px; }
-        .nav-item { padding: 15px 20px; cursor: pointer; color: #aaa; transition: 0.2s; }
+        .nav-item { padding: 15px 20px; cursor: pointer; color: #aaa; transition: 0.2s; display: flex; align-items: center; gap: 10px;}
         .nav-item:hover, .nav-item.active { background: #222; color: #fff; border-left: 4px solid #ea1d2c; }
         
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
         .section { display: none; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .section.active { display: block; }
-        h2 { margin-bottom: 20px; color: #111; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; }
+        h2 { margin-bottom: 20px; color: #111; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; display: flex; align-items: center; gap: 8px;}
         
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 0.9rem; margin-bottom: 5px; color: #555; font-weight: 500; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; font-family: 'Roboto', sans-serif;}
+        input:focus, select:focus { border-color: #ea1d2c; }
         input[type="range"] { padding: 0; border: none; cursor: pointer; }
         
-        .btn { background: #ea1d2c; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn { background: #ea1d2c; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;}
         .btn:hover { background: #c81824; }
         .btn-secondary { background: #ccc; color: #333; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; display: none; margin-left: 10px; }
         
@@ -35,10 +36,10 @@
         .card-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: #eee; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;}
         
         .actions-col { display: flex; gap: 15px; margin-left: auto; align-items: center; }
-        .btn-edit { color: #0d6efd; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .btn-suspend { color: #ea1d2c; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .btn-reactivate { color: #00a14b; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .btn-del { color: #999; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: 0.2s;}
+        .btn-edit { color: #0d6efd; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;}
+        .btn-suspend { color: #ea1d2c; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;}
+        .btn-reactivate { color: #00a14b; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;}
+        .btn-del { color: #999; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 4px;}
         .btn-del:hover { color: #ea1d2c; }
 
         .badge-status { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-top: 4px;}
@@ -73,20 +74,72 @@
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-header">⚙️ Admin Dores</div>
+        <div class="sidebar-header">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
+            UaiPede Admin
+        </div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="window.switchTab('lojas', this)">🏪 Lojas Parceiras</li>
-            <li class="nav-item" onclick="window.switchTab('faturamento', this)">💰 Faturamento</li>
-            <li class="nav-item" onclick="window.switchTab('entregadores', this)">🛵 Entregadores</li>
-            <li class="nav-item" onclick="window.switchTab('banners', this)">🖼️ Banners Home</li>
-            <li class="nav-item" onclick="window.switchTab('patrocinadores', this)">🌟 Patrocinadores</li>
+            <li class="nav-item active" onclick="window.switchTab('lojas', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Lojas Parceiras
+            </li>
+            <li class="nav-item" onclick="window.switchTab('cidades', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Cidades
+            </li>
+            <li class="nav-item" onclick="window.switchTab('faturamento', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                Faturamento
+            </li>
+            <li class="nav-item" onclick="window.switchTab('entregadores', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Entregadores
+            </li>
+            <li class="nav-item" onclick="window.switchTab('banners', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Banners Home
+            </li>
+            <li class="nav-item" onclick="window.switchTab('patrocinadores', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Patrocinadores
+            </li>
         </ul>
     </aside>
 
     <main class="main-content">
         
+        <section id="cidades" class="section">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Regiões de Atendimento
+            </h2>
+            <p style="font-size: 0.95rem; color: #777; margin-bottom: 25px;">Cadastre as cidades onde o UaiPede funciona. Essas cidades aparecerão como opção na hora de registrar uma loja.</p>
+            
+            <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px;">
+                <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                    <label>Nome da Cidade</label>
+                    <input type="text" id="c-name" placeholder="Ex: Doresópolis">
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <label>Estado (UF)</label>
+                    <input type="text" id="c-state" placeholder="Ex: MG" maxlength="2" style="text-transform: uppercase;">
+                </div>
+                <button class="btn" onclick="window.saveCity()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Cadastrar
+                </button>
+            </div>
+
+            <h3 style="font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Cidades Ativas no Aplicativo</h3>
+            <div class="item-list" id="city-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+                </div>
+        </section>
+
         <section id="lojas" class="section active">
-            <h2 id="form-store-title">Cadastrar Nova Loja</h2>
+            <h2 id="form-store-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Cadastrar Nova Loja
+            </h2>
             
             <div style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 2;">
@@ -111,13 +164,20 @@
             </div>
 
             <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 2;">
-                    <label>Cidade</label>
-                    <input type="text" id="s-city" placeholder="Ex: Doresópolis">
-                </div>
                 <div class="form-group" style="flex: 1;">
-                    <label>Estado</label>
-                    <input type="text" id="s-state" placeholder="Ex: MG" maxlength="2">
+                    <label>Cidade da Loja</label>
+                    <select id="s-city" class="form-input">
+                        <option value="">Cadastre uma cidade primeiro...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" style="flex: 1;">
+                    <label>Categoria principal</label>
+                    <select id="s-cat">
+                        <option>Restaurantes</option><option>Lanches</option><option>Bares</option>
+                        <option>Sorveterias</option><option>Mercados</option><option>Farmácias</option>
+                        <option>Loja de Roupas</option><option>Açougue</option><option>Utilidades</option>
+                    </select>
                 </div>
             </div>
 
@@ -130,24 +190,16 @@
                     <label>Senha de Acesso</label>
                     <input type="text" id="s-pass" placeholder="Defina a senha (ex: loja123)"> 
                 </div>
-            </div>
-
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Categoria principal</label>
-                    <select id="s-cat">
-                        <option>Restaurantes</option><option>Lanches</option><option>Bares</option>
-                        <option>Sorveterias</option><option>Mercados</option><option>Farmácias</option>
-                        <option>Loja de Roupas</option><option>Açougue</option><option>Utilidades</option>
-                    </select>
-                </div>
                 <div class="form-group" style="flex: 1;">
                     <label>Logo da Loja (Opcional na edição)</label>
                     <input type="file" id="s-logo" accept="image/*">
                 </div>
             </div>
             
-            <button class="btn" id="btn-save-store" onclick="window.saveStore()">Registrar Loja</button>
+            <button class="btn" id="btn-save-store" onclick="window.saveStore()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                Registrar Loja
+            </button>
             <button class="btn-secondary" id="btn-cancel-edit" onclick="window.cancelEdit()">Cancelar Edição</button>
             
             <h3 style="margin-top: 40px; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Lojas Cadastradas</h3>
@@ -156,12 +208,14 @@
 
         <section id="faturamento" class="section">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                <h2 style="border: none; padding: 0; margin: 0;">Desempenho & Faturamento</h2>
+                <h2 style="border: none; padding: 0; margin: 0;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    Desempenho & Faturamento
+                </h2>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    
                     <select id="filter-store-fat" onchange="window.renderFaturamento()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #ea1d2c;">
                         <option value="all">Ver Todas as Lojas</option>
-                        </select>
+                    </select>
 
                     <select id="filter-faturamento" onchange="window.renderFaturamento()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem; outline: none; cursor: pointer; background: #fff; font-weight: bold; color: #111;">
                         <option value="hoje" selected>Hoje</option>
@@ -195,7 +249,10 @@
         </section>
 
         <section id="entregadores" class="section">
-            <h2 id="form-driver-title">Cadastrar Entregador</h2>
+            <h2 id="form-driver-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Cadastrar Entregador
+            </h2>
             <div class="form-group"><label>Nome Completo</label><input type="text" id="d-name" placeholder="Ex: Carlos Silva"></div>
             <div class="form-group"><label>WhatsApp / Telefone</label><input type="tel" id="d-phone" placeholder="Ex: (37) 99999-9999"></div>
             <div style="display: flex; gap: 15px;">
@@ -209,7 +266,10 @@
         </section>
 
         <section id="banners" class="section">
-            <h2>Gerenciar Banners do Aplicativo</h2>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Banners do Aplicativo
+            </h2>
             <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Estes banners aparecem girando na tela inicial dos clientes. Recomendado imagens compridas (ex: 800x300).</p>
             <div class="form-group"><label>Imagem do Banner</label><input type="file" id="b-image" accept="image/*"></div>
             <button class="btn" onclick="window.saveBanner()">Adicionar ao Carrossel</button>
@@ -218,8 +278,11 @@
         </section>
 
         <section id="patrocinadores" class="section">
-            <h2>Patrocinadores da Abertura (Splash Screen)</h2>
-            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Se adicionar mais de uma imagem, o aplicativo irá mostrá-las em sequência na tela inicial.</p>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Patrocinadores da Abertura
+            </h2>
+            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Se adicionar mais de uma imagem, o aplicativo irá mostrá-las em sequência na tela inicial (Splash Screen).</p>
             
             <div class="form-group">
                 <label>Imagem do Patrocinador (Formato vertical celular)</label>
@@ -234,7 +297,7 @@
             </div>
 
             <div class="form-group">
-                <label>Efeito de Transição (Como a imagem entra na tela)</label>
+                <label>Efeito de Transição</label>
                 <select id="sp-transition" style="font-weight:bold; color:#111;">
                     <option value="fade">Esmaecer (Surge Suavemente)</option>
                     <option value="zoom">Aproximar (Efeito Zoom In)</option>
@@ -242,7 +305,7 @@
                 </select>
             </div>
 
-            <button class="btn" id="btn-save-sponsor" onclick="window.saveSponsor()" style="width:100%; padding:15px; font-size:1.1rem;">Gravar Patrocinador</button>
+            <button class="btn" id="btn-save-sponsor" onclick="window.saveSponsor()" style="width:100%; padding:15px; font-size:1.1rem; justify-content:center;">Gravar Patrocinador</button>
 
             <h3 style="margin-top: 30px; font-size: 1rem;">Patrocinadores Ativos na Abertura</h3>
             <div class="item-list" id="sponsor-list-container" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));"></div>
@@ -265,7 +328,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allStores = []; let allDrivers = []; let globalBanners = []; let globalSponsors = [];
+        let allStores = []; let allDrivers = []; let globalBanners = []; let globalSponsors = []; let globalCities = [];
         let storeImgBase64 = ''; let bannerImgBase64 = ''; let sponsorImgBase64 = '';
         let editingStoreId = null; let editingDriverId = null;
         let allOrders = [];
@@ -296,24 +359,77 @@
             reader.readAsDataURL(file);
         }
 
-        // 🟢 CARREGAMENTO E ALIMENTAÇÃO DO FILTRO DE LOJAS 🟢
-        onSnapshot(collection(db, "stores"), (snapshot) => { 
-            allStores = []; 
-            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
-            renderStoreList(); 
-            populateStoreFilter();
-            window.renderFaturamento(); 
+        // ==========================================
+        // 🟢 NOVO MÓDULO: CIDADES 🟢
+        // ==========================================
+        onSnapshot(collection(db, "cities"), (snapshot) => {
+            globalCities = [];
+            snapshot.forEach(doc => globalCities.push({ id: doc.id, ...doc.data() }));
+            
+            // Ordena alfabeticamente
+            globalCities.sort((a, b) => a.name.localeCompare(b.name));
+            
+            renderCitiesList();
+            populateCityDropdowns();
         });
 
-        function populateStoreFilter() {
-            const select = document.getElementById('filter-store-fat');
-            const currentVal = select.value;
-            let html = '<option value="all">Ver Todas as Lojas</option>';
-            allStores.forEach(s => {
-                html += `<option value="${s.id}">${s.name}</option>`;
+        window.saveCity = async () => {
+            const name = document.getElementById('c-name').value.trim();
+            const state = document.getElementById('c-state').value.trim().toUpperCase();
+            
+            if(!name || !state) return alert("Preencha o nome da cidade e a sigla do estado.");
+            
+            // Verifica se a cidade já existe
+            const exists = globalCities.find(c => c.name.toLowerCase() === name.toLowerCase() && c.state === state);
+            if(exists) return alert("Esta cidade já está cadastrada!");
+
+            try {
+                await addDoc(collection(db, "cities"), { name, state });
+                document.getElementById('c-name').value = '';
+                document.getElementById('c-state').value = '';
+            } catch(e) {
+                alert("Erro ao cadastrar cidade.");
+            }
+        };
+
+        window.deleteCity = async (id) => {
+            if(confirm("Tem certeza que deseja apagar esta cidade do aplicativo?")) {
+                await deleteDoc(doc(db, "cities", id));
+            }
+        };
+
+        function renderCitiesList() {
+            const container = document.getElementById('city-list-container');
+            if(globalCities.length === 0) {
+                container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade cadastrada ainda.</p>`;
+                return;
+            }
+
+            container.innerHTML = globalCities.map(c => `
+                <div class="card-item" style="justify-content: space-between;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <strong style="font-size: 1.1rem; color: #111;">${c.name} - ${c.state}</strong>
+                    </div>
+                    <button class="btn-del" onclick="window.deleteCity('${c.id}')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function populateCityDropdowns() {
+            // Dropdown do formulário de Loja
+            const selectStore = document.getElementById('s-city');
+            const currentStoreVal = selectStore.value;
+            
+            let htmlStore = '<option value="">Selecione a cidade...</option>';
+            globalCities.forEach(c => {
+                const cityStr = `${c.name} - ${c.state}`;
+                htmlStore += `<option value="${cityStr}">${cityStr}</option>`;
             });
-            select.innerHTML = html;
-            if(allStores.some(s => s.id === currentVal)) select.value = currentVal;
+            selectStore.innerHTML = htmlStore;
+            if(currentStoreVal) selectStore.value = currentStoreVal;
         }
 
         // ==========================================
@@ -329,7 +445,7 @@
             if (!allOrders || !allStores) return;
 
             const filterDate = document.getElementById('filter-faturamento').value;
-            const filterStore = document.getElementById('filter-store-fat').value; // PEGA A LOJA SELECIONADA
+            const filterStore = document.getElementById('filter-store-fat').value; 
 
             const nowTime = Date.now();
             const startOfToday = new Date().setHours(0,0,0,0);
@@ -350,7 +466,6 @@
                 
                 if (!showOrder) return;
 
-                // SELECIONA APENAS A LOJA DO FILTRO
                 if (filterStore !== 'all' && order.storeId !== filterStore) return;
 
                 const vTotal = order.total || 0;
@@ -374,7 +489,6 @@
             document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.02).toFixed(2)}`;
             document.getElementById('fat-pedidos').innerText = totalPedidosApp;
 
-            // MUDA O TÍTULO PARA FICAR CLARO DE QUEM É AQUELE VALOR
             if (filterStore === 'all') {
                 document.getElementById('fat-card-title-vendas').innerText = 'Vendas Totais do App';
             } else {
@@ -394,7 +508,6 @@
             const medals = ['🥇', '🥈', '🥉'];
             
             rankingArray.forEach((storeObj, index) => {
-                // Se filtrou por loja, não mostra medalha, mostra só um ícone
                 let medalDisplay = index < 3 && filterStore === 'all' ? medals[index] : `<span style="font-size:1.2rem;">${index + 1}º</span>`;
                 if (filterStore !== 'all') medalDisplay = '🏪'; 
 
@@ -450,7 +563,8 @@
             } catch(e) {
                 alert("Erro ao salvar. Verifique sua conexão.");
             } finally {
-                btn.innerText = "Gravar Patrocinador"; btn.disabled = false;
+                btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Gravar Patrocinador`; 
+                btn.disabled = false;
             }
         };
 
@@ -469,7 +583,10 @@
                         ⏳ Duração: <strong>${s.duration || 2}s</strong><br>
                         ✨ Efeito: <strong>${effectName}</strong>
                     </div>
-                    <button class="btn-del" onclick="window.deleteSponsor('${s.id}')" style="margin-left:0; margin-top:15px; width:100%; border: 1px solid #eee; padding:8px;">🗑️ Remover</button>
+                    <button class="btn-del" onclick="window.deleteSponsor('${s.id}')" style="margin-left:0; margin-top:15px; width:100%; border: 1px solid #eee; padding:8px; justify-content:center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        Remover
+                    </button>
                 </div>
             `;
             }).join('');
@@ -485,15 +602,31 @@
         });
         onSnapshot(collection(db, "banners"), (snapshot) => { globalBanners = []; snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() })); renderBanners(); });
         window.saveBanner = async () => { if(!bannerImgBase64) return alert("Selecione uma imagem!"); await addDoc(collection(db, "banners"), { image: bannerImgBase64 }); bannerImgBase64 = ''; document.getElementById('b-image').value = ''; alert("Banner adicionado!"); };
-        function renderBanners() { const container = document.getElementById('banner-list-container'); container.innerHTML = globalBanners.map(b => `<div class="card-item" style="flex-direction:column; align-items:flex-start;"><img src="${b.image}" style="width:100%; height:80px; object-fit:cover; border-radius:6px;"><button class="btn-del" onclick="window.deleteBanner('${b.id}')" style="margin-left:0; margin-top:10px;">Excluir Banner</button></div>`).join(''); }
+        function renderBanners() { const container = document.getElementById('banner-list-container'); container.innerHTML = globalBanners.map(b => `<div class="card-item" style="flex-direction:column; align-items:flex-start;"><img src="${b.image}" style="width:100%; height:80px; object-fit:cover; border-radius:6px;"><button class="btn-del" onclick="window.deleteBanner('${b.id}')" style="margin-left:0; margin-top:10px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Excluir</button></div>`).join(''); }
         window.deleteBanner = async (id) => { if(confirm("Remover este banner do aplicativo?")) { await deleteDoc(doc(db, "banners", id)); } };
 
         // ==========================================
-        // MÓDULO LOJAS
+        // 🟢 MÓDULO LOJAS (ATUALIZADO COM CIDADES) 🟢
         // ==========================================
         document.getElementById('s-logo').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); }
+        });
+        
+        onSnapshot(collection(db, "stores"), (snapshot) => { 
+            allStores = []; 
+            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
+            renderStoreList(); 
+            
+            // Popula o filtro de lojas na aba Faturamento
+            const selectFat = document.getElementById('filter-store-fat');
+            const currentFatVal = selectFat.value;
+            let htmlFat = '<option value="all">Ver Todas as Lojas</option>';
+            allStores.forEach(s => { htmlFat += `<option value="${s.id}">${s.name}</option>`; });
+            selectFat.innerHTML = htmlFat;
+            if(allStores.some(s => s.id === currentFatVal)) selectFat.value = currentFatVal;
+            
+            window.renderFaturamento(); 
         });
         
         window.saveStore = async () => { 
@@ -501,18 +634,19 @@
             const docId = document.getElementById('s-doc').value.trim();
             const cep = document.getElementById('s-cep').value.trim();
             const street = document.getElementById('s-street').value.trim();
-            const city = document.getElementById('s-city').value.trim();
-            const state = document.getElementById('s-state').value.trim();
-
             const email = document.getElementById('s-email').value.trim(); 
             const pass = document.getElementById('s-pass').value.trim(); 
             const cat = document.getElementById('s-cat').value; 
 
+            // 🟢 Pega a cidade do dropdown 🟢
+            const cityDropdownVal = document.getElementById('s-city').value;
+
             if(!name || !email || !pass) return alert("Preencha ao menos nome, e-mail e senha da loja."); 
+            if(!cityDropdownVal) return alert("Por favor, selecione uma cidade para a loja. Se a lista estiver vazia, cadastre a cidade na aba 'Cidades'."); 
             
             const storeData = { 
                 name, email, password: pass, cat,
-                doc: docId, cep, street, city, state 
+                doc: docId, cep, street, city: cityDropdownVal 
             };
 
             if (editingStoreId) { 
@@ -545,8 +679,9 @@
             document.getElementById('s-doc').value = store.doc || ''; 
             document.getElementById('s-cep').value = store.cep || ''; 
             document.getElementById('s-street').value = store.street || ''; 
+            
+            // 🟢 Seta a cidade no dropdown 🟢
             document.getElementById('s-city').value = store.city || ''; 
-            document.getElementById('s-state').value = store.state || ''; 
 
             document.getElementById('s-email').value = store.email; 
             document.getElementById('s-pass').value = store.password; 
@@ -554,10 +689,10 @@
             document.getElementById('s-logo').value = ''; 
             storeImgBase64 = ''; 
             
-            document.getElementById('form-store-title').innerText = "Editar Loja"; 
-            document.getElementById('btn-save-store').innerText = "Salvar Alterações"; 
+            document.getElementById('form-store-title').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar Loja`; 
+            document.getElementById('btn-save-store').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Salvar Alterações`; 
             document.getElementById('btn-save-store').style.backgroundColor = "#0d6efd"; 
-            document.getElementById('btn-cancel-edit').style.display = "inline-block"; 
+            document.getElementById('btn-cancel-edit').style.display = "inline-flex"; 
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
         };
 
@@ -568,14 +703,13 @@
             document.getElementById('s-cep').value = ''; 
             document.getElementById('s-street').value = ''; 
             document.getElementById('s-city').value = ''; 
-            document.getElementById('s-state').value = ''; 
             document.getElementById('s-email').value = ''; 
             document.getElementById('s-pass').value = ''; 
             document.getElementById('s-logo').value = ''; 
             storeImgBase64 = ''; 
 
-            document.getElementById('form-store-title').innerText = "Cadastrar Nova Loja"; 
-            document.getElementById('btn-save-store').innerText = "Registrar Loja"; 
+            document.getElementById('form-store-title').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Cadastrar Nova Loja`; 
+            document.getElementById('btn-save-store').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Registrar Loja`; 
             document.getElementById('btn-save-store').style.backgroundColor = "#ea1d2c"; 
             document.getElementById('btn-cancel-edit').style.display = "none"; 
         };
@@ -592,22 +726,22 @@
                 const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; 
                 const badgeText = isActive ? '✅ Ativa' : '❌ Bloqueada'; 
                 const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; 
-                const toggleBtnText = isActive ? '⏸️ Bloquear' : '▶️ Desbloquear'; 
+                const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear'; 
                 
                 return ` 
                 <div class="${cardClass}"> 
                     <img src="${s.logo}" class="card-img"> 
                     <div style="flex-grow: 1;"> 
                         <strong style="font-size: 1.1rem; color: #111;">${s.name}</strong><br> 
-                        <span style="font-size:0.8rem; color:#888;">📄 CNPJ/CPF: ${s.doc || 'Não informado'} | 📍 ${s.city || 'Cidade'} - ${s.state || ''}</span><br>
+                        <span style="font-size:0.8rem; color:#888;">📄 CNPJ/CPF: ${s.doc || 'Não informado'} | 📍 ${s.city || 'Cidade não definida'}</span><br>
                         <span style="font-size:0.85rem; color:#555;">✉️ ${s.email} | 🔑 ${s.password}</span><br> 
                         <span class="${badgeClass}">${badgeText}</span> 
                     </div> 
                     <div class="actions-col"> 
-                        <button class="btn-edit" onclick="window.editStore('${s.id}')">✏️ Editar</button> 
+                        <button class="btn-edit" onclick="window.editStore('${s.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> 
                         <button class="${toggleBtnClass}" onclick="window.toggleSubscription('${s.id}')">${toggleBtnText}</button> 
                         <span style="color:#ddd;">|</span> 
-                        <button class="btn-del" onclick="window.deleteStore('${s.id}')">🗑️ Apagar</button> 
+                        <button class="btn-del" onclick="window.deleteStore('${s.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Apagar</button> 
                     </div> 
                 </div> 
                 `; 
@@ -619,11 +753,11 @@
         // ==========================================
         onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
         window.saveDriver = async () => { const name = document.getElementById('d-name').value.trim(); const phone = document.getElementById('d-phone').value.trim(); const email = document.getElementById('d-email').value.trim(); const pass = document.getElementById('d-pass').value.trim(); if(!name || !email || !pass || !phone) return alert("Preencha todos os dados."); if (editingDriverId) { const emailExists = allDrivers.find(d => d.email === email && d.id !== editingDriverId); if(emailExists) return alert("Já existe outro entregador usando este e-mail."); await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass }); alert("Entregador atualizado!"); } else { const emailExists = allDrivers.find(d => d.email === email); if(emailExists) return alert("Já existe um entregador com este e-mail."); await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, isActive: true }); alert("Entregador cadastrado!"); } window.cancelEditDriver(); };
-        window.editDriver = (id) => { editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; document.getElementById('d-name').value = driver.name; document.getElementById('d-phone').value = driver.phone; document.getElementById('d-email').value = driver.email; document.getElementById('d-pass').value = driver.password; document.getElementById('form-driver-title').innerText = "Editar Entregador"; document.getElementById('btn-save-driver').innerText = "Salvar Alterações"; document.getElementById('btn-save-driver').style.backgroundColor = "#0d6efd"; document.getElementById('btn-cancel-driver-edit').style.display = "inline-block"; document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); };
-        window.cancelEditDriver = () => { editingDriverId = null; document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; document.getElementById('d-email').value = ''; document.getElementById('d-pass').value = ''; document.getElementById('form-driver-title').innerText = "Cadastrar Entregador"; document.getElementById('btn-save-driver').innerText = "Registrar Entregador"; document.getElementById('btn-save-driver').style.backgroundColor = "#ea1d2c"; document.getElementById('btn-cancel-driver-edit').style.display = "none"; };
+        window.editDriver = (id) => { editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; document.getElementById('d-name').value = driver.name; document.getElementById('d-phone').value = driver.phone; document.getElementById('d-email').value = driver.email; document.getElementById('d-pass').value = driver.password; document.getElementById('form-driver-title').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar Entregador`; document.getElementById('btn-save-driver').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Salvar Alterações`; document.getElementById('btn-save-driver').style.backgroundColor = "#0d6efd"; document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); };
+        window.cancelEditDriver = () => { editingDriverId = null; document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; document.getElementById('d-email').value = ''; document.getElementById('d-pass').value = ''; document.getElementById('form-driver-title').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Cadastrar Entregador`; document.getElementById('btn-save-driver').innerHTML = `Registrar Entregador`; document.getElementById('btn-save-driver').style.backgroundColor = "#ea1d2c"; document.getElementById('btn-cancel-driver-edit').style.display = "none"; };
         window.toggleDriverStatus = async (id) => { const driver = allDrivers.find(d => d.id === id); if (driver) { const newStatus = driver.isActive === false ? true : false; await updateDoc(doc(db, "drivers", id), { isActive: newStatus }); } };
         window.deleteDriver = async (id) => { if(confirm("Tem certeza que deseja remover este entregador do sistema?")) { await deleteDoc(doc(db, "drivers", id)); } };
-        function renderDriverList() { const container = document.getElementById('driver-list-container'); if(allDrivers.length === 0) { container.innerHTML = `<p style="font-size:0.85rem; color:#999;">Nenhum entregador cadastrado.</p>`; return; } container.innerHTML = allDrivers.map(d => { const isActive = d.isActive !== false; const cardClass = isActive ? 'card-item' : 'card-item suspended'; const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; const badgeText = isActive ? '✅ Liberado' : '❌ Bloqueado'; const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; const toggleBtnText = isActive ? '⏸️ Bloquear' : '▶️ Desbloquear'; return ` <div class="${cardClass}"> <div class="card-img">🛵</div> <div style="flex-grow: 1;"> <strong style="font-size: 1.1rem; color: #111;">${d.name}</strong><br> <span style="font-size:0.85rem; color:#555;">📞 ${d.phone} | ✉️ ${d.email} | 🔑 ${d.password}</span><br> <span class="${badgeClass}">${badgeText}</span> </div> <div class="actions-col"> <button class="btn-edit" onclick="window.editDriver('${d.id}')">✏️ Editar</button> <button class="${toggleBtnClass}" onclick="window.toggleDriverStatus('${d.id}')">${toggleBtnText}</button> <span style="color:#ddd;">|</span> <button class="btn-del" onclick="window.deleteDriver('${d.id}')">🗑️ Apagar</button> </div> </div> `; }).join(''); }
+        function renderDriverList() { const container = document.getElementById('driver-list-container'); if(allDrivers.length === 0) { container.innerHTML = `<p style="font-size:0.85rem; color:#999;">Nenhum entregador cadastrado.</p>`; return; } container.innerHTML = allDrivers.map(d => { const isActive = d.isActive !== false; const cardClass = isActive ? 'card-item' : 'card-item suspended'; const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; const badgeText = isActive ? '✅ Liberado' : '❌ Bloqueado'; const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear'; return ` <div class="${cardClass}"> <div class="card-img" style="color:#0d6efd;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div> <div style="flex-grow: 1;"> <strong style="font-size: 1.1rem; color: #111;">${d.name}</strong><br> <span style="font-size:0.85rem; color:#555;">📞 ${d.phone} | ✉️ ${d.email} | 🔑 ${d.password}</span><br> <span class="${badgeClass}">${badgeText}</span> </div> <div class="actions-col"> <button class="btn-edit" onclick="window.editDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> <button class="${toggleBtnClass}" onclick="window.toggleDriverStatus('${d.id}')">${toggleBtnText}</button> <span style="color:#ddd;">|</span> <button class="btn-del" onclick="window.deleteDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Apagar</button> </div> </div> `; }).join(''); }
     </script>
 </body>
 </html>
