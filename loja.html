@@ -39,7 +39,7 @@
         .search-bar-container { position: relative; margin-bottom: 5px; }
         .search-input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #ddd; border-radius: 50px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; font-family: 'Roboto', sans-serif;}
         .search-input:focus { background: #fff; border-color: #ea1d2c; box-shadow: 0 0 0 3px rgba(234,29,44,0.1); }
-        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; color: #ea1d2c; }
 
         /* CUPONS NA LOJA (TICKET VERMELHO) */
         .store-coupons-container { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
@@ -416,9 +416,24 @@
                     </div>`
             };
 
+            // 🟢 BANNER DE STATUS COM O ÍCONE SVG BRANCO PROFISSIONAL 🟢
             let statusBannerHTML = dynamicStatus === 'Aberto' 
-                ? `<div class="status-banner">😀 Uhul, estabelecimento aberto!</div>`
-                : `<div class="status-banner closed">😴 Poxa, estamos fechados agora.</div>`;
+                ? `<div class="status-banner">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+                        <path d="M7 10Q8.5 7 10 10" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <path d="M14 10Q15.5 7 17 10" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <path d="M6 13A6 6 0 0 0 18 13Z" fill="white"/>
+                    </svg>
+                    Uhul, estabelecimento aberto!
+                   </div>`
+                : `<div class="status-banner closed">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+                        <path d="M7 10Q8.5 12 10 10" />
+                        <path d="M14 10Q15.5 12 17 10" />
+                        <path d="M8 17Q12 14 16 17" />
+                    </svg>
+                    Poxa, estamos fechados agora.
+                   </div>`;
 
             document.getElementById('store-page-content').innerHTML = `
                 <div class="store-cover" style="background-image: url('${coverImage}');">
