@@ -15,20 +15,15 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; padding-top: 70px; }
+        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; padding-top: 80px; }
 
         .skip-splash #splash-screen, 
         .skip-splash #sponsor-wrapper { display: none !important; }
 
-        /* BANNER APP */
-        #install-banner { display: none; background: #111; color: #fff; padding: 12px 20px; justify-content: space-between; align-items: center; font-size: 0.9rem; }
-        .btn-install { background: #ea1d2c; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        
         /* SPLASH & SPONSOR */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
         #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .splash-logo-container { display: flex; align-items: center; gap: 12px; animation: pulseSplash 1.5s ease-in-out infinite alternate; }
-        @keyframes pulseSplash { 0% { transform: scale(0.95); } 100% { transform: scale(1.05); } }
+        .splash-logo-container { display: flex; align-items: center; gap: 12px; }
         .splash-swoosh { width: 60px; height: auto; transform: rotate(-10deg); }
         .splash-text { font-size: 2.5rem; font-weight: 700; color: #ea1d2c; letter-spacing: -1.5px; margin: 0; }
         
@@ -38,113 +33,104 @@
         .effect-fade { opacity: 0; transition: opacity 0.6s ease; }
         .effect-fade.active { opacity: 1; }
 
-        /* CABEÇALHO COM LOGO E SELETOR */
-        .app-header { position: fixed; top: 0; left: 0; width: 100%; height: 70px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); z-index: 1000; }
-        .brand-container { display: flex; align-items: center; gap: 6px; }
-        .brand-logo-svg { width: 30px; height: auto; transform: rotate(-10deg); }
+        /* CABEÇALHO FIXO COM SELETOR */
+        .brand-header { 
+            background: #fff; 
+            padding: 0 15px; 
+            height: 70px; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            border-bottom: 1px solid #f2f2f2; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 1000; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .brand-logo-container { display: flex; align-items: center; gap: 5px; }
+        .brand-swoosh { width: 25px; height: auto; transform: rotate(-10deg); }
         .brand-text { font-size: 1.4rem; font-weight: 900; color: #ea1d2c; letter-spacing: -0.5px; }
         
-        .city-selector-btn { display: flex; align-items: center; gap: 6px; background: #fff5f5; border: 1px solid #fbd5d5; padding: 8px 12px; border-radius: 50px; color: #ea1d2c; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; max-width: 150px;}
-        .city-selector-btn:active { transform: scale(0.95); background: #ffebeb; }
-        .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; }
+        .city-selector-btn { 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            background: #f8f8f8; 
+            border: 1px solid #eee; 
+            padding: 8px 12px; 
+            border-radius: 50px; 
+            color: #333; 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            cursor: pointer;
+            max-width: 160px;
+        }
+        .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* MODAL DE ESCOLHA DE CIDADE */
-        .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; }
-        .city-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
-        .city-modal-content { background: #fff; width: 90%; max-width: 400px; border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; position: relative;}
-        .city-modal-close { position: absolute; top: 15px; right: 15px; background: #f4f5f7; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; display: none; align-items: center; justify-content: center; cursor: pointer; color: #555;}
-        
-        .city-modal-icon { width: 60px; height: 60px; background: #fff5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ea1d2c; margin: 0 auto 15px; }
-        .city-modal-title { font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 8px; }
-        .city-modal-desc { font-size: 0.9rem; color: #777; margin-bottom: 25px; line-height: 1.4; }
-        
-        .city-list { display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 5px; }
-        .city-list::-webkit-scrollbar { width: 4px; }
-        .city-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
-        
-        .city-item-btn { width: 100%; background: #f9f9f9; border: 1px solid #eee; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 700; color: #333; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; text-align: left;}
-        .city-item-btn:active { background: #fff5f5; border-color: #ea1d2c; transform: scale(0.98); }
-        .city-item-btn svg { color: #ccc; }
-        .city-item-btn:active svg { color: #ea1d2c; }
-
-        /* BANNERS E CATEGORIAS */
-        .banner-carousel-wrapper { background: #f8f8f8; padding: 15px 15px 0; display: none; }
-        .banner-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 12px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        /* BANNERS */
+        .banner-carousel-wrapper { padding: 15px 15px 0; display: none; }
+        .banner-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 12px; }
         .banner-track::-webkit-scrollbar { display: none; }
-        .banner-slide { flex: 0 0 100%; height: 150px; border-radius: 12px; object-fit: cover; scroll-snap-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .banner-slide { flex: 0 0 100%; height: 150px; border-radius: 12px; object-fit: cover; scroll-snap-align: center; }
 
-        .button-scroll-container { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; padding: 15px; background: #f8f8f8; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
+        /* CATEGORIAS */
+        .button-scroll-container { display: flex; overflow-x: auto; gap: 12px; padding: 15px; scrollbar-width: none; }
         .button-scroll-container::-webkit-scrollbar { display: none; }
-        .button-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; padding: 12px 5px; border-radius: 16px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; flex: 0 0 auto; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .button-item:active { transform: scale(0.95); }
-        .filter-icon { width: 32px; height: 32px; margin-bottom: 8px; color: #ea1d2c; transition: color 0.3s ease; }
-        .button-item span { font-size: 0.75rem; color: #717171; font-weight: 600; line-height: 1.1; transition: color 0.3s ease; white-space: nowrap;}
-        .button-item.active { background-color: #ea1d2c; border-color: #ea1d2c; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
-        .button-item.active span { color: #fff; }
-        .button-item.active .filter-icon { color: #fff; } 
-        
-        .section-title { padding: 5px 15px 10px; font-size: 1.1rem; font-weight: 700; color: #333; }
+        .button-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; padding: 12px 5px; border-radius: 16px; min-width: 85px; cursor: pointer; border: 2px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .filter-icon { width: 30px; height: 30px; margin-bottom: 5px; color: #ea1d2c; }
+        .button-item span { font-size: 0.75rem; color: #717171; font-weight: 600; }
+        .button-item.active { background-color: #ea1d2c; }
+        .button-item.active span, .button-item.active .filter-icon { color: #fff; }
 
         /* LISTA DE LOJAS */
-        .store-list { padding: 0 15px; }
-        .store-card { display: flex; align-items: center; padding: 15px; margin-bottom: 12px; border-radius: 12px; cursor: pointer; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #f2f2f2; transition: 0.2s; text-decoration: none; }
-        .store-card:active { transform: scale(0.98); background-color: #f9f9f9; }
-        .store-card.closed { opacity: 0.55; filter: grayscale(100%); }
-        .store-card.closed:active { transform: none; background-color: #fff; }
-        .store-logo { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 1px solid #eee; object-fit: cover; flex-shrink: 0;}
-        .store-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
-        .store-name { font-size: 1.1rem; font-weight: 800; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
-        .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-        .store-details .dot { color: #ccc; font-size: 0.6rem; }
+        .store-list { padding: 0 15px; display: flex; flex-direction: column; gap: 12px; }
+        .store-card { display: flex; align-items: center; padding: 15px; border-radius: 12px; background: #fff; border: 1px solid #f2f2f2; text-decoration: none; color: inherit; }
+        .store-card.closed { opacity: 0.6; filter: grayscale(100%); }
+        .store-logo { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 1px solid #eee; }
+        .store-info { flex: 1; overflow: hidden; }
+        .store-name { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 4px; }
+        .store-details { font-size: 0.8rem; color: #717171; }
 
-        /* MENU INFERIOR & CARRINHO FLUTUANTE */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
-        .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
-        .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
+        /* NAV E CARRINHO */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; z-index: 9000; }
+        .nav-link { text-decoration: none; color: #999; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
-        
-        .floating-cart { position: fixed; bottom: 80px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 9998; text-decoration: none; transition: 0.3s; }
-        .floating-cart:active { transform: scale(0.9); }
+        .nav-icon-img { width: 24px; height: 24px; filter: grayscale(100%); opacity: 0.5; }
+        .nav-link.active .nav-icon-img { filter: none; opacity: 1; }
+
+        .floating-cart { position: fixed; bottom: 85px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 9998; }
         .cart-badge-float { position: absolute; top: -5px; right: -5px; background: #111; color: #fff; font-size: 0.75rem; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
 
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* MODAL OVERLAY */
+        .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100000; display: none; align-items: center; justify-content: center; }
+        .city-modal-overlay.active { display: flex; }
+        .city-modal-content { background: #fff; width: 85%; max-width: 400px; border-radius: 20px; padding: 30px 20px; text-align: center; }
+        .city-item-btn { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #eee; background: #f9f9f9; font-weight: bold; cursor: pointer; text-align: left; display: flex; justify-content: space-between; }
 
-        .empty-state { text-align: center; padding: 40px 20px; color: #777; }
-        .empty-state svg { color: #ccc; margin-bottom: 15px; }
-        .empty-state h3 { color: #111; font-size: 1.1rem; margin-bottom: 5px; font-weight: 800;}
+        .empty-state { text-align: center; padding: 40px; color: #999; }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
         <div class="splash-logo-container">
-            <svg class="splash-swoosh" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/>
-            </svg>
+            <svg class="splash-swoosh" viewBox="0 0 100 50" fill="none"><path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="12" stroke-linecap="round"/></svg>
             <h1 class="splash-text">UaiPede</h1>
         </div>
     </div>
 
     <div id="sponsor-wrapper"><div id="sponsor-content"></div></div>
 
-    <div id="install-banner">
-        <div><strong>UaiPede</strong><br><span style="color:#aaa; font-size:0.8rem;">Instale o app para pedir mais rápido!</span></div>
-        <button class="btn-install" id="btn-install-app">Instalar</button>
-    </div>
-
     <header class="brand-header">
         <div class="brand-logo-container">
-            <svg class="brand-swoosh" style="width: 25px; height: auto; transform: rotate(-10deg); margin-right: 5px;" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="12" stroke-linecap="round"/>
-            </svg>
+            <svg class="brand-swoosh" viewBox="0 0 100 50" fill="none" style="width:25px;"><path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="15" stroke-linecap="round"/></svg>
             <h1 class="brand-text">UaiPede</h1>
         </div>
-        
         <button class="city-selector-btn" onclick="window.openCityModal(true)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span class="city-name-label" id="header-city-name">Carregando...</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span class="city-name-label" id="header-city-name">Cidade</span>
         </button>
     </header>
 
@@ -156,46 +142,35 @@
             <div class="button-item" onclick="window.filterCategory('Restaurantes', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg><span>Restaurantes</span></div>
             <div class="button-item" onclick="window.filterCategory('Lanches', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 10.93c-.15-2.92-2.31-5.38-5.18-5.83C15.22 4.41 13.68 4 12 4s-3.22.41-4.81 1.1c-2.87.45-5.03 2.91-5.18 5.83H2v2h2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4h2v-2h-.01zM18 17H6v-4h12v4z"/></svg><span>Lanches</span></div>
             <div class="button-item" onclick="window.filterCategory('Bares', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg><span>Bares</span></div>
-            <div class="button-item" onclick="window.filterCategory('Sorveterias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M12 2C8.69 2 6 4.69 6 8c0 3.08 2.31 5.64 5.25 5.95V22h1.5v-8.05C15.69 13.64 18 11.08 18 8c0-3.31-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg><span>Sorveterias</span></div>
-            <div class="button-item" onclick="window.filterCategory('Mercados', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Mercados</span></div>
-            <div class="button-item" onclick="window.filterCategory('Farmácias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span>Farmácias</span></div>
-            <div class="button-item" onclick="window.filterCategory('Loja de Roupas', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v2h2v11h16V10h2V8zM12 3.19l7 3.91V8h-2v11H7V8H5V7.1l7-3.91z"/></svg><span>Moda</span></div>
-            <div class="button-item" onclick="window.filterCategory('Açougue', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20.5 3.5l-6 6c-.39-.39-1.02-.39-1.41 0L3.5 19.09l1.41 1.41 9.59-9.59c.39.39 1.02.39 1.41 0l6-6V3.5h-1.41z"/></svg><span>Açougue</span></div>
-            <div class="button-item" onclick="window.filterCategory('Utilidades', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg><span>Utilidades</span></div>
         </section>
 
         <h2 class="section-title" id="list-title">Lojas</h2>
-        <main class="store-list" id="store-list-container"></main>
+        <div class="store-list" id="store-list-container"></div>
     </main>
 
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-link active"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img" alt="Início"><span>Início</span></a>
-        <a href="pedidos.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1150/1150592.png" class="nav-icon-img" alt="Pedidos"><span>Pedidos</span></a>
-        <a href="perfil.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="nav-icon-img" alt="Perfil"><span>Perfil</span></a>
+        <a href="index.html" class="nav-link active"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img"><span>Início</span></a>
+        <a href="pedidos.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1150/1150592.png" class="nav-icon-img"><span>Pedidos</span></a>
+        <a href="perfil.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="nav-icon-img"><span>Perfil</span></a>
     </nav>
 
     <a href="carrinho.html" class="floating-cart" id="floating-cart">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         <div class="cart-badge-float" id="floating-cart-count">0</div>
     </a>
 
     <div id="city-modal" class="city-modal-overlay">
         <div class="city-modal-content">
-            <button class="city-modal-close" id="btn-close-city-modal" onclick="window.closeCityModal()">✕</button>
-            <div class="city-modal-icon">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            </div>
+            <div class="city-modal-icon">📍</div>
             <h2 class="city-modal-title">Onde você está?</h2>
-            <p class="city-modal-desc">Selecione sua cidade para ver os melhores estabelecimentos perto de você.</p>
-            <div class="city-list" id="modal-city-list">
-                <p style="color:#aaa; font-size:0.9rem;">Buscando cidades...</p>
-            </div>
+            <p class="city-modal-desc">Escolha sua cidade para continuar.</p>
+            <div class="city-list" id="modal-city-list"></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -212,240 +187,115 @@
         let allBanners = [];
         let globalCities = [];
         let allActiveSponsors = [];
-        
-        let currentCategoryFilter = null; 
-        let bannerInterval; 
         let userCity = localStorage.getItem('userCity');
-        
-        // CARREGAMENTO EM TEMPO REAL 
-        onSnapshot(collection(db, "cities"), (snapshot) => {
+        let currentCategoryFilter = null;
+
+        // Listener Cidades
+        onSnapshot(collection(db, "cities"), (snap) => {
             globalCities = [];
-            snapshot.forEach(doc => globalCities.push({ id: doc.id, ...doc.data() }));
+            snap.forEach(doc => globalCities.push({id: doc.id, ...doc.data()}));
             globalCities.sort((a,b) => a.name.localeCompare(b.name));
-            if(document.getElementById('city-modal').classList.contains('active')) {
-                window.openCityModal(!(!userCity)); 
-            }
+            if(!userCity) window.openCityModal(false);
         });
 
-        onSnapshot(collection(db, "stores"), (snapshot) => {
+        // Listener Lojas
+        onSnapshot(collection(db, "stores"), (snap) => {
             allStores = [];
-            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() }));
-            if(userCity) window.renderStores();
+            snap.forEach(doc => allStores.push({id: doc.id, ...doc.data()}));
+            renderStores();
         });
 
-        onSnapshot(collection(db, "banners"), (snapshot) => {
+        // Listener Banners
+        onSnapshot(collection(db, "banners"), (snap) => {
             allBanners = [];
-            snapshot.forEach(doc => allBanners.push({ id: doc.id, ...doc.data() }));
-            if(userCity) window.renderBanners();
+            snap.forEach(doc => allBanners.push({id: doc.id, ...doc.data()}));
+            renderBanners();
         });
 
-        onSnapshot(collection(db, "sponsors"), (snapshot) => {
+        // Listener Patrocinadores
+        onSnapshot(collection(db, "sponsors"), (snap) => {
             allActiveSponsors = [];
-            snapshot.forEach(doc => allActiveSponsors.push({ id: doc.id, ...doc.data() }));
-            allActiveSponsors.sort((a,b) => a.timestamp - b.timestamp);
+            snap.forEach(doc => allActiveSponsors.push(doc.data()));
         });
 
-        window.addEventListener('load', () => {
-            window.updateCartBadge();
-            const splash = document.getElementById('splash-screen');
-            const sponsorWrapper = document.getElementById('sponsor-wrapper');
-            const sponsorContent = document.getElementById('sponsor-content');
-
-            if (sessionStorage.getItem('splashShown') === 'true') {
-                if (splash) splash.style.display = 'none';
-                if (sponsorWrapper) sponsorWrapper.style.display = 'none';
-                if (!userCity) { window.openCityModal(false); } else { 
-                    document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
-                    window.loadCityContent(); 
-                }
-                return;
-            }
-
-            sessionStorage.setItem('splashShown', 'true');
-            
-            setTimeout(() => {
-                if (splash) splash.classList.add('hidden'); 
-                setTimeout(() => { 
-                    if (splash) splash.style.display = 'none'; 
-                    if (!userCity) {
-                        window.openCityModal(false);
-                    } else {
-                        document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
-                        const citySponsors = allActiveSponsors.filter(s => !s.city || s.city === 'all' || s.city === userCity);
-                        if(citySponsors.length > 0 && sponsorWrapper) {
-                            sponsorWrapper.style.display = 'flex';
-                            let indexAtual = 0;
-                            function mostrarProximoPatrocinador() {
-                                if (indexAtual >= citySponsors.length) {
-                                    sponsorWrapper.style.transition = "opacity 0.5s ease"; 
-                                    sponsorWrapper.style.opacity = "0";
-                                    setTimeout(() => { sponsorWrapper.style.display = 'none'; window.loadCityContent(); }, 500); 
-                                    return;
-                                }
-                                const spAtual = citySponsors[indexAtual];
-                                const classEfeito = `effect-${spAtual.transition || 'fade'}`;
-                                const tempoMs = (spAtual.duration || 2) * 1000;
-                                sponsorContent.className = classEfeito; 
-                                sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador">`;
-                                void sponsorContent.offsetWidth; 
-                                sponsorContent.classList.add('active'); 
-                                setTimeout(() => {
-                                    sponsorContent.classList.remove('active'); 
-                                    setTimeout(() => { indexAtual++; mostrarProximoPatrocinador(); }, 600); 
-                                }, tempoMs); 
-                            }
-                            mostrarProximoPatrocinador(); 
-                        } else {
-                            if (sponsorWrapper) sponsorWrapper.style.display = 'none'; 
-                            window.loadCityContent();
-                        }
-                    }
-                }, 500); 
-            }, 1500); 
-        });
-
-        window.openCityModal = (canClose = true) => {
+        window.openCityModal = (canClose) => {
             const modal = document.getElementById('city-modal');
-            const closeBtn = document.getElementById('btn-close-city-modal');
-            const listContainer = document.getElementById('modal-city-list');
-            if (canClose && userCity) { closeBtn.style.display = 'flex'; } 
-            else { closeBtn.style.display = 'none'; }
-            if (globalCities.length === 0) {
-                listContainer.innerHTML = '<p style="color:#aaa;">Nenhuma cidade cadastrada ainda.</p>';
-            } else {
-                listContainer.innerHTML = globalCities.map(c => {
-                    const cityString = `${c.name} - ${c.state}`;
-                    const isSelected = userCity === cityString;
-                    return `
-                    <button class="city-item-btn" onclick="window.selectCity('${cityString}')" ${isSelected ? 'style="border-color:#ea1d2c; background:#fff5f5;"' : ''}>
-                        <span>${c.name} <span style="font-size:0.8rem; color:#888; font-weight:normal;">(${c.state})</span></span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${isSelected ? '#ea1d2c' : 'currentColor'}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                    `;
-                }).join('');
-            }
+            const list = document.getElementById('modal-city-list');
+            list.innerHTML = globalCities.map(c => `
+                <button class="city-item-btn" onclick="window.selectCity('${c.name} - ${c.state}')">
+                    ${c.name} - ${c.state}
+                </button>
+            `).join('');
             modal.classList.add('active');
         };
 
-        window.closeCityModal = () => { document.getElementById('city-modal').classList.remove('active'); };
-
-        window.selectCity = (cityString) => {
-            userCity = cityString;
-            localStorage.setItem('userCity', cityString);
-            document.getElementById('header-city-name').innerText = cityString.split(' - ')[0];
-            closeCityModal();
-            window.loadCityContent();
+        window.selectCity = (city) => {
+            userCity = city;
+            localStorage.setItem('userCity', city);
+            document.getElementById('header-city-name').innerText = city.split(' - ')[0];
+            document.getElementById('city-modal').classList.remove('active');
+            document.getElementById('main-content').style.display = 'block';
+            renderBanners();
+            renderStores();
         };
 
-        window.loadCityContent = () => {
-            document.getElementById('main-content').style.display = 'block';
-            window.renderBanners();
-            window.renderStores();
-        }
-
         window.renderBanners = () => {
-            const bannerContainer = document.getElementById('banner-wrapper');
             const track = document.getElementById('banner-track');
-            if(!userCity) return;
-            let bannersHtml = '';
-            allBanners.forEach(b => {
-                if (!b.city || b.city === 'all' || b.city === userCity) {
-                    bannersHtml += `<img src="${b.image}" class="banner-slide">`;
-                }
-            });
-            if(bannersHtml === '') { bannerContainer.style.display = 'none'; } 
-            else { 
-                bannerContainer.style.display = 'block'; 
-                track.innerHTML = bannersHtml; 
-                clearInterval(bannerInterval);
-                let currentIndex = 0;
-                bannerInterval = setInterval(() => {
-                    if (track.children.length > 1) {
-                        currentIndex++;
-                        if(currentIndex >= track.children.length) currentIndex = 0;
-                        track.scrollTo({ left: (track.clientWidth + 12) * currentIndex, behavior: 'smooth' });
-                    }
-                }, 3500);
-            }
+            const wrap = document.getElementById('banner-wrapper');
+            const filtered = allBanners.filter(b => !b.city || b.city === 'all' || b.city === userCity);
+            if(filtered.length > 0) {
+                wrap.style.display = 'block';
+                track.innerHTML = filtered.map(b => `<img src="${b.image}" class="banner-slide">`).join('');
+            } else { wrap.style.display = 'none'; }
         };
 
         window.renderStores = () => {
             const container = document.getElementById('store-list-container');
             if(!userCity) return;
-            let filteredStores = allStores.filter(s => s.city === userCity);
-            filteredStores = filteredStores.filter(s => s.isActive !== false);
-            if (filteredStores.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                        <h3>Poxa, ainda não chegamos aí!</h3>
-                        <p>Nenhuma loja ativa cadastrada em ${userCity.split(' - ')[0]} no momento.</p>
-                    </div>`;
+            
+            let filtered = allStores.filter(s => s.city === userCity && s.isActive !== false);
+            
+            if(currentCategoryFilter) {
+                filtered = filtered.filter(s => s.cat === currentCategoryFilter);
+            }
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>Nenhuma loja em ${userCity}</h3></div>`;
                 return;
             }
-            if (currentCategoryFilter && currentCategoryFilter !== 'Todos') {
-                filteredStores = filteredStores.filter(s => s.cat && s.cat.toLowerCase().includes(currentCategoryFilter.toLowerCase()));
-                if(filteredStores.length === 0) {
-                    container.innerHTML = `<p style="padding: 30px 0; color: #999; text-align: center;">Nenhuma loja encontrada nesta categoria.</p>`; 
-                    return;
-                }
-            }
-            const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
-            const currentDayStr = daysMap[now.getDay()]; const currentMins = now.getHours() * 60 + now.getMinutes();
-            filteredStores = filteredStores.map(s => {
-                let dynamicStatus = s.status || 'Aberto';
-                if (dynamicStatus === 'Aberto' && s.schedule) {
-                    const todaySch = s.schedule[currentDayStr];
-                    if (!todaySch || !todaySch.active) { dynamicStatus = 'Fechado'; } 
-                    else {
-                        const [oH, oM] = (todaySch.open || '00:00').split(':').map(Number);
-                        const [cH, cHm] = (todaySch.close || '23:59').split(':').map(Number);
-                        const openMins = (oH || 0) * 60 + (oM || 0); const closeMins = (cH || 0) * 60 + (cHm || 0);
-                        let isOpen = (closeMins >= openMins) ? (currentMins >= openMins && currentMins <= closeMins) : (currentMins >= openMins || currentMins <= closeMins);
-                        if (!isOpen) dynamicStatus = 'Fechado';
-                    }
-                }
-                return { ...s, dynamicStatus };
-            });
-            filteredStores.sort((a, b) => {
-                const getWeight = (store) => { if (store.dynamicStatus === 'Fechado') return 1; return 0; };
-                return getWeight(a) - getWeight(b);
-            });
-            container.innerHTML = filteredStores.map(s => {
-                const isClosed = s.dynamicStatus === 'Fechado';
-                const cardClass = isClosed ? 'store-card closed' : 'store-card';
-                let statusText = s.dynamicStatus; let statusColor = isClosed ? '#717171' : '#00a14b'; 
-                return `
-                <a href="loja.html?id=${s.id}" class="${cardClass}">
-                    <img src="${s.logo || 'https://via.placeholder.com/80'}" class="store-logo" alt="Logo">
+
+            container.innerHTML = filtered.map(s => `
+                <a href="loja.html?id=${s.id}" class="store-card">
+                    <img src="${s.logo}" class="store-logo">
                     <div class="store-info">
                         <div class="store-name">${s.name}</div>
-                        <div class="store-details"><span>${s.cat || 'Geral'}</span><span class="dot">•</span><span style="font-weight: bold; color: ${statusColor};">${statusText}</span></div>
+                        <div class="store-details">${s.cat} • ${s.status}</div>
                     </div>
-                </a>`;
-            }).join('');
+                </a>
+            `).join('');
         };
 
-        window.filterCategory = (categoryName, element) => {
-            document.querySelectorAll('#category-filters .button-item').forEach(btn => btn.classList.remove('active'));
-            if (categoryName === 'Todos' || currentCategoryFilter === categoryName) {
-                currentCategoryFilter = null; document.querySelector('#category-filters .button-item').classList.add('active'); document.getElementById('list-title').innerText = "Lojas";
-            } else {
-                element.classList.add('active'); currentCategoryFilter = categoryName; document.getElementById('list-title').innerText = "Lojas - " + element.querySelector('span').innerText;
-            }
-            window.renderStores();
+        window.filterCategory = (cat, el) => {
+            document.querySelectorAll('.button-item').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            currentCategoryFilter = (cat === 'Todos') ? null : cat;
+            renderStores();
         };
 
         window.updateCartBadge = () => {
-            const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
-            const floatingCart = document.getElementById('floating-cart');
-            const floatingBadge = document.getElementById('floating-cart-count');
-            if (currentCart.length > 0) {
-                if (floatingCart) { floatingCart.style.display = 'flex'; floatingBadge.innerText = currentCart.length; }
-            } else {
-                if (floatingCart) floatingCart.style.display = 'none';
-            }
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const float = document.getElementById('floating-cart');
+            if(cart.length > 0) {
+                float.style.display = 'flex';
+                document.getElementById('floating-cart-count').innerText = cart.length;
+            } else { float.style.display = 'none'; }
         };
+
+        // Carrega estado inicial se ja houver cidade
+        if(userCity) {
+            document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
+            document.getElementById('main-content').style.display = 'block';
+        }
     </script>
 </body>
 </html>
