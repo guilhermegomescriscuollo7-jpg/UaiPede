@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel da Loja - Dores Delivery</title>
+    <title>Painel da Loja - UaiPede</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
@@ -11,30 +11,37 @@
         
         .mobile-header { display: none; }
 
+        /* SIDEBAR / MENU */
         .sidebar { width: 260px; background: #fff; border-right: 1px solid #eee; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.02); z-index: 100; flex-shrink: 0; height: 100vh; }
         .store-header { padding: 25px 20px; border-bottom: 1px solid #f2f2f2; text-align: center; }
         .store-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #ea1d2c; margin-bottom: 10px; }
-        .store-name { font-size: 1.2rem; font-weight: 700; color: #111; }
-        .store-status-toggle { margin-top: 10px; padding: 10px; border-radius: 12px; font-size: 0.9rem; font-weight: bold; cursor: pointer; border: none; width: 100%; transition: 0.2s; line-height: 1.3; }
+        .store-name { font-size: 1.2rem; font-weight: 900; color: #111; letter-spacing: -0.5px;}
+        .store-status-toggle { margin-top: 10px; padding: 10px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; cursor: pointer; border: none; width: 100%; transition: 0.2s; line-height: 1.3; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        
         .status-open { background: #e6f4ea; color: #00a14b; }
         .status-closed { background: #fef0f0; color: #ea1d2c; }
         
         .nav-menu { list-style: none; flex: 1; margin-top: 15px; overflow-y: auto; }
-        .nav-item { padding: 18px 25px; cursor: pointer; color: #555; transition: 0.2s; font-weight: 500; display: flex; align-items: center; gap: 10px; border-left: 4px solid transparent; }
+        .nav-item { padding: 18px 25px; cursor: pointer; color: #555; transition: 0.2s; font-weight: 600; display: flex; align-items: center; gap: 12px; border-left: 4px solid transparent; }
+        .nav-item svg { stroke: #555; transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: #fff5f5; color: #ea1d2c; border-left: 4px solid #ea1d2c; }
-        .btn-logout { margin: 20px; padding: 12px; background: #f8f8f8; color: #777; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-logout:hover { background: #eee; color: #111; }
+        .nav-item:hover svg, .nav-item.active svg { stroke: #ea1d2c; }
+        
+        .btn-logout { margin: 20px; padding: 12px; background: #f8f8f8; color: #ea1d2c; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #eee;}
+        .btn-logout:hover { background: #fff0f0; border-color: #fbd5d5; }
 
         .main-content { flex: 1; height: 100vh; overflow-y: auto; padding: 25px; position: relative; background: #f4f5f7; }
         .section { display: none; height: 100%; display: flex; flex-direction: column; }
-        .section:not(.active) { display: none !important; }
-        h2 { font-size: 1.5rem; color: #111; margin-bottom: 25px; flex-shrink: 0;}
+        .section.active { display: flex !important; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        h2 { font-size: 1.5rem; color: #111; margin-bottom: 25px; flex-shrink: 0; font-weight: 900;}
 
         /* KANBAN DESKTOP */
         .kanban-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; flex: 1; min-height: 0; }
         .kanban-col { background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; display: flex; flex-direction: column; height: 100%;}
-        .col-header { font-size: 0.95rem; font-weight: 700; color: #111; padding-bottom: 12px; border-bottom: 2px solid #eee; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;}
-        .col-count { background: #eee; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; color: #555; }
+        .col-header { font-size: 0.95rem; font-weight: 800; color: #333; padding-bottom: 12px; border-bottom: 2px solid #eee; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;}
+        .col-count { background: #ea1d2c; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; color: #fff; font-weight: bold;}
         .kanban-list-scroll { flex: 1; overflow-y: auto; padding-right: 5px; }
         .kanban-list-scroll::-webkit-scrollbar { width: 5px; }
         .kanban-list-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
@@ -42,18 +49,20 @@
         .order-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-bottom: 15px; animation: slideIn 0.3s ease;}
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .order-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;}
-        .order-id { font-weight: 900; color: #ea1d2c; display: flex; align-items: center; }
-        .customer-info { font-size: 0.9rem; margin-bottom: 12px; }
-        .customer-info .address { color: #555; background: #f9f9f9; padding: 8px; border-radius: 6px; margin-top: 5px; }
-        .order-items { border-top: 1px dashed #eee; border-bottom: 1px dashed #eee; padding: 12px 0; margin-bottom: 12px; font-size: 0.85rem; }
-        .payment-box { padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; }
+        .order-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: flex-start;}
+        .order-id { font-weight: 900; color: #ea1d2c; display: flex; align-items: center; font-size: 1.1rem; }
+        .customer-info { font-size: 0.9rem; margin-bottom: 12px; color: #333; }
+        .customer-info .address { color: #555; background: #f9f9f9; padding: 8px; border-radius: 6px; margin-top: 5px; display: flex; align-items: flex-start; gap: 6px;}
+        .order-items { border-top: 1px dashed #eee; border-bottom: 1px dashed #eee; padding: 12px 0; margin-bottom: 12px; font-size: 0.85rem; color: #444;}
+        
+        .payment-box { padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;}
         .pay-cash { background: #e6f4ea; color: #0f5132; border: 1px solid #badbcc; }
         .pay-card { background: #eef4ff; color: #084298; border: 1px solid #b6d4fe; }
         .pay-pix { background: #fdf5e6; color: #997404; border: 1px solid #f9e1b5; }
-        .order-total { font-size: 1.2rem; font-weight: 900; text-align: right; margin-bottom: 10px; }
         
-        .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: #fff; margin-bottom: 5px; transition: 0.2s; font-size: 0.85rem;}
+        .order-total { font-size: 1.2rem; font-weight: 900; text-align: right; margin-bottom: 10px; color: #111;}
+        
+        .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: #fff; margin-bottom: 5px; transition: 0.2s; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 6px;}
         .btn-action:active { transform: scale(0.98); }
         .btn-accept { background: #00a14b; } 
         .btn-dispatch { background: #0d6efd; }
@@ -64,23 +73,23 @@
         .menu-list-area { flex: 1; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #e0e0e0; }
         .list-header-tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #e0e0e0; overflow-x: auto; padding: 0 10px; flex-shrink: 0;}
         .list-tab { padding: 15px 20px; font-size: 0.9rem; font-weight: 600; color: #555; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
-        .list-tab.active { color: #0d6efd; border-bottom-color: #0d6efd; }
+        .list-tab.active { color: #ea1d2c; border-bottom-color: #ea1d2c; }
         .list-content { flex: 1; overflow-y: auto; background: #fdfdfd; padding-bottom: 20px; }
         .category-block { margin-bottom: 10px; }
         .category-header { background: #eee; padding: 10px 15px; font-size: 0.85rem; font-weight: 700; color: #555; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; border-top: 1px solid #e0e0e0; }
         .cat-actions { display: flex; align-items: center; gap: 10px; }
-        .btn-add-prod-cat { background: none; border: none; color: #0d6efd; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
-        .btn-del-cat { background: none; border: none; color: #ea1d2c; cursor: pointer; font-size: 1.1rem; padding: 2px 5px; border-radius: 4px; }
+        .btn-add-prod-cat { background: none; border: none; color: #ea1d2c; font-weight: bold; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;}
+        .btn-del-cat { background: none; border: none; color: #ea1d2c; cursor: pointer; padding: 2px 5px; border-radius: 4px; display: flex; align-items: center; justify-content: center;}
         .product-row { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #eee; background: #fff; cursor: pointer; transition: 0.2s; }
         .product-row:hover { background: #f4f5f7; }
-        .product-row.selected { background: #eef4ff; border-left: 4px solid #0d6efd; }
+        .product-row.selected { background: #fff5f5; border-left: 4px solid #ea1d2c; }
         .drag-handle { color: #ccc; margin-right: 15px; cursor: grab; font-size: 1.2rem; }
         .row-img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; background: #eee; margin-right: 15px; border: 1px solid #ddd; }
         .row-info { flex: 1; }
         .row-name { font-size: 0.95rem; font-weight: 600; color: #333; margin-bottom: 2px; }
         .row-sub { font-size: 0.75rem; color: #888; } 
         .list-footer-actions { padding: 15px; background: #fff; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; flex-shrink: 0;}
-        .btn-outline { padding: 8px 15px; border: 1px solid #ccc; background: #fff; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; color: #555;}
+        .btn-outline { padding: 8px 15px; border: 1px solid #ccc; background: #fff; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; color: #555; display: flex; align-items: center; gap: 6px;}
 
         /* EDITOR DE PRODUTO */
         .menu-edit-area { width: 450px; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; display: flex; flex-direction: column; flex-shrink: 0;}
@@ -88,27 +97,27 @@
         .editor-top { display: flex; gap: 15px; margin-bottom: 20px; }
         .image-upload-box { width: 100px; height: 100px; background: #f4f5f7; border: 1px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; flex-shrink: 0; cursor: pointer; }
         .image-upload-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; z-index: 1; }
-        .image-upload-box .icon { font-size: 1.5rem; color: #0d6efd; position: relative; z-index: 2; background: rgba(255,255,255,0.8); border-radius: 50%; padding: 5px; }
+        .image-upload-box .icon { position: relative; z-index: 2; background: rgba(255,255,255,0.9); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; }
         .image-upload-box input[type="file"] { position: absolute; top:0; left:0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 3; }
         .top-fields { flex: 1; display: flex; flex-direction: column; gap: 10px; }
         .form-group label { display: block; font-size: 0.75rem; color: #777; margin-bottom: 4px; font-weight: 600; }
-        .form-input { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; outline: none; font-family: 'Roboto', sans-serif; background: #fff;}
-        .form-input:focus { border-color: #0d6efd; }
+        .form-input { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; outline: none; font-family: 'Roboto', sans-serif; background: #fff; color: #333;}
+        .form-input:focus { border-color: #ea1d2c; }
         textarea.form-input { resize: vertical; min-height: 55px; }
         .editor-card { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card-title { font-weight: bold; color: #333; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
-        .price-tabs { display: flex; border: 1px solid #0d6efd; border-radius: 6px; overflow: hidden; }
-        .p-tab { padding: 5px 15px; font-size: 0.8rem; background: #fff; color: #0d6efd; border: none; cursor: pointer; font-weight: bold; }
-        .p-tab.active { background: #0d6efd; color: #fff; }
+        .price-tabs { display: flex; border: 1px solid #ea1d2c; border-radius: 6px; overflow: hidden; }
+        .p-tab { padding: 5px 15px; font-size: 0.8rem; background: #fff; color: #ea1d2c; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .p-tab.active { background: #ea1d2c; color: #fff; }
         .price-input-wrapper { position: relative; margin-bottom: 15px; }
         .price-input-wrapper span { position: absolute; left: 10px; top: 9px; color: #777; font-size: 0.9rem; }
         .price-input-wrapper input { padding-left: 35px; font-weight: bold; color: #111; }
         .variant-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
         .variant-row input { flex: 1; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; }
-        .btn-add-var { width: 100%; border: 1px dashed #0d6efd; color: #0d6efd; background: #fff; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px;}
+        .btn-add-var { width: 100%; border: 1px dashed #ea1d2c; color: #ea1d2c; background: #fff; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px;}
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .btn-plus { width: 30px; height: 30px; border: 1px solid #0d6efd; background: #fff; color: #0d6efd; font-size: 1.2rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .btn-plus { width: 30px; height: 30px; border: 1px solid #ea1d2c; background: #fff; color: #ea1d2c; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .editor-footer { padding: 15px 20px; background: #fff; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; justify-content: space-between; flex-shrink: 0;}
         .btn-del-prod { background: none; border: none; color: #ea1d2c; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
         .btn-save-prod { background: #ea1d2c; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
@@ -130,7 +139,7 @@
         .t-btn-toggle { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; border: none; width: 100%;}
         .t-btn-toggle.active { background: #fff; color: #00a14b; }
         .t-btn-toggle.inactive { background: #333; color: #fff; }
-        .t-btn-del { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;}
+        .t-btn-del { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;}
 
         /* SEÇÃO: CONFIGURAÇÕES E RELATÓRIOS */
         .config-scroll { overflow-y: auto; flex: 1; }
@@ -150,7 +159,7 @@
         .mod-body { flex: 1; overflow-y: auto; padding: 25px; }
 
         /* TOAST NOTIFICATION */
-        .toast-notification { position: fixed; top: 30px; right: -400px; width: 340px; background: #fff; border-left: 6px solid #00a14b; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 15px 20px; display: flex; align-items: center; gap: 15px; z-index: 9999; transition: right 0.5s ease; }
+        .toast-notification { position: fixed; top: 30px; right: -400px; width: 340px; background: #fff; border-left: 6px solid #ea1d2c; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 15px 20px; display: flex; align-items: center; gap: 15px; z-index: 9999; transition: right 0.5s ease; }
         .toast-notification.show { right: 30px; }
 
         /* RESPONSIVIDADE MOBILE */
@@ -164,7 +173,7 @@
 
             .mobile-header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 9000; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
             .mobile-logo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;}
-            .m-status-btn { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; border: none; }
+            .m-status-btn { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; border: none; display: flex; align-items: center; gap: 4px;}
             .m-status-open { background: #e6f4ea; color: #00a14b; }
             .m-status-closed { background: #fef0f0; color: #ea1d2c; }
 
@@ -194,7 +203,9 @@
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
             <button id="mobile-btn-toggle" class="m-status-btn m-status-open" onclick="window.toggleStoreStatus()">Carregando...</button>
-            <button onclick="window.logoutStore()" style="background:none; border:none; font-size:1.4rem; color:#ea1d2c; cursor:pointer;" title="Sair do Painel">🚪</button>
+            <button onclick="window.logoutStore()" style="background:none; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer;" title="Sair do Painel">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </button>
         </div>
     </div>
 
@@ -202,25 +213,51 @@
         <div class="store-header">
             <img src="https://via.placeholder.com/80" id="ui-store-logo" class="store-logo" alt="Logo">
             <div class="store-name" id="ui-store-name">Carregando...</div>
-            <button id="btn-toggle-status" class="store-status-toggle status-open" onclick="window.toggleStoreStatus()">🟢 Loja Aberta</button>
+            <button id="btn-toggle-status" class="store-status-toggle status-open" onclick="window.toggleStoreStatus()">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <span>Loja Aberta</span>
+                </div>
+                <span style="font-size:0.65rem;font-weight:normal;">(Funcionamento normal)</span>
+            </button>
         </div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="window.switchTab('pedidos', this)">📋 <span>Pedidos</span></li>
-            <li class="nav-item" onclick="window.switchTab('cardapio', this)">🍔 <span>Cardápio</span></li>
-            <li class="nav-item" onclick="window.switchTab('cupons', this)">🎟️ <span>Cupons</span></li>
-            <li class="nav-item" onclick="window.switchTab('configuracoes', this)">⚙️ <span>Ajustes da Loja</span></li>
-            <li class="nav-item" onclick="window.switchTab('relatorios', this)">📊 <span>Métricas</span></li>
+            <li class="nav-item active" onclick="window.switchTab('pedidos', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>Pedidos</span>
+            </li>
+            <li class="nav-item" onclick="window.switchTab('cardapio', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg>
+                <span>Cardápio</span>
+            </li>
+            <li class="nav-item" onclick="window.switchTab('cupons', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                <span>Cupons</span>
+            </li>
+            <li class="nav-item" onclick="window.switchTab('configuracoes', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Ajustes da Loja</span>
+            </li>
+            <li class="nav-item" onclick="window.switchTab('relatorios', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Métricas</span>
+            </li>
         </ul>
-        <div class="btn-logout" onclick="window.logoutStore()">Sair do Sistema</div>
+        <div class="btn-logout" onclick="window.logoutStore()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sair do Sistema
+        </div>
     </aside>
 
     <main class="main-content">
         
         <div id="new-order-toast" class="toast-notification">
-            <div class="toast-icon">🔔</div>
+            <div class="toast-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </div>
             <div class="toast-text" style="flex:1;">
-                <h4>Novo Pedido!</h4>
-                <p>Verifique a sua lista de pendentes.</p>
+                <h4 style="margin-bottom:2px; color:#111;">Novo Pedido!</h4>
+                <p style="font-size:0.85rem; color:#555;">Verifique a sua lista de pendentes.</p>
             </div>
             <button class="toast-close-btn" onclick="window.closeToast()" style="background:none; border:none; font-size:1.2rem; color:#aaa; cursor:pointer; padding:5px;">✕</button>
         </div>
@@ -228,8 +265,9 @@
         <section id="pedidos" class="section active">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 15px; flex-shrink: 0;">
                 <h2 style="margin:0;">Painel de Pedidos</h2>
-                <button onclick="window.requestNotificationPermission()" style="background:#eef4ff; color:#0d6efd; border:1px solid #b6d4fe; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.85rem;">
-                    🔊 Ativar Alertas de Áudio
+                <button onclick="window.requestNotificationPermission()" style="background:#fff5f5; color:#ea1d2c; border:1px solid #fbd5d5; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    Ativar Alertas de Áudio
                 </button>
             </div>
             
@@ -239,11 +277,11 @@
                     <div class="kanban-list-scroll" id="list-pendente"></div>
                 </div>
                 <div class="kanban-col">
-                    <div class="col-header">2. Preparando <span class="col-count" id="count-preparo">0</span></div>
+                    <div class="col-header">2. Preparando <span class="col-count" id="count-preparo" style="background:#f39c12;">0</span></div>
                     <div class="kanban-list-scroll" id="list-preparo"></div>
                 </div>
                 <div class="kanban-col">
-                    <div class="col-header">3. Em Rota / Prontos <span class="col-count" id="count-rota">0</span></div>
+                    <div class="col-header">3. Em Rota / Prontos <span class="col-count" id="count-rota" style="background:#0d6efd;">0</span></div>
                     <div class="kanban-list-scroll" id="list-rota"></div>
                 </div>
                 <div class="kanban-col">
@@ -256,7 +294,7 @@
                             <option value="semestre">Este Semestre</option>
                             <option value="todos">Todos</option>
                         </select>
-                        <span class="col-count" id="count-concluido" style="margin-left: auto;">0</span>
+                        <span class="col-count" id="count-concluido" style="margin-left: auto; background:#00a14b;">0</span>
                     </div>
                     <div class="kanban-list-scroll" id="list-concluido"></div>
                 </div>
@@ -273,7 +311,10 @@
                     </div>
                     <div class="list-content" id="product-list-container"></div>
                     <div class="list-footer-actions">
-                        <button class="btn-outline" onclick="window.promptNewCategory()">+ Nova Categoria</button>
+                        <button class="btn-outline" onclick="window.promptNewCategory()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Nova Categoria
+                        </button>
                     </div>
                 </div>
 
@@ -282,7 +323,9 @@
                         <div class="editor-top">
                             <div class="image-upload-box">
                                 <img src="" id="ed-img-preview" style="display: none;">
-                                <div class="icon">📷</div>
+                                <div class="icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                </div>
                                 <input type="file" id="ed-img-file" accept="image/*">
                             </div>
                             <div class="top-fields">
@@ -347,13 +390,13 @@
                                     </div>
                                 </div>
 
-                                <div id="kg-fields" style="display: none; gap: 15px; background: #fdf5e6; padding: 15px; border-radius: 8px; border: 1px solid #f9e1b5; margin-bottom: 15px;">
+                                <div id="kg-fields" style="display: none; gap: 15px; background: #fff5f5; padding: 15px; border-radius: 8px; border: 1px solid #fbd5d5; margin-bottom: 15px;">
                                     <div class="form-group" style="flex: 1; margin: 0;">
-                                        <label style="color: #997404;">Valor do Kg (R$)</label>
+                                        <label style="color: #ea1d2c;">Valor do Kg (R$)</label>
                                         <input type="number" id="ed-price-kg" class="form-input" step="0.01" placeholder="Ex: 50.00" oninput="window.calcKgPrice()">
                                     </div>
                                     <div class="form-group" style="flex: 1; margin: 0;">
-                                        <label style="color: #997404;">Peso da Peça (Kg)</label>
+                                        <label style="color: #ea1d2c;">Peso da Peça (Kg)</label>
                                         <input type="number" id="ed-weight" class="form-input" step="0.001" placeholder="Ex: 0.500 para 500g" oninput="window.calcKgPrice()">
                                     </div>
                                 </div>
@@ -370,10 +413,12 @@
 
                         <div class="editor-card flex-between">
                             <div>
-                                <span class="card-title">Adicionar modificador <span class="p-badge" id="mod-count-badge">0</span></span>
+                                <span class="card-title">Adicionar modificador <span class="p-badge" id="mod-count-badge" style="background:#ea1d2c; color:#fff; padding:2px 6px; border-radius:12px; font-size:0.7rem; margin-left:6px;">0</span></span>
                                 <span style="display:block; font-size:0.75rem; color:#888; margin-top: 4px;">Ingredientes, sabores, talheres...</span>
                             </div>
-                            <button class="btn-plus" onclick="window.openModifiersModal()">+</button>
+                            <button class="btn-plus" onclick="window.openModifiersModal()">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </button>
                         </div>
 
                     </div>
@@ -392,7 +437,10 @@
 
             <div class="coupon-layout">
                 <div class="coupon-form">
-                    <h3 style="font-size: 1.1rem; color: #111; margin-bottom: 20px;">🎟️ Criar Novo Cupom</h3>
+                    <h3 style="font-size: 1.1rem; color: #111; margin-bottom: 20px; display:flex; align-items:center; gap:8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                        Criar Novo Cupom
+                    </h3>
                     
                     <div class="form-group">
                         <label>Código do Cupom</label>
@@ -439,7 +487,10 @@
             <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
                 <div class="editor-card" style="flex: 1; min-width: 300px;">
                     <div class="card-header-flex">
-                        <span class="card-title" style="font-size: 1.1rem;">🛵 Configurações de Entrega</span>
+                        <span class="card-title" style="font-size: 1.1rem; color:#ea1d2c; display:flex; align-items:center; gap:8px;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 1 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            Configurações de Entrega
+                        </span>
                     </div>
                     <div class="form-group">
                         <label>Valor da Taxa de Entrega (R$)</label>
@@ -461,7 +512,10 @@
 
                 <div class="editor-card" style="flex: 1; min-width: 300px;">
                     <div class="card-header-flex">
-                        <span class="card-title" style="font-size: 1.1rem;">ℹ️ Informações para o Cliente</span>
+                        <span class="card-title" style="font-size: 1.1rem; color:#ea1d2c; display:flex; align-items:center; gap:8px;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            Informações para o Cliente
+                        </span>
                     </div>
                     <div class="form-group">
                         <label>Formas de Pagamento Aceitas</label>
@@ -474,11 +528,14 @@
                 </div>
             </div>
 
-            <button class="btn-save-prod" onclick="window.saveStoreSettings()" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-bottom: 30px; background-color: #0d6efd;">Salvar Todas as Configurações da Loja</button>
+            <button class="btn-save-prod" onclick="window.saveStoreSettings()" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-bottom: 30px;">Salvar Configurações da Loja</button>
 
             <div class="editor-card" style="margin-top: 20px;">
                 <div class="card-header-flex">
-                    <span class="card-title" style="font-size: 1.1rem;">⏳ Horário de Funcionamento Fixo</span>
+                    <span class="card-title" style="font-size: 1.1rem; color:#ea1d2c; display:flex; align-items:center; gap:8px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        Horário de Funcionamento Fixo
+                    </span>
                 </div>
                 <p style="font-size: 0.85rem; color: #777; margin-bottom: 20px;">Defina os dias e horários padrão em que a sua loja atende aos clientes. O app fechará a loja automaticamente fora desses horários.</p>
                 
@@ -505,7 +562,7 @@
             <div class="report-grid">
                 <div class="report-card">
                     <div class="rep-title">Faturamento</div>
-                    <div class="rep-value green" id="rep-revenue">R$ 0,00</div>
+                    <div class="rep-value" style="color:#00a14b;" id="rep-revenue">R$ 0,00</div>
                 </div>
                 <div class="report-card">
                     <div class="rep-title">Total de Pedidos</div>
@@ -534,10 +591,10 @@
     <div class="modal-overlay" id="modifiers-modal">
         <div class="mod-modal-content">
             <div class="mod-header">
-                <h3>Categorias de modificadores <span class="p-badge" id="mod-header-count">0</span></h3>
-                <div class="mod-header-actions">
-                    <button class="btn-outline-blue" onclick="window.addModCategory()" style="padding: 8px 10px; font-size:0.8rem;">+ Categoria</button>
-                    <button class="btn-close-mod" onclick="window.closeModifiersModal()">✕</button>
+                <h3>Categorias de modificadores <span class="p-badge" id="mod-header-count" style="background:#ea1d2c; color:#fff; padding:2px 8px; border-radius:12px; font-size:0.8rem; margin-left:8px;">0</span></h3>
+                <div class="mod-header-actions" style="display:flex; gap:10px;">
+                    <button class="btn-outline" style="border-color:#ea1d2c; color:#ea1d2c;" onclick="window.addModCategory()">+ Categoria</button>
+                    <button onclick="window.closeModifiersModal()" style="background:none; border:none; font-size:1.5rem; color:#aaa; cursor:pointer;">✕</button>
                 </div>
             </div>
             <div class="mod-body" id="modifiers-list-render"></div>
@@ -605,17 +662,32 @@
             if(loggedStore.status === 'Aberto') {
                 if (isScheduleOpen) {
                     btn.className = 'store-status-toggle status-open'; 
-                    btn.innerHTML = '🟢 Loja Aberta <br><span style="font-size:0.65rem;font-weight:normal;">(Funcionamento normal)</span>';
-                    if(mBtn) { mBtn.className = 'm-status-btn m-status-open'; mBtn.innerHTML = '🟢 Aberta'; }
+                    btn.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <span>Loja Aberta</span>
+                        </div>
+                        <span style="font-size:0.65rem;font-weight:normal;">(Funcionamento normal)</span>`;
+                    if(mBtn) { mBtn.className = 'm-status-btn m-status-open'; mBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Aberta'; }
                 } else {
                     btn.className = 'store-status-toggle status-closed'; 
-                    btn.innerHTML = '🔴 Loja Fechada <br><span style="font-size:0.65rem;font-weight:normal;">Fora do horário configurado</span>';
-                    if(mBtn) { mBtn.className = 'm-status-btn m-status-closed'; mBtn.innerHTML = '🔴 Fechada'; }
+                    btn.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            <span>Loja Fechada</span>
+                        </div>
+                        <span style="font-size:0.65rem;font-weight:normal;">Fora do horário configurado</span>`;
+                    if(mBtn) { mBtn.className = 'm-status-btn m-status-closed'; mBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Fechada'; }
                 }
             } else {
                 btn.className = 'store-status-toggle status-closed'; 
-                btn.innerHTML = '🔴 Loja Fechada <br><span style="font-size:0.65rem;font-weight:normal;">Fechada manualmente</span>';
-                if(mBtn) { mBtn.className = 'm-status-btn m-status-closed'; mBtn.innerHTML = '🔴 Fechada'; }
+                btn.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        <span>Loja Fechada</span>
+                    </div>
+                    <span style="font-size:0.65rem;font-weight:normal;">Fechada manualmente</span>`;
+                if(mBtn) { mBtn.className = 'm-status-btn m-status-closed'; mBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Fechada'; }
             }
         };
 
@@ -694,7 +766,7 @@
             }
         };
 
-        // 🟢 CARREGAMENTO DAS NOVAS CONFIGURAÇÕES DA LOJA 🟢
+        // CARREGAMENTO DAS NOVAS CONFIGURAÇÕES DA LOJA
         onSnapshot(doc(db, "stores", loggedStore.id), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
@@ -702,7 +774,6 @@
                 loggedStore.status = data.status || 'Aberto';
                 localStorage.setItem('loggedStore', JSON.stringify(loggedStore));
                 
-                // Preenche os campos do painel
                 document.getElementById('cfg-delivery-fee').value = data.deliveryFee !== undefined ? data.deliveryFee : '';
                 document.getElementById('cfg-delivery-time').value = data.deliveryTime || '';
                 document.getElementById('cfg-pickup-time').value = data.pickupTime || '';
@@ -758,7 +829,6 @@
             try { await updateDoc(doc(db, "stores", loggedStore.id), { schedule: newSchedule }); alert("Horários atualizados com sucesso!"); } catch(e) { alert("Ocorreu um erro ao salvar os horários."); }
         };
 
-        // 🟢 NOVA FUNÇÃO QUE SALVA TODAS AS CONFIGURAÇÕES 🟢
         window.saveStoreSettings = async () => {
             const deliveryFee = document.getElementById('cfg-delivery-fee').value;
             const deliveryTime = document.getElementById('cfg-delivery-time').value.trim();
@@ -871,19 +941,25 @@
             }).join('');
             
             let paymentBadge = ''; let payMethodText = order.paymentMethod || 'Não informado';
-            if (payMethodText.includes('Dinheiro')) { paymentBadge = `<div class="payment-box pay-cash">💵 ${payMethodText}</div>`; } 
-            else if (payMethodText.includes('Pix')) { paymentBadge = `<div class="payment-box pay-pix">💠 ${payMethodText}</div>`; } 
-            else { paymentBadge = `<div class="payment-box pay-card">💳 ${payMethodText}</div>`; }
+            if (payMethodText.includes('Dinheiro')) { paymentBadge = `<div class="payment-box pay-cash"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle></svg> ${payMethodText}</div>`; } 
+            else if (payMethodText.includes('Pix')) { paymentBadge = `<div class="payment-box pay-pix"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line><polyline points="22 8.5 12 15.5 2 8.5"></polyline><polyline points="2 15.5 12 8.5 22 15.5"></polyline><line x1="12" y1="2" x2="12" y2="8.5"></line></svg> ${payMethodText}</div>`; } 
+            else { paymentBadge = `<div class="payment-box pay-card"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> ${payMethodText}</div>`; }
             
             const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
             
             let addressHtml = ''; let orderTypeBadge = '';
             if (isPickup) {
-                addressHtml = `<div class="address" style="background:#fff3cd; color:#856404; font-weight:900; font-size: 0.95rem; text-align: center; border: 2px dashed #ffeeba; padding: 12px;">🚶‍♂️ RETIRAR NA LOJA</div>`;
+                addressHtml = `<div class="address" style="background:#fff3cd; color:#856404; font-weight:900; font-size: 0.95rem; text-align: center; border: 2px dashed #ffeeba; padding: 12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                                RETIRAR NA LOJA
+                               </div>`;
                 orderTypeBadge = `<span style="background:#ffc107; color:#000; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; margin-left:10px;">RETIRADA</span>`;
             } else {
-                addressHtml = `<div class="address">📍 ${order.customer.address}</div>`;
-                orderTypeBadge = `<span style="background:#eef4ff; color:#0d6efd; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; margin-left:10px;">🛵 ENTREGA</span>`;
+                addressHtml = `<div class="address">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> 
+                                ${order.customer.address}
+                               </div>`;
+                orderTypeBadge = `<span style="background:#eef4ff; color:#0d6efd; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; margin-left:10px;">ENTREGA</span>`;
             }
 
             let discountHtml = '';
@@ -895,50 +971,59 @@
 
             if (order.status === 'Pendente') { 
                 sellerBadge = `<span style="color:#ea1d2c; font-size:0.75rem; font-weight:bold;">Novo Pedido</span>`;
-                actionBtn = `<button class="btn-action btn-accept" onclick="window.updateOrderStatus('${order.id}', 'Aceito')">1️⃣ Aceitar Pedido</button>`; 
+                actionBtn = `<button class="btn-action btn-accept" onclick="window.updateOrderStatus('${order.id}', 'Aceito')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Aceitar Pedido</button>`; 
             } 
             else if (order.status === 'Aceito') { 
                 sellerBadge = `<span style="color:#f39c12; font-size:0.75rem; font-weight:bold;">Aguardando Cozinha</span>`;
-                actionBtn = `<button class="btn-action" style="background:#f39c12;" onclick="window.updateOrderStatus('${order.id}', 'Em Preparo')">2️⃣ Iniciar Preparo</button>`; 
+                actionBtn = `<button class="btn-action" style="background:#f39c12;" onclick="window.updateOrderStatus('${order.id}', 'Em Preparo')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Iniciar Preparo</button>`; 
             } 
             else if (order.status === 'Em Preparo') { 
                 sellerBadge = `<span style="color:#0d6efd; font-size:0.75rem; font-weight:bold;">Na Cozinha</span>`;
                 if (isPickup) {
-                    actionBtn = `<button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Pronto para Retirada')">🛍️ Marcar como Pronto</button>`;
+                    actionBtn = `<button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Pronto para Retirada')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Marcar como Pronto</button>`;
                 } else {
                     const feeArg = order.deliveryFee ? order.deliveryFee : 0;
                     actionBtn = `
                     <div style="display:flex; flex-direction:column; gap:8px;">
-                        <button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')">3️⃣ Saiu p/ Entrega (Próprio)</button>
-                        <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver('${order.id}', ${feeArg})">🛎️ Solicitar Entregador</button>
+                        <button class="btn-action btn-dispatch" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 1 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg> Saiu p/ Entrega (Próprio)</button>
+                        <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver('${order.id}', ${feeArg})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Solicitar Entregador</button>
                     </div>`; 
                 }
             }
             else if (order.status === 'Aguardando Entregador') {
                 sellerBadge = `<span style="color:#8e44ad; font-size:0.75rem; font-weight:bold;">Aguardando Motoboy</span>`;
                 actionBtn = `
-                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #8e44ad; font-weight: bold;">⏳ Entregador a caminho da loja...</div>
+                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #8e44ad; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Entregador a caminho da loja...
+                </div>
                 <button class="btn-action" style="background:#ccc; color:#333;" onclick="window.updateOrderStatus('${order.id}', 'Saiu para Entrega')">Forçar Saída</button>`;
             }
             else if (order.status === 'Pronto para Retirada') {
                 sellerBadge = `<span style="color:#856404; font-size:0.75rem; font-weight:bold;">Aguardando Cliente</span>`;
                 actionBtn = `
-                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #856404; font-weight: bold;">🛍️ Cliente vem buscar</div>
-                <button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">4️⃣ Entregue ao Cliente</button>`;
+                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #856404; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    Cliente vem buscar
+                </div>
+                <button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Entregue ao Cliente</button>`;
             }
             else if (order.status === 'Saiu para Entrega') {
                 sellerBadge = `<span style="color:#f59e0b; font-size:0.75rem; font-weight:bold;">Em Rota</span>`;
                 actionBtn = `
-                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #f59e0b; font-weight: bold;">🛵 Com o Entregador</div>
-                <button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')">4️⃣ Marcar como Entregue</button>`;
+                <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #f59e0b; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 1 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    Com o Entregador
+                </div>
+                <button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus('${order.id}', 'Concluído')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Marcar como Entregue</button>`;
             }
             else if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
                 sellerBadge = `<span style="color:#00a14b; font-size:0.75rem; font-weight:bold;">Finalizado</span>`;
-                actionBtn = `<div style="text-align:center; color:#00a14b; font-weight:bold; font-size:0.9rem;">✅ Pedido Concluído</div>`;
+                actionBtn = `<div style="text-align:center; color:#00a14b; font-weight:bold; font-size:0.9rem; display:flex; align-items:center; justify-content:center; gap:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Pedido Concluído</div>`;
             }
             else if (order.status === 'Cancelado') {
                 sellerBadge = `<span style="color:#ea1d2c; font-size:0.75rem; font-weight:bold;">Cancelado</span>`;
-                actionBtn = `<div style="text-align:center; color:#ea1d2c; font-weight:bold; font-size:0.9rem;">❌ Cancelado</div>`;
+                actionBtn = `<div style="text-align:center; color:#ea1d2c; font-weight:bold; font-size:0.9rem; display:flex; align-items:center; justify-content:center; gap:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Cancelado</div>`;
             }
             
             const shortId = order.id.substring(0, 6).toUpperCase();
@@ -952,7 +1037,13 @@
                     </div>
                     <span class="order-time" style="font-size:0.8rem; color:#888;">${order.date.split(' ')[1] || ''}</span>
                 </div>
-                <div class="customer-info"><strong>👤 ${order.customerName}</strong>${addressHtml}</div>
+                <div class="customer-info">
+                    <strong style="display:flex; align-items:center; gap:6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        ${order.customerName}
+                    </strong>
+                    ${addressHtml}
+                </div>
                 <ul class="order-items" style="list-style:none; padding:0;">${itemsList}</ul>
                 ${paymentBadge}
                 ${discountHtml}
@@ -1014,9 +1105,9 @@
             document.getElementById('rep-avg').innerText = `R$ ${avgTicket.toFixed(2)}`;
 
             document.getElementById('rep-payments').innerHTML = `
-                <li><span>💠 Pix</span> <strong>${payPix}</strong></li>
-                <li><span>💳 Cartão</span> <strong>${payCard}</strong></li>
-                <li><span>💵 Dinheiro</span> <strong>${payCash}</strong></li>
+                <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#997404" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line><polyline points="22 8.5 12 15.5 2 8.5"></polyline><polyline points="2 15.5 12 8.5 22 15.5"></polyline><line x1="12" y1="2" x2="12" y2="8.5"></line></svg> Pix</span> <strong>${payPix}</strong></li>
+                <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#084298" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Cartão</span> <strong>${payCard}</strong></li>
+                <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f5132" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle></svg> Dinheiro</span> <strong>${payCash}</strong></li>
             `;
 
             const sortedProducts = Object.keys(productSales)
@@ -1030,7 +1121,7 @@
                 const medals = ['🥇', '🥈', '🥉'];
                 topContainer.innerHTML = sortedProducts.map((p, index) => `
                     <li>
-                        <span class="top-medal">${medals[index] || '🏅'}</span>
+                        <span class="top-medal" style="font-size:1.5rem;">${medals[index] || '🏅'}</span>
                         <div class="top-name">${p.name}</div>
                         <div class="top-stats"><span>${p.qty}x vendidos</span><strong>R$ ${p.rev.toFixed(2)}</strong></div>
                     </li>
@@ -1116,7 +1207,10 @@
                 container.innerHTML += `
                 <div class="ticket-coupon" style="${!coupon.active ? 'opacity:0.6; filter: grayscale(50%);' : ''}">
                     <div class="ticket-left">
-                        <div class="t-title">CUPOM DE DESCONTO</div>
+                        <div class="t-title" style="display:flex; align-items:center; gap:6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                            CUPOM DE DESCONTO
+                        </div>
                         <div class="t-value">${valText}</div>
                         <div class="t-code">${coupon.code}</div>
                         <div class="t-info">${minText}</div>
@@ -1124,7 +1218,9 @@
                     </div>
                     <div class="ticket-right">
                         ${toggleBtn}
-                        <button class="t-btn-del" title="Apagar Cupom" onclick="window.deleteCoupon('${coupon.id}')">🗑️</button>
+                        <button class="t-btn-del" title="Apagar Cupom" onclick="window.deleteCoupon('${coupon.id}')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        </button>
                     </div>
                 </div>`;
             });
@@ -1152,7 +1248,7 @@
             window.loadCategoriesAndProducts();
         });
 
-        // 🟢 COMPRESSÃO DE IMAGENS 🟢
+        // COMPRESSÃO DE IMAGENS
         document.getElementById('ed-img-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -1237,7 +1333,7 @@
                         <span class="drag-handle" style="font-size: 1rem; margin:0;">⋮⋮</span>
                         <input type="text" placeholder="Ex: Pequeno" value="${v.name}" oninput="window.updateVarData(${index}, 'name', this.value)">
                         <input type="number" class="var-price" placeholder="R$ 0,00" value="${v.price}" step="0.01" oninput="window.updateVarData(${index}, 'price', this.value)">
-                        <button class="btn-rem-var" onclick="window.removeVariantRow(${index})">✕</button>
+                        <button class="btn-rem-var" onclick="window.removeVariantRow(${index})" style="background:none; border:none; color:#ea1d2c; cursor:pointer;">✕</button>
                     </div>`;
             });
         };
@@ -1287,13 +1383,13 @@
             allUniqueCategories.forEach(catName => {
                 catSelect.innerHTML += `<option value="${catName}">${catName}</option>`;
                 const prodsInCat = globalProducts.filter(p => (p.category || 'Geral') === catName);
-                const deleteBtnHTML = (catName !== 'Geral' && catName !== 'Destaques') ? `<button class="btn-del-cat" title="Excluir" onclick="window.deleteCategory('${catName}')">🗑️</button>` : '';
+                const deleteBtnHTML = (catName !== 'Geral' && catName !== 'Destaques') ? `<button class="btn-del-cat" title="Excluir" onclick="window.deleteCategory('${catName}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>` : '';
                 
                 let blockHTML = `
                     <div class="category-block">
                         <div class="category-header">
                             <div><span style="font-weight: normal; font-size:0.75rem;">Nome da categoria</span><br><span style="color:#111; font-size:1rem;">${catName}</span></div>
-                            <div class="cat-actions"><button class="btn-add-prod-cat" onclick="window.openEditorNew('${catName}')">+ Produto</button>${deleteBtnHTML}</div>
+                            <div class="cat-actions"><button class="btn-add-prod-cat" onclick="window.openEditorNew('${catName}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Produto</button>${deleteBtnHTML}</div>
                         </div>`;
                 
                 if (prodsInCat.length === 0) { 
@@ -1430,32 +1526,37 @@
                 let optionsHtml = '';
                 cat.options.forEach((opt, oIndex) => {
                     optionsHtml += `
-                    <div class="mod-opt-row">
-                        <span class="drag-dots">⋮⋮</span>
-                        <div class="mod-opt-input-group"><label>Nome do modificador</label><input type="text" value="${opt.name}" placeholder="Ex: Queijo Cheddar" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'name', this.value)"></div>
-                        <div class="mod-opt-input-group mod-opt-price"><label>Preço</label><input type="number" step="0.01" value="${opt.price}" placeholder="R$ 0,00" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'price', this.value)"></div>
-                        <button class="btn-hide-opt">👁️‍🗨️</button><button class="btn-del-opt" title="Remover Opção" onclick="window.removeModOption(${cIndex}, ${oIndex})">🗑️</button>
-                    </div>
-                    <div class="dummy-badges"><span class="dummy-badge">+ Custo</span><span class="dummy-badge">+ Desconto</span><span class="dummy-badge">+ SKU</span></div>`;
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; background:#fff; padding:10px; border-radius:8px; border:1px solid #eee;">
+                        <span style="color:#ccc; font-size:1.2rem; cursor:grab;">⋮⋮</span>
+                        <div style="flex:2;"><label style="font-size:0.7rem; color:#777; font-weight:bold;">Nome do modificador</label><input type="text" value="${opt.name}" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; outline:none;" placeholder="Ex: Queijo Cheddar" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'name', this.value)"></div>
+                        <div style="flex:1;"><label style="font-size:0.7rem; color:#777; font-weight:bold;">Preço</label><input type="number" step="0.01" value="${opt.price}" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; outline:none;" placeholder="R$ 0,00" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'price', this.value)"></div>
+                        <button style="background:none; border:none; font-size:1.2rem; color:#ea1d2c; cursor:pointer; margin-top:15px;" title="Remover Opção" onclick="window.removeModOption(${cIndex}, ${oIndex})">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        </button>
+                    </div>`;
                 });
                 container.innerHTML += `
-                <div class="mod-category-card">
-                    <div class="mod-cat-header-drag">
-                        <div style="position:relative;"><label style="position:absolute; top:-8px; left:10px; background:#fafafa; font-size:0.7rem; color:#777; padding:0 4px;">Categoria</label><input type="text" class="mod-cat-title-input" value="${cat.name}" oninput="window.updateModCat(${cIndex}, 'name', this.value)"></div>
-                        <button class="btn-remove-cat" onclick="window.removeModCategory(${cIndex})">✕ Excluir</button>
+                <div style="background:#fff; border:1px solid #e0e0e0; border-radius:12px; margin-bottom:15px; overflow:hidden;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-bottom:1px solid #eee;">
+                        <div style="position:relative; flex:1; max-width: 300px;"><label style="position:absolute; top:-8px; left:10px; background:#f9f9f9; font-size:0.7rem; color:#777; padding:0 4px; font-weight:bold;">Nome da Categoria</label><input type="text" value="${cat.name}" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-weight:bold; color:#111; outline:none;" oninput="window.updateModCat(${cIndex}, 'name', this.value)"></div>
+                        <button style="background:#fff0f0; color:#ea1d2c; border:1px solid #fbd5d5; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:0.8rem;" onclick="window.removeModCategory(${cIndex})">✕ Excluir</button>
                     </div>
-                    <div class="mod-cat-body">
-                        <div class="mod-rules-row">
-                            <div class="mod-rule-group"><span>Selecionar condição</span>
-                                <label class="radio-label"><input type="radio" name="req_${cIndex}" ${cat.isRequired ? 'checked' : ''} onchange="window.updateModCat(${cIndex}, 'isRequired', true)"> Obrigatório</label>
-                                <label class="radio-label"><input type="radio" name="req_${cIndex}" ${!cat.isRequired ? 'checked' : ''} onchange="window.updateModCat(${cIndex}, 'isRequired', false)"> Opcional</label>
+                    <div style="padding:15px;">
+                        <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px; background:#f4f5f7; padding:15px; border-radius:8px;">
+                            <div style="flex:1; min-width:200px;"><span style="font-size:0.8rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">Selecionar condição</span>
+                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer; margin-bottom:6px;"><input type="radio" name="req_${cIndex}" ${cat.isRequired ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isRequired', true)"> Obrigatório</label>
+                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer;"><input type="radio" name="req_${cIndex}" ${!cat.isRequired ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isRequired', false)"> Opcional</label>
                             </div>
-                            <div class="mod-rule-group"><span>Nessa categoria, você pode selecionar</span>
-                                <label class="radio-label"><input type="radio" name="mult_${cIndex}" ${!cat.isMultiple ? 'checked' : ''} onchange="window.updateModCat(${cIndex}, 'isMultiple', false)"> Apenas um modificador</label>
-                                <label class="radio-label"><input type="radio" name="mult_${cIndex}" ${cat.isMultiple ? 'checked' : ''} onchange="window.updateModCat(${cIndex}, 'isMultiple', true)"> Vários</label>
+                            <div style="flex:1; min-width:200px;"><span style="font-size:0.8rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">Nessa categoria, você pode selecionar</span>
+                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer; margin-bottom:6px;"><input type="radio" name="mult_${cIndex}" ${!cat.isMultiple ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isMultiple', false)"> Apenas um modificador</label>
+                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer;"><input type="radio" name="mult_${cIndex}" ${cat.isMultiple ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isMultiple', true)"> Vários</label>
                             </div>
                         </div>
-                        <div class="mod-options-area"><h4>Adicionar modificadores para essa categoria <span class="p-badge" style="background:#eee;">${cat.options.length}</span></h4>${optionsHtml}<button class="btn-add-mod-text" onclick="window.addModOption(${cIndex})">+ Adicionar modificador</button></div>
+                        <div style="background:#fff; border:1px dashed #ccc; padding:15px; border-radius:8px;">
+                            <h4 style="font-size:0.9rem; color:#333; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between;">Opções de Modificadores <span style="background:#eee; color:#555; padding:2px 8px; border-radius:12px; font-size:0.75rem;">${cat.options.length} opções</span></h4>
+                            ${optionsHtml}
+                            <button style="background:none; border:none; color:#0d6efd; font-weight:bold; cursor:pointer; font-size:0.9rem; margin-top:10px; display:flex; align-items:center; gap:4px;" onclick="window.addModOption(${cIndex})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Adicionar modificador</button>
+                        </div>
                     </div>
                 </div>`;
             });
