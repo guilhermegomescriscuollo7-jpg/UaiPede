@@ -49,14 +49,20 @@
         /* MODAL DE ESCOLHA DE CIDADE */
         .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; }
         .city-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
-        .city-modal-content { background: #fff; width: 90%; max-width: 400px; border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; position: relative;}
+        .city-modal-content { background: #fff; width: 90%; max-width: 400px; border-radius: 20px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; position: relative; max-height: 90vh; display: flex; flex-direction: column;}
         .city-modal-close { position: absolute; top: 15px; right: 15px; background: #f4f5f7; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; display: none; align-items: center; justify-content: center; cursor: pointer; color: #555;}
         
-        .city-modal-icon { width: 60px; height: 60px; background: #fff5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ea1d2c; margin: 0 auto 15px; }
+        .city-modal-icon { width: 50px; height: 50px; background: #fff5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ea1d2c; margin: 0 auto 15px; font-size: 1.5rem; }
         .city-modal-title { font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 8px; }
-        .city-modal-desc { font-size: 0.9rem; color: #777; margin-bottom: 25px; line-height: 1.4; }
+        .city-modal-desc { font-size: 0.9rem; color: #777; margin-bottom: 20px; line-height: 1.4; }
         
-        .city-list { display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 5px; }
+        /* BARRA DE PESQUISA DE CIDADES */
+        .city-search-box { position: relative; margin-bottom: 15px; width: 100%; }
+        .city-search-box svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
+        .city-search-box input { width: 100%; padding: 12px 12px 12px 38px; border: 1px solid #ddd; border-radius: 12px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; }
+        .city-search-box input:focus { border-color: #ea1d2c; background: #fff; }
+
+        .city-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding-right: 5px; flex: 1; }
         .city-list::-webkit-scrollbar { width: 4px; }
         .city-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
         
@@ -92,13 +98,12 @@
         .store-logo { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 1px solid #eee; object-fit: cover; flex-shrink: 0;}
         .store-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
         
-        /* COR DO NOME DA LOJA (PRETO) */
         .store-name { font-size: 1.1rem; font-weight: 800; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
         
         .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
-        /* MENU INFERIOR */
+        /* MENU INFERIOR & CARRINHO FLUTUANTE */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
         .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
         .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
@@ -181,10 +186,16 @@
         <div class="city-modal-content">
             <button class="city-modal-close" id="btn-close-city-modal" onclick="window.closeCityModal()">✕</button>
             <div class="city-modal-icon">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                📍
             </div>
             <h2 class="city-modal-title">Onde você está?</h2>
             <p class="city-modal-desc">Selecione sua cidade para ver os melhores estabelecimentos perto de você.</p>
+            
+            <div class="city-search-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="city-search-input" placeholder="Buscar cidade..." oninput="window.filterCityList()">
+            </div>
+
             <div class="city-list" id="modal-city-list">
                 <p style="color:#aaa; font-size:0.9rem;">Buscando cidades...</p>
             </div>
@@ -300,7 +311,7 @@
                                 const classEfeito = `effect-${spAtual.transition || 'fade'}`;
                                 const tempoMs = (spAtual.duration || 2) * 1000;
                                 sponsorContent.className = classEfeito; 
-                                sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador">`;
+                                sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador" style="width:100%; height:100%; object-fit:cover;">`;
                                 void sponsorContent.offsetWidth; 
                                 sponsorContent.classList.add('active'); 
                                 setTimeout(() => {
@@ -318,19 +329,27 @@
             }, 1500); 
         });
 
-        // FUNÇÕES DO MODAL DE CIDADES 
+        // 🟢 FUNÇÕES DO MODAL DE CIDADES (COM PESQUISA) 🟢
         window.openCityModal = (canClose = true) => {
             const modal = document.getElementById('city-modal');
             const closeBtn = document.getElementById('btn-close-city-modal');
-            const listContainer = document.getElementById('modal-city-list');
+            
+            // Limpa a busca sempre que abrir
+            document.getElementById('city-search-input').value = '';
             
             if (canClose && userCity) { closeBtn.style.display = 'flex'; } 
             else { closeBtn.style.display = 'none'; }
 
-            if (globalCities.length === 0) {
-                listContainer.innerHTML = '<p style="color:#aaa;">Nenhuma cidade cadastrada ainda.</p>';
+            window.renderCityList(globalCities);
+            modal.classList.add('active');
+        };
+
+        window.renderCityList = (citiesToRender) => {
+            const listContainer = document.getElementById('modal-city-list');
+            if (citiesToRender.length === 0) {
+                listContainer.innerHTML = '<p style="color:#aaa; text-align:center; padding: 20px;">Nenhuma cidade encontrada.</p>';
             } else {
-                listContainer.innerHTML = globalCities.map(c => {
+                listContainer.innerHTML = citiesToRender.map(c => {
                     const cityString = `${c.name} - ${c.state}`;
                     const isSelected = userCity === cityString;
                     return `
@@ -341,7 +360,19 @@
                     `;
                 }).join('');
             }
-            modal.classList.add('active');
+        };
+
+        window.filterCityList = () => {
+            const query = document.getElementById('city-search-input').value.toLowerCase().trim();
+            if (!query) {
+                window.renderCityList(globalCities);
+                return;
+            }
+            const filtered = globalCities.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.state.toLowerCase().includes(query)
+            );
+            window.renderCityList(filtered);
         };
 
         window.closeCityModal = () => { document.getElementById('city-modal').classList.remove('active'); };
@@ -403,7 +434,6 @@
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                         <h3>Poxa, ainda não chegamos aí!</h3>
                         <p>Nenhuma loja ativa cadastrada em ${userCity.split(' - ')[0]} no momento.</p>
-                        <p style="font-size:0.8rem; margin-top:15px; color:#ea1d2c; font-weight:bold;">⚠️ Aviso p/ Admin: Vá na edição de lojas e vincule a loja a esta cidade!</p>
                     </div>`;
                 return;
             }
