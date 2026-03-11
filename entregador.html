@@ -265,7 +265,7 @@
         
         let allPendingOrders = [];
         let myAcceptedOrders = [];
-        let myHistoryOrders = []; // Variável para as entregas concluídas
+        let myHistoryOrders = []; 
 
         window.onload = async () => {
             if (loggedDriver && loggedDriver.id) {
@@ -275,7 +275,6 @@
                 const firstName = loggedDriver.name ? loggedDriver.name.split(' ')[0] : 'Entregador';
                 document.getElementById('driver-name-display').innerText = `Olá, ${firstName}`;
                 
-                // Preenche a data de hoje no filtro de histórico automaticamente
                 const todayIso = new Date().toISOString().split('T')[0];
                 document.getElementById('history-date-filter').value = todayIso;
                 
@@ -325,7 +324,6 @@
             }
         };
 
-        // AVISO DO STATUS PARA O BANCO DE DADOS
         window.toggleOnlineStatus = async () => {
             isOnline = document.getElementById('driver-status-toggle').checked;
             const statusText = document.getElementById('status-text');
@@ -365,7 +363,6 @@
             document.getElementById(`tab-${tab}`).classList.remove('inactive');
             document.getElementById(`sec-${tab}`).classList.add('active');
             
-            // Se for a aba de histórico, manda renderizar a lista conforme o filtro de data
             if(tab === 'historico') {
                 window.renderHistoryOrders();
             }
@@ -376,9 +373,7 @@
             snap.forEach(doc => { storesCache[doc.id] = doc.data(); });
         }
 
-        // ESCUTADORES EM TEMPO REAL
         function startListeners() {
-            // 1. Escuta pedidos "Aguardando Entregador" (FILA PARA ACEITAR)
             const qPending = query(collection(db, "orders"), where("status", "==", "Aguardando Entregador"));
             onSnapshot(qPending, (snapshot) => {
                 allPendingOrders = [];
@@ -404,11 +399,10 @@
                 renderAvailableOrders();
             });
 
-            // 2. Escuta Minhas Entregas (ANDAMENTO E CONCLUÍDAS)
             const qMyRides = query(collection(db, "orders"), where("driverId", "==", loggedDriver.id));
             onSnapshot(qMyRides, (snapshot) => {
                 myAcceptedOrders = [];
-                myHistoryOrders = []; // Reseta histórico
+                myHistoryOrders = []; 
                 
                 let eToday = 0; let eWeek = 0; let eMonth = 0; let eYear = 0;
                 
@@ -421,14 +415,12 @@
                 snapshot.forEach(doc => {
                     const order = { id: doc.id, ...doc.data() };
                     
-                    // Vai para "Em andamento"
                     if (order.status === 'Saiu para Entrega') {
                         myAcceptedOrders.push(order);
                     }
                     
-                    // Vai para "Histórico" e Ganhos
                     if (order.status === 'Concluído' || order.status === 'Concluido' || order.status === 'Entregue') {
-                        myHistoryOrders.push(order); // Adiciona na lista do histórico
+                        myHistoryOrders.push(order); 
                         
                         const orderTime = order.deliveredAt || order.timestamp || 0;
                         const fee = parseFloat(order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 0));
@@ -442,12 +434,10 @@
                 
                 renderMyOrders();
                 
-                // Se a aba histórico estiver aberta, atualiza ela na hora
                 if (document.getElementById('sec-historico').classList.contains('active')) {
                     window.renderHistoryOrders();
                 }
 
-                // Atualiza tela de ganhos
                 document.getElementById('val-hoje').innerText = `R$ ${eToday.toFixed(2)}`;
                 document.getElementById('val-semana').innerText = `R$ ${eWeek.toFixed(2)}`;
                 document.getElementById('val-mes').innerText = `R$ ${eMonth.toFixed(2)}`;
@@ -455,9 +445,6 @@
             });
         }
 
-        // ==========================================
-        // RENDERIZADORES DE TELA
-        // ==========================================
         function renderAvailableOrders() {
             const container = document.getElementById('available-rides-list');
             const badge = document.getElementById('badge-novas');
@@ -577,7 +564,7 @@
             }).join('');
         }
 
-        // 🟢 RENDERIZAÇÃO DO HISTÓRICO (NOVO) 🟢
+        // 🟢 RENDERIZAÇÃO DO HISTÓRICO COM TOTALIZADOR DIÁRIO 🟢
         window.renderHistoryOrders = () => {
             const container = document.getElementById('history-rides-list');
             const noMsg = document.getElementById('no-history-msg');
@@ -585,18 +572,15 @@
             
             if (!selectedDateStr) return;
 
-            // Transforma o input 'YYYY-MM-DD' em timestamps precisos de Início e Fim do dia
             const [year, month, day] = selectedDateStr.split('-');
             const filterStart = new Date(year, month - 1, day).getTime();
             const filterEnd = filterStart + (24 * 60 * 60 * 1000);
 
-            // Filtra os pedidos daquele dia específico
             const filteredHistory = myHistoryOrders.filter(order => {
                 const orderTime = order.deliveredAt || order.timestamp || 0;
                 return orderTime >= filterStart && orderTime < filterEnd;
             });
 
-            // Ordena para os mais recentes ficarem no topo da lista
             filteredHistory.sort((a, b) => (b.deliveredAt || b.timestamp) - (a.deliveredAt || a.timestamp));
 
             if (filteredHistory.length === 0) {
@@ -607,12 +591,15 @@
 
             noMsg.style.display = 'none';
 
-            container.innerHTML = filteredHistory.map(order => {
+            let totalFeeDay = 0;
+            const listHtml = filteredHistory.map(order => {
                 const shortId = order.id.substring(0, 5).toUpperCase();
                 const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
                 const storeName = order.storeName || 'Loja Desconhecida';
                 const custName = order.customerName || 'Cliente';
                 
+                totalFeeDay += parseFloat(fee);
+
                 const timeObj = new Date(order.deliveredAt || order.timestamp);
                 const timeStr = timeObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
@@ -628,6 +615,22 @@
                     </div>
                 </div>`;
             }).join('');
+
+            // CRIA O CARD DE RESUMO NO TOPO
+            const summaryHtml = `
+                <div style="background: #fff; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <div style="text-align: center; flex: 1; border-right: 1px dashed #ddd;">
+                        <div style="font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Total de Entregas</div>
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #111;">${filteredHistory.length}</div>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <div style="font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Valor em Taxas</div>
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #00a14b;">R$ ${totalFeeDay.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = summaryHtml + listHtml;
         };
 
         window.acceptOrder = async (orderId, btnElement) => {
