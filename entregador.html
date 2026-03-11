@@ -45,8 +45,8 @@
         input:checked + .slider:before { transform: translateX(20px); }
 
         /* ABAS */
-        .tabs { display: flex; gap: 8px; padding: 0 15px; margin-top: -20px; position: relative; z-index: 101; }
-        .tab-btn { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; font-size: 0.85rem; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
+        .tabs { display: flex; gap: 5px; padding: 0 15px; margin-top: -20px; position: relative; z-index: 101; }
+        .tab-btn { flex: 1; padding: 12px 2px; text-align: center; font-weight: bold; font-size: 0.8rem; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
         .tab-btn.active { background: #ea1d2c; color: #fff; }
         .tab-btn.inactive { background: #fff; color: #555; border: 1px solid #eee; }
 
@@ -58,8 +58,15 @@
         /* CARD DE CORRIDA */
         .ride-card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f2f2f2; position: relative; overflow: hidden;}
         .ride-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: #0d6efd; }
+        .ride-card.new { border: 2px solid #ea1d2c; animation: pulseBorder 1.5s infinite; }
         .ride-card.new::before { background: #ea1d2c; }
         
+        @keyframes pulseBorder { 
+            0% { border-color: #ea1d2c; } 
+            50% { border-color: transparent; } 
+            100% { border-color: #ea1d2c; } 
+        }
+
         .r-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 15px; }
         .r-fee { font-size: 1.4rem; font-weight: 900; color: #00a14b; display: flex; align-items: center; gap: 6px;}
         .r-id { font-size: 0.8rem; color: #888; font-weight: bold;}
@@ -79,27 +86,23 @@
         /* BOTÃO DE NAVEGAÇÃO WAZE */
         .nav-buttons-row { display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; padding-left: 39px; }
         .btn-waze { flex: 1; background: #f0f7ff; color: #0099ff; border: 1px solid #bce3ff; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
-        .btn-waze:active { background: #e0f0ff; }
 
         .pay-method-badge { display: inline-block; background: #fdf5e6; color: #997404; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #f9e1b5; margin-bottom: 15px;}
 
         .btn-action { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;}
         .btn-action:active { transform: scale(0.98); }
-        .btn-action:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-accept { background: #ea1d2c; color: #fff; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.3);}
         .btn-finish { background: #00a14b; color: #fff; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.3);}
 
         .empty-msg { text-align: center; padding: 50px 20px; color: #999; }
-        .empty-msg svg { color: #ddd; margin-bottom: 15px; }
 
         /* NOTIFICAÇÃO SONORA TOAST */
-        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 6px solid #ea1d2c; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 15px; display: flex; align-items: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 8px solid #ea1d2c; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 18px; display: flex; align-items: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
         .toast-msg.show { top: 20px; }
 
         /* FILTRO DE HISTÓRICO */
-        .filter-box { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .filter-box label { font-weight: bold; color: #555; font-size: 0.9rem; }
-        .filter-box input { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; font-weight: bold; color: #111; font-family: 'Roboto', sans-serif;}
+        .filter-box { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;}
+        .filter-box input { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; font-weight: bold;}
     </style>
 </head>
 <body>
@@ -109,16 +112,8 @@
             <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
             <h2>UaiPede Entregas</h2>
             <p>Faça login para receber corridas</p>
-            
-            <div class="form-group">
-                <label>Seu E-mail</label>
-                <input type="email" id="login-email" class="form-input" placeholder="entregador@email.com">
-            </div>
-            <div class="form-group">
-                <label>Sua Senha</label>
-                <input type="password" id="login-pass" class="form-input" placeholder="••••••••">
-            </div>
-            
+            <div class="form-group"><label>E-mail</label><input type="email" id="login-email" class="form-input"></div>
+            <div class="form-group"><label>Senha</label><input type="password" id="login-pass" class="form-input"></div>
             <button class="btn-login" onclick="window.loginDriver()">Entrar</button>
         </div>
     </div>
@@ -129,11 +124,8 @@
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
                 <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span></div>
             </div>
-
             <div class="header-top">
-                <div class="driver-info">
-                    <h1 id="driver-name-display">Olá, Entregador</h1>
-                </div>
+                <div class="driver-info"><h1 id="driver-name-display">Olá</h1></div>
                 <div class="status-toggle">
                     <span id="status-text">FORA DE SERVIÇO</span>
                     <label class="toggle-switch">
@@ -145,61 +137,32 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; margin-left:2px; display:none;">0</span></button>
+            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; display:none;">0</span></button>
             <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Atuais</button>
             <button class="tab-btn inactive" id="tab-historico" onclick="window.switchTab('historico')">Realizadas</button>
         </div>
 
         <div class="content-area">
-            
             <div id="sec-novas" class="section active">
-                <div id="offline-msg" class="empty-msg" style="display: block;">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    <h3>Você está Fora de Serviço</h3>
-                    <p style="font-size:0.9rem; margin-top:5px;">Mude a chave acima para "Em serviço" para receber novas solicitações de entrega.</p>
-                </div>
-                <div id="no-rides-msg" class="empty-msg" style="display: none;">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    <h3>Buscando corridas...</h3>
-                    <p style="font-size:0.9rem; margin-top:5px;">Fique atento, logo uma loja chamará.</p>
-                </div>
+                <div id="offline-msg" class="empty-msg"><h3>Você está Fora de Serviço</h3><p>Ligue a chave acima para receber pedidos.</p></div>
+                <div id="no-rides-msg" class="empty-msg" style="display: none;"><h3>Buscando corridas...</h3></div>
                 <div id="available-rides-list"></div>
             </div>
-
-            <div id="sec-minhas" class="section">
-                <div id="no-active-msg" class="empty-msg">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"></path><path d="M5 2h14"></path><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path></svg>
-                    <h3>Nenhuma entrega em andamento</h3>
-                    <p style="font-size:0.9rem; margin-top:5px;">As corridas que você aceitar aparecerão aqui.</p>
-                </div>
-                <div id="my-rides-list"></div>
-            </div>
-
+            <div id="sec-minhas" class="section"><div id="no-active-msg" class="empty-msg"><h3>Nenhuma entrega em andamento</h3></div><div id="my-rides-list"></div></div>
             <div id="sec-historico" class="section">
-                <div class="filter-box">
-                    <label>Filtro do dia:</label>
-                    <input type="date" id="history-date-filter" onchange="window.renderHistoryOrders()">
-                </div>
-                
-                <div id="no-history-msg" class="empty-msg" style="display: none;">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    <h3>Nenhuma corrida neste dia</h3>
-                    <p style="font-size:0.9rem; margin-top:5px;">Você não concluiu nenhuma entrega na data selecionada.</p>
-                </div>
-                
+                <div class="filter-box"><label>Data:</label><input type="date" id="history-date-filter" onchange="window.renderHistoryOrders()"></div>
                 <div id="history-rides-list"></div>
             </div>
-
         </div>
     </div>
 
     <div id="new-ride-toast" class="toast-msg">
-        <div style="background: #fff5f5; color: #ea1d2c; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <div style="background: #ea1d2c; color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         </div>
         <div>
-            <h4 style="margin:0; color:#111; font-size:1rem;">Nova Corrida!</h4>
-            <p style="margin:0; font-size:0.85rem; color:#555;">Toque para ver os detalhes.</p>
+            <h4 style="margin:0; color:#ea1d2c; font-size:1.1rem; font-weight:900;">NOVA ENTREGA!</h4>
+            <p style="margin:0; font-size:0.9rem; color:#333;">Toque para ver os detalhes da corrida.</p>
         </div>
     </div>
 
@@ -222,27 +185,23 @@
         let isOnline = false;
         let storesCache = {}; 
         let availableCount = 0;
-        
-        let allPendingOrders = [];
-        let myAcceptedOrders = [];
-        let myHistoryOrders = []; 
+        let myHistoryOrders = [];
 
         window.onload = async () => {
             if (loggedDriver && loggedDriver.id) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'block';
+                document.getElementById('driver-name-display').innerText = `Olá, ${loggedDriver.name.split(' ')[0]}`;
                 
-                const firstName = loggedDriver.name ? loggedDriver.name.split(' ')[0] : 'Entregador';
-                document.getElementById('driver-name-display').innerText = `Olá, ${firstName}`;
-                
+                // Pedir permissão para notificação na barra de status
+                if ("Notification" in window) {
+                    Notification.requestPermission();
+                }
+
                 const todayIso = new Date().toISOString().split('T')[0];
                 document.getElementById('history-date-filter').value = todayIso;
-                
                 await loadStoresCache();
                 startListeners();
-            } else {
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app-screen').style.display = 'none';
             }
         };
 
@@ -250,82 +209,38 @@
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
             const btn = document.querySelector('.btn-login');
-
             if (!email || !pass) return alert("Preencha e-mail e senha.");
             btn.innerText = "Verificando..."; btn.disabled = true;
-
             try {
                 const q = query(collection(db, "drivers"), where("email", "==", email), where("password", "==", pass));
                 const snap = await getDocs(q);
-
-                if (snap.empty) {
-                    alert("Acesso negado. E-mail ou senha incorretos.");
-                    btn.innerText = "Entrar"; btn.disabled = false;
-                    return;
-                }
-
+                if (snap.empty) { alert("Acesso negado."); btn.innerText = "Entrar"; btn.disabled = false; return; }
                 const docData = snap.docs[0];
-                const driverData = docData.data();
-
-                if (driverData.isActive === false) {
-                    alert("Sua conta está suspensa. Procure o suporte.");
-                    btn.innerText = "Entrar"; btn.disabled = false;
-                    return;
-                }
-
-                loggedDriver = { id: docData.id, ...driverData };
+                loggedDriver = { id: docData.id, ...docData.data() };
                 localStorage.setItem('loggedDriver', JSON.stringify(loggedDriver));
                 window.location.reload();
-
-            } catch(e) {
-                console.error(e);
-                alert("Erro de conexão.");
-                btn.innerText = "Entrar"; btn.disabled = false;
-            }
+            } catch(e) { btn.innerText = "Entrar"; btn.disabled = false; }
         };
 
         window.toggleOnlineStatus = async () => {
             isOnline = document.getElementById('driver-status-toggle').checked;
-            const statusText = document.getElementById('status-text');
-            const offlineMsg = document.getElementById('offline-msg');
-            const noRidesMsg = document.getElementById('no-rides-msg');
-
-            if (isOnline) {
-                statusText.innerText = "EM SERVIÇO";
-                statusText.style.color = "#00a14b";
-                offlineMsg.style.display = 'none';
-                if(availableCount === 0) noRidesMsg.style.display = 'block';
-            } else {
-                statusText.innerText = "FORA DE SERVIÇO";
-                statusText.style.color = "#fff";
-                offlineMsg.style.display = 'block';
-                noRidesMsg.style.display = 'none';
-                document.getElementById('available-rides-list').innerHTML = ''; 
-            }
+            document.getElementById('status-text').innerText = isOnline ? "EM SERVIÇO" : "FORA DE SERVIÇO";
+            document.getElementById('status-text').style.color = isOnline ? "#00a14b" : "#fff";
+            document.getElementById('offline-msg').style.display = isOnline ? 'none' : 'block';
+            if(isOnline && availableCount === 0) document.getElementById('no-rides-msg').style.display = 'block';
+            else document.getElementById('no-rides-msg').style.display = 'none';
+            
             renderAvailableOrders(); 
-
-            try {
-                if(loggedDriver && loggedDriver.id) {
-                    await updateDoc(doc(db, "drivers", loggedDriver.id), { 
-                        isOnline: isOnline 
-                    });
-                }
-            } catch(e) {
-                console.error("Erro ao sincronizar status online no banco:", e);
-            }
+            try { if(loggedDriver) await updateDoc(doc(db, "drivers", loggedDriver.id), { isOnline: isOnline }); } catch(e) {}
         };
 
         window.switchTab = (tab) => {
             document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.classList.add('inactive'); });
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`tab-${tab}`).classList.remove('inactive');
             document.getElementById(`sec-${tab}`).classList.add('active');
-            
-            if(tab === 'historico') {
-                window.renderHistoryOrders();
-            }
+            if(tab === 'historico') window.renderHistoryOrders();
         };
 
         async function loadStoresCache() {
@@ -336,101 +251,68 @@
         function startListeners() {
             const qPending = query(collection(db, "orders"), where("status", "==", "Aguardando Entregador"));
             onSnapshot(qPending, (snapshot) => {
-                allPendingOrders = [];
-                let safeDriverCity = '';
-                if (loggedDriver.city && String(loggedDriver.city).toLowerCase() !== 'undefined') {
-                    safeDriverCity = loggedDriver.city;
-                }
-
+                let safeDriverCity = loggedDriver.city || '';
+                let newRides = [];
                 snapshot.forEach(doc => {
                     const order = { id: doc.id, ...doc.data() };
                     const storeCity = storesCache[order.storeId] ? storesCache[order.storeId].city : null;
                     if (!safeDriverCity || storeCity === safeDriverCity || storeCity === safeDriverCity.split(' - ')[0]) {
-                        allPendingOrders.push(order);
+                        newRides.push(order);
                     }
                 });
-                
-                if(isOnline && allPendingOrders.length > availableCount) {
+
+                // 🔔 NOTIFICAR NA BARRA DE STATUS E SOM 🔔
+                if(isOnline && newRides.length > availableCount) {
                     window.playAlertSound();
-                    window.showToast();
+                    window.showToast(); // Toast no App
+                    window.showSystemNotification(); // Barra de Notificação
                 }
                 
+                allPendingOrders = newRides;
                 availableCount = allPendingOrders.length;
                 renderAvailableOrders();
             });
 
             const qMyRides = query(collection(db, "orders"), where("driverId", "==", loggedDriver.id));
             onSnapshot(qMyRides, (snapshot) => {
-                myAcceptedOrders = [];
-                myHistoryOrders = []; 
-                
+                myAcceptedOrders = []; myHistoryOrders = [];
                 snapshot.forEach(doc => {
                     const order = { id: doc.id, ...doc.data() };
-                    
-                    if (order.status === 'Saiu para Entrega') {
-                        myAcceptedOrders.push(order);
-                    }
-                    
-                    if (order.status === 'Concluído' || order.status === 'Concluido' || order.status === 'Entregue') {
-                        myHistoryOrders.push(order); 
-                    }
+                    if (order.status === 'Saiu para Entrega') myAcceptedOrders.push(order);
+                    if (['Concluído', 'Concluido', 'Entregue'].includes(order.status)) myHistoryOrders.push(order);
                 });
-                
                 renderMyOrders();
-                
-                if (document.getElementById('sec-historico').classList.contains('active')) {
-                    window.renderHistoryOrders();
-                }
+                if (document.getElementById('sec-historico').classList.contains('active')) window.renderHistoryOrders();
             });
         }
+
+        // 🟢 MOSTRAR NA BARRA DE NOTIFICAÇÃO DO CELULAR 🟢
+        window.showSystemNotification = () => {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("UaiPede Entregas", {
+                    body: "🚀 Tem uma nova entrega disponível na sua cidade!",
+                    icon: "https://cdn-icons-png.flaticon.com/512/709/709790.png", // Ícone de motinha
+                    vibrate: [200, 100, 200]
+                });
+            }
+        };
 
         function renderAvailableOrders() {
             const container = document.getElementById('available-rides-list');
             const badge = document.getElementById('badge-novas');
-            const noRidesMsg = document.getElementById('no-rides-msg');
-
             if (!isOnline) { container.innerHTML = ''; badge.style.display = 'none'; return; }
-            if (allPendingOrders.length === 0) { container.innerHTML = ''; noRidesMsg.style.display = 'block'; badge.style.display = 'none'; return; }
-
-            noRidesMsg.style.display = 'none';
-            badge.style.display = 'inline-block';
+            document.getElementById('no-rides-msg').style.display = allPendingOrders.length === 0 ? 'block' : 'none';
+            badge.style.display = allPendingOrders.length > 0 ? 'inline-block' : 'none';
             badge.innerText = allPendingOrders.length;
-
             container.innerHTML = allPendingOrders.map(order => {
-                const shortId = order.id.substring(0, 5).toUpperCase();
-                const storeInfo = storesCache[order.storeId] || {};
-                const storeAddress = `${storeInfo.street || 'Endereço da loja'}`;
-                const customerAddress = order.customer.address || 'Endereço não informado';
-                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00); 
-
+                const fee = order.platformDriverFee || order.deliveryFee || 5.00;
                 return `
                 <div class="ride-card new">
-                    <div class="r-header">
-                        <div class="r-fee">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                            R$ ${parseFloat(fee).toFixed(2)}
-                        </div>
-                        <div class="r-id">#${shortId}</div>
-                    </div>
+                    <div class="r-header"><div class="r-fee">R$ ${parseFloat(fee).toFixed(2)}</div><div class="r-id">#${order.id.substring(0,5).toUpperCase()}</div></div>
                     <div class="route-box">
-                        <div class="r-point">
-                            <div class="r-icon store">L</div>
-                            <div class="r-details">
-                                <h4>Coletar em</h4>
-                                <p>${order.storeName}</p>
-                                <div class="r-address">${storeAddress}</div>
-                            </div>
-                        </div>
-                        <div class="r-point">
-                            <div class="r-icon customer">C</div>
-                            <div class="r-details">
-                                <h4>Entregar para</h4>
-                                <p>${order.customerName}</p>
-                                <div class="r-address">${customerAddress}</div>
-                            </div>
-                        </div>
+                        <div class="r-point"><div class="r-icon store">L</div><div class="r-details"><h4>Retirar em</h4><p>${order.storeName}</p></div></div>
+                        <div class="r-point"><div class="r-icon customer">C</div><div class="r-details"><h4>Entregar para</h4><p>${order.customerName}</p></div></div>
                     </div>
-                    <div class="pay-method-badge">Cobrar Cliente: ${order.paymentMethod}</div>
                     <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">Aceitar Corrida</button>
                 </div>`;
             }).join('');
@@ -438,187 +320,76 @@
 
         function renderMyOrders() {
             const container = document.getElementById('my-rides-list');
-            const noMsg = document.getElementById('no-active-msg');
-
-            if (myAcceptedOrders.length === 0) { container.innerHTML = ''; noMsg.style.display = 'block'; return; }
-            noMsg.style.display = 'none';
-
-            let safeCity = '';
-            if (loggedDriver.city && String(loggedDriver.city).toLowerCase() !== 'undefined') { safeCity = loggedDriver.city; }
-
+            document.getElementById('no-active-msg').style.display = myAcceptedOrders.length === 0 ? 'block' : 'none';
             container.innerHTML = myAcceptedOrders.map(order => {
-                const shortId = order.id.substring(0, 5).toUpperCase();
-                const storeInfo = storesCache[order.storeId] || {};
-                const storeAddress = `${storeInfo.street || 'Endereço da loja'}`;
-                const customerAddress = order.customer.address || 'Endereço não informado';
-                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
-
-                const queryStore = encodeURIComponent(storeAddress + (safeCity ? ', ' + safeCity : ''));
-                const queryCustomer = encodeURIComponent(customerAddress + (safeCity ? ', ' + safeCity : ''));
-                const wazeLinkStore = `https://waze.com/ul?q=${queryStore}&navigate=yes`;
-                const wazeLinkCustomer = `https://waze.com/ul?q=${queryCustomer}&navigate=yes`;
-
+                const qStore = encodeURIComponent((storesCache[order.storeId]?.street || '') + ', ' + (loggedDriver.city || ''));
+                const qCust = encodeURIComponent((order.customer.address || '') + ', ' + (loggedDriver.city || ''));
                 return `
                 <div class="ride-card">
-                    <div class="r-header">
-                        <div class="r-fee" style="color:#111;">R$ ${parseFloat(fee).toFixed(2)}</div>
-                        <div class="r-id" style="color:#0d6efd;">EM ANDAMENTO #${shortId}</div>
-                    </div>
+                    <div class="r-header"><div class="r-fee">R$ ${parseFloat(order.platformDriverFee || 5).toFixed(2)}</div></div>
                     <div class="route-box">
-                        <div class="r-point">
-                            <div class="r-icon store">L</div>
-                            <div class="r-details">
-                                <h4>Coleta</h4>
-                                <p>${order.storeName}</p>
-                                <div class="r-address">${storeAddress}</div>
-                            </div>
-                        </div>
-                        <div class="nav-buttons-row">
-                            <button class="btn-waze" onclick="window.open('${wazeLinkStore}', '_blank')">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Navegar com Waze
-                            </button>
-                        </div>
-                        <div class="r-point" style="margin-top:15px;">
-                            <div class="r-icon customer">C</div>
-                            <div class="r-details">
-                                <h4>Entrega</h4>
-                                <p>${order.customerName}</p>
-                                <div class="r-address">${customerAddress}</div>
-                            </div>
-                        </div>
-                        <div class="nav-buttons-row">
-                            <button class="btn-waze" onclick="window.open('${wazeLinkCustomer}', '_blank')">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Navegar com Waze
-                            </button>
-                        </div>
+                        <div class="r-point"><div class="r-icon store">L</div><div class="r-details"><h4>Coleta: ${order.storeName}</h4></div></div>
+                        <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qStore}&navigate=yes', '_blank')">Waze até a Loja</button>
+                        <div class="r-point" style="margin-top:10px;"><div class="r-icon customer">C</div><div class="r-details"><h4>Cliente: ${order.customerName}</h4></div></div>
+                        <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qCust}&navigate=yes', '_blank')">Waze até o Cliente</button>
                     </div>
-                    <div class="pay-method-badge" style="background:#fef0f0; color:#ea1d2c; border-color:#fbd5d5; width:100%; text-align:center;">
-                        O Cliente pagará: ${order.paymentMethod}
-                    </div>
-                    <button class="btn-action btn-finish" onclick="window.finishDelivery('${order.id}')">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                        Concluir Entrega
-                    </button>
+                    <div class="pay-method-badge">Cobrar: ${order.paymentMethod}</div>
+                    <button class="btn-action btn-finish" onclick="window.finishDelivery('${order.id}')">Concluir Entrega</button>
                 </div>`;
             }).join('');
         }
 
         window.renderHistoryOrders = () => {
             const container = document.getElementById('history-rides-list');
-            const noMsg = document.getElementById('no-history-msg');
-            const selectedDateStr = document.getElementById('history-date-filter').value;
-            
-            if (!selectedDateStr) return;
-
-            const [year, month, day] = selectedDateStr.split('-');
-            const filterStart = new Date(year, month - 1, day).getTime();
-            const filterEnd = filterStart + (24 * 60 * 60 * 1000);
-
-            const filteredHistory = myHistoryOrders.filter(order => {
-                const orderTime = order.deliveredAt || order.timestamp || 0;
-                return orderTime >= filterStart && orderTime < filterEnd;
-            });
-
-            filteredHistory.sort((a, b) => (b.deliveredAt || b.timestamp) - (a.deliveredAt || a.timestamp));
-
-            if (filteredHistory.length === 0) {
-                container.innerHTML = '';
-                noMsg.style.display = 'block';
-                return;
-            }
-
-            noMsg.style.display = 'none';
-
-            let totalFeeDay = 0;
-            const listHtml = filteredHistory.map(order => {
-                const shortId = order.id.substring(0, 5).toUpperCase();
-                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
-                const storeName = order.storeName || 'Loja Desconhecida';
-                const custName = order.customerName || 'Cliente';
-                
-                totalFeeDay += parseFloat(fee);
-
-                const timeObj = new Date(order.deliveredAt || order.timestamp);
-                const timeStr = timeObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-
-                return `
-                <div class="ride-card" style="padding: 15px; border-left: 5px solid #00a14b; opacity: 0.95;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed #eee; padding-bottom:10px; margin-bottom:10px;">
-                        <span style="font-weight:900; color:#00a14b; font-size:1.1rem;">+ R$ ${parseFloat(fee).toFixed(2)}</span>
-                        <span style="color:#777; font-size:0.75rem; font-weight:bold;">Entregue às ${timeStr} | #${shortId}</span>
-                    </div>
-                    <div style="font-size:0.85rem; color:#555; line-height: 1.4;">
-                        <strong>De:</strong> ${storeName}<br>
-                        <strong>Para:</strong> ${custName}
-                    </div>
+            const selectedDate = document.getElementById('history-date-filter').value;
+            const filterStart = new Date(selectedDate + 'T00:00:00').getTime();
+            const filterEnd = filterStart + 86400000;
+            const filtered = myHistoryOrders.filter(o => (o.deliveredAt || o.timestamp) >= filterStart && (o.deliveredAt || o.timestamp) < filterEnd);
+            let total = 0;
+            const list = filtered.map(o => {
+                const fee = parseFloat(o.platformDriverFee || o.deliveryFee || 5);
+                total += fee;
+                return `<div class="ride-card" style="border-left:5px solid #00a14b; padding:15px; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between;"><b>R$ ${fee.toFixed(2)}</b> <small>#${o.id.substring(0,5).toUpperCase()}</small></div>
+                    <small>${o.storeName} ➔ ${o.customerName}</small>
                 </div>`;
             }).join('');
-
-            const summaryHtml = `
-                <div style="background: #fff; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-                    <div style="text-align: center; flex: 1; border-right: 1px dashed #ddd;">
-                        <div style="font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Total de Entregas</div>
-                        <div style="font-size: 1.8rem; font-weight: 900; color: #111;">${filteredHistory.length}</div>
-                    </div>
-                    <div style="text-align: center; flex: 1;">
-                        <div style="font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Valor em Taxas</div>
-                        <div style="font-size: 1.8rem; font-weight: 900; color: #00a14b;">R$ ${totalFeeDay.toFixed(2)}</div>
-                    </div>
-                </div>
-            `;
-
-            container.innerHTML = summaryHtml + listHtml;
+            container.innerHTML = `<div style="background:#fff; padding:15px; border-radius:12px; margin-bottom:15px; text-align:center; border:1px solid #eee;">
+                <small>Total do dia:</small><br><b style="font-size:1.5rem; color:#00a14b;">R$ ${total.toFixed(2)}</b><br><small>${filtered.length} entregas</small>
+            </div>` + list;
         };
 
-        window.acceptOrder = async (orderId, btnElement) => {
-            if(!confirm("Tem certeza que deseja aceitar esta entrega?")) return;
-            const originalText = btnElement.innerText;
-            btnElement.innerText = "Aceitando..."; btnElement.disabled = true;
-            try {
-                const safeDriverId = loggedDriver.id || 'SemID';
-                const safeDriverName = loggedDriver.name || 'Entregador Desconhecido';
-                const safeDriverPhone = loggedDriver.phone || 'Sem Telefone';
-                await updateDoc(doc(db, "orders", orderId), {
-                    status: 'Saiu para Entrega',
-                    driverId: safeDriverId,
-                    driverName: safeDriverName,
-                    driverPhone: safeDriverPhone
-                });
-                window.switchTab('minhas');
-            } catch(e) {
-                alert("Erro ao aceitar corrida. Outro entregador pode ter pego ou sua conexão falhou.");
-                btnElement.innerText = originalText; btnElement.disabled = false;
-            }
+        window.acceptOrder = async (orderId, btn) => {
+            if(!confirm("Aceitar entrega?")) return;
+            btn.innerText = "Aceitando..."; btn.disabled = true;
+            try { await updateDoc(doc(db, "orders", orderId), { status: 'Saiu para Entrega', driverId: loggedDriver.id, driverName: loggedDriver.name, driverPhone: loggedDriver.phone }); window.switchTab('minhas'); } 
+            catch(e) { alert("Erro ao aceitar."); btn.disabled = false; }
         };
 
-        window.finishDelivery = async (orderId) => {
-            if(!confirm("Recebeu o pagamento (se houver) e entregou o pedido?")) return;
-            try {
-                await updateDoc(doc(db, "orders", orderId), { status: 'Concluído', deliveredAt: Date.now() });
-                alert("Entrega concluída com sucesso! Adicionada ao seu histórico.");
-            } catch(e) { alert("Erro ao finalizar corrida. Tente novamente."); }
+        window.finishDelivery = async (id) => {
+            if(!confirm("Concluir?")) return;
+            try { await updateDoc(doc(db, "orders", id), { status: 'Concluído', deliveredAt: Date.now() }); } catch(e) {}
         };
 
         window.playAlertSound = () => {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                function playTone(freq, start, dur) {
-                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                    osc.type = 'sine'; osc.connect(gain); gain.connect(ctx.destination);
-                    osc.frequency.setValueAtTime(freq, start); gain.gain.setValueAtTime(0.8, start);
-                    gain.gain.setTargetAtTime(0.0001, start + dur, dur / 3);
-                    osc.start(start); osc.stop(start + dur + 0.1);
-                }
                 const now = ctx.currentTime;
-                playTone(880, now, 0.2); playTone(1100, now + 0.3, 0.4);
+                [880, 1100, 880, 1100].forEach((f, i) => {
+                    const o = ctx.createOscillator(); const g = ctx.createGain();
+                    o.type = 'sine'; o.connect(g); g.connect(ctx.destination);
+                    o.frequency.setValueAtTime(f, now + (i * 0.3)); g.gain.setValueAtTime(0.5, now + (i * 0.3));
+                    g.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.3) + 0.2);
+                    o.start(now + (i * 0.3)); o.stop(now + (i * 0.3) + 0.3);
+                });
             } catch (e) {}
         };
 
         window.showToast = () => {
-            const toast = document.getElementById('new-ride-toast');
-            toast.classList.add('show');
-            toast.onclick = () => { toast.classList.remove('show'); window.switchTab('novas'); };
-            setTimeout(() => { toast.classList.remove('show'); }, 8000);
+            const t = document.getElementById('new-ride-toast');
+            t.classList.add('show');
+            t.onclick = () => { t.classList.remove('show'); window.switchTab('novas'); };
+            setTimeout(() => t.classList.remove('show'), 10000);
         };
     </script>
 </body>
