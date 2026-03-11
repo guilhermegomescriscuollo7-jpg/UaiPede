@@ -24,6 +24,13 @@
         #app-screen { display: none; padding-bottom: 80px; }
         
         header { background: #111; color: #fff; padding: 20px 20px 25px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;}
+        
+        /* LOGO DO TOPO */
+        .app-logo { text-align: center; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .app-logo-text { font-size: 2rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+        .app-logo-text .uai { color: #ea1d2c; }
+        .app-logo-text .pede { color: #fff; }
+
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .driver-info h1 { font-size: 1.3rem; font-weight: 900; color: #fff; margin: 0; }
         
@@ -123,6 +130,11 @@
 
     <div id="app-screen">
         <header>
+            
+            <div class="app-logo">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
+                <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span></div>
+            </div>
             <div class="header-top">
                 <div class="driver-info">
                     <h1 id="driver-name-display">Olá, Entregador</h1>
@@ -304,9 +316,9 @@
                 statusText.style.color = "#fff";
                 offlineMsg.style.display = 'block';
                 noRidesMsg.style.display = 'none';
-                document.getElementById('available-rides-list').innerHTML = ''; 
+                document.getElementById('available-rides-list').innerHTML = ''; // Limpa a tela se fora de serviço
             }
-            renderAvailableOrders();
+            renderAvailableOrders(); // Atualiza a lista
         };
 
         window.switchTab = (tab) => {
@@ -333,7 +345,7 @@
         let myAcceptedOrders = [];
 
         function startListeners() {
-            // 1. Escuta pedidos "Aguardando Entregador" (FILA DE TRANSMISSÃO)
+            // 1. Escuta pedidos "Aguardando Entregador"
             const qPending = query(collection(db, "orders"), where("status", "==", "Aguardando Entregador"));
             onSnapshot(qPending, (snapshot) => {
                 allPendingOrders = [];
@@ -347,7 +359,6 @@
                     const order = { id: doc.id, ...doc.data() };
                     const storeCity = storesCache[order.storeId] ? storesCache[order.storeId].city : null;
                     
-                    // Mostra só as da cidade dele (se tiver cidade cadastrada)
                     if (!safeDriverCity || storeCity === safeDriverCity || storeCity === safeDriverCity.split(' - ')[0]) {
                         allPendingOrders.push(order);
                     }
@@ -369,7 +380,6 @@
                 
                 let eToday = 0; let eWeek = 0; let eMonth = 0; let eYear = 0;
                 
-                // Variáveis de tempo para o cálculo
                 const now = new Date();
                 const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
                 const startOfWeek = new Date(startOfToday - now.getDay() * 24 * 60 * 60 * 1000).getTime();
@@ -379,12 +389,10 @@
                 snapshot.forEach(doc => {
                     const order = { id: doc.id, ...doc.data() };
                     
-                    // Alimentando a aba de Corridas Atuais
                     if (order.status === 'Saiu para Entrega') {
                         myAcceptedOrders.push(order);
                     }
                     
-                    // Alimentando o cálculo de GANHOS
                     if (order.status === 'Concluído' || order.status === 'Concluido') {
                         const orderTime = order.deliveredAt || order.timestamp || 0;
                         const fee = parseFloat(order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 0));
@@ -398,7 +406,6 @@
                 
                 renderMyOrders();
                 
-                // Atualiza a aba de Ganhos
                 document.getElementById('val-hoje').innerText = `R$ ${eToday.toFixed(2)}`;
                 document.getElementById('val-semana').innerText = `R$ ${eWeek.toFixed(2)}`;
                 document.getElementById('val-mes').innerText = `R$ ${eMonth.toFixed(2)}`;
@@ -502,7 +509,6 @@
                 const customerAddress = order.customer.address || 'Endereço não informado';
                 const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
 
-                // GERAÇÃO DE LINKS DE NAVEGAÇÃO SEGURA (APENAS WAZE) E SEM UNDEFINED
                 const queryStore = encodeURIComponent(storeAddress + (safeCity ? ', ' + safeCity : ''));
                 const queryCustomer = encodeURIComponent(customerAddress + (safeCity ? ', ' + safeCity : ''));
 
@@ -569,7 +575,6 @@
             btnElement.disabled = true;
 
             try {
-                // 🔒 TRAVA DE SEGURANÇA CONTRA FALHAS DO BANCO
                 const safeDriverId = loggedDriver.id || 'SemID';
                 const safeDriverName = loggedDriver.name || 'Entregador Desconhecido';
                 const safeDriverPhone = loggedDriver.phone || 'Sem Telefone';
