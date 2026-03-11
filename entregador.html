@@ -28,7 +28,7 @@
         .driver-info h1 { font-size: 1.2rem; font-weight: 900; color: #fff; margin: 0; }
         .driver-info span { font-size: 0.8rem; color: #aaa; }
         
-        /* BOTÃO ONLINE / OFFLINE */
+        /* BOTÃO EM SERVIÇO / FORA DE SERVIÇO */
         .status-toggle { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 20px; }
         .status-toggle span { font-size: 0.85rem; font-weight: bold; color: #fff; }
         .toggle-switch { position: relative; width: 44px; height: 24px; }
@@ -116,7 +116,7 @@
                     <span id="driver-city-display">📍 Cidade</span>
                 </div>
                 <div class="status-toggle">
-                    <span id="status-text">OFFLINE</span>
+                    <span id="status-text">FORA DE SERVIÇO</span>
                     <label class="toggle-switch">
                         <input type="checkbox" id="driver-status-toggle" onchange="window.toggleOnlineStatus()">
                         <span class="slider"></span>
@@ -135,8 +135,8 @@
             <div id="sec-novas" class="section active">
                 <div id="offline-msg" class="empty-msg" style="display: block;">
                     <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    <h3>Você está Offline</h3>
-                    <p style="font-size:0.9rem; margin-top:5px;">Fique online na chavinha lá em cima para receber novas solicitações de entrega.</p>
+                    <h3>Você está Fora de Serviço</h3>
+                    <p style="font-size:0.9rem; margin-top:5px;">Mude a chave acima para "Em serviço" para receber novas solicitações de entrega.</p>
                 </div>
                 <div id="no-rides-msg" class="empty-msg" style="display: none;">
                     <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -250,16 +250,16 @@
             const noRidesMsg = document.getElementById('no-rides-msg');
 
             if (isOnline) {
-                statusText.innerText = "ONLINE";
+                statusText.innerText = "EM SERVIÇO";
                 statusText.style.color = "#00a14b";
                 offlineMsg.style.display = 'none';
                 if(availableCount === 0) noRidesMsg.style.display = 'block';
             } else {
-                statusText.innerText = "OFFLINE";
+                statusText.innerText = "FORA DE SERVIÇO";
                 statusText.style.color = "#fff";
                 offlineMsg.style.display = 'block';
                 noRidesMsg.style.display = 'none';
-                document.getElementById('available-rides-list').innerHTML = ''; // Limpa a tela se offline
+                document.getElementById('available-rides-list').innerHTML = ''; // Limpa a tela se fora de serviço
             }
             renderAvailableOrders(); // Atualiza a lista
         };
@@ -301,7 +301,7 @@
                     }
                 });
                 
-                // Toca som se chegou pedido novo e estiver online
+                // Toca som se chegou pedido novo e estiver em serviço
                 if(isOnline && allPendingOrders.length > availableCount) {
                     window.playAlertSound();
                     window.showToast();
