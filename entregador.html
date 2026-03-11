@@ -2,169 +2,177 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Entregador - Dores Delivery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>App do Entregador - UaiPede</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f4f5f7; color: #333; padding-bottom: 30px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f4f5f7; color: #333; overflow-x: hidden; }
 
-        /* HEADER */
-        header { background: #111; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        header h1 { font-size: 1.2rem; font-weight: 700; color: #ea1d2c; display: flex; align-items: center; gap: 8px; margin: 0; }
-        .btn-sound { background: #333; color: #fff; border: 1px solid #555; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold; transition: 0.2s;}
-        .btn-sound:active { transform: scale(0.95); }
+        /* TELA DE LOGIN DO MOTOBOY */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: #fff; width: 100%; max-width: 400px; padding: 30px; border-radius: 16px; text-align: center; }
+        .login-box h2 { color: #ea1d2c; font-weight: 900; margin-bottom: 5px; font-size: 1.8rem; }
+        .login-box p { color: #777; font-size: 0.9rem; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-size: 0.8rem; color: #555; font-weight: bold; margin-bottom: 5px; text-transform: uppercase;}
+        .form-input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; background: #f9f9f9; }
+        .form-input:focus { border-color: #ea1d2c; }
+        .btn-login { width: 100%; background: #ea1d2c; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
 
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
-
-        /* QUADRO DE GANHOS */
-        .dashboard-header { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
-        .welcome-text { font-size: 0.95rem; color: #555; font-weight: 500; }
-        .welcome-text strong { color: #111; font-size: 1.1rem; display: block; margin-top: 3px; }
-        .earnings-card { text-align: right; }
-        .earnings-label { font-size: 0.75rem; color: #777; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
-        .earnings-value { font-size: 1.6rem; color: #00a14b; font-weight: 900; margin-top: 2px; }
-
-        /* ESTADO VAZIO */
-        .empty-state { text-align: center; padding: 60px 20px; display: none; }
-        .empty-state span { font-size: 3rem; display: block; margin-bottom: 15px; }
-        .empty-state h3 { color: #111; margin-bottom: 10px; font-size: 1.2rem; }
-        .empty-state p { color: #717171; font-size: 0.95rem; line-height: 1.4; }
-
-        /* CARTÃO DE ENTREGA */
-        .delivery-card { background: #fff; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 2px solid #fd7e14; overflow: hidden; animation: slideIn 0.3s ease; position: relative; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card-header { background: #fff1e6; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #fcd5b4; color: #d9534f; font-weight: 900; }
-        .order-id { font-size: 1.1rem; }
-
-        .card-body { padding: 15px; }
+        /* APP PRINCIPAL */
+        #app-screen { display: none; padding-bottom: 80px; }
         
-        .fee-badge { position: absolute; top: 10px; right: 15px; background: #00a14b; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,161,75,0.3); }
+        header { background: #111; color: #fff; padding: 20px 20px 25px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;}
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .driver-info h1 { font-size: 1.2rem; font-weight: 900; color: #fff; margin: 0; }
+        .driver-info span { font-size: 0.8rem; color: #aaa; }
+        
+        /* BOTÃO ONLINE / OFFLINE */
+        .status-toggle { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 20px; }
+        .status-toggle span { font-size: 0.85rem; font-weight: bold; color: #fff; }
+        .toggle-switch { position: relative; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: #00a14b; }
+        input:checked + .slider:before { transform: translateX(20px); }
 
-        .info-row { margin-bottom: 15px; display: flex; gap: 10px; align-items: flex-start; }
-        .info-icon { font-size: 1.2rem; margin-top: 2px; }
-        .info-text { width: 100%; }
-        .info-text strong { display: block; color: #111; font-size: 1rem; margin-bottom: 3px; }
-        .info-text p { color: #555; font-size: 0.9rem; line-height: 1.4; margin-bottom: 0; }
+        /* ABAS */
+        .tabs { display: flex; gap: 10px; padding: 0 20px; margin-top: -20px; position: relative; z-index: 101; }
+        .tab-btn { flex: 1; padding: 15px 10px; text-align: center; font-weight: bold; font-size: 0.9rem; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
+        .tab-btn.active { background: #ea1d2c; color: #fff; }
+        .tab-btn.inactive { background: #fff; color: #555; border: 1px solid #eee; }
 
-        /* BOTÃO DE GPS COMPACTO */
-        .btn-gps { 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 6px; 
-            background: #111; 
-            color: #fff; 
-            border: none; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            font-size: 0.85rem; 
-            font-weight: 700; 
-            text-decoration: none; 
-            margin-top: 8px; 
-            transition: 0.2s; 
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); 
-            text-transform: uppercase; 
-        }
-        .btn-gps:active { 
-            transform: scale(0.95); 
-            background: #000; 
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); 
-        }
+        .content-area { padding: 20px; }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Estilos específicos para a caixa de endereço da loja */
-        .store-address-box { background: #fafafa; border: 1px solid #eee; padding: 10px; border-radius: 8px; margin-top: 5px; }
-        .store-address-box p { margin: 2px 0; color: #444; font-size: 0.85rem; }
-        .store-doc { font-size: 0.75rem; color: #999; margin-top: 5px; display: block; }
+        /* CARD DE CORRIDA */
+        .ride-card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f2f2f2; position: relative; overflow: hidden;}
+        .ride-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: #0d6efd; }
+        .ride-card.new::before { background: #ea1d2c; }
+        
+        .r-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 15px; }
+        .r-fee { font-size: 1.4rem; font-weight: 900; color: #00a14b; display: flex; align-items: center; gap: 6px;}
+        .r-id { font-size: 0.8rem; color: #888; font-weight: bold;}
 
-        .items-box { background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 15px; font-size: 0.85rem; color: #555; }
-        .items-box ul { list-style: none; padding-left: 0; }
-        .items-box li { margin-bottom: 4px; }
+        .route-box { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; position: relative;}
+        /* Linha conectando os pontos */
+        .route-box::after { content: ''; position: absolute; left: 11px; top: 20px; bottom: 20px; width: 2px; background: #ddd; z-index: 1;}
+        
+        .r-point { display: flex; gap: 15px; align-items: flex-start; position: relative; z-index: 2;}
+        .r-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.7rem; color: #fff; font-weight: bold;}
+        .r-icon.store { background: #111; border: 2px solid #fff; box-shadow: 0 0 0 2px #111;}
+        .r-icon.customer { background: #ea1d2c; border: 2px solid #fff; box-shadow: 0 0 0 2px #ea1d2c;}
+        
+        .r-details h4 { font-size: 0.9rem; color: #777; text-transform: uppercase; margin-bottom: 2px; }
+        .r-details p { font-size: 1.05rem; color: #111; font-weight: bold; margin: 0;}
+        .r-address { font-size: 0.85rem; color: #555; margin-top: 2px; line-height: 1.3;}
 
-        .payment-box { background: #e6f4ea; border: 1px solid #badbcc; color: #0f5132; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; margin-bottom: 15px; }
-        .payment-box .total { font-size: 1.2rem; font-weight: 900; }
+        .pay-method-badge { display: inline-block; background: #fdf5e6; color: #997404; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #f9e1b5; margin-bottom: 15px;}
 
-        .btn-deliver { width: 100%; color: #fff; border: none; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: background 0.2s; text-transform: uppercase; }
-        .btn-deliver:active { transform: scale(0.98); }
+        .btn-action { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;}
+        .btn-action:active { transform: scale(0.98); }
+        .btn-accept { background: #ea1d2c; color: #fff; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.3);}
+        .btn-finish { background: #00a14b; color: #fff; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.3);}
+        .btn-nav { background: #eef4ff; color: #0d6efd; margin-bottom: 10px; }
 
-        /* ABA DE CONCLUÍDOS (Histórico do dia) */
-        .history-title { font-size: 1rem; color: #777; margin: 30px 0 15px; border-bottom: 1px solid #ddd; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
-        .history-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; opacity: 0.8; }
-        .history-fee { font-size: 1rem; color: #00a14b; font-weight: bold; background: #e6f4ea; padding: 4px 8px; border-radius: 6px; }
+        .empty-msg { text-align: center; padding: 50px 20px; color: #999; }
+        .empty-msg svg { color: #ddd; margin-bottom: 15px; }
+
+        /* NOTIFICAÇÃO SONORA TOAST */
+        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 6px solid #ea1d2c; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 15px; display: flex; align-items: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .toast-msg.show { top: 20px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>
-            <svg viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: auto; transform: rotate(-10deg);">
-                <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/>
-            </svg>
-            Entregas
-        </h1>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-sound" onclick="window.unlockAudio()">🔊 Som</button>
-            <button class="btn-sound" style="background: #ea1d2c; border-color: #c81824;" onclick="window.logoutDriver()">Sair</button>
+    <div id="login-screen">
+        <div class="login-box">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+            <h2>UaiPede Entregas</h2>
+            <p>Faça login para receber corridas</p>
+            
+            <div class="form-group">
+                <label>Seu E-mail</label>
+                <input type="email" id="login-email" class="form-input" placeholder="entregador@email.com">
+            </div>
+            <div class="form-group">
+                <label>Sua Senha</label>
+                <input type="password" id="login-pass" class="form-input" placeholder="••••••••">
+            </div>
+            
+            <button class="btn-login" onclick="window.loginDriver()">Entrar</button>
         </div>
-    </header>
+    </div>
 
-    <main class="container">
-        
-        <div class="dashboard-header">
-            <div class="welcome-text">
-                Olá,
-                <strong id="driver-name-display">Entregador</strong>
+    <div id="app-screen">
+        <header>
+            <div class="header-top">
+                <div class="driver-info">
+                    <h1 id="driver-name-display">Olá, Entregador</h1>
+                    <span id="driver-city-display">📍 Cidade</span>
+                </div>
+                <div class="status-toggle">
+                    <span id="status-text">OFFLINE</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="driver-status-toggle" onchange="window.toggleOnlineStatus()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
-            <div class="earnings-card">
-                <div class="earnings-label">Ganhos Hoje</div>
-                <div class="earnings-value" id="today-earnings">R$ 0,00</div>
-            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas Corridas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; margin-left:4px; display:none;">0</span></button>
+            <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Em Andamento</button>
         </div>
 
-        <div id="empty-state" class="empty-state">
-            <span>☕</span>
-            <h3>Nenhuma entrega pendente</h3>
-            <p>Aguarde. Quando uma loja solicitar um entregador, o pedido aparecerá aqui automaticamente.</p>
+        <div class="content-area">
+            
+            <div id="sec-novas" class="section active">
+                <div id="offline-msg" class="empty-msg" style="display: block;">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <h3>Você está Offline</h3>
+                    <p style="font-size:0.9rem; margin-top:5px;">Fique online na chavinha lá em cima para receber novas solicitações de entrega.</p>
+                </div>
+                <div id="no-rides-msg" class="empty-msg" style="display: none;">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <h3>Buscando corridas...</h3>
+                    <p style="font-size:0.9rem; margin-top:5px;">Fique atento, logo uma loja chamará.</p>
+                </div>
+                
+                <div id="available-rides-list"></div>
+            </div>
+
+            <div id="sec-minhas" class="section">
+                <div id="no-active-msg" class="empty-msg">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"></path><path d="M5 2h14"></path><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path></svg>
+                    <h3>Nenhuma entrega em andamento</h3>
+                    <p style="font-size:0.9rem; margin-top:5px;">As corridas que você aceitar aparecerão aqui.</p>
+                </div>
+                <div id="my-rides-list"></div>
+            </div>
+
         </div>
+    </div>
 
-        <div id="active-deliveries">
-            </div>
-
-        <h3 class="history-title" id="history-title" style="display:none;">
-            ✅ Entregas Concluídas Hoje
-            <span id="history-count" style="background:#ea1d2c; color:#fff; padding:2px 8px; border-radius:12px; font-size:0.8rem;">0</span>
-        </h3>
-        <div id="history-deliveries">
-            </div>
-
-    </main>
+    <div id="new-ride-toast" class="toast-msg">
+        <div style="background: #fff5f5; color: #ea1d2c; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </div>
+        <div>
+            <h4 style="margin:0; color:#111; font-size:1rem;">Nova Corrida!</h4>
+            <p style="margin:0; font-size:0.85rem; color:#555;">Toque para ver os detalhes.</p>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ==========================================
-        // 1. TRAVA DE SEGURANÇA (VERIFICA LOGIN)
-        // ==========================================
-        const loggedDriverStr = localStorage.getItem('loggedDriver');
-        
-        if (!loggedDriverStr) {
-            window.location.href = "login-entregador.html";
-        }
-        
-        const loggedDriver = JSON.parse(loggedDriverStr);
-        document.getElementById('driver-name-display').innerText = loggedDriver.name;
-
-        window.logoutDriver = () => {
-            if (confirm("Tem certeza que deseja encerrar seu turno e sair?")) {
-                localStorage.removeItem('loggedDriver');
-                window.location.href = "login-entregador.html";
-            }
-        };
-
-        // ==========================================
-        // 2. CONFIGURAÇÃO OFICIAL DO FIREBASE
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -173,261 +181,348 @@
             messagingSenderId: "1029498697239",
             appId: "1:1029498697239:web:3ebc070bbd65048bd9ce52"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ==========================================
-        // 3. SISTEMA DE ALERTA SONORO
-        // ==========================================
-        let audioUnlocked = false;
-        let previousDeliveryCount = -1;
+        let loggedDriver = JSON.parse(localStorage.getItem('loggedDriver'));
+        let isOnline = false;
+        let storesCache = {}; // Cache de lojas para buscar endereços rápidos
+        let availableCount = 0;
 
-        window.unlockAudio = () => {
-            audioUnlocked = true;
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                ctx.resume().then(() => alert("Som ativado! Deixe a tela aberta para ouvir os alertas."));
-            } catch(e) {}
-        };
-
-        function playDeliveryAlert() {
-            if (!audioUnlocked) return;
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'triangle'; 
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.frequency.setValueAtTime(1200, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.3);
-                gain.gain.setValueAtTime(0.5, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.5);
-            } catch (e) { console.log("Som bloqueado."); }
-        }
-
-        // ==========================================
-        // 4. DADOS DE LOJAS E PEDIDOS (TEMPO REAL)
-        // ==========================================
-        let globalStores = [];
-        let currentActiveDeliveries = [];
-        let currentHistoryDeliveries = [];
-
-        onSnapshot(collection(db, "stores"), (snapshot) => {
-            globalStores = [];
-            snapshot.forEach(doc => globalStores.push({ id: doc.id, ...doc.data() }));
-            renderDeliveries(currentActiveDeliveries, currentHistoryDeliveries);
-        });
-
-        const qOrders = query(collection(db, "orders"));
-        onSnapshot(qOrders, (snapshot) => {
-            const allOrders = [];
-            snapshot.forEach(document => allOrders.push({ id: document.id, ...document.data() }));
-
-            // Filtra entregas ativas para este entregador
-            currentActiveDeliveries = allOrders.filter(o => {
-                if (o.status === "Aguardando Entregador") return true;
-                if (o.status === "Saiu para Entrega" && o.driverName === loggedDriver.name) return true;
-                return false;
-            });
-            
-            // Toca alarme se chegou corrida nova
-            const pendingDeliveriesCount = currentActiveDeliveries.filter(o => o.status === "Aguardando Entregador").length;
-            if (previousDeliveryCount !== -1 && pendingDeliveriesCount > previousDeliveryCount) {
-                playDeliveryAlert();
-            }
-            previousDeliveryCount = pendingDeliveriesCount;
-
-            // MATEMÁTICA DE DATA PARA O HISTÓRICO
-            const now = new Date();
-            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-
-            currentHistoryDeliveries = allOrders.filter(o => {
-                const isCompletedStatus = (o.status === "Concluído" || o.status === "Concluido" || o.status === "Entregue");
-                const isMyDelivery = (o.driverName === loggedDriver.name);
-                const isFromToday = (o.timestamp >= startOfToday);
-
-                return isCompletedStatus && isMyDelivery && isFromToday;
-            });
-
-            renderDeliveries(currentActiveDeliveries, currentHistoryDeliveries);
-        });
-
-        // ==========================================
-        // 5. RENDERIZAR TELA COM GANHOS E INFORMAÇÕES
-        // ==========================================
-        function renderDeliveries(active, history) {
-            
-            // ATUALIZA O VALOR DOS GANHOS DIÁRIOS
-            const todayEarnings = history.reduce((acc, order) => {
-                const fee = (order.platformDriverFee !== undefined && order.platformDriverFee !== null) ? parseFloat(order.platformDriverFee) : 5.00;
-                return acc + fee;
-            }, 0);
-            document.getElementById('today-earnings').innerText = `R$ ${todayEarnings.toFixed(2).replace('.', ',')}`;
-
-            const containerActive = document.getElementById('active-deliveries');
-            const emptyState = document.getElementById('empty-state');
-            
-            if (active.length === 0) {
-                emptyState.style.display = 'block';
-                containerActive.innerHTML = '';
-            } else {
-                emptyState.style.display = 'none';
+        window.onload = async () => {
+            if (loggedDriver && loggedDriver.id) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-screen').style.display = 'block';
+                document.getElementById('driver-name-display').innerText = `Olá, ${loggedDriver.name.split(' ')[0]}`;
+                document.getElementById('driver-city-display').innerText = `📍 ${loggedDriver.city}`;
                 
-                containerActive.innerHTML = active.sort((a,b) => a.timestamp - b.timestamp).map(order => {
-                    const shortId = order.id.substring(0, 6).toUpperCase();
-                    const itemsHtml = order.items.map(i => `<li><b>${i.qty}x</b> ${i.name}</li>`).join('');
-                    
-                    // Taxa de entrega desta corrida
-                    const driverFee = (order.platformDriverFee !== undefined && order.platformDriverFee !== null) ? parseFloat(order.platformDriverFee).toFixed(2) : "5.00";
-
-                    // BUSCA INFORMAÇÃO COMPLETA DA LOJA
-                    const storeInfo = globalStores.find(s => s.id === order.storeId);
-                    let storeDetailsHtml = '';
-                    
-                    if(storeInfo) {
-                        const street = storeInfo.street || 'Endereço não informado';
-                        const cityInfo = storeInfo.city ? `${storeInfo.city}${storeInfo.state ? ' - ' + storeInfo.state : ''}` : '';
-                        const cep = storeInfo.cep ? `CEP: ${storeInfo.cep}` : '';
-                        const doc = storeInfo.doc ? `CNPJ/CPF: ${storeInfo.doc}` : '';
-                        
-                        // EXIBE A CIDADE ANTES DA RUA DA LOJA
-                        storeDetailsHtml = `
-                            <div class="store-address-box">
-                                <p>📍 <strong>${cityInfo ? cityInfo + ' ➔ ' : ''}${street}</strong></p>
-                                <span class="store-doc">${cep} ${cep && doc ? '|' : ''} ${doc}</span>
-                            </div>
-                        `;
-                    } else {
-                        storeDetailsHtml = `<div class="store-address-box"><p>Aguardando dados de endereço...</p></div>`;
-                    }
-
-                    // NOME DA CIDADE E BOTÃO DE GPS PARA O CLIENTE
-                    const customerCity = "Doresópolis"; 
-                    
-                    // Remove qualquer complemento entre parênteses para exibir e pesquisar no GPS limpo
-                    const cleanAddress = order.customer.address.replace(/\s*\([^)]*\)/g, '').trim();
-                    const displayCustomerAddress = `${customerCity} ➔ ${cleanAddress}`;
-                    
-                    // 🟢 LINK OFICIAL DO GOOGLE MAPS PARA ROTAS (DIRECTIONS API) 🟢
-                    const addressForGPS = encodeURIComponent(`${customerCity}, MG, ${cleanAddress}`);
-                    const linkGPS = `https://www.google.com/maps/dir/?api=1&destination=${addressForGPS}`;
-                    const btnGPSHtml = `<a href="${linkGPS}" target="_blank" class="btn-gps">🗺️ GPS</a>`;
-                    
-                    let btnHtml = '';
-                    if (order.status === 'Aguardando Entregador') {
-                        btnHtml = `<button class="btn-deliver" style="background:#0d6efd;" onclick="window.acceptDelivery('${order.id}')">📲 ACEITAR CORRIDA</button>`;
-                    } else {
-                        btnHtml = `<button class="btn-deliver" style="background:#00a14b;" onclick="window.confirmDelivery('${order.id}', '${order.customerName}')">✅ CONFIRMAR ENTREGA</button>`;
-                    }
-
-                    return `
-                    <div class="delivery-card">
-                        <div class="fee-badge">💰 + R$ ${driverFee.replace('.', ',')}</div>
-                        
-                        <div class="card-header">
-                            <span class="order-id">Pedido #${shortId}</span>
-                            <span>${order.date ? order.date.split(' ')[1] : ''}</span>
-                        </div>
-                        <div class="card-body">
-                            
-                            <div class="info-row">
-                                <div class="info-icon">🏪</div>
-                                <div class="info-text" style="width: 100%;">
-                                    <strong style="color: #ea1d2c;">Retirar em: ${order.storeName}</strong>
-                                    ${storeDetailsHtml}
-                                </div>
-                            </div>
-
-                            <div class="info-row">
-                                <div class="info-icon">📍</div>
-                                <div class="info-text">
-                                    <strong style="color: #0d6efd;">Entregar para: ${order.customerName}</strong>
-                                    <p style="font-size: 0.95rem; font-weight: 500; color: #333;">${displayCustomerAddress}</p>
-                                    ${btnGPSHtml}
-                                </div>
-                            </div>
-
-                            <div class="items-box">
-                                <strong>Itens do pedido:</strong>
-                                <ul>${itemsHtml}</ul>
-                            </div>
-
-                            <div class="payment-box">
-                                <div>
-                                    <div style="font-size:0.75rem; color:#555;">Cobrar do Cliente:</div>
-                                    <div>${order.paymentMethod}</div>
-                                </div>
-                                <div class="total">
-                                    R$ ${order.total.toFixed(2)}
-                                </div>
-                            </div>
-
-                            ${btnHtml}
-                        </div>
-                    </div>`;
-                }).join('');
-            }
-
-            // RENDERIZA HISTÓRICO
-            const containerHistory = document.getElementById('history-deliveries');
-            const titleHistory = document.getElementById('history-title');
-            const countHistory = document.getElementById('history-count');
-            
-            if (history.length > 0) {
-                titleHistory.style.display = 'flex';
-                countHistory.innerText = history.length;
-                containerHistory.innerHTML = history.sort((a,b) => b.timestamp - a.timestamp).map(order => {
-                    const shortId = order.id.substring(0, 6).toUpperCase();
-                    const driverFee = (order.platformDriverFee !== undefined && order.platformDriverFee !== null) ? parseFloat(order.platformDriverFee).toFixed(2) : "5.00";
-                    
-                    return `
-                    <div class="history-card">
-                        <div>
-                            <strong>#${shortId}</strong> - ${order.customerName}<br>
-                            <span style="font-size:0.8rem; color:#777;">${order.storeName}</span>
-                        </div>
-                        <div class="history-fee">+ R$ ${driverFee.replace('.', ',')}</div>
-                    </div>`;
-                }).join('');
+                await loadStoresCache();
+                startListeners();
             } else {
-                titleHistory.style.display = 'none';
-                containerHistory.innerHTML = '';
-            }
-        }
-
-        // ==========================================
-        // 6. AÇÕES DO ENTREGADOR
-        // ==========================================
-        window.acceptDelivery = async (orderId) => {
-            if(confirm('Deseja assumir esta entrega?')) {
-                try {
-                    await updateDoc(doc(db, "orders", orderId), { 
-                        status: "Saiu para Entrega",
-                        driverName: loggedDriver.name
-                    });
-                } catch(error) {
-                    console.error("Erro ao aceitar:", error);
-                    alert("Erro de conexão. Tente novamente.");
-                }
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('app-screen').style.display = 'none';
             }
         };
 
-        window.confirmDelivery = async (orderId, customerName) => {
-            if(confirm(`Tem certeza que já entregou o pedido ao cliente ${customerName}?`)) {
-                try {
-                    // MUDA PARA "ENTREGUE" PARA ESPERAR O CLIENTE CONFIRMAR
-                    await updateDoc(doc(db, "orders", orderId), { 
-                        status: "Entregue" 
-                    });
-                } catch(error) {
-                    console.error("Erro ao atualizar:", error);
-                    alert("Ocorreu um erro de conexão. Tente novamente.");
+        // 🟢 LOGIN DO ENTREGADOR 🟢
+        window.loginDriver = async () => {
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+            const btn = document.querySelector('.btn-login');
+
+            if (!email || !pass) return alert("Preencha e-mail e senha.");
+            btn.innerText = "Verificando..."; btn.disabled = true;
+
+            try {
+                const q = query(collection(db, "drivers"), where("email", "==", email), where("password", "==", pass));
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    alert("Acesso negado. E-mail ou senha incorretos.");
+                    btn.innerText = "Entrar"; btn.disabled = false;
+                    return;
                 }
+
+                const docData = snap.docs[0];
+                const driverData = docData.data();
+
+                if (driverData.isActive === false) {
+                    alert("Sua conta está suspensa. Procure o suporte.");
+                    btn.innerText = "Entrar"; btn.disabled = false;
+                    return;
+                }
+
+                loggedDriver = { id: docData.id, ...driverData };
+                localStorage.setItem('loggedDriver', JSON.stringify(loggedDriver));
+                window.location.reload();
+
+            } catch(e) {
+                console.error(e);
+                alert("Erro de conexão.");
+                btn.innerText = "Entrar"; btn.disabled = false;
             }
+        };
+
+        window.toggleOnlineStatus = () => {
+            isOnline = document.getElementById('driver-status-toggle').checked;
+            const statusText = document.getElementById('status-text');
+            const offlineMsg = document.getElementById('offline-msg');
+            const noRidesMsg = document.getElementById('no-rides-msg');
+
+            if (isOnline) {
+                statusText.innerText = "ONLINE";
+                statusText.style.color = "#00a14b";
+                offlineMsg.style.display = 'none';
+                if(availableCount === 0) noRidesMsg.style.display = 'block';
+            } else {
+                statusText.innerText = "OFFLINE";
+                statusText.style.color = "#fff";
+                offlineMsg.style.display = 'block';
+                noRidesMsg.style.display = 'none';
+                document.getElementById('available-rides-list').innerHTML = ''; // Limpa a tela se offline
+            }
+            renderAvailableOrders(); // Atualiza a lista
+        };
+
+        window.switchTab = (tab) => {
+            document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.classList.add('inactive'); });
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.remove('inactive');
+            document.getElementById(`sec-${tab}`).classList.add('active');
+        };
+
+        // Cache de Lojas (Para pegar o endereço de Retirada)
+        async function loadStoresCache() {
+            const snap = await getDocs(collection(db, "stores"));
+            snap.forEach(doc => {
+                storesCache[doc.id] = doc.data();
+            });
+        }
+
+        // ==========================================
+        // 🟢 LISTENERS (ESCUTANDO PEDIDOS EM TEMPO REAL) 🟢
+        // ==========================================
+        let allPendingOrders = [];
+        let myAcceptedOrders = [];
+
+        function startListeners() {
+            // 1. Escuta pedidos "Aguardando Entregador"
+            const qPending = query(collection(db, "orders"), where("status", "==", "Aguardando Entregador"));
+            onSnapshot(qPending, (snapshot) => {
+                allPendingOrders = [];
+                snapshot.forEach(doc => {
+                    const order = { id: doc.id, ...doc.data() };
+                    // Filtra apenas pedidos da mesma cidade do motoboy (se a loja estiver no cache)
+                    const storeCity = storesCache[order.storeId] ? storesCache[order.storeId].city : null;
+                    if (!loggedDriver.city || storeCity === loggedDriver.city || storeCity === loggedDriver.city.split(' - ')[0]) {
+                        allPendingOrders.push(order);
+                    }
+                });
+                
+                // Toca som se chegou pedido novo e estiver online
+                if(isOnline && allPendingOrders.length > availableCount) {
+                    window.playAlertSound();
+                    window.showToast();
+                }
+                
+                availableCount = allPendingOrders.length;
+                renderAvailableOrders();
+            });
+
+            // 2. Escuta Minhas Entregas (Saiu para Entrega)
+            const qMyRides = query(collection(db, "orders"), where("driverId", "==", loggedDriver.id));
+            onSnapshot(qMyRides, (snapshot) => {
+                myAcceptedOrders = [];
+                snapshot.forEach(doc => {
+                    const order = { id: doc.id, ...doc.data() };
+                    if (order.status === 'Saiu para Entrega') {
+                        myAcceptedOrders.push(order);
+                    }
+                });
+                renderMyOrders();
+            });
+        }
+
+        // ==========================================
+        // 🟢 RENDERIZADORES 🟢
+        // ==========================================
+        function renderAvailableOrders() {
+            const container = document.getElementById('available-rides-list');
+            const badge = document.getElementById('badge-novas');
+            const noRidesMsg = document.getElementById('no-rides-msg');
+
+            if (!isOnline) {
+                container.innerHTML = '';
+                badge.style.display = 'none';
+                return;
+            }
+
+            if (allPendingOrders.length === 0) {
+                container.innerHTML = '';
+                noRidesMsg.style.display = 'block';
+                badge.style.display = 'none';
+                return;
+            }
+
+            noRidesMsg.style.display = 'none';
+            badge.style.display = 'inline-block';
+            badge.innerText = allPendingOrders.length;
+
+            container.innerHTML = allPendingOrders.map(order => {
+                const shortId = order.id.substring(0, 5).toUpperCase();
+                const storeInfo = storesCache[order.storeId] || {};
+                const storeAddress = `${storeInfo.street || 'Endereço da loja'}`;
+                const customerAddress = order.customer.address || 'Endereço não informado';
+                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00); // Garante a taxa mínima
+
+                return `
+                <div class="ride-card new">
+                    <div class="r-header">
+                        <div class="r-fee">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            R$ ${parseFloat(fee).toFixed(2)}
+                        </div>
+                        <div class="r-id">#${shortId}</div>
+                    </div>
+
+                    <div class="route-box">
+                        <div class="r-point">
+                            <div class="r-icon store">L</div>
+                            <div class="r-details">
+                                <h4>Coletar em</h4>
+                                <p>${order.storeName}</p>
+                                <div class="r-address">${storeAddress}</div>
+                            </div>
+                        </div>
+                        <div class="r-point">
+                            <div class="r-icon customer">C</div>
+                            <div class="r-details">
+                                <h4>Entregar para</h4>
+                                <p>${order.customerName}</p>
+                                <div class="r-address">${customerAddress}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pay-method-badge">
+                        Cobrar Cliente: ${order.paymentMethod}
+                    </div>
+
+                    <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}')">
+                        Aceitar Corrida
+                    </button>
+                </div>`;
+            }).join('');
+        }
+
+        function renderMyOrders() {
+            const container = document.getElementById('my-rides-list');
+            const noMsg = document.getElementById('no-active-msg');
+
+            if (myAcceptedOrders.length === 0) {
+                container.innerHTML = '';
+                noMsg.style.display = 'block';
+                return;
+            }
+
+            noMsg.style.display = 'none';
+
+            container.innerHTML = myAcceptedOrders.map(order => {
+                const shortId = order.id.substring(0, 5).toUpperCase();
+                const storeInfo = storesCache[order.storeId] || {};
+                const storeAddress = `${storeInfo.street || 'Endereço da loja'}`;
+                const customerAddress = order.customer.address || 'Endereço não informado';
+                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
+
+                // Links para Google Maps (Rotas)
+                const mapLinkStore = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(storeAddress + ', ' + loggedDriver.city)}`;
+                const mapLinkCustomer = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(customerAddress + ', ' + loggedDriver.city)}`;
+
+                return `
+                <div class="ride-card">
+                    <div class="r-header">
+                        <div class="r-fee" style="color:#111;">R$ ${parseFloat(fee).toFixed(2)}</div>
+                        <div class="r-id" style="color:#0d6efd;">EM ANDAMENTO #${shortId}</div>
+                    </div>
+
+                    <div class="route-box">
+                        <div class="r-point">
+                            <div class="r-icon store">L</div>
+                            <div class="r-details">
+                                <h4>Coleta</h4>
+                                <p>${order.storeName}</p>
+                                <div class="r-address">${storeAddress}</div>
+                            </div>
+                        </div>
+                        <button class="btn-nav" onclick="window.open('${mapLinkStore}', '_blank')">📍 Navegar para Loja</button>
+
+                        <div class="r-point" style="margin-top:10px;">
+                            <div class="r-icon customer">C</div>
+                            <div class="r-details">
+                                <h4>Entrega</h4>
+                                <p>${order.customerName}</p>
+                                <div class="r-address">${customerAddress}</div>
+                            </div>
+                        </div>
+                        <button class="btn-nav" onclick="window.open('${mapLinkCustomer}', '_blank')">📍 Navegar para Cliente</button>
+                    </div>
+
+                    <div class="pay-method-badge" style="background:#fef0f0; color:#ea1d2c; border-color:#fbd5d5; width:100%; text-align:center;">
+                        O Cliente pagará: ${order.paymentMethod}
+                    </div>
+
+                    <button class="btn-action btn-finish" onclick="window.finishDelivery('${order.id}')">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Concluir Entrega
+                    </button>
+                </div>`;
+            }).join('');
+        }
+
+        // ==========================================
+        // 🟢 AÇÕES DO ENTREGADOR 🟢
+        // ==========================================
+        window.acceptOrder = async (orderId) => {
+            if(!confirm("Tem certeza que deseja aceitar esta entrega?")) return;
+            try {
+                await updateDoc(doc(db, "orders", orderId), {
+                    status: 'Saiu para Entrega',
+                    driverId: loggedDriver.id,
+                    driverName: loggedDriver.name,
+                    driverPhone: loggedDriver.phone
+                });
+                window.switchTab('minhas');
+            } catch(e) {
+                alert("Erro ao aceitar corrida. Alguém pode ter pego antes de você!");
+            }
+        };
+
+        window.finishDelivery = async (orderId) => {
+            if(!confirm("Recebeu o pagamento (se houver) e entregou o pedido?")) return;
+            try {
+                await updateDoc(doc(db, "orders", orderId), {
+                    status: 'Concluído',
+                    deliveredAt: Date.now()
+                });
+                alert("Entrega concluída com sucesso! Bom trabalho.");
+            } catch(e) {
+                alert("Erro ao finalizar corrida. Tente novamente.");
+            }
+        };
+
+        // ==========================================
+        // 🟢 EFEITOS SONOROS E TOASTS 🟢
+        // ==========================================
+        window.playAlertSound = () => {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioContext();
+                function playTone(freq, type, start, dur, vol) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = type; osc.connect(gain); gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, start);
+                    gain.gain.setValueAtTime(vol, start);
+                    gain.gain.setTargetAtTime(0.0001, start + dur, dur / 3);
+                    osc.start(start); osc.stop(start + dur + 0.1);
+                }
+                const now = ctx.currentTime;
+                // Toque rápido de alerta duplo
+                playTone(880, 'sine', now, 0.2, 0.8);
+                playTone(1100, 'sine', now + 0.3, 0.4, 0.8);
+            } catch (e) {}
+        };
+
+        window.showToast = () => {
+            const toast = document.getElementById('new-ride-toast');
+            toast.classList.add('show');
+            toast.onclick = () => {
+                toast.classList.remove('show');
+                window.switchTab('novas');
+            };
+            setTimeout(() => { toast.classList.remove('show'); }, 8000);
         };
 
     </script>
