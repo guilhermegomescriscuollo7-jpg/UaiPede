@@ -130,11 +130,11 @@
 
     <div id="app-screen">
         <header>
-            
             <div class="app-logo">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
                 <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span></div>
             </div>
+
             <div class="header-top">
                 <div class="driver-info">
                     <h1 id="driver-name-display">Olá, Entregador</h1>
@@ -168,7 +168,6 @@
                     <h3>Buscando corridas...</h3>
                     <p style="font-size:0.9rem; margin-top:5px;">Fique atento, logo uma loja chamará.</p>
                 </div>
-                
                 <div id="available-rides-list"></div>
             </div>
 
@@ -203,7 +202,6 @@
                         <span class="earning-value val-year" id="val-ano">R$ 0,00</span>
                     </div>
                 </div>
-
                 <div style="background: #fff5f5; border: 1px solid #fbd5d5; padding: 15px; border-radius: 12px; margin-top: 20px;">
                     <p style="color: #ea1d2c; font-size: 0.85rem; margin: 0; font-weight: bold; text-align: center;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-top: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
@@ -261,7 +259,6 @@
             }
         };
 
-        // 🟢 LOGIN DO ENTREGADOR 🟢
         window.loginDriver = async () => {
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -300,7 +297,7 @@
             }
         };
 
-        window.toggleOnlineStatus = () => {
+        window.toggleOnlineStatus = async () => {
             isOnline = document.getElementById('driver-status-toggle').checked;
             const statusText = document.getElementById('status-text');
             const offlineMsg = document.getElementById('offline-msg');
@@ -316,9 +313,19 @@
                 statusText.style.color = "#fff";
                 offlineMsg.style.display = 'block';
                 noRidesMsg.style.display = 'none';
-                document.getElementById('available-rides-list').innerHTML = ''; // Limpa a tela se fora de serviço
+                document.getElementById('available-rides-list').innerHTML = ''; 
             }
-            renderAvailableOrders(); // Atualiza a lista
+            renderAvailableOrders(); 
+
+            try {
+                if(loggedDriver && loggedDriver.id) {
+                    await updateDoc(doc(db, "drivers", loggedDriver.id), { 
+                        isOnline: isOnline 
+                    });
+                }
+            } catch(e) {
+                console.error("Erro ao sincronizar status online no banco:", e);
+            }
         };
 
         window.switchTab = (tab) => {
@@ -330,26 +337,18 @@
             document.getElementById(`sec-${tab}`).classList.add('active');
         };
 
-        // Cache de Lojas 
         async function loadStoresCache() {
             const snap = await getDocs(collection(db, "stores"));
-            snap.forEach(doc => {
-                storesCache[doc.id] = doc.data();
-            });
+            snap.forEach(doc => { storesCache[doc.id] = doc.data(); });
         }
 
-        // ==========================================
-        // 🟢 LISTENERS (ESCUTANDO PEDIDOS EM TEMPO REAL) 🟢
-        // ==========================================
         let allPendingOrders = [];
         let myAcceptedOrders = [];
 
         function startListeners() {
-            // 1. Escuta pedidos "Aguardando Entregador"
             const qPending = query(collection(db, "orders"), where("status", "==", "Aguardando Entregador"));
             onSnapshot(qPending, (snapshot) => {
                 allPendingOrders = [];
-                
                 let safeDriverCity = '';
                 if (loggedDriver.city && String(loggedDriver.city).toLowerCase() !== 'undefined') {
                     safeDriverCity = loggedDriver.city;
@@ -358,7 +357,6 @@
                 snapshot.forEach(doc => {
                     const order = { id: doc.id, ...doc.data() };
                     const storeCity = storesCache[order.storeId] ? storesCache[order.storeId].city : null;
-                    
                     if (!safeDriverCity || storeCity === safeDriverCity || storeCity === safeDriverCity.split(' - ')[0]) {
                         allPendingOrders.push(order);
                     }
@@ -373,11 +371,9 @@
                 renderAvailableOrders();
             });
 
-            // 2. Escuta Minhas Entregas e Calcula Ganhos
             const qMyRides = query(collection(db, "orders"), where("driverId", "==", loggedDriver.id));
             onSnapshot(qMyRides, (snapshot) => {
                 myAcceptedOrders = [];
-                
                 let eToday = 0; let eWeek = 0; let eMonth = 0; let eYear = 0;
                 
                 const now = new Date();
@@ -388,11 +384,9 @@
 
                 snapshot.forEach(doc => {
                     const order = { id: doc.id, ...doc.data() };
-                    
                     if (order.status === 'Saiu para Entrega') {
                         myAcceptedOrders.push(order);
                     }
-                    
                     if (order.status === 'Concluído' || order.status === 'Concluido') {
                         const orderTime = order.deliveredAt || order.timestamp || 0;
                         const fee = parseFloat(order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 0));
@@ -405,7 +399,6 @@
                 });
                 
                 renderMyOrders();
-                
                 document.getElementById('val-hoje').innerText = `R$ ${eToday.toFixed(2)}`;
                 document.getElementById('val-semana').innerText = `R$ ${eWeek.toFixed(2)}`;
                 document.getElementById('val-mes').innerText = `R$ ${eMonth.toFixed(2)}`;
@@ -413,26 +406,13 @@
             });
         }
 
-        // ==========================================
-        // 🟢 RENDERIZADORES 🟢
-        // ==========================================
         function renderAvailableOrders() {
             const container = document.getElementById('available-rides-list');
             const badge = document.getElementById('badge-novas');
             const noRidesMsg = document.getElementById('no-rides-msg');
 
-            if (!isOnline) {
-                container.innerHTML = '';
-                badge.style.display = 'none';
-                return;
-            }
-
-            if (allPendingOrders.length === 0) {
-                container.innerHTML = '';
-                noRidesMsg.style.display = 'block';
-                badge.style.display = 'none';
-                return;
-            }
+            if (!isOnline) { container.innerHTML = ''; badge.style.display = 'none'; return; }
+            if (allPendingOrders.length === 0) { container.innerHTML = ''; noRidesMsg.style.display = 'block'; badge.style.display = 'none'; return; }
 
             noRidesMsg.style.display = 'none';
             badge.style.display = 'inline-block';
@@ -454,7 +434,6 @@
                         </div>
                         <div class="r-id">#${shortId}</div>
                     </div>
-
                     <div class="route-box">
                         <div class="r-point">
                             <div class="r-icon store">L</div>
@@ -473,14 +452,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="pay-method-badge">
-                        Cobrar Cliente: ${order.paymentMethod}
-                    </div>
-
-                    <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">
-                        Aceitar Corrida
-                    </button>
+                    <div class="pay-method-badge">Cobrar Cliente: ${order.paymentMethod}</div>
+                    <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">Aceitar Corrida</button>
                 </div>`;
             }).join('');
         }
@@ -489,18 +462,11 @@
             const container = document.getElementById('my-rides-list');
             const noMsg = document.getElementById('no-active-msg');
 
-            if (myAcceptedOrders.length === 0) {
-                container.innerHTML = '';
-                noMsg.style.display = 'block';
-                return;
-            }
-
+            if (myAcceptedOrders.length === 0) { container.innerHTML = ''; noMsg.style.display = 'block'; return; }
             noMsg.style.display = 'none';
 
             let safeCity = '';
-            if (loggedDriver.city && String(loggedDriver.city).toLowerCase() !== 'undefined') {
-                safeCity = loggedDriver.city;
-            }
+            if (loggedDriver.city && String(loggedDriver.city).toLowerCase() !== 'undefined') { safeCity = loggedDriver.city; }
 
             container.innerHTML = myAcceptedOrders.map(order => {
                 const shortId = order.id.substring(0, 5).toUpperCase();
@@ -511,7 +477,6 @@
 
                 const queryStore = encodeURIComponent(storeAddress + (safeCity ? ', ' + safeCity : ''));
                 const queryCustomer = encodeURIComponent(customerAddress + (safeCity ? ', ' + safeCity : ''));
-
                 const wazeLinkStore = `https://waze.com/ul?q=${queryStore}&navigate=yes`;
                 const wazeLinkCustomer = `https://waze.com/ul?q=${queryCustomer}&navigate=yes`;
 
@@ -521,7 +486,6 @@
                         <div class="r-fee" style="color:#111;">R$ ${parseFloat(fee).toFixed(2)}</div>
                         <div class="r-id" style="color:#0d6efd;">EM ANDAMENTO #${shortId}</div>
                     </div>
-
                     <div class="route-box">
                         <div class="r-point">
                             <div class="r-icon store">L</div>
@@ -536,7 +500,6 @@
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Navegar com Waze
                             </button>
                         </div>
-
                         <div class="r-point" style="margin-top:15px;">
                             <div class="r-icon customer">C</div>
                             <div class="r-details">
@@ -551,11 +514,9 @@
                             </button>
                         </div>
                     </div>
-
                     <div class="pay-method-badge" style="background:#fef0f0; color:#ea1d2c; border-color:#fbd5d5; width:100%; text-align:center;">
                         O Cliente pagará: ${order.paymentMethod}
                     </div>
-
                     <button class="btn-action btn-finish" onclick="window.finishDelivery('${order.id}')">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                         Concluir Entrega
@@ -564,83 +525,56 @@
             }).join('');
         }
 
-        // ==========================================
-        // 🟢 AÇÕES DO ENTREGADOR 🟢
-        // ==========================================
         window.acceptOrder = async (orderId, btnElement) => {
             if(!confirm("Tem certeza que deseja aceitar esta entrega?")) return;
-
             const originalText = btnElement.innerText;
-            btnElement.innerText = "Aceitando...";
-            btnElement.disabled = true;
-
+            btnElement.innerText = "Aceitando..."; btnElement.disabled = true;
             try {
                 const safeDriverId = loggedDriver.id || 'SemID';
                 const safeDriverName = loggedDriver.name || 'Entregador Desconhecido';
                 const safeDriverPhone = loggedDriver.phone || 'Sem Telefone';
-
                 await updateDoc(doc(db, "orders", orderId), {
                     status: 'Saiu para Entrega',
                     driverId: safeDriverId,
                     driverName: safeDriverName,
                     driverPhone: safeDriverPhone
                 });
-
                 window.switchTab('minhas');
             } catch(e) {
-                console.error("ERRO FIREBASE:", e);
                 alert("Erro ao aceitar corrida. Outro entregador pode ter pego ou sua conexão falhou.");
-                btnElement.innerText = originalText;
-                btnElement.disabled = false;
+                btnElement.innerText = originalText; btnElement.disabled = false;
             }
         };
 
         window.finishDelivery = async (orderId) => {
             if(!confirm("Recebeu o pagamento (se houver) e entregou o pedido?")) return;
             try {
-                await updateDoc(doc(db, "orders", orderId), {
-                    status: 'Concluído',
-                    deliveredAt: Date.now()
-                });
+                await updateDoc(doc(db, "orders", orderId), { status: 'Concluído', deliveredAt: Date.now() });
                 alert("Entrega concluída com sucesso! Ganhos adicionados à sua carteira.");
-            } catch(e) {
-                console.error("ERRO FIREBASE:", e);
-                alert("Erro ao finalizar corrida. Tente novamente.");
-            }
+            } catch(e) { alert("Erro ao finalizar corrida. Tente novamente."); }
         };
 
-        // ==========================================
-        // 🟢 EFEITOS SONOROS E TOASTS 🟢
-        // ==========================================
         window.playAlertSound = () => {
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                const ctx = new AudioContext();
-                function playTone(freq, type, start, dur, vol) {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = type; osc.connect(gain); gain.connect(ctx.destination);
-                    osc.frequency.setValueAtTime(freq, start);
-                    gain.gain.setValueAtTime(vol, start);
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                function playTone(freq, start, dur) {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'sine'; osc.connect(gain); gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, start); gain.gain.setValueAtTime(0.8, start);
                     gain.gain.setTargetAtTime(0.0001, start + dur, dur / 3);
                     osc.start(start); osc.stop(start + dur + 0.1);
                 }
                 const now = ctx.currentTime;
-                playTone(880, 'sine', now, 0.2, 0.8);
-                playTone(1100, 'sine', now + 0.3, 0.4, 0.8);
+                playTone(880, now, 0.2); playTone(1100, now + 0.3, 0.4);
             } catch (e) {}
         };
 
         window.showToast = () => {
             const toast = document.getElementById('new-ride-toast');
             toast.classList.add('show');
-            toast.onclick = () => {
-                toast.classList.remove('show');
-                window.switchTab('novas');
-            };
+            toast.onclick = () => { toast.classList.remove('show'); window.switchTab('novas'); };
             setTimeout(() => { toast.classList.remove('show'); }, 8000);
         };
-
     </script>
 </body>
 </html>
