@@ -3,179 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>App do Entregador - UaiPede</title>
+    <title>Meus Pedidos - UaiPede</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f4f5f7; color: #333; overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent;}
+        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; }
 
-        /* TELA DE LOGIN DO MOTOBOY */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { background: #fff; width: 100%; max-width: 400px; padding: 30px; border-radius: 16px; text-align: center; }
-        .login-box h2 { color: #ea1d2c; font-weight: 900; margin-bottom: 5px; font-size: 1.8rem; }
-        .login-box p { color: #777; font-size: 0.9rem; margin-bottom: 25px; }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-size: 0.8rem; color: #555; font-weight: bold; margin-bottom: 5px; text-transform: uppercase;}
-        .form-input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; background: #f9f9f9; }
-        .form-input:focus { border-color: #ea1d2c; }
-        .btn-login { width: 100%; background: #ea1d2c; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        /* HEADER */
+        header { background: #fff; padding: 15px; text-align: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: center; gap: 8px;}
+        header h1 { font-size: 1.1rem; font-weight: 900; color: #ea1d2c; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        /* APP PRINCIPAL */
-        #app-screen { display: none; padding-bottom: 80px; }
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+
+        /* ESTADO VAZIO */
+        .empty-state { text-align: center; padding: 60px 20px; display: none; }
+        .empty-state svg { color: #ccc; margin-bottom: 15px; }
+        .empty-state h3 { color: #111; margin-bottom: 10px; font-size: 1.2rem; font-weight: 900;}
+        .empty-state p { color: #717171; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.4; }
         
-        header { background: #111; color: #fff; padding: 20px 20px 25px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;}
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .driver-info h1 { font-size: 1.2rem; font-weight: 900; color: #fff; margin: 0; }
-        .driver-info span { font-size: 0.8rem; color: #aaa; }
+        .btn-primary { background: #ea1d2c; color: #fff; border: none; padding: 14px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; width: 100%; text-align: center; display: inline-block; text-decoration: none; cursor: pointer; transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* CARD DE PEDIDO */
+        .order-card { background: #fff; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 20px 15px; border: 1px solid #f2f2f2; }
         
-        /* BOTÃO EM SERVIÇO / FORA DE SERVIÇO */
-        .status-toggle { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 20px; }
-        .status-toggle span { font-size: 0.85rem; font-weight: bold; color: #fff; }
-        .toggle-switch { position: relative; width: 44px; height: 24px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: #00a14b; }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        /* ABAS */
-        .tabs { display: flex; gap: 10px; padding: 0 20px; margin-top: -20px; position: relative; z-index: 101; }
-        .tab-btn { flex: 1; padding: 15px 10px; text-align: center; font-weight: bold; font-size: 0.9rem; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
-        .tab-btn.active { background: #ea1d2c; color: #fff; }
-        .tab-btn.inactive { background: #fff; color: #555; border: 1px solid #eee; }
-
-        .content-area { padding: 20px; }
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* CARD DE CORRIDA */
-        .ride-card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f2f2f2; position: relative; overflow: hidden;}
-        .ride-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: #0d6efd; }
-        .ride-card.new::before { background: #ea1d2c; }
+        .store-name { color: #ea1d2c; font-size: 1.25rem; font-weight: 900; text-align: center; margin-bottom: 15px; }
         
-        .r-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 15px; }
-        .r-fee { font-size: 1.4rem; font-weight: 900; color: #00a14b; display: flex; align-items: center; gap: 6px;}
-        .r-id { font-size: 0.8rem; color: #888; font-weight: bold;}
-
-        .route-box { display: flex; flex-direction: column; margin-bottom: 20px; position: relative;}
-        .route-box::after { content: ''; position: absolute; left: 11px; top: 20px; bottom: 80px; width: 2px; background: #ddd; z-index: 1;}
+        .oc-row-1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+        .oc-id { font-size: 0.9rem; color: #555; }
+        .oc-id strong { color: #111; font-weight: 900; }
         
-        .r-point { display: flex; gap: 15px; align-items: flex-start; position: relative; z-index: 2; margin-bottom: 10px;}
-        .r-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.7rem; color: #fff; font-weight: bold;}
-        .r-icon.store { background: #111; border: 2px solid #fff; box-shadow: 0 0 0 2px #111;}
-        .r-icon.customer { background: #ea1d2c; border: 2px solid #fff; box-shadow: 0 0 0 2px #ea1d2c;}
+        .oc-badge { background: #ea1d2c; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .oc-badge.outline { background: #fff; color: #ea1d2c; border: 1px solid #ea1d2c; }
         
-        .r-details h4 { font-size: 0.9rem; color: #777; text-transform: uppercase; margin-bottom: 2px; }
-        .r-details p { font-size: 1.05rem; color: #111; font-weight: bold; margin: 0;}
-        .r-address { font-size: 0.85rem; color: #555; margin-top: 2px; line-height: 1.3;}
+        .btn-details { background: #fff; border: 1px solid #ccc; color: #555; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
 
-        /* BOTÃO DE NAVEGAÇÃO WAZE */
-        .nav-buttons-row { display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; padding-left: 39px; }
-        .btn-waze { flex: 1; background: #f0f7ff; color: #0099ff; border: 1px solid #bce3ff; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
-        .btn-waze:active { background: #e0f0ff; }
+        .oc-row-info { display: flex; justify-content: space-around; align-items: center; margin-bottom: 20px; }
+        .info-item { display: flex; align-items: center; gap: 5px; font-size: 0.95rem; color: #555; font-weight: 500; }
+        .info-item svg { color: #999; }
 
-        .pay-method-badge { display: inline-block; background: #fdf5e6; color: #997404; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #f9e1b5; margin-bottom: 15px;}
+        /* 🟢 BARRA DE PROGRESSO CORRIGIDA (SEM VAZAMENTO MATEMÁTICO) 🟢 */
+        .progress-wrapper { position: relative; margin-top: 20px; margin-bottom: 10px; }
+        .progress-lines { position: absolute; top: 6px; left: 10%; width: 80%; height: 3px; background: #eee; z-index: 1; border-radius: 2px; }
+        .progress-line-fill { position: absolute; top: 0; left: 0; height: 100%; background: #ea1d2c; transition: width 0.4s ease; border-radius: 2px; }
+        .progress-step-container { display: flex; justify-content: space-between; position: relative; z-index: 3; }
+        .p-step { display: flex; flex-direction: column; align-items: center; width: 20%; position: relative; }
+        .p-dot { width: 14px; height: 14px; background: #eee; border-radius: 50%; z-index: 3; margin-bottom: 6px; transition: 0.3s; position: relative; }
+        .p-dot.active { background: #ea1d2c; }
+        .p-label { font-size: 0.55rem; color: #999; font-weight: 600; line-height: 1.1; text-align: center; }
+        .p-label.active { color: #ea1d2c; font-weight: 800; }
 
-        .btn-action { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;}
-        .btn-action:active { transform: scale(0.98); }
-        .btn-action:disabled { opacity: 0.7; cursor: not-allowed; }
-        .btn-accept { background: #ea1d2c; color: #fff; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.3);}
-        .btn-finish { background: #00a14b; color: #fff; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.3);}
+        /* MODAL DE DETALHES DO PEDIDO */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .modal-content { background: #fff; width: 100%; max-width: 600px; max-height: 90vh; border-radius: 20px 20px 0 0; padding: 20px; overflow-y: auto; animation: slideUp 0.3s; position: relative; padding-bottom: calc(20px + env(safe-area-inset-bottom));}
+        
+        .md-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .md-title { font-size: 1.1rem; font-weight: 900; color: #111; }
+        .md-close { background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; }
 
-        .empty-msg { text-align: center; padding: 50px 20px; color: #999; }
-        .empty-msg svg { color: #ddd; margin-bottom: 15px; }
+        .md-store-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .md-store-name { font-size: 1.3rem; font-weight: 900; color: #ea1d2c; }
 
-        /* NOTIFICAÇÃO SONORA TOAST */
-        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 6px solid #ea1d2c; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 15px; display: flex; align-items: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .md-btn-chat { width: 100%; border: 2px solid #ea1d2c; color: #ea1d2c; background: #fff; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 0.95rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
+
+        .md-items { list-style: none; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px;}
+        .md-item { font-size: 0.95rem; color: #555; margin-bottom: 8px; }
+        .md-item-name { font-weight: bold; color: #333; }
+        .md-item-obs { font-size: 0.8rem; color: #888; display: block; margin-top: 2px;}
+
+        .md-totals { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; font-size: 0.95rem; color: #777;}
+        .md-tot-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .md-tot-final { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 900; color: #ea1d2c; margin-top: 10px; }
+
+        .md-footer-info { font-size: 0.85rem; color: #888; line-height: 1.5; }
+        .md-footer-info strong { color: #555; }
+
+        /* MODAL DO CHAT */
+        .chat-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e5ded8; z-index: 10001; display: none; flex-direction: column; }
+        .chat-modal.active { display: flex; animation: fadeIn 0.2s; }
+        .chat-header { background: #ea1d2c; color: #fff; padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding-top: calc(15px + env(safe-area-inset-top));}
+        .chat-back { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; }
+        .chat-header-info { flex: 1; }
+        .chat-header-name { font-weight: bold; font-size: 1.1rem; }
+        .chat-header-id { font-size: 0.8rem; opacity: 0.9; }
+
+        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .chat-sys-msg { background: #555; color: #fff; text-align: center; padding: 12px; border-radius: 8px; font-size: 0.8rem; margin-bottom: 10px; align-self: center; max-width: 90%; line-height: 1.4;}
+        
+        .msg-bubble { max-width: 80%; padding: 10px 12px; border-radius: 12px; font-size: 0.95rem; position: relative; line-height: 1.3;}
+        .msg-time { font-size: 0.65rem; opacity: 0.7; text-align: right; margin-top: 4px; display: block; }
+        
+        .msg-store { background: #fff; color: #333; align-self: flex-start; border-top-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .msg-store .msg-sender { font-size: 0.75rem; font-weight: bold; color: #ea1d2c; margin-bottom: 4px; display: block;}
+        
+        .msg-user { background: #ea1d2c; color: #fff; align-self: flex-end; border-top-right-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        .chat-input-area { background: #f0f0f0; padding: 10px 15px; display: flex; gap: 10px; align-items: center; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+        .chat-input { flex: 1; background: #fff; border: none; padding: 12px 15px; border-radius: 25px; font-size: 1rem; outline: none; }
+        .chat-send-btn { background: #ea1d2c; border: none; width: 45px; height: 45px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;}
+        .chat-send-btn:active { transform: scale(0.95); }
+
+        /* TOAST NOTIFICATION DE MENSAGEM */
+        .toast-msg { position: fixed; top: -150px; left: 5%; right: 5%; width: 90%; max-width: 400px; margin: 0 auto; background: #fff; border-left: 6px solid #ea1d2c; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 15px; display: flex; align-items: center; gap: 15px; z-index: 100000; transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); cursor: pointer; }
         .toast-msg.show { top: 20px; }
+        .toast-icon { width: 40px; height: 40px; background: #fff5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ea1d2c; flex-shrink: 0; }
+
+        /* MENU INFERIOR */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 150; padding-bottom: calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 10px rgba(0,0,0,0.02);}
+        .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-icon-img { width: 24px; height: 24px; filter: invert(40%); }
+        .nav-link.active { color: #ea1d2c; font-weight: bold; }
+        .nav-link.active .nav-icon-img { filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
-            <h2>UaiPede Entregas</h2>
-            <p>Faça login para receber corridas</p>
-            
-            <div class="form-group">
-                <label>Seu E-mail</label>
-                <input type="email" id="login-email" class="form-input" placeholder="entregador@email.com">
+    <header>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#ea1d2c;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        <h1>Meus Pedidos</h1>
+    </header>
+
+    <main class="container">
+        
+        <div id="unlogged-state" class="empty-state">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <h3>Você não está logado</h3>
+            <p>Faça login para ver o histórico e o status dos seus pedidos.</p>
+            <a href="login.html" class="btn-primary">Fazer Login</a>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <h3>Nenhum pedido ainda</h3>
+            <p>Você ainda não fez nenhum pedido no UaiPede.</p>
+            <a href="index.html" class="btn-primary">Ver Lojas</a>
+        </div>
+
+        <div id="orders-container"></div>
+
+    </main>
+
+    <div id="new-msg-toast" class="toast-msg">
+        <div class="toast-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div style="flex:1; overflow: hidden;">
+            <h4 id="toast-store-name" style="margin-bottom:2px; color:#111; font-size: 0.95rem;">Loja</h4>
+            <p id="toast-msg-text" style="font-size:0.85rem; color:#555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nova mensagem</p>
+        </div>
+        <button class="toast-close-btn" style="background:none; border:none; font-size:1.2rem; color:#aaa; cursor:pointer; padding:5px;">✕</button>
+    </div>
+
+    <div class="modal-overlay" id="details-modal">
+        <div class="modal-content">
+            <div class="md-header">
+                <span class="md-title" id="md-title-id">Detalhes do pedido</span>
+                <button class="md-close" onclick="window.closeDetailsModal()">✕</button>
             </div>
-            <div class="form-group">
-                <label>Sua Senha</label>
-                <input type="password" id="login-pass" class="form-input" placeholder="••••••••">
-            </div>
             
-            <button class="btn-login" onclick="window.loginDriver()">Entrar</button>
+            <div class="md-store-row">
+                <span class="md-store-name" id="md-store-name">Loja</span>
+                <span class="oc-badge" id="md-badge">Status</span>
+            </div>
+
+            <button class="md-btn-chat" id="md-btn-chat" onclick="window.openChatFromDetails()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Conversar com o estabelecimento
+            </button>
+
+            <ul class="md-items" id="md-items-list"></ul>
+
+            <div class="md-totals">
+                <div class="md-tot-row"><span>Subtotal:</span> <span id="md-subtotal">R$ 0,00</span></div>
+                <div class="md-tot-row"><span>Taxa de entrega:</span> <span id="md-tax">R$ 0,00</span></div>
+                <div class="md-tot-row"><span>Cupom de descontos:</span> <span id="md-discount">Sem cupom</span></div>
+                <div class="md-tot-final"><span>Total:</span> <span id="md-total">R$ 0,00</span></div>
+            </div>
+
+            <div class="md-footer-info" id="md-footer-text"></div>
         </div>
     </div>
 
-    <div id="app-screen">
-        <header>
-            <div class="header-top">
-                <div class="driver-info">
-                    <h1 id="driver-name-display">Olá, Entregador</h1>
-                    <span id="driver-city-display">📍 Cidade</span>
-                </div>
-                <div class="status-toggle">
-                    <span id="status-text">FORA DE SERVIÇO</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="driver-status-toggle" onchange="window.toggleOnlineStatus()">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+    <div class="chat-modal" id="chat-modal">
+        <div class="chat-header">
+            <button class="chat-back" onclick="window.closeChatModal()">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div class="chat-header-info">
+                <div class="chat-header-name" id="chat-store-name">Loja</div>
+                <div class="chat-header-id" id="chat-order-id">#ID</div>
             </div>
-        </header>
-
-        <div class="tabs">
-            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas Corridas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; margin-left:4px; display:none;">0</span></button>
-            <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Em Andamento</button>
         </div>
 
-        <div class="content-area">
-            
-            <div id="sec-novas" class="section active">
-                <div id="offline-msg" class="empty-msg" style="display: block;">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    <h3>Você está Fora de Serviço</h3>
-                    <p style="font-size:0.9rem; margin-top:5px;">Mude a chave acima para "Em serviço" para receber novas solicitações de entrega.</p>
-                </div>
-                <div id="no-rides-msg" class="empty-msg" style="display: none;">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    <h3>Buscando corridas...</h3>
-                    <p style="font-size:0.9rem; margin-top:5px;">Fique atento, logo uma loja chamará.</p>
-                </div>
-                
-                <div id="available-rides-list"></div>
+        <div class="chat-messages" id="chat-messages-container">
             </div>
 
-            <div id="sec-minhas" class="section">
-                <div id="no-active-msg" class="empty-msg">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"></path><path d="M5 2h14"></path><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path></svg>
-                    <h3>Nenhuma entrega em andamento</h3>
-                    <p style="font-size:0.9rem; margin-top:5px;">As corridas que você aceitar aparecerão aqui.</p>
-                </div>
-                <div id="my-rides-list"></div>
-            </div>
-
-        </div>
+        <form class="chat-input-area" id="chat-form">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Digite sua mensagem..." required autocomplete="off">
+            <button type="submit" class="chat-send-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </form>
     </div>
 
-    <div id="new-ride-toast" class="toast-msg">
-        <div style="background: #fff5f5; color: #ea1d2c; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-        </div>
-        <div>
-            <h4 style="margin:0; color:#111; font-size:1rem;">Nova Corrida!</h4>
-            <p style="margin:0; font-size:0.85rem; color:#555;">Toque para ver os detalhes.</p>
-        </div>
-    </div>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img" alt="Início"><span>Início</span></a>
+        <a href="pedidos.html" class="nav-link active"><img src="https://cdn-icons-png.flaticon.com/512/1150/1150592.png" class="nav-icon-img" alt="Pedidos"><span>Pedidos</span></a>
+        <a href="perfil.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="nav-icon-img" alt="Perfil"><span>Perfil</span></a>
+    </nav>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, getDoc, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -188,369 +232,328 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let loggedDriver = JSON.parse(localStorage.getItem('loggedDriver'));
-        let isOnline = false;
-        let storesCache = {}; 
-        let availableCount = 0;
+        const loggedCustomer = JSON.parse(localStorage.getItem('loggedCustomer'));
+        const isLogged = !!loggedCustomer || localStorage.getItem('isLogged') === 'true'; 
+        const userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
 
-        window.onload = async () => {
-            if (loggedDriver && loggedDriver.id) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-screen').style.display = 'block';
-                document.getElementById('driver-name-display').innerText = `Olá, ${loggedDriver.name.split(' ')[0]}`;
-                document.getElementById('driver-city-display').innerText = `📍 ${loggedDriver.city}`;
-                
-                await loadStoresCache();
-                startListeners();
-            } else {
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app-screen').style.display = 'none';
+        let globalOrders = [];
+        let currentChatOrderId = null;
+        let chatUnsubscribe = null;
+        let activeOrderForDetails = null;
+        
+        let chatListeners = {};
+        let initialLoadMsg = {};
+
+        window.onload = () => {
+            if (!isLogged) {
+                document.getElementById('unlogged-state').style.display = 'block';
+                return;
             }
-        };
 
-        // 🟢 LOGIN DO ENTREGADOR 🟢
-        window.loginDriver = async () => {
-            const email = document.getElementById('login-email').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
-            const btn = document.querySelector('.btn-login');
-
-            if (!email || !pass) return alert("Preencha e-mail e senha.");
-            btn.innerText = "Verificando..."; btn.disabled = true;
-
-            try {
-                const q = query(collection(db, "drivers"), where("email", "==", email), where("password", "==", pass));
-                const snap = await getDocs(q);
-
-                if (snap.empty) {
-                    alert("Acesso negado. E-mail ou senha incorretos.");
-                    btn.innerText = "Entrar"; btn.disabled = false;
-                    return;
-                }
-
-                const docData = snap.docs[0];
-                const driverData = docData.data();
-
-                if (driverData.isActive === false) {
-                    alert("Sua conta está suspensa. Procure o suporte.");
-                    btn.innerText = "Entrar"; btn.disabled = false;
-                    return;
-                }
-
-                loggedDriver = { id: docData.id, ...driverData };
-                localStorage.setItem('loggedDriver', JSON.stringify(loggedDriver));
-                window.location.reload();
-
-            } catch(e) {
-                console.error(e);
-                alert("Erro de conexão.");
-                btn.innerText = "Entrar"; btn.disabled = false;
-            }
-        };
-
-        window.toggleOnlineStatus = () => {
-            isOnline = document.getElementById('driver-status-toggle').checked;
-            const statusText = document.getElementById('status-text');
-            const offlineMsg = document.getElementById('offline-msg');
-            const noRidesMsg = document.getElementById('no-rides-msg');
-
-            if (isOnline) {
-                statusText.innerText = "EM SERVIÇO";
-                statusText.style.color = "#00a14b";
-                offlineMsg.style.display = 'none';
-                if(availableCount === 0) noRidesMsg.style.display = 'block';
-            } else {
-                statusText.innerText = "FORA DE SERVIÇO";
-                statusText.style.color = "#fff";
-                offlineMsg.style.display = 'block';
-                noRidesMsg.style.display = 'none';
-                document.getElementById('available-rides-list').innerHTML = ''; // Limpa a tela se fora de serviço
-            }
-            renderAvailableOrders(); // Atualiza a lista
-        };
-
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.classList.add('inactive'); });
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const q = query(collection(db, "orders"), where("customer.email", "==", userEmail));
             
-            document.getElementById(`tab-${tab}`).classList.add('active');
-            document.getElementById(`tab-${tab}`).classList.remove('inactive');
-            document.getElementById(`sec-${tab}`).classList.add('active');
-        };
+            onSnapshot(q, (snapshot) => {
+                globalOrders = [];
+                snapshot.forEach(doc => globalOrders.push({ id: doc.id, ...doc.data() }));
 
-        // Cache de Lojas (Para pegar o endereço de Retirada)
-        async function loadStoresCache() {
-            const snap = await getDocs(collection(db, "stores"));
-            snap.forEach(doc => {
-                storesCache[doc.id] = doc.data();
-            });
-        }
+                const container = document.getElementById('orders-container');
+                const emptyState = document.getElementById('empty-state');
 
-        // ==========================================
-        // 🟢 LISTENERS (ESCUTANDO PEDIDOS EM TEMPO REAL) 🟢
-        // ==========================================
-        let allPendingOrders = [];
-        let myAcceptedOrders = [];
-
-        function startListeners() {
-            // 1. Escuta pedidos "Aguardando Entregador"
-            const qPending = query(collection(db, "orders"), where("status", "==", "Aguardando Entregador"));
-            onSnapshot(qPending, (snapshot) => {
-                allPendingOrders = [];
-                snapshot.forEach(doc => {
-                    const order = { id: doc.id, ...doc.data() };
-                    const storeCity = storesCache[order.storeId] ? storesCache[order.storeId].city : null;
-                    if (!loggedDriver.city || storeCity === loggedDriver.city || storeCity === loggedDriver.city.split(' - ')[0]) {
-                        allPendingOrders.push(order);
-                    }
-                });
-                
-                if(isOnline && allPendingOrders.length > availableCount) {
-                    window.playAlertSound();
-                    window.showToast();
+                if (globalOrders.length === 0) {
+                    emptyState.style.display = 'block';
+                    container.innerHTML = '';
+                    return;
                 }
-                
-                availableCount = allPendingOrders.length;
-                renderAvailableOrders();
-            });
 
-            // 2. Escuta Minhas Entregas (Saiu para Entrega)
-            const qMyRides = query(collection(db, "orders"), where("driverId", "==", loggedDriver.id));
-            onSnapshot(qMyRides, (snapshot) => {
-                myAcceptedOrders = [];
-                snapshot.forEach(doc => {
-                    const order = { id: doc.id, ...doc.data() };
-                    if (order.status === 'Saiu para Entrega') {
-                        myAcceptedOrders.push(order);
+                emptyState.style.display = 'none';
+                globalOrders.sort((a, b) => b.timestamp - a.timestamp);
+
+                container.innerHTML = globalOrders.map(order => {
+                    const shortId = order.id.substring(0, 6).toUpperCase();
+                    
+                    let orderDatePart = ''; let orderTimePart = '';
+                    if (order.date) {
+                        const parts = order.date.split(' ');
+                        orderDatePart = parts[0] || '';
+                        orderTimePart = parts[1] || '';
+                    }
+
+                    let badgeClass = 'oc-badge';
+                    let badgeText = order.status;
+                    let stepIndex = 0; 
+                    let progressWidth = '0%'; 
+                    
+                    if (order.status === 'Pendente') {
+                        badgeClass += ' outline'; badgeText = 'Aguardando Loja';
+                        progressWidth = '0%';
+                    } else if (order.status === 'Aceito') {
+                        stepIndex = 1; progressWidth = '25%';
+                    } else if (order.status === 'Em Preparo') {
+                        stepIndex = 2; progressWidth = '50%';
+                    } else if (order.status === 'Saiu para Entrega' || order.status === 'Pronto para Retirada' || order.status === 'Aguardando Entregador') {
+                        stepIndex = 3; progressWidth = '75%';
+                    } else if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
+                        badgeText = 'Pedido finalizado'; 
+                        stepIndex = 4; progressWidth = '100%';
+                    } else if (order.status === 'Cancelado') {
+                        badgeClass = 'oc-badge outline'; stepIndex = -1; progressWidth = '0%';
+                    }
+
+                    const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
+
+                    return `
+                    <div class="order-card" style="${order.status === 'Cancelado' ? 'opacity: 0.6;' : ''}">
+                        <div class="store-name">${order.storeName}</div>
+                        
+                        <div class="oc-row-1">
+                            <div class="oc-id">Pedido: <strong>#${shortId}</strong></div>
+                            <div class="${badgeClass}">${badgeText}</div>
+                            <button class="btn-details" onclick="window.openDetailsModal('${order.id}')">Ver detalhes</button>
+                        </div>
+
+                        <div class="oc-row-info">
+                            <div class="info-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                R$ ${(order.total || 0).toFixed(2)}
+                            </div>
+                            <div class="info-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                ${orderDatePart}
+                            </div>
+                            <div class="info-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                ${orderTimePart}
+                            </div>
+                        </div>
+
+                        <div class="progress-wrapper" style="${stepIndex === -1 ? 'display:none;' : ''}">
+                            <div class="progress-lines">
+                                <div class="progress-line-fill" style="width: ${progressWidth};"></div>
+                            </div>
+                            <div class="progress-step-container">
+                                <div class="p-step">
+                                    <div class="p-dot ${stepIndex >= 0 ? 'active' : ''}"></div>
+                                    <span class="p-label ${stepIndex >= 0 ? 'active' : ''}">Pedido<br>visualizado</span>
+                                </div>
+                                <div class="p-step">
+                                    <div class="p-dot ${stepIndex >= 1 ? 'active' : ''}"></div>
+                                    <span class="p-label ${stepIndex >= 1 ? 'active' : ''}">Pedido<br>aprovado</span>
+                                </div>
+                                <div class="p-step">
+                                    <div class="p-dot ${stepIndex >= 2 ? 'active' : ''}"></div>
+                                    <span class="p-label ${stepIndex >= 2 ? 'active' : ''}">Preparando<br>Pedido</span>
+                                </div>
+                                <div class="p-step">
+                                    <div class="p-dot ${stepIndex >= 3 ? 'active' : ''}"></div>
+                                    <span class="p-label ${stepIndex >= 3 ? 'active' : ''}">${isPickup ? 'Pronto p/<br>retirar' : 'Saiu para<br>entrega'}</span>
+                                </div>
+                                <div class="p-step">
+                                    <div class="p-dot ${stepIndex >= 4 ? 'active' : ''}"></div>
+                                    <span class="p-label ${stepIndex >= 4 ? 'active' : ''}">Entregue</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                const activeOrders = globalOrders.filter(o => !['Entregue', 'Concluído', 'Concluido', 'Cancelado'].includes(o.status));
+                
+                activeOrders.forEach(order => {
+                    if (!chatListeners[order.id]) {
+                        initialLoadMsg[order.id] = true;
+                        const qMsg = query(collection(db, "orders", order.id, "messages"), orderBy("timestamp", "asc"));
+                        chatListeners[order.id] = onSnapshot(qMsg, (msgSnapshot) => {
+                            if (initialLoadMsg[order.id]) {
+                                initialLoadMsg[order.id] = false;
+                                return; 
+                            }
+                            
+                            msgSnapshot.docChanges().forEach((change) => {
+                                if (change.type === "added") {
+                                    const msg = change.doc.data();
+                                    if (msg.sender === 'store' && currentChatOrderId !== order.id) {
+                                        window.showMsgToast(order.storeName, msg.text, order.id);
+                                        window.playMsgSound();
+                                    }
+                                }
+                            });
+                        });
                     }
                 });
-                renderMyOrders();
             });
-        }
-
-        // ==========================================
-        // 🟢 RENDERIZADORES 🟢
-        // ==========================================
-        function renderAvailableOrders() {
-            const container = document.getElementById('available-rides-list');
-            const badge = document.getElementById('badge-novas');
-            const noRidesMsg = document.getElementById('no-rides-msg');
-
-            if (!isOnline) {
-                container.innerHTML = '';
-                badge.style.display = 'none';
-                return;
-            }
-
-            if (allPendingOrders.length === 0) {
-                container.innerHTML = '';
-                noRidesMsg.style.display = 'block';
-                badge.style.display = 'none';
-                return;
-            }
-
-            noRidesMsg.style.display = 'none';
-            badge.style.display = 'inline-block';
-            badge.innerText = allPendingOrders.length;
-
-            container.innerHTML = allPendingOrders.map(order => {
-                const shortId = order.id.substring(0, 5).toUpperCase();
-                const storeInfo = storesCache[order.storeId] || {};
-                const storeAddress = `${storeInfo.street || 'Endereço da loja'}`;
-                const customerAddress = order.customer.address || 'Endereço não informado';
-                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00); 
-
-                return `
-                <div class="ride-card new">
-                    <div class="r-header">
-                        <div class="r-fee">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                            R$ ${parseFloat(fee).toFixed(2)}
-                        </div>
-                        <div class="r-id">#${shortId}</div>
-                    </div>
-
-                    <div class="route-box">
-                        <div class="r-point">
-                            <div class="r-icon store">L</div>
-                            <div class="r-details">
-                                <h4>Coletar em</h4>
-                                <p>${order.storeName}</p>
-                                <div class="r-address">${storeAddress}</div>
-                            </div>
-                        </div>
-                        <div class="r-point">
-                            <div class="r-icon customer">C</div>
-                            <div class="r-details">
-                                <h4>Entregar para</h4>
-                                <p>${order.customerName}</p>
-                                <div class="r-address">${customerAddress}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pay-method-badge">
-                        Cobrar Cliente: ${order.paymentMethod}
-                    </div>
-
-                    <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">
-                        Aceitar Corrida
-                    </button>
-                </div>`;
-            }).join('');
-        }
-
-        function renderMyOrders() {
-            const container = document.getElementById('my-rides-list');
-            const noMsg = document.getElementById('no-active-msg');
-
-            if (myAcceptedOrders.length === 0) {
-                container.innerHTML = '';
-                noMsg.style.display = 'block';
-                return;
-            }
-
-            noMsg.style.display = 'none';
-
-            container.innerHTML = myAcceptedOrders.map(order => {
-                const shortId = order.id.substring(0, 5).toUpperCase();
-                const storeInfo = storesCache[order.storeId] || {};
-                const storeAddress = `${storeInfo.street || 'Endereço da loja'}`;
-                const customerAddress = order.customer.address || 'Endereço não informado';
-                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
-
-                // GERAÇÃO DE LINKS DE NAVEGAÇÃO SEGURA (APENAS WAZE)
-                const queryStore = encodeURIComponent(storeAddress + ', ' + loggedDriver.city);
-                const queryCustomer = encodeURIComponent(customerAddress + ', ' + loggedDriver.city);
-
-                const wazeLinkStore = `https://waze.com/ul?q=${queryStore}&navigate=yes`;
-                const wazeLinkCustomer = `https://waze.com/ul?q=${queryCustomer}&navigate=yes`;
-
-                return `
-                <div class="ride-card">
-                    <div class="r-header">
-                        <div class="r-fee" style="color:#111;">R$ ${parseFloat(fee).toFixed(2)}</div>
-                        <div class="r-id" style="color:#0d6efd;">EM ANDAMENTO #${shortId}</div>
-                    </div>
-
-                    <div class="route-box">
-                        <div class="r-point">
-                            <div class="r-icon store">L</div>
-                            <div class="r-details">
-                                <h4>Coleta</h4>
-                                <p>${order.storeName}</p>
-                                <div class="r-address">${storeAddress}</div>
-                            </div>
-                        </div>
-                        <div class="nav-buttons-row">
-                            <button class="btn-waze" onclick="window.open('${wazeLinkStore}', '_blank')">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Navegar com Waze
-                            </button>
-                        </div>
-
-                        <div class="r-point" style="margin-top:15px;">
-                            <div class="r-icon customer">C</div>
-                            <div class="r-details">
-                                <h4>Entrega</h4>
-                                <p>${order.customerName}</p>
-                                <div class="r-address">${customerAddress}</div>
-                            </div>
-                        </div>
-                        <div class="nav-buttons-row">
-                            <button class="btn-waze" onclick="window.open('${wazeLinkCustomer}', '_blank')">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Navegar com Waze
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="pay-method-badge" style="background:#fef0f0; color:#ea1d2c; border-color:#fbd5d5; width:100%; text-align:center;">
-                        O Cliente pagará: ${order.paymentMethod}
-                    </div>
-
-                    <button class="btn-action btn-finish" onclick="window.finishDelivery('${order.id}')">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                        Concluir Entrega
-                    </button>
-                </div>`;
-            }).join('');
-        }
-
-        // ==========================================
-        // 🟢 AÇÕES DO ENTREGADOR (CORRIGIDA) 🟢
-        // ==========================================
-        window.acceptOrder = async (orderId, btnElement) => {
-            if(!confirm("Tem certeza que deseja aceitar esta entrega?")) return;
-
-            const originalText = btnElement.innerText;
-            btnElement.innerText = "Aceitando...";
-            btnElement.disabled = true;
-
-            try {
-                // 🔒 TRAVA DE SEGURANÇA: Evita que variáveis 'undefined' quebrem o Firebase
-                const safeDriverId = loggedDriver.id || 'SemID';
-                const safeDriverName = loggedDriver.name || 'Entregador Desconhecido';
-                const safeDriverPhone = loggedDriver.phone || 'Sem Telefone';
-
-                await updateDoc(doc(db, "orders", orderId), {
-                    status: 'Saiu para Entrega',
-                    driverId: safeDriverId,
-                    driverName: safeDriverName,
-                    driverPhone: safeDriverPhone
-                });
-
-                window.switchTab('minhas');
-            } catch(e) {
-                console.error("ERRO FIREBASE:", e);
-                alert("Erro ao aceitar corrida. Outro entregador pode ter pego ou sua conexão falhou.");
-                btnElement.innerText = originalText;
-                btnElement.disabled = false;
-            }
         };
 
-        window.finishDelivery = async (orderId) => {
-            if(!confirm("Recebeu o pagamento (se houver) e entregou o pedido?")) return;
-            try {
-                await updateDoc(doc(db, "orders", orderId), {
-                    status: 'Concluído',
-                    deliveredAt: Date.now()
-                });
-                alert("Entrega concluída com sucesso! Bom trabalho.");
-            } catch(e) {
-                console.error("ERRO FIREBASE:", e);
-                alert("Erro ao finalizar corrida. Tente novamente.");
-            }
+        window.showMsgToast = (storeName, text, orderId) => {
+            document.getElementById('toast-store-name').innerText = storeName;
+            document.getElementById('toast-msg-text').innerText = text;
+            const toast = document.getElementById('new-msg-toast');
+            
+            toast.onclick = (e) => {
+                if(e.target.closest('.toast-close-btn')) {
+                    toast.classList.remove('show');
+                    return;
+                }
+                window.openChatDirectly(orderId);
+                toast.classList.remove('show');
+            };
+
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 6000);
         };
 
-        // ==========================================
-        // 🟢 EFEITOS SONOROS E TOASTS 🟢
-        // ==========================================
-        window.playAlertSound = () => {
+        window.playMsgSound = () => {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 const ctx = new AudioContext();
-                function playTone(freq, type, start, dur, vol) {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = type; osc.connect(gain); gain.connect(ctx.destination);
-                    osc.frequency.setValueAtTime(freq, start);
-                    gain.gain.setValueAtTime(vol, start);
-                    gain.gain.setTargetAtTime(0.0001, start + dur, dur / 3);
-                    osc.start(start); osc.stop(start + dur + 0.1);
-                }
-                const now = ctx.currentTime;
-                playTone(880, 'sine', now, 0.2, 0.8);
-                playTone(1100, 'sine', now + 0.3, 0.4, 0.8);
-            } catch (e) {}
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(880, ctx.currentTime); 
+                gain.gain.setValueAtTime(0.5, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.5);
+            } catch(e) {}
         };
 
-        window.showToast = () => {
-            const toast = document.getElementById('new-ride-toast');
-            toast.classList.add('show');
-            toast.onclick = () => {
-                toast.classList.remove('show');
-                window.switchTab('novas');
-            };
-            setTimeout(() => { toast.classList.remove('show'); }, 8000);
+        window.openDetailsModal = async (orderId) => {
+            const order = globalOrders.find(o => o.id === orderId);
+            if(!order) return;
+            activeOrderForDetails = order;
+
+            const shortId = order.id.substring(0, 6).toUpperCase();
+            document.getElementById('md-title-id').innerText = `Detalhes do pedido #${shortId}`;
+            document.getElementById('md-store-name').innerText = order.storeName;
+            
+            let badgeClass = 'oc-badge'; let badgeText = order.status;
+            if(order.status === 'Cancelado') { badgeClass += ' outline'; }
+            else if(order.status === 'Entregue' || order.status === 'Concluído') { badgeText = 'Pedido finalizado'; }
+            document.getElementById('md-badge').className = badgeClass;
+            document.getElementById('md-badge').innerText = badgeText;
+
+            let subtotal = 0;
+            const itemsHtml = order.items.map(i => {
+                let details = i.variant ? `(${i.variant})` : ''; 
+                let addonsHtml = i.addons && i.addons.length > 0 ? `<span class="md-item-obs">Adicionais: ${i.addons.join(', ')}</span>` : '';
+                let obsHtml = i.observation ? `<span class="md-item-obs">Observações: ${i.observation}</span>` : '';
+                subtotal += (i.price * i.qty);
+                return `
+                <li class="md-item">
+                    <div><span class="md-item-name">(${i.qty}x) ${i.name} ${details}</span> <span style="float:right;">R$ ${i.price.toFixed(2)}</span></div>
+                    ${addonsHtml}
+                    ${obsHtml}
+                </li>`;
+            }).join('');
+            document.getElementById('md-items-list').innerHTML = itemsHtml;
+
+            const tax = order.deliveryFee || 0;
+            const discount = order.discount || 0;
+            document.getElementById('md-subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
+            document.getElementById('md-tax').innerText = tax > 0 ? `R$ ${tax.toFixed(2)}` : 'Grátis';
+            document.getElementById('md-discount').innerText = discount > 0 ? `- R$ ${discount.toFixed(2)}` : 'Sem cupom';
+            document.getElementById('md-total').innerText = `R$ ${(order.total || 0).toFixed(2)}`;
+
+            let footerHtml = `
+                <strong>Data do pedido:</strong> ${order.date ? order.date.split(' ')[0] : ''}<br>
+                <strong>Forma de pagamento:</strong> ${order.paymentMethod}<br><br>
+                <strong>Pedido realizado:</strong> ${order.date ? order.date.split(' ')[1] : ''}<br><br>
+                <strong>Endereço de entrega:</strong> ${order.customer.address || 'Retirada na loja'}<br>
+            `;
+            document.getElementById('md-footer-text').innerHTML = footerHtml;
+
+            document.getElementById('details-modal').classList.add('active');
         };
+
+        window.closeDetailsModal = () => {
+            document.getElementById('details-modal').classList.remove('active');
+            activeOrderForDetails = null;
+        };
+
+        window.openChatDirectly = (orderId) => {
+            const order = globalOrders.find(o => o.id === orderId);
+            if(!order) return;
+            activeOrderForDetails = order;
+            
+            window.closeDetailsModal();
+            
+            currentChatOrderId = order.id;
+            const shortId = order.id.substring(0, 6).toUpperCase();
+            
+            document.getElementById('chat-store-name').innerText = order.storeName;
+            document.getElementById('chat-order-id').innerText = '#' + shortId;
+            document.getElementById('chat-modal').classList.add('active');
+
+            const qMsg = query(collection(db, "orders", currentChatOrderId, "messages"), orderBy("timestamp", "asc"));
+            chatUnsubscribe = onSnapshot(qMsg, (snapshot) => {
+                const container = document.getElementById('chat-messages-container');
+                
+                let msgsHtml = `
+                    <div class="chat-sys-msg">
+                        <strong>Mensagem automática</strong><br>
+                        Se o pagamento já foi feito pelo app, não realize pagamento adicional na entrega.<br>
+                        Além disso, nunca compartilhe dados pessoais com terceiros.<br>
+                        Sua segurança é prioridade!
+                    </div>
+                `;
+                
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    if(msg.sender === 'store') {
+                        msgsHtml += `
+                        <div class="msg-bubble msg-store">
+                            <span class="msg-sender">${order.storeName}</span>
+                            ${msg.text}
+                            <span class="msg-time">${msg.timeString}</span>
+                        </div>`;
+                    } else {
+                        msgsHtml += `
+                        <div class="msg-bubble msg-user">
+                            ${msg.text}
+                            <span class="msg-time" style="color:rgba(255,255,255,0.8);">${msg.timeString} ✔</span>
+                        </div>`;
+                    }
+                });
+
+                container.innerHTML = msgsHtml;
+                container.scrollTop = container.scrollHeight; 
+            });
+        };
+
+        window.openChatFromDetails = () => {
+            if(activeOrderForDetails) window.openChatDirectly(activeOrderForDetails.id);
+        };
+
+        window.closeChatModal = () => {
+            document.getElementById('chat-modal').classList.remove('active');
+            if(chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
+            currentChatOrderId = null;
+        };
+
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text || !currentChatOrderId) return;
+
+            input.value = ''; 
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+            try {
+                await addDoc(collection(db, "orders", currentChatOrderId, "messages"), {
+                    text: text,
+                    sender: 'customer',
+                    timestamp: Date.now(),
+                    timeString: timeString
+                });
+            } catch(error) {
+                console.error("Erro ao enviar mensagem:", error);
+                alert("Falha ao enviar mensagem.");
+            }
+        });
 
     </script>
 </body>
