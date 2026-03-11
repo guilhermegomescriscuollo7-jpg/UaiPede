@@ -44,9 +44,9 @@
         input:checked + .slider { background-color: #00a14b; }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* ABAS */
-        .tabs { display: flex; gap: 8px; padding: 0 15px; margin-top: -20px; position: relative; z-index: 101; }
-        .tab-btn { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; font-size: 0.85rem; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
+        /* ABAS - Agora com 4 opções */
+        .tabs { display: flex; gap: 5px; padding: 0 15px; margin-top: -20px; position: relative; z-index: 101; }
+        .tab-btn { flex: 1; padding: 12px 2px; text-align: center; font-weight: bold; font-size: 0.8rem; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
         .tab-btn.active { background: #ea1d2c; color: #fff; }
         .tab-btn.inactive { background: #fff; color: #555; border: 1px solid #eee; }
 
@@ -96,7 +96,7 @@
         .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 6px solid #ea1d2c; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 15px; display: flex; align-items: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
         .toast-msg.show { top: 20px; }
 
-        /* CARD DE GANHOS */
+        /* CARD DE GANHOS E HISTÓRICO */
         .earnings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .earning-card { background: #fff; padding: 20px 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; text-align: center; display: flex; flex-direction: column; justify-content: center; }
         .earning-label { font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
@@ -105,6 +105,10 @@
         .val-week { color: #0d6efd; }
         .val-month { color: #8e44ad; }
         .val-year { color: #ea1d2c; }
+
+        .filter-box { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+        .filter-box label { font-weight: bold; color: #555; font-size: 0.9rem; }
+        .filter-box input { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; font-weight: bold; color: #111; font-family: 'Roboto', sans-serif;}
     </style>
 </head>
 <body>
@@ -150,8 +154,9 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; margin-left:4px; display:none;">0</span></button>
+            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; margin-left:2px; display:none;">0</span></button>
             <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Atuais</button>
+            <button class="tab-btn inactive" id="tab-historico" onclick="window.switchTab('historico')">Realizadas</button>
             <button class="tab-btn inactive" id="tab-ganhos" onclick="window.switchTab('ganhos')">Ganhos</button>
         </div>
 
@@ -178,6 +183,21 @@
                     <p style="font-size:0.9rem; margin-top:5px;">As corridas que você aceitar aparecerão aqui.</p>
                 </div>
                 <div id="my-rides-list"></div>
+            </div>
+
+            <div id="sec-historico" class="section">
+                <div class="filter-box">
+                    <label>Filtro do dia:</label>
+                    <input type="date" id="history-date-filter" onchange="window.renderHistoryOrders()">
+                </div>
+                
+                <div id="no-history-msg" class="empty-msg" style="display: none;">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <h3>Nenhuma corrida neste dia</h3>
+                    <p style="font-size:0.9rem; margin-top:5px;">Você não concluiu nenhuma entrega na data selecionada.</p>
+                </div>
+                
+                <div id="history-rides-list"></div>
             </div>
 
             <div id="sec-ganhos" class="section">
@@ -242,6 +262,10 @@
         let isOnline = false;
         let storesCache = {}; 
         let availableCount = 0;
+        
+        let allPendingOrders = [];
+        let myAcceptedOrders = [];
+        let myHistoryOrders = []; // Variável para as entregas concluídas
 
         window.onload = async () => {
             if (loggedDriver && loggedDriver.id) {
@@ -250,6 +274,10 @@
                 
                 const firstName = loggedDriver.name ? loggedDriver.name.split(' ')[0] : 'Entregador';
                 document.getElementById('driver-name-display').innerText = `Olá, ${firstName}`;
+                
+                // Preenche a data de hoje no filtro de histórico automaticamente
+                const todayIso = new Date().toISOString().split('T')[0];
+                document.getElementById('history-date-filter').value = todayIso;
                 
                 await loadStoresCache();
                 startListeners();
@@ -297,7 +325,7 @@
             }
         };
 
-        // 🟢 AQUI ESTÁ A ATUALIZAÇÃO DO BANCO DE DADOS (isOnline: true/false) 🟢
+        // AVISO DO STATUS PARA O BANCO DE DADOS
         window.toggleOnlineStatus = async () => {
             isOnline = document.getElementById('driver-status-toggle').checked;
             const statusText = document.getElementById('status-text');
@@ -336,6 +364,11 @@
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`tab-${tab}`).classList.remove('inactive');
             document.getElementById(`sec-${tab}`).classList.add('active');
+            
+            // Se for a aba de histórico, manda renderizar a lista conforme o filtro de data
+            if(tab === 'historico') {
+                window.renderHistoryOrders();
+            }
         };
 
         async function loadStoresCache() {
@@ -343,10 +376,9 @@
             snap.forEach(doc => { storesCache[doc.id] = doc.data(); });
         }
 
-        let allPendingOrders = [];
-        let myAcceptedOrders = [];
-
+        // ESCUTADORES EM TEMPO REAL
         function startListeners() {
+            // 1. Escuta pedidos "Aguardando Entregador" (FILA PARA ACEITAR)
             const qPending = query(collection(db, "orders"), where("status", "==", "Aguardando Entregador"));
             onSnapshot(qPending, (snapshot) => {
                 allPendingOrders = [];
@@ -372,9 +404,12 @@
                 renderAvailableOrders();
             });
 
+            // 2. Escuta Minhas Entregas (ANDAMENTO E CONCLUÍDAS)
             const qMyRides = query(collection(db, "orders"), where("driverId", "==", loggedDriver.id));
             onSnapshot(qMyRides, (snapshot) => {
                 myAcceptedOrders = [];
+                myHistoryOrders = []; // Reseta histórico
+                
                 let eToday = 0; let eWeek = 0; let eMonth = 0; let eYear = 0;
                 
                 const now = new Date();
@@ -385,10 +420,16 @@
 
                 snapshot.forEach(doc => {
                     const order = { id: doc.id, ...doc.data() };
+                    
+                    // Vai para "Em andamento"
                     if (order.status === 'Saiu para Entrega') {
                         myAcceptedOrders.push(order);
                     }
-                    if (order.status === 'Concluído' || order.status === 'Concluido') {
+                    
+                    // Vai para "Histórico" e Ganhos
+                    if (order.status === 'Concluído' || order.status === 'Concluido' || order.status === 'Entregue') {
+                        myHistoryOrders.push(order); // Adiciona na lista do histórico
+                        
                         const orderTime = order.deliveredAt || order.timestamp || 0;
                         const fee = parseFloat(order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 0));
 
@@ -400,6 +441,13 @@
                 });
                 
                 renderMyOrders();
+                
+                // Se a aba histórico estiver aberta, atualiza ela na hora
+                if (document.getElementById('sec-historico').classList.contains('active')) {
+                    window.renderHistoryOrders();
+                }
+
+                // Atualiza tela de ganhos
                 document.getElementById('val-hoje').innerText = `R$ ${eToday.toFixed(2)}`;
                 document.getElementById('val-semana').innerText = `R$ ${eWeek.toFixed(2)}`;
                 document.getElementById('val-mes').innerText = `R$ ${eMonth.toFixed(2)}`;
@@ -407,6 +455,9 @@
             });
         }
 
+        // ==========================================
+        // RENDERIZADORES DE TELA
+        // ==========================================
         function renderAvailableOrders() {
             const container = document.getElementById('available-rides-list');
             const badge = document.getElementById('badge-novas');
@@ -525,6 +576,59 @@
                 </div>`;
             }).join('');
         }
+
+        // 🟢 RENDERIZAÇÃO DO HISTÓRICO (NOVO) 🟢
+        window.renderHistoryOrders = () => {
+            const container = document.getElementById('history-rides-list');
+            const noMsg = document.getElementById('no-history-msg');
+            const selectedDateStr = document.getElementById('history-date-filter').value;
+            
+            if (!selectedDateStr) return;
+
+            // Transforma o input 'YYYY-MM-DD' em timestamps precisos de Início e Fim do dia
+            const [year, month, day] = selectedDateStr.split('-');
+            const filterStart = new Date(year, month - 1, day).getTime();
+            const filterEnd = filterStart + (24 * 60 * 60 * 1000);
+
+            // Filtra os pedidos daquele dia específico
+            const filteredHistory = myHistoryOrders.filter(order => {
+                const orderTime = order.deliveredAt || order.timestamp || 0;
+                return orderTime >= filterStart && orderTime < filterEnd;
+            });
+
+            // Ordena para os mais recentes ficarem no topo da lista
+            filteredHistory.sort((a, b) => (b.deliveredAt || b.timestamp) - (a.deliveredAt || a.timestamp));
+
+            if (filteredHistory.length === 0) {
+                container.innerHTML = '';
+                noMsg.style.display = 'block';
+                return;
+            }
+
+            noMsg.style.display = 'none';
+
+            container.innerHTML = filteredHistory.map(order => {
+                const shortId = order.id.substring(0, 5).toUpperCase();
+                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
+                const storeName = order.storeName || 'Loja Desconhecida';
+                const custName = order.customerName || 'Cliente';
+                
+                const timeObj = new Date(order.deliveredAt || order.timestamp);
+                const timeStr = timeObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+                return `
+                <div class="ride-card" style="padding: 15px; border-left: 5px solid #00a14b; opacity: 0.95;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed #eee; padding-bottom:10px; margin-bottom:10px;">
+                        <span style="font-weight:900; color:#00a14b; font-size:1.1rem;">+ R$ ${parseFloat(fee).toFixed(2)}</span>
+                        <span style="color:#777; font-size:0.75rem; font-weight:bold;">Entregue às ${timeStr} | #${shortId}</span>
+                    </div>
+                    <div style="font-size:0.85rem; color:#555; line-height: 1.4;">
+                        <strong>De:</strong> ${storeName}<br>
+                        <strong>Para:</strong> ${custName}
+                    </div>
+                </div>`;
+            }).join('');
+        };
 
         window.acceptOrder = async (orderId, btnElement) => {
             if(!confirm("Tem certeza que deseja aceitar esta entrega?")) return;
