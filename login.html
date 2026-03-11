@@ -12,6 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="UaiPede">
     <link rel="apple-touch-icon" href="icone-192x192.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
@@ -32,7 +33,6 @@
         .form-group input, .form-group select { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; background: #f9f9f9; transition: 0.2s; color: #333; font-family: 'Roboto', sans-serif;}
         .form-group input:focus, .form-group select:focus { border-color: #ea1d2c; background: #fff; }
 
-        /* Botão vermelho principal */
         .btn-primary { width: 100%; background: #ea1d2c; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: 10px; }
         .btn-primary:hover { background: #c81824; }
         .btn-primary:active { transform: scale(0.98); }
@@ -103,7 +103,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // SUA CONFIGURAÇÃO OFICIAL FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -116,12 +115,10 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Verifica se já está logado
         if (localStorage.getItem('isLogged') === 'true') {
             window.location.href = "index.html";
         }
 
-        // 🟢 CARREGAR AS CIDADES DO FIREBASE PARA O CADASTRO 🟢
         const citySelect = document.getElementById('regCity');
         async function loadCities() {
             try {
@@ -129,7 +126,6 @@
                 let cities = [];
                 citiesSnap.forEach(doc => { cities.push(doc.data()); });
                 
-                // Organiza por ordem alfabética
                 cities.sort((a, b) => a.name.localeCompare(b.name));
 
                 if (cities.length === 0) {
@@ -137,7 +133,6 @@
                     return;
                 }
 
-                // Monta o menu dropdown
                 citySelect.innerHTML = '<option value="">Selecione sua cidade...</option>' + 
                     cities.map(c => `<option value="${c.name} - ${c.state}">${c.name} - ${c.state}</option>`).join('');
             } catch (error) {
@@ -146,10 +141,8 @@
             }
         }
         
-        // Executa a função imediatamente ao abrir a página
         loadCities();
 
-        // Controle de Modo (Login ou Cadastro)
         let isRegisterMode = false;
         
         window.toggleMode = () => {
@@ -166,7 +159,6 @@
                 toggleText.innerHTML = `Já tem uma conta? <span class="toggle-link" onclick="window.toggleMode()">Faça Login</span>`;
                 registerFields.style.display = "block";
                 
-                // Torna campos de cadastro obrigatórios
                 document.getElementById('name').required = true;
                 document.getElementById('phone').required = true;
                 document.getElementById('regCity').required = true;
@@ -176,7 +168,6 @@
                 toggleText.innerHTML = `Ainda não tem conta? <span class="toggle-link" onclick="window.toggleMode()">Cadastre-se</span>`;
                 registerFields.style.display = "none";
                 
-                // Remove obrigatoriedade dos campos de cadastro
                 document.getElementById('name').required = false;
                 document.getElementById('phone').required = false;
                 document.getElementById('regCity').required = false;
@@ -204,13 +195,11 @@
             localStorage.setItem('userEmail', userData.email);
             localStorage.setItem('userName', userData.name);
             
-            // 🟢 Garante que a cidade escolhida no cadastro vire a cidade ativa na home 🟢
             if (userData.city) {
                 localStorage.setItem('userCity', userData.city);
             }
         }
 
-        // Lógica de Submit (Login ou Cadastro)
         const form = document.getElementById('auth-form');
         const btnSubmit = document.getElementById('btn-submit');
 
@@ -230,7 +219,6 @@
 
             try {
                 if (isRegisterMode) {
-                    // === MODO CADASTRO ===
                     const name = document.getElementById('name').value.trim();
                     const phone = document.getElementById('phone').value.trim();
                     const city = document.getElementById('regCity').value;
@@ -242,7 +230,6 @@
                         return;
                     }
 
-                    // Verifica se o e-mail já existe
                     const qCheck = query(collection(db, "customers"), where("email", "==", email));
                     const checkSnapshot = await getDocs(qCheck);
 
@@ -253,18 +240,15 @@
                         return;
                     }
 
-                    // Salva novo cliente no Firebase
                     const newUser = { name, email, phone, city, password: pass };
                     await addDoc(collection(db, "customers"), newUser);
 
-                    // Salva a sessão e redireciona
                     saveLocalSession(newUser);
                     showAlert("✅ Conta criada com sucesso!", "success");
                     
                     setTimeout(() => { window.location.href = "index.html"; }, 800);
 
                 } else {
-                    // === MODO LOGIN ===
                     const q = query(collection(db, "customers"), where("email", "==", email), where("password", "==", pass));
                     const querySnapshot = await getDocs(q);
 
@@ -279,7 +263,6 @@
                     let userData = null;
                     querySnapshot.forEach((doc) => { userData = doc.data(); });
 
-                    // Salva a sessão e redireciona
                     saveLocalSession(userData);
                     showAlert("✅ Login efetuado! Redirecionando...", "success");
                     
@@ -295,13 +278,13 @@
         });
 
         // ==========================================
-        // 🚀 REGISTRO DO SERVICE WORKER (PWA) 🚀
+        // Registro do Service Worker para o PWA
         // ==========================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
-                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                        console.log('Service Worker registrado com sucesso no Login.');
                     })
                     .catch((error) => {
                         console.log('Falha ao registrar o Service Worker:', error);
