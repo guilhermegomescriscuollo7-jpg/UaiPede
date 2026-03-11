@@ -4,55 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - UaiPede</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f4f5f7; display: flex; height: 100vh; }
+        body { background-color: #f4f5f7; display: flex; height: 100vh; overflow: hidden; }
         
-        .sidebar { width: 250px; background: #111; color: #fff; display: flex; flex-direction: column; overflow-y: auto;}
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; font-weight: bold; font-size: 1.2rem; color: #ea1d2c; display: flex; align-items: center; gap: 8px;}
+        /* SIDEBAR / MENU */
+        .sidebar { width: 260px; background: #111; color: #fff; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; font-weight: 900; font-size: 1.3rem; color: #ea1d2c; display: flex; align-items: center; gap: 10px;}
         .nav-menu { list-style: none; flex: 1; margin-top: 10px; }
-        .nav-item { padding: 15px 20px; cursor: pointer; color: #aaa; transition: 0.2s; display: flex; align-items: center; gap: 10px;}
+        .nav-item { padding: 15px 20px; cursor: pointer; color: #aaa; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-weight: 500;}
         .nav-item:hover, .nav-item.active { background: #222; color: #fff; border-left: 4px solid #ea1d2c; }
         
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .section { display: none; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
+        .section { display: none; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px;}
         .section.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { margin-bottom: 20px; color: #111; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        h2 { margin-bottom: 20px; color: #111; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; font-weight: 900;}
         
         .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.9rem; margin-bottom: 5px; color: #555; font-weight: 500; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; font-family: 'Roboto', sans-serif; background: #fff;}
-        input:focus, select:focus { border-color: #ea1d2c; }
-        input[type="range"] { padding: 0; border: none; cursor: pointer; }
+        label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #555; font-weight: bold; text-transform: uppercase;}
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: 'Roboto', sans-serif; background: #fdfdfd; transition: 0.2s;}
+        input:focus, select:focus { border-color: #ea1d2c; background: #fff;}
+        input[type="range"] { padding: 0; border: none; cursor: pointer; background: transparent; }
         
-        .btn { background: #ea1d2c; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;}
-        .btn:hover { background: #c81824; }
-        .btn-secondary { background: #ccc; color: #333; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; display: none; margin-left: 10px; }
+        .btn { background: #ea1d2c; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px;}
+        .btn:hover { background: #c81824; transform: scale(0.98);}
+        .btn-secondary { background: #eee; color: #333; border: 1px solid #ddd; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; margin-left: 10px; }
         
         .item-list { margin-top: 20px; display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .card-item { border: 1px solid #eee; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px; background: #fff; }
+        .card-item { border: 1px solid #eee; padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .card-item.suspended { background: #fff0f0; border-color: #fbd5d5; } 
-        .card-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: #eee; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;}
+        .card-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: #eee; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;}
         
-        .actions-col { display: flex; gap: 15px; margin-left: auto; align-items: center; }
-        .btn-edit { color: #0d6efd; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;}
-        .btn-suspend { color: #ea1d2c; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;}
-        .btn-reactivate { color: #00a14b; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;}
-        .btn-del { color: #999; border: none; background: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 4px;}
-        .btn-del:hover { color: #ea1d2c; }
+        .actions-col { display: flex; gap: 10px; margin-left: auto; align-items: center; flex-wrap: wrap; justify-content: flex-end;}
+        .btn-edit { color: #0d6efd; border: 1px solid #b6d4fe; background: #eef4ff; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; transition: 0.2s;}
+        .btn-suspend { color: #ea1d2c; border: 1px solid #fbd5d5; background: #fef0f0; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; transition: 0.2s;}
+        .btn-reactivate { color: #00a14b; border: 1px solid #badbcc; background: #e6f4ea; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; transition: 0.2s;}
+        .btn-del { color: #555; border: 1px solid #ddd; background: #f9f9f9; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 4px;}
+        .btn-del:hover { background: #ea1d2c; color: #fff; border-color: #ea1d2c; }
 
-        .badge-status { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-top: 4px;}
+        .badge-status { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-top: 6px;}
         .badge-active { background: #e6f4ea; color: #00a14b; }
         .badge-suspended { background: #fef0f0; color: #ea1d2c; }
-        .badge-city { background: #eef4ff; color: #0d6efd; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; border: 1px solid #b6d4fe; display: inline-flex; align-items: center; gap: 4px;}
+        .badge-city { background: #eef4ff; color: #0d6efd; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;}
 
         /* ABA FATURAMENTO E RANKING */
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .metric-card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; position: relative; overflow: hidden; }
-        .metric-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: #ea1d2c; }
+        .metric-card { background: #fdfdfd; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; position: relative; overflow: hidden; }
+        .metric-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: #ea1d2c; }
         .metric-card.purple::before { background: #8e44ad; }
         .metric-card.blue::before { background: #0d6efd; }
         .metric-card.green::before { background: #00a14b; }
@@ -62,20 +63,20 @@
         .m-value.purple { color: #8e44ad; }
 
         .ranking-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-        .ranking-item { background: #fff; padding: 15px 20px; border-radius: 12px; border: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; }
+        .ranking-item { background: #fdfdfd; padding: 15px 20px; border-radius: 12px; border: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .ranking-item:hover { transform: scale(1.01); border-color: #ddd; }
         .r-medal { font-size: 1.8rem; width: 40px; text-align: center; font-weight: 900; color: #999; }
-        .r-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #f4f5f7; margin-right: 15px; }
+        .r-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; margin-right: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
         .r-info { flex: 1; }
-        .r-name { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 2px; display: flex; align-items: center; gap: 8px;}
-        .r-orders { font-size: 0.8rem; color: #777; font-weight: 500; }
+        .r-name { font-size: 1.1rem; font-weight: 800; color: #111; margin-bottom: 2px; display: flex; align-items: center; gap: 8px;}
+        .r-orders { font-size: 0.85rem; color: #777; font-weight: 500; }
         .r-revenue { text-align: right; }
         .r-revenue-val { font-size: 1.2rem; font-weight: 900; color: #00a14b; }
         .r-revenue-tax { font-size: 0.75rem; color: #8e44ad; font-weight: bold; margin-top: 2px; }
 
-        /* 🟢 GRID E CARDS DE USUÁRIOS 🟢 */
+        /* 🟢 ABA USUÁRIOS E TOGGLE SICOOB 🟢 */
         .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .user-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #eee; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .user-card { background: #fdfdfd; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #eee; display: flex; flex-direction: column; position: relative; }
         .u-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
         .u-avatar { width: 45px; height: 45px; background: #ea1d2c; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 900; text-transform: uppercase; flex-shrink: 0;}
         .u-info { flex: 1; overflow: hidden; }
@@ -83,10 +84,10 @@
         .u-email { font-size: 0.85rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .u-data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
         .u-data-row strong { color: #555; }
-        .sicoob-area { background: #fdfdfd; border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .sicoob-area { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
         .sicoob-logo-text { font-weight: 900; color: #00a14b; display: flex; align-items: center; gap: 6px; font-size: 0.95rem; }
         
-        /* Botão Toggle */
         .toggle-switch { position: relative; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -94,12 +95,6 @@
         input:checked + .slider { background-color: #00a14b; }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        .btn-delete { background: #fff0f0; color: #ea1d2c; border: 1px solid #fbd5d5; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; transition: 0.2s;}
-        .btn-delete:hover { background: #ea1d2c; color: #fff; }
-        .stats-bar { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;}
-        .stat-box { background: #fdfdfd; padding: 15px 25px; border-radius: 12px; border: 1px solid #eee; display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 200px;}
-        .stat-num { font-size: 1.8rem; font-weight: 900; color: #ea1d2c; }
-        .stat-label { font-size: 0.8rem; font-weight: bold; color: #777; text-transform: uppercase; }
         .controls-area { background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
     </style>
 </head>
@@ -107,7 +102,7 @@
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
             UaiPede Admin
         </div>
         <ul class="nav-menu">
@@ -137,7 +132,11 @@
             </li>
             <li class="nav-item" onclick="window.switchTab('patrocinadores', this)">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                Patrocinadores
+                Patrocínio Abertura
+            </li>
+            <li class="nav-item" onclick="window.switchTab('patrocinadores-cupons', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                Cupons Patrocinados
             </li>
         </ul>
     </aside>
@@ -177,14 +176,14 @@
             </h2>
             <p style="font-size:0.9rem; color:#777; margin-bottom:20px;">Gerencie os usuários do aplicativo, filtre por cidade e ative benefícios exclusivos de Patrocinador (Ex: Sicoob).</p>
 
-            <div class="stats-bar">
-                <div class="stat-box">
-                    <span class="stat-num" id="total-users">0</span>
-                    <span class="stat-label">Total de Clientes</span>
+            <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                <div style="background: #fdfdfd; padding: 15px 25px; border-radius: 12px; border: 1px solid #eee; flex: 1;">
+                    <div style="font-size: 1.8rem; font-weight: 900; color: #ea1d2c;" id="total-users">0</div>
+                    <div style="font-size: 0.8rem; font-weight: bold; color: #777; text-transform: uppercase;">Total de Clientes</div>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-num" style="color: #00a14b;" id="total-sicoob">0</span>
-                    <span class="stat-label">Associados Ativos (Sicoob)</span>
+                <div style="background: #fdfdfd; padding: 15px 25px; border-radius: 12px; border: 1px solid #eee; flex: 1;">
+                    <div style="font-size: 1.8rem; font-weight: 900; color: #00a14b;" id="total-sicoob">0</div>
+                    <div style="font-size: 0.8rem; font-weight: bold; color: #777; text-transform: uppercase;">Associados Ativos</div>
                 </div>
             </div>
 
@@ -193,7 +192,7 @@
                     <label>Filtrar por Cidade</label>
                     <select id="filter-user-city" onchange="window.filterUsers()">
                         <option value="all">Todas as Cidades</option>
-                        </select>
+                    </select>
                 </div>
                 <div class="form-group" style="margin-bottom: 0; flex: 2; min-width: 200px;">
                     <label>Pesquisar por Nome ou E-mail</label>
@@ -204,6 +203,52 @@
             <div class="users-grid" id="users-container">
                 <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">Carregando usuários...</div>
             </div>
+        </section>
+
+        <section id="patrocinadores-cupons" class="section">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                Cupons de Patrocinadores (Global)
+            </h2>
+            <p style="font-size:0.85rem; color:#777; margin-bottom:15px;">Crie cupons fixos patrocinados por empresas. O cliente associado poderá usar esse desconto em qualquer loja da cidade, e a loja verá quem subsidiou o valor.</p>
+            
+            <div style="background: #fdfdfd; padding: 25px; border-radius: 12px; border: 1px solid #eee; max-width: 600px; margin-bottom: 30px;">
+                <div class="form-group">
+                    <label>Nome do Patrocinador (Ex: Sicoob Cred Plus)</label>
+                    <input type="text" id="admin-sponsor-name" placeholder="Nome da instituição">
+                </div>
+
+                <div class="form-group">
+                    <label>Código do Cupom</label>
+                    <input type="text" id="admin-sponsor-code" placeholder="Ex: SICOOB20" style="text-transform: uppercase;">
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Valor de Desconto Fixo (R$)</label>
+                        <input type="number" id="admin-sponsor-value" step="0.01" placeholder="Ex: 20.00">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Pedido Mínimo (R$)</label>
+                        <input type="number" id="admin-sponsor-min" step="0.01" placeholder="Opcional. Ex: 50.00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Cidade de Atuação do Cupom</label>
+                    <select id="admin-sponsor-city">
+                        <option value="">Carregando cidades...</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="window.createSponsorCoupon()" style="width: 100%; justify-content: center; background: #00a14b;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Gerar Cupom do Patrocinador
+                </button>
+            </div>
+
+            <h3 style="font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Cupons Globais Ativos</h3>
+            <div class="item-list" id="sponsor-coupons-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
         </section>
 
         <section id="lojas" class="section active">
@@ -237,7 +282,7 @@
             <div style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 1;">
                     <label>Cidade da Loja</label>
-                    <select id="s-city" class="form-input">
+                    <select id="s-city">
                         <option value="">Cadastre uma cidade primeiro...</option>
                     </select>
                 </div>
@@ -408,6 +453,7 @@
             <h3 style="margin-top: 30px; font-size: 1rem;">Patrocinadores Ativos</h3>
             <div class="item-list" id="sponsor-list-container" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));"></div>
         </section>
+
     </main>
 
     <script type="module">
@@ -427,7 +473,7 @@
         const db = getFirestore(app);
 
         let allStores = []; let allDrivers = []; let globalBanners = []; let globalSponsors = []; let globalCities = [];
-        let globalUsers = [];
+        let globalUsers = []; let globalCoupons = [];
         let storeImgBase64 = ''; let bannerImgBase64 = ''; let sponsorImgBase64 = '';
         let editingStoreId = null; let editingDriverId = null;
         let allOrders = [];
@@ -459,7 +505,7 @@
         }
 
         // ==========================================
-        // MÓDULO CIDADES E MENUS
+        // MÓDULO CIDADES
         // ==========================================
         onSnapshot(collection(db, "cities"), (snapshot) => {
             globalCities = [];
@@ -530,6 +576,7 @@
             fillSelect('sp-city', '<option value="all">Todas as Cidades (Global)</option>');
             fillSelect('filter-city-fat', '<option value="all">Todas as Cidades</option>');
             fillSelect('filter-user-city', '<option value="all">Todas as Cidades</option>');
+            fillSelect('admin-sponsor-city', '<option value="">Selecione a cidade...</option>');
         }
 
         // ==========================================
@@ -538,8 +585,8 @@
         onSnapshot(collection(db, "customers"), (snapshot) => {
             globalUsers = [];
             let sicoobCount = 0;
-            snapshot.forEach(doc => {
-                const user = { id: doc.id, ...doc.data() };
+            snapshot.forEach(document => {
+                const user = { id: document.id, ...document.data() };
                 globalUsers.push(user);
                 if (user.isSicoob) sicoobCount++;
             });
@@ -599,7 +646,7 @@
                     <div class="sicoob-area">
                         <div class="sicoob-logo-text">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                            Associado Sicoob
+                            Associado Patrocinador
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" ${isSicoob ? 'checked' : ''} onchange="window.toggleSicoobStatus('${u.id}', this.checked)">
@@ -632,6 +679,100 @@
                 } catch(e) {
                     alert("Erro ao excluir usuário.");
                 }
+            }
+        };
+
+        // ==========================================
+        // 🟢 MÓDULO DE CUPONS PATROCINADOS (GLOBAL) 🟢
+        // ==========================================
+        onSnapshot(collection(db, "coupons"), (snapshot) => {
+            globalCoupons = [];
+            snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() }));
+            renderAdminSponsorCoupons();
+        });
+
+        window.createSponsorCoupon = async () => {
+            const sponsorName = document.getElementById('admin-sponsor-name').value.trim();
+            const code = document.getElementById('admin-sponsor-code').value.trim().toUpperCase();
+            const value = parseFloat(document.getElementById('admin-sponsor-value').value);
+            const minOrder = parseFloat(document.getElementById('admin-sponsor-min').value) || 0;
+            const targetCity = document.getElementById('admin-sponsor-city').value;
+
+            if (!sponsorName || !code || isNaN(value) || !targetCity) {
+                return alert("Preencha o Patrocinador, Código, Valor e a Cidade Válida.");
+            }
+
+            try {
+                await addDoc(collection(db, "coupons"), {
+                    code: code,
+                    type: "fixed", 
+                    value: value,
+                    minOrder: minOrder,
+                    storeId: "GLOBAL", 
+                    targetCity: targetCity, 
+                    sponsorName: sponsorName,
+                    active: true,
+                    usedCount: 0,
+                    createdAt: Date.now()
+                });
+                
+                alert(`Sucesso! Cupom ${code} gerado para lojas de ${targetCity}.`);
+                
+                document.getElementById('admin-sponsor-name').value = '';
+                document.getElementById('admin-sponsor-code').value = '';
+                document.getElementById('admin-sponsor-value').value = '';
+                
+            } catch (error) {
+                console.error(error);
+                alert("Erro ao criar cupom de patrocinador.");
+            }
+        };
+
+        function renderAdminSponsorCoupons() {
+            const container = document.getElementById('sponsor-coupons-list-container');
+            const sponsorCoupons = globalCoupons.filter(c => c.storeId === 'GLOBAL');
+
+            if (sponsorCoupons.length === 0) {
+                container.innerHTML = '<p style="color:#999; padding: 20px;">Nenhum cupom de patrocinador ativo.</p>';
+                return;
+            }
+
+            container.innerHTML = sponsorCoupons.map(c => {
+                const statusBadge = c.active 
+                    ? '<span class="badge-status badge-active">🟢 Ativo</span>' 
+                    : '<span class="badge-status badge-suspended">🔴 Inativo</span>';
+                
+                const toggleBtn = c.active
+                    ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>`
+                    : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
+
+                return `
+                <div class="card-item" style="flex-direction: column; align-items: flex-start; ${!c.active ? 'opacity: 0.6;' : ''}">
+                    <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
+                        <strong style="color:#00a14b; font-size:1.1rem;">${c.code}</strong>
+                        ${statusBadge}
+                    </div>
+                    <div style="font-size:0.85rem; color:#555; line-height: 1.5; width:100%;">
+                        <strong>Patrocinador:</strong> ${c.sponsorName}<br>
+                        <strong>Cidade Alvo:</strong> ${c.targetCity}<br>
+                        <strong>Desconto:</strong> R$ ${c.value.toFixed(2)}<br>
+                        <strong>Pedido Mínimo:</strong> R$ ${c.minOrder > 0 ? c.minOrder.toFixed(2) : '0,00'}<br>
+                    </div>
+                    <div class="actions-col" style="margin-top: 10px; width: 100%; justify-content: flex-end;">
+                        ${toggleBtn}
+                        <button class="btn-del" onclick="window.deleteAdminCoupon('${c.id}')">Excluir</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.toggleAdminCoupon = async (id, isActive) => {
+            try { await updateDoc(doc(db, "coupons", id), { active: isActive }); } catch(e) {}
+        };
+
+        window.deleteAdminCoupon = async (id) => {
+            if(confirm("Apagar este cupom global permanentemente?")) {
+                try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {}
             }
         };
 
@@ -861,7 +1002,7 @@
         window.deleteBanner = async (id) => { if(confirm("Remover este banner do aplicativo?")) { await deleteDoc(doc(db, "banners", id)); } };
 
         // ==========================================
-        // MÓDULO LOJAS
+        // MÓDULO LOJAS E ENTREGADORES 
         // ==========================================
         document.getElementById('s-logo').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -989,9 +1130,6 @@
             }).join(''); 
         }
 
-        // ==========================================
-        // MÓDULO ENTREGADORES
-        // ==========================================
         onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
         
         window.saveDriver = async () => { 
@@ -1060,7 +1198,7 @@
                 const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear'; 
                 return ` 
                 <div class="${cardClass}"> 
-                    <div class="card-img" style="color:#0d6efd;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div> 
+                    <div class="card-img" style="color:#0d6efd;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg></div> 
                     <div style="flex-grow: 1;"> 
                         <strong style="font-size: 1.1rem; color: #111;">${d.name}</strong><br> 
                         <span style="font-size:0.85rem; color:#555;">📞 ${d.phone} | <span class="badge-city">📍 ${d.city || 'Não definida'}</span></span><br>
