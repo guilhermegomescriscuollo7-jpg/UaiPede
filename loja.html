@@ -41,12 +41,12 @@
         .search-input:focus { background: #fff; border-color: #ea1d2c; box-shadow: 0 0 0 3px rgba(234,29,44,0.1); }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; color: #ea1d2c; }
 
-        /* CUPONS NA LOJA (TICKET VERMELHO) */
+        /* CUPONS NA LOJA */
         .store-coupons-container { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .store-coupons-container::-webkit-scrollbar { display: none; }
         .ticket-coupon {
-            display: flex; background: #ea1d2c; color: #fff; border-radius: 8px; position: relative;
-            box-shadow: 0 4px 10px rgba(234, 29, 44, 0.2); transition: 0.2s; cursor: pointer; flex-shrink: 0; min-width: 260px;
+            display: flex; color: #fff; border-radius: 8px; position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); transition: 0.2s; cursor: pointer; flex-shrink: 0; min-width: 260px;
         }
         .ticket-coupon:active { transform: scale(0.96); }
         .ticket-coupon::before, .ticket-coupon::after {
@@ -59,7 +59,7 @@
         .ticket-right { padding: 15px 25px 15px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .t-title { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 2px; }
         .t-value { font-size: 1.8rem; font-weight: 900; line-height: 1; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        .t-code { background: #fff; color: #ea1d2c; font-weight: 900; font-size: 0.85rem; padding: 3px 8px; border-radius: 4px; display: inline-block; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 5px; text-align: center;}
+        .t-code { background: #fff; font-weight: 900; font-size: 0.85rem; padding: 3px 8px; border-radius: 4px; display: inline-block; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 5px; text-align: center;}
         .t-info { font-size: 0.7rem; opacity: 0.9; font-weight: 500; }
         .t-click { font-size: 0.7rem; font-weight: bold; margin-top: 5px; background: rgba(0,0,0,0.15); padding: 4px 8px; border-radius: 12px; }
 
@@ -242,12 +242,23 @@
 
                 activeStore = { id: storeIdParam, name: s.name, logo: s.logo, status: dynamicStatus };
                 
+                // 🟢 1. BUSCA OS CUPONS ESPECÍFICOS DESTA LOJA 🟢
                 const qCoupons = query(collection(db, "coupons"), where("storeId", "==", storeIdParam), where("active", "==", true));
                 const snapCoupons = await getDocs(qCoupons);
                 snapCoupons.forEach(docC => {
                     const c = docC.data();
                     if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { storeCoupons.push(c); }
                 });
+
+                // 🟢 2. BUSCA OS CUPONS PATROCINADOS DA CIDADE (SICOOB) 🟢
+                if (s.city) {
+                    const qGlobalCoupons = query(collection(db, "coupons"), where("storeId", "==", "GLOBAL"), where("targetCity", "==", s.city), where("active", "==", true));
+                    const snapGlobalCoupons = await getDocs(qGlobalCoupons);
+                    snapGlobalCoupons.forEach(docC => {
+                        const c = docC.data();
+                        if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { storeCoupons.push(c); }
+                    });
+                }
 
                 onSnapshot(query(collection(db, "products"), where("storeId", "==", storeIdParam)), (snapshot) => {
                     currentStoreProducts = []; snapshot.forEach(docP => currentStoreProducts.push({ id: docP.id, ...docP.data() }));
@@ -327,24 +338,29 @@
                 productsHTML = filtersHTML + '<div id="store-menu-items" style="background:#fff; padding-bottom: 20px;">' + itemsHTML + '</div>';
             }
 
+            // 🟢 RENDERIZAÇÃO INTELIGENTE DOS CUPONS (VERDE PARA PATROCINADOR / VERMELHO PARA LOJA) 🟢
             let couponsHTML = '';
             if (storeCoupons && storeCoupons.length > 0) {
                 couponsHTML = `
                 <div class="store-coupons-container">
                     ${storeCoupons.map(c => {
+                        const isGlobal = c.storeId === 'GLOBAL';
+                        const bgColor = isGlobal ? '#00a14b' : '#ea1d2c';
+                        const sponsorTitle = isGlobal ? `🎁 Patrocinado por ${c.sponsorName || 'Instituição'}` : '🏷️ CUPOM DE DESCONTO';
+
                         const cVal = c.value || 0; const cMin = c.minOrder || 0;
                         let valText = c.type === 'percentage' ? `${cVal}% OFF` : `R$ ${cVal.toFixed(2)} OFF`;
                         let minText = cMin > 0 ? `Acima de R$ ${cMin.toFixed(2)}` : 'Sem valor mínimo';
                         
                         return `
-                        <div class="ticket-coupon" onclick="window.copyCoupon('${c.code}')">
+                        <div class="ticket-coupon" style="background-color: ${bgColor};" onclick="window.copyCoupon('${c.code}')">
                             <div class="ticket-left">
-                                <div class="t-title">CUPOM DE DESCONTO</div>
+                                <div class="t-title">${sponsorTitle}</div>
                                 <div class="t-value">${valText}</div>
                                 <div class="t-info">${minText}</div>
                             </div>
                             <div class="ticket-right">
-                                <div class="t-code">${c.code}</div>
+                                <div class="t-code" style="color: ${bgColor};">${c.code}</div>
                                 <div class="t-click">COPIAR</div>
                             </div>
                         </div>`;
@@ -416,7 +432,6 @@
                     </div>`
             };
 
-            // 🟢 BANNER DE STATUS COM O ÍCONE SVG BRANCO PROFISSIONAL 🟢
             let statusBannerHTML = dynamicStatus === 'Aberto' 
                 ? `<div class="status-banner">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
