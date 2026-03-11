@@ -70,12 +70,10 @@
         .r-details p { font-size: 1.05rem; color: #111; font-weight: bold; margin: 0;}
         .r-address { font-size: 0.85rem; color: #555; margin-top: 2px; line-height: 1.3;}
 
-        /* BOTÕES DE NAVEGAÇÃO WAZE E MAPS */
+        /* BOTÃO DE NAVEGAÇÃO WAZE */
         .nav-buttons-row { display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; padding-left: 39px; }
-        .btn-waze { flex: 1; background: #f0f7ff; color: #0099ff; border: 1px solid #bce3ff; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
+        .btn-waze { flex: 1; background: #f0f7ff; color: #0099ff; border: 1px solid #bce3ff; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
         .btn-waze:active { background: #e0f0ff; }
-        .btn-maps { flex: 1; background: #e6f4ea; color: #00a14b; border: 1px solid #badbcc; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
-        .btn-maps:active { background: #d4edd9; }
 
         .pay-method-badge { display: inline-block; background: #fdf5e6; color: #997404; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #f9e1b5; margin-bottom: 15px;}
 
@@ -420,15 +418,12 @@
                 const customerAddress = order.customer.address || 'Endereço não informado';
                 const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
 
-                // GERAÇÃO DE LINKS DE NAVEGAÇÃO SEGURA (WAZE E GOOGLE MAPS)
+                // GERAÇÃO DE LINKS DE NAVEGAÇÃO SEGURA (APENAS WAZE)
                 const queryStore = encodeURIComponent(storeAddress + ', ' + loggedDriver.city);
                 const queryCustomer = encodeURIComponent(customerAddress + ', ' + loggedDriver.city);
 
                 const wazeLinkStore = `https://waze.com/ul?q=${queryStore}&navigate=yes`;
-                const mapsLinkStore = `https://www.google.com/maps/search/?api=1&query=${queryStore}`;
-
                 const wazeLinkCustomer = `https://waze.com/ul?q=${queryCustomer}&navigate=yes`;
-                const mapsLinkCustomer = `https://www.google.com/maps/search/?api=1&query=${queryCustomer}`;
 
                 return `
                 <div class="ride-card">
@@ -448,10 +443,7 @@
                         </div>
                         <div class="nav-buttons-row">
                             <button class="btn-waze" onclick="window.open('${wazeLinkStore}', '_blank')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Waze
-                            </button>
-                            <button class="btn-maps" onclick="window.open('${mapsLinkStore}', '_blank')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Maps
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Navegar com Waze
                             </button>
                         </div>
 
@@ -465,10 +457,7 @@
                         </div>
                         <div class="nav-buttons-row">
                             <button class="btn-waze" onclick="window.open('${wazeLinkCustomer}', '_blank')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Waze
-                            </button>
-                            <button class="btn-maps" onclick="window.open('${mapsLinkCustomer}', '_blank')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Maps
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Navegar com Waze
                             </button>
                         </div>
                     </div>
