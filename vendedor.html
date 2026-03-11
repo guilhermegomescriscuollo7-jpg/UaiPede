@@ -676,6 +676,9 @@
         let globalOrders = []; 
         let previousOrderCount = -1;
         let globalCoupons = []; 
+        
+        // 🟢 Variável para contar quantos entregadores estão online na cidade 🟢
+        let onlineDriversCount = 0;
 
         let chatUnsubscribe = null;
         let currentChatOrderId = null;
@@ -825,7 +828,7 @@
             }
         };
 
-        // CARREGAMENTO DAS NOVAS CONFIGURAÇÕES DA LOJA
+        // CARREGAMENTO DAS NOVAS CONFIGURAÇÕES DA LOJA E INICIALIZAÇÃO DE ESCUTAS
         onSnapshot(doc(db, "stores", loggedStore.id), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
@@ -846,6 +849,20 @@
                 window.updateStatusBtn();
                 window.loadCategoriesAndProducts();
             }
+        });
+
+        // 🟢 ESCUTAR ENTREGADORES ONLINE NA CIDADE 🟢
+        const qDrivers = query(collection(db, "drivers"), where("isOnline", "==", true));
+        onSnapshot(qDrivers, (snapshot) => {
+            // Contabiliza apenas se tiverem na mesma cidade que a loja (ou global se a loja não tiver cidade)
+            onlineDriversCount = 0;
+            snapshot.forEach(doc => {
+                const driverData = doc.data();
+                if (!loggedStore.city || driverData.city === loggedStore.city || driverData.city === loggedStore.city.split(' - ')[0]) {
+                    onlineDriversCount++;
+                }
+            });
+            window.renderOrders(); // Re-renderiza para atualizar os botões
         });
 
         // HORÁRIOS DE FUNCIONAMENTO
@@ -1076,10 +1093,19 @@
                     actionBtn = `<button class="btn-action btn-dispatch" onclick="window.updateOrderStatus(this, '${order.id}', 'Pronto para Retirada')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Marcar como Pronto</button>`;
                 } else {
                     const feeArg = order.deliveryFee ? order.deliveryFee : 0;
+                    
+                    // 🟢 AQUI ESTÁ A ALTERAÇÃO: BLOQUEIO CASO NÃO HAJA ENTREGADORES ONLINE 🟢
+                    let driverCallBtn = '';
+                    if (onlineDriversCount > 0) {
+                        driverCallBtn = `<button class="btn-action btn-call-driver" onclick="window.callPlatformDriver(this, '${order.id}', ${feeArg})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Solicitar Entregador</button>`;
+                    } else {
+                        driverCallBtn = `<button class="btn-action btn-call-driver" disabled>Nenhum entregador disponível no momento.</button>`;
+                    }
+
                     actionBtn = `
                     <div style="display:flex; flex-direction:column; gap:8px;">
                         <button class="btn-action btn-dispatch" onclick="window.updateOrderStatus(this, '${order.id}', 'Saiu para Entrega')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 0 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg> Saiu p/ Entrega (Próprio)</button>
-                        <button class="btn-action btn-call-driver" onclick="window.callPlatformDriver(this, '${order.id}', ${feeArg})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Solicitar Entregador</button>
+                        ${driverCallBtn}
                     </div>`; 
                 }
             }
@@ -1087,7 +1113,7 @@
                 sellerBadge = `<span style="color:#8e44ad; font-size:0.75rem; font-weight:bold;">Aguardando Motoboy</span>`;
                 actionBtn = `
                 <div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #8e44ad; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:6px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
                     Entregador a caminho da loja...
                 </div>
                 <button class="btn-action" style="background:#ccc; color:#333;" onclick="window.updateOrderStatus(this, '${order.id}', 'Saiu para Entrega')">Forçar Saída</button>`;
