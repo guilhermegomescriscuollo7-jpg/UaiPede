@@ -58,11 +58,10 @@
         .r-fee { font-size: 1.4rem; font-weight: 900; color: #00a14b; display: flex; align-items: center; gap: 6px;}
         .r-id { font-size: 0.8rem; color: #888; font-weight: bold;}
 
-        .route-box { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; position: relative;}
-        /* Linha conectando os pontos */
-        .route-box::after { content: ''; position: absolute; left: 11px; top: 20px; bottom: 20px; width: 2px; background: #ddd; z-index: 1;}
+        .route-box { display: flex; flex-direction: column; margin-bottom: 20px; position: relative;}
+        .route-box::after { content: ''; position: absolute; left: 11px; top: 20px; bottom: 80px; width: 2px; background: #ddd; z-index: 1;}
         
-        .r-point { display: flex; gap: 15px; align-items: flex-start; position: relative; z-index: 2;}
+        .r-point { display: flex; gap: 15px; align-items: flex-start; position: relative; z-index: 2; margin-bottom: 10px;}
         .r-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.7rem; color: #fff; font-weight: bold;}
         .r-icon.store { background: #111; border: 2px solid #fff; box-shadow: 0 0 0 2px #111;}
         .r-icon.customer { background: #ea1d2c; border: 2px solid #fff; box-shadow: 0 0 0 2px #ea1d2c;}
@@ -71,13 +70,19 @@
         .r-details p { font-size: 1.05rem; color: #111; font-weight: bold; margin: 0;}
         .r-address { font-size: 0.85rem; color: #555; margin-top: 2px; line-height: 1.3;}
 
+        /* BOTÕES DE NAVEGAÇÃO WAZE E MAPS */
+        .nav-buttons-row { display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; padding-left: 39px; }
+        .btn-waze { flex: 1; background: #f0f7ff; color: #0099ff; border: 1px solid #bce3ff; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
+        .btn-waze:active { background: #e0f0ff; }
+        .btn-maps { flex: 1; background: #e6f4ea; color: #00a14b; border: 1px solid #badbcc; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
+        .btn-maps:active { background: #d4edd9; }
+
         .pay-method-badge { display: inline-block; background: #fdf5e6; color: #997404; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #f9e1b5; margin-bottom: 15px;}
 
         .btn-action { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;}
         .btn-action:active { transform: scale(0.98); }
         .btn-accept { background: #ea1d2c; color: #fff; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.3);}
         .btn-finish { background: #00a14b; color: #fff; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.3);}
-        .btn-nav { background: #eef4ff; color: #0d6efd; margin-bottom: 10px; }
 
         .empty-msg { text-align: center; padding: 50px 20px; color: #999; }
         .empty-msg svg { color: #ddd; margin-bottom: 15px; }
@@ -186,7 +191,7 @@
 
         let loggedDriver = JSON.parse(localStorage.getItem('loggedDriver'));
         let isOnline = false;
-        let storesCache = {}; // Cache de lojas para buscar endereços rápidos
+        let storesCache = {}; 
         let availableCount = 0;
 
         window.onload = async () => {
@@ -294,14 +299,12 @@
                 allPendingOrders = [];
                 snapshot.forEach(doc => {
                     const order = { id: doc.id, ...doc.data() };
-                    // Filtra apenas pedidos da mesma cidade do motoboy (se a loja estiver no cache)
                     const storeCity = storesCache[order.storeId] ? storesCache[order.storeId].city : null;
                     if (!loggedDriver.city || storeCity === loggedDriver.city || storeCity === loggedDriver.city.split(' - ')[0]) {
                         allPendingOrders.push(order);
                     }
                 });
                 
-                // Toca som se chegou pedido novo e estiver em serviço
                 if(isOnline && allPendingOrders.length > availableCount) {
                     window.playAlertSound();
                     window.showToast();
@@ -355,7 +358,7 @@
                 const storeInfo = storesCache[order.storeId] || {};
                 const storeAddress = `${storeInfo.street || 'Endereço da loja'}`;
                 const customerAddress = order.customer.address || 'Endereço não informado';
-                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00); // Garante a taxa mínima
+                const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00); 
 
                 return `
                 <div class="ride-card new">
@@ -416,9 +419,15 @@
                 const customerAddress = order.customer.address || 'Endereço não informado';
                 const fee = order.platformDriverFee ? order.platformDriverFee : (order.deliveryFee || 5.00);
 
-                // Links para Google Maps (Rotas)
-                const mapLinkStore = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(storeAddress + ', ' + loggedDriver.city)}`;
-                const mapLinkCustomer = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(customerAddress + ', ' + loggedDriver.city)}`;
+                // GERAÇÃO DE LINKS DE NAVEGAÇÃO SEGURA (WAZE E GOOGLE MAPS)
+                const queryStore = encodeURIComponent(storeAddress + ', ' + loggedDriver.city);
+                const queryCustomer = encodeURIComponent(customerAddress + ', ' + loggedDriver.city);
+
+                const wazeLinkStore = `https://waze.com/ul?q=${queryStore}&navigate=yes`;
+                const mapsLinkStore = `https://www.google.com/maps/search/?api=1&query=${queryStore}`;
+
+                const wazeLinkCustomer = `https://waze.com/ul?q=${queryCustomer}&navigate=yes`;
+                const mapsLinkCustomer = `https://www.google.com/maps/search/?api=1&query=${queryCustomer}`;
 
                 return `
                 <div class="ride-card">
@@ -436,9 +445,16 @@
                                 <div class="r-address">${storeAddress}</div>
                             </div>
                         </div>
-                        <button class="btn-nav" onclick="window.open('${mapLinkStore}', '_blank')">📍 Navegar para Loja</button>
+                        <div class="nav-buttons-row">
+                            <button class="btn-waze" onclick="window.open('${wazeLinkStore}', '_blank')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Waze
+                            </button>
+                            <button class="btn-maps" onclick="window.open('${mapsLinkStore}', '_blank')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Maps
+                            </button>
+                        </div>
 
-                        <div class="r-point" style="margin-top:10px;">
+                        <div class="r-point" style="margin-top:15px;">
                             <div class="r-icon customer">C</div>
                             <div class="r-details">
                                 <h4>Entrega</h4>
@@ -446,7 +462,14 @@
                                 <div class="r-address">${customerAddress}</div>
                             </div>
                         </div>
-                        <button class="btn-nav" onclick="window.open('${mapLinkCustomer}', '_blank')">📍 Navegar para Cliente</button>
+                        <div class="nav-buttons-row">
+                            <button class="btn-waze" onclick="window.open('${wazeLinkCustomer}', '_blank')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Waze
+                            </button>
+                            <button class="btn-maps" onclick="window.open('${mapsLinkCustomer}', '_blank')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Maps
+                            </button>
+                        </div>
                     </div>
 
                     <div class="pay-method-badge" style="background:#fef0f0; color:#ea1d2c; border-color:#fbd5d5; width:100%; text-align:center;">
