@@ -363,7 +363,7 @@
                     <div class="m-value green" id="fat-total-vendas">R$ 0,00</div>
                 </div>
                 <div class="metric-card purple">
-                    <div class="m-title"><span>Sua Taxa (2%)</span></div>
+                    <div class="m-title"><span>Sua Taxa (10%)</span></div>
                     <div class="m-value purple" id="fat-taxa-app">R$ 0,00</div>
                 </div>
                 <div class="metric-card blue">
@@ -900,8 +900,8 @@
                             <div class="r-orders">${storeObj.ordersCount} pedidos concluídos</div>
                         </div>
                         <div class="r-revenue">
-                            <div class="r-revenue-val">R$ ${storeObj.revenue.toFixed(2)}</div>
-                            <div class="r-revenue-tax">Taxa (2%): R$ ${tax2percent.toFixed(2)}</div>
+                            <div class="r-revenue-val">R$ ${storeObj.revenue.toFixed(10)}</div>
+                            <div class="r-revenue-tax">Taxa (10%): R$ ${tax2percent.toFixed(10)}</div>
                         </div>
                     </li>
                 `;
@@ -1229,3 +1229,4 @@
     </script>
 </body>
 </html>
+
