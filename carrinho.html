@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrinho - UaiPede</title>
+    <title>Carrinho - Dores Delivery</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
@@ -195,9 +195,15 @@
                                 <input type="text" id="end-bairro" placeholder="Ex: Centro">
                             </div>
                         </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Complemento / Ponto de Referência (Opcional)</label>
-                            <input type="text" id="end-comp" placeholder="Ex: Apto 2, Próximo ao mercado">
+                        <div class="row">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Cidade</label>
+                                <input type="text" id="end-cidade" placeholder="Sua Cidade">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Complemento (Opcional)</label>
+                                <input type="text" id="end-comp" placeholder="Ex: Apto 2">
+                            </div>
                         </div>
                     </div>
 
@@ -291,37 +297,49 @@
             }
             document.getElementById('cart-content').style.display = 'block';
 
-            // 🟢 AUTO-PREENCHER ENDEREÇO DO USUÁRIO 🟢
+            // 🟢 AUTO-PREENCHER ENDEREÇO DO USUÁRIO (Incluindo Cidade) 🟢
             if (userEmail) {
                 try {
                     const userQ = query(collection(db, "customers"), where("email", "==", userEmail));
                     const userSnap = await getDocs(userQ);
                     if (!userSnap.empty) {
                         const userData = userSnap.docs[0].data();
+                        
+                        // Verifica se existe o nó address estruturado
                         if (userData.address) {
                             if (typeof userData.address === 'object') {
                                 document.getElementById('end-rua').value = userData.address.rua || '';
                                 document.getElementById('end-num').value = userData.address.num || '';
                                 document.getElementById('end-bairro').value = userData.address.bairro || '';
+                                document.getElementById('end-cidade').value = userData.city || userData.address.cidade || '';
                                 document.getElementById('end-comp').value = userData.address.comp || '';
-                            } else if (typeof userData.address === 'string') {
+                            } 
+                            // Tratamento antigo via string separada por virgulas
+                            else if (typeof userData.address === 'string') {
                                 const parts = userData.address.split(',');
                                 document.getElementById('end-rua').value = parts[0] ? parts[0].trim() : '';
                                 if (parts.length > 1) {
                                     document.getElementById('end-bairro').value = parts[1].trim();
                                 }
+                                document.getElementById('end-cidade').value = userData.city || '';
                             }
+                        } else if (userData.city) {
+                            document.getElementById('end-cidade').value = userData.city;
                         }
                     }
                 } catch(e) {
                     console.error("Erro ao buscar endereço do usuário:", e);
                 }
-            } else if (loggedCustomer && loggedCustomer.address) {
-                // Fallback seguro caso Firebase falhe, puxa do LocalStorage
-                if (typeof loggedCustomer.address === 'string') {
+            } 
+            // Fallback para LocalStorage se o Firebase falhar ou demorar
+            else if (loggedCustomer) {
+                if (loggedCustomer.address && typeof loggedCustomer.address === 'string') {
                     const parts = loggedCustomer.address.split(',');
                     if(parts[0]) document.getElementById('end-rua').value = parts[0].trim();
                     if(parts[1]) document.getElementById('end-bairro').value = parts[1].trim();
+                }
+                if (loggedCustomer.city) {
+                    document.getElementById('end-cidade').value = loggedCustomer.city;
                 }
             }
 
@@ -372,7 +390,6 @@
             window.updateTotalsUI();
         };
 
-        // 🟢 BUSCAR E MOSTRAR CUPONS DISPONÍVEIS (MODAL) 🟢
         window.openCouponsModal = async () => {
             const storeId = cart[0].storeId;
             const modal = document.getElementById('coupons-modal');
@@ -382,7 +399,6 @@
             modal.style.display = 'flex';
 
             try {
-                // 1. Verifica se o usuário é Associado Patrocinador
                 let isSponsorAssociated = false;
                 if (userEmail) {
                     const userQ = query(collection(db, "customers"), where("email", "==", userEmail));
@@ -395,7 +411,7 @@
                 const storeCity = storeDataCache ? storeDataCache.city : null;
                 let availableCoupons = [];
 
-                // 2. Busca os Cupons da Loja (Locais)
+                // Cupons da Loja (Locais)
                 const qLocal = query(collection(db, "coupons"), where("storeId", "==", storeId), where("active", "==", true));
                 const snapLocal = await getDocs(qLocal);
                 snapLocal.forEach(docC => {
@@ -405,7 +421,7 @@
                     }
                 });
 
-                // 3. Busca os Cupons Patrocinados (Globais) - Apenas se for associado
+                // Cupons Patrocinados (Globais) - Apenas se for associado
                 if (storeCity && isSponsorAssociated) {
                     const qGlobal = query(collection(db, "coupons"), where("storeId", "==", "GLOBAL"), where("targetCity", "==", storeCity), where("active", "==", true));
                     const snapGlobal = await getDocs(qGlobal);
@@ -417,7 +433,6 @@
                     });
                 }
 
-                // 4. Renderiza
                 if (availableCoupons.length === 0) {
                     container.innerHTML = '<div style="font-size:0.95rem; color:#777; padding: 20px; border: 1px dashed #ddd; border-radius: 12px; text-align: center;">Nenhum cupom disponível no momento.</div>';
                     return;
@@ -633,7 +648,7 @@
             if (appliedCoupon && subtotalStore < parseFloat(appliedCoupon.minOrder)) {
                 window.removeCoupon(true);
             } else if (appliedCoupon) {
-                window.applyCoupon(appliedCoupon.code, true); 
+                window.applyCoupon(appliedCoupon.code); 
             } else {
                 window.updateTotalsUI();
             }
@@ -668,12 +683,14 @@
                 const rua = document.getElementById('end-rua').value.trim();
                 const num = document.getElementById('end-num').value.trim();
                 const bairro = document.getElementById('end-bairro').value.trim();
+                const cidade = document.getElementById('end-cidade').value.trim();
                 const comp = document.getElementById('end-comp').value.trim();
 
-                if(!rua || !num || !bairro) {
-                    alert("Por favor, preencha a Rua, Número e Bairro para entrega."); return;
+                // 🟢 Validação também exige Cidade agora 🟢
+                if(!rua || !num || !bairro || !cidade) {
+                    alert("Por favor, preencha a Rua, Número, Bairro e Cidade para entrega."); return;
                 }
-                addressString = `${rua}, ${num} - ${bairro} ${comp ? '('+comp+')' : ''}`;
+                addressString = `${rua}, ${num} - ${bairro}, ${cidade} ${comp ? '('+comp+')' : ''}`;
             } else {
                 addressString = "🚶‍♂️ RETIRADA NO BALCÃO (Pelo Cliente)";
             }
