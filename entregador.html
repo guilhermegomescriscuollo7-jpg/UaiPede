@@ -81,6 +81,7 @@
 
         .btn-action { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;}
         .btn-action:active { transform: scale(0.98); }
+        .btn-action:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-accept { background: #ea1d2c; color: #fff; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.3);}
         .btn-finish { background: #00a14b; color: #fff; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.3);}
 
@@ -393,7 +394,7 @@
                         Cobrar Cliente: ${order.paymentMethod}
                     </div>
 
-                    <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}')">
+                    <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">
                         Aceitar Corrida
                     </button>
                 </div>`;
@@ -485,20 +486,34 @@
         }
 
         // ==========================================
-        // 🟢 AÇÕES DO ENTREGADOR 🟢
+        // 🟢 AÇÕES DO ENTREGADOR (CORRIGIDA) 🟢
         // ==========================================
-        window.acceptOrder = async (orderId) => {
+        window.acceptOrder = async (orderId, btnElement) => {
             if(!confirm("Tem certeza que deseja aceitar esta entrega?")) return;
+
+            const originalText = btnElement.innerText;
+            btnElement.innerText = "Aceitando...";
+            btnElement.disabled = true;
+
             try {
+                // 🔒 TRAVA DE SEGURANÇA: Evita que variáveis 'undefined' quebrem o Firebase
+                const safeDriverId = loggedDriver.id || 'SemID';
+                const safeDriverName = loggedDriver.name || 'Entregador Desconhecido';
+                const safeDriverPhone = loggedDriver.phone || 'Sem Telefone';
+
                 await updateDoc(doc(db, "orders", orderId), {
                     status: 'Saiu para Entrega',
-                    driverId: loggedDriver.id,
-                    driverName: loggedDriver.name,
-                    driverPhone: loggedDriver.phone
+                    driverId: safeDriverId,
+                    driverName: safeDriverName,
+                    driverPhone: safeDriverPhone
                 });
+
                 window.switchTab('minhas');
             } catch(e) {
-                alert("Erro ao aceitar corrida. Alguém pode ter pego antes de você!");
+                console.error("ERRO FIREBASE:", e);
+                alert("Erro ao aceitar corrida. Outro entregador pode ter pego ou sua conexão falhou.");
+                btnElement.innerText = originalText;
+                btnElement.disabled = false;
             }
         };
 
@@ -511,6 +526,7 @@
                 });
                 alert("Entrega concluída com sucesso! Bom trabalho.");
             } catch(e) {
+                console.error("ERRO FIREBASE:", e);
                 alert("Erro ao finalizar corrida. Tente novamente.");
             }
         };
@@ -532,7 +548,6 @@
                     osc.start(start); osc.stop(start + dur + 0.1);
                 }
                 const now = ctx.currentTime;
-                // Toque rápido de alerta duplo
                 playTone(880, 'sine', now, 0.2, 0.8);
                 playTone(1100, 'sine', now + 0.3, 0.4, 0.8);
             } catch (e) {}
