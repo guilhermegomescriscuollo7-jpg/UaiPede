@@ -9,6 +9,30 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 40px; }
 
+        /* ==========================================
+           TELA DE CARREGAMENTO PROFISSIONAL
+           ========================================== */
+        .loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; text-align: center; padding: 20px; animation: fadeInBg 0.3s forwards; }
+        .pulse-logo { width: 90px; height: 90px; background: #ea1d2c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(234, 29, 44, 0.4); animation: pulseLoad 1.5s infinite ease-in-out; position: relative; border: 4px solid #fff; }
+        .loading-title { font-size: 1.4rem; color: #111; font-weight: 900; margin-bottom: 6px; letter-spacing: -0.5px; }
+        .loading-subtitle { font-size: 0.95rem; color: #777; font-weight: 500; }
+        
+        @keyframes pulseLoad {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 29, 44, 0.5); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(234, 29, 44, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 29, 44, 0); }
+        }
+
+        .dots-loader { display: inline-flex; gap: 6px; margin-top: 20px; }
+        .dots-loader span { width: 10px; height: 10px; background: #ea1d2c; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .dots-loader span:nth-child(1) { animation-delay: -0.32s; }
+        .dots-loader span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
         /* ESTRUTURA DO TOPO DA LOJA */
         .store-cover { height: 160px; background-color: #ea1d2c; background-size: cover; background-position: center; position: relative; }
         .cover-btns { position: absolute; top: 15px; left: 15px; z-index: 10; }
@@ -68,7 +92,6 @@
         .store-cat-btn { flex: 0 0 auto; background: #f2f2f2; border: none; padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; color: #555; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; }
         .store-cat-btn.active { background: #ea1d2c; color: #fff; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
 
-        /* TÍTULO DA CATEGORIA EM VERMELHO */
         .menu-section-title { font-size: 1.2rem; font-weight: 800; color: #ea1d2c; margin: 20px 15px 10px; }
         
         .products-vertical { display: flex; flex-direction: column; padding: 0; background: #fff; }
@@ -148,7 +171,18 @@
 <body>
 
     <div id="store-page-content">
-        <div style="padding: 40px; text-align: center; color: #777;">Carregando informações da loja...</div>
+        <div class="loading-container">
+            <div class="pulse-logo">
+                <svg id="loader-generic-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13a6 6 0 0 1 12 0"></path><line x1="12" y1="2" x2="12" y2="7"></line><line x1="3" y1="13" x2="21" y2="13"></line><path d="M12 2a2 2 0 0 0-2 2"></path></svg>
+                
+                <img id="loader-store-logo" src="" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            </div>
+            <h2 class="loading-title" id="loader-text">Preparando o cardápio...</h2>
+            <p class="loading-subtitle">Buscando os melhores produtos para você</p>
+            <div class="dots-loader">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
     </div>
     
     <div id="product-modal">
@@ -217,11 +251,22 @@
                 const storeSnap = await getDoc(storeRef);
                 
                 if (!storeSnap.exists()) {
-                    document.getElementById('store-page-content').innerHTML = '<div style="padding: 40px; text-align: center; color: #ea1d2c;">Loja não encontrada.</div>';
+                    document.getElementById('store-page-content').innerHTML = '<div style="padding: 40px; text-align: center; color: #ea1d2c; font-weight:bold;">Loja não encontrada.</div>';
                     return;
                 }
 
                 const s = storeSnap.data();
+
+                // 🟢 ATUALIZA O TEXTO E A IMAGEM DO LOADER ENQUANTO OS PRODUTOS BAIXAM
+                const loaderLogoImg = document.getElementById('loader-store-logo');
+                if (loaderLogoImg) {
+                    if (s.logo && s.logo !== 'https://via.placeholder.com/60') {
+                        loaderLogoImg.src = s.logo;
+                        loaderLogoImg.style.display = 'block';
+                        document.getElementById('loader-generic-icon').style.display = 'none';
+                    }
+                    document.getElementById('loader-text').innerText = s.name;
+                }
                 
                 let dynamicStatus = s.status || 'Aberto';
                 if (dynamicStatus === 'Aberto' && s.schedule) {
@@ -242,7 +287,6 @@
 
                 activeStore = { id: storeIdParam, name: s.name, logo: s.logo, status: dynamicStatus };
                 
-                // 🟢 VERIFICA SE O USUÁRIO LOGADO É UM ASSOCIADO PATROCINADOR 🟢
                 let isSponsorAssociated = false;
                 const loggedCustomer = JSON.parse(localStorage.getItem('loggedCustomer'));
                 const userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
@@ -255,7 +299,6 @@
                     }
                 }
 
-                // 1. BUSCA OS CUPONS ESPECÍFICOS DESTA LOJA
                 const qCoupons = query(collection(db, "coupons"), where("storeId", "==", storeIdParam), where("active", "==", true));
                 const snapCoupons = await getDocs(qCoupons);
                 snapCoupons.forEach(docC => {
@@ -263,7 +306,6 @@
                     if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { storeCoupons.push(c); }
                 });
 
-                // 2. BUSCA OS CUPONS PATROCINADOS (SOMENTE SE O CLIENTE FOR ASSOCIADO)
                 if (s.city && isSponsorAssociated) {
                     const qGlobalCoupons = query(collection(db, "coupons"), where("storeId", "==", "GLOBAL"), where("targetCity", "==", s.city), where("active", "==", true));
                     const snapGlobalCoupons = await getDocs(qGlobalCoupons);
@@ -275,6 +317,8 @@
 
                 onSnapshot(query(collection(db, "products"), where("storeId", "==", storeIdParam)), (snapshot) => {
                     currentStoreProducts = []; snapshot.forEach(docP => currentStoreProducts.push({ id: docP.id, ...docP.data() }));
+                    
+                    // Renderiza a loja completa na tela (substituindo a animação de loader)
                     renderFullStore(s, dynamicStatus);
                 });
 
@@ -362,14 +406,13 @@
 
                         const cVal = c.value || 0; const cMin = c.minOrder || 0;
                         
-                        // 🟢 ALTERAÇÃO PARA EXIBIR 'FRETE GRÁTIS' NO CUPOM 🟢
                         let valText = '';
                         let valSize = '1.8rem';
                         if (c.type === 'percentage') {
                             valText = `${cVal}% OFF`;
                         } else if (c.type === 'free_shipping') {
                             valText = `FRETE GRÁTIS`;
-                            valSize = '1.4rem'; // Diminui a fonte levemente pra caber no card
+                            valSize = '1.4rem'; 
                         } else {
                             valText = `R$ ${cVal.toFixed(2)} OFF`;
                         }
