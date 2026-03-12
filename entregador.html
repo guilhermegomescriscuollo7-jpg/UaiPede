@@ -178,8 +178,24 @@
                 document.getElementById('driver-name-display').innerText = `Olá, ${loggedDriver.name.split(' ')[0]}`;
                 if ("Notification" in window) Notification.requestPermission();
                 document.getElementById('history-date-filter').value = new Date().toISOString().split('T')[0];
+                
                 await loadStoresCache();
                 startListeners();
+
+                // NOVO: Escutar em tempo real o status deste entregador no banco
+                onSnapshot(doc(db, "drivers", loggedDriver.id), (docSnap) => {
+                    if(docSnap.exists()){
+                        const data = docSnap.data();
+                        isOnline = (data.isOnline === true || data.isOnline === "true");
+                        
+                        document.getElementById('driver-status-toggle').checked = isOnline;
+                        document.getElementById('status-text').innerText = isOnline ? "EM SERVIÇO" : "FORA DE SERVIÇO";
+                        document.getElementById('status-text').style.color = isOnline ? "#00a14b" : "#fff";
+                        document.getElementById('offline-msg').style.display = isOnline ? 'none' : 'block';
+                        
+                        renderAvailableOrders();
+                    }
+                });
             }
         };
 
