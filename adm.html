@@ -53,19 +53,15 @@
         .card-item { border: 1px solid #f0f0f0; padding: 22px; border-radius: 16px; display: flex; align-items: center; gap: 18px; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.3s ease;}
         .card-item:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-color: #ea1d2c; }
         .card-item.suspended { background: #fffaffa; border-color: #fbd5d5; } 
-        .card-item.suspended:hover { border-color: #ea1d2c; }
         
         .card-img { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; background: #f4f5f7; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
         
         .actions-col { display: flex; gap: 10px; margin-left: auto; align-items: center; flex-wrap: wrap; justify-content: flex-end;}
-        .btn-edit { color: #0d6efd; border: none; background: #eef4ff; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
-        .btn-edit:hover { background: #dbe7ff; transform: translateY(-1px); }
-        .btn-suspend { color: #ea1d2c; border: none; background: #fef0f0; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
-        .btn-suspend:hover { background: #fce4e4; transform: translateY(-1px); }
-        .btn-reactivate { color: #00a14b; border: none; background: #e6f4ea; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
-        .btn-reactivate:hover { background: #d3f0db; transform: translateY(-1px); }
-        .btn-del { color: #777; border: none; background: #f4f4f4; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
-        .btn-del:hover { background: #ea1d2c; color: #fff; transform: translateY(-1px); }
+        .btn-edit, .btn-suspend, .btn-reactivate, .btn-del { border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
+        .btn-edit { color: #0d6efd; background: #eef4ff; } .btn-edit:hover { background: #dbe7ff; transform: translateY(-1px); }
+        .btn-suspend { color: #ea1d2c; background: #fef0f0; } .btn-suspend:hover { background: #fce4e4; transform: translateY(-1px); }
+        .btn-reactivate { color: #00a14b; background: #e6f4ea; } .btn-reactivate:hover { background: #d3f0db; transform: translateY(-1px); }
+        .btn-del { color: #777; background: #f4f4f4; } .btn-del:hover { background: #ea1d2c; color: #fff; transform: translateY(-1px); }
 
         .badge-status { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-top: 6px; letter-spacing: 0.5px;}
         .badge-active { background: #e6f4ea; color: #00a14b; }
@@ -97,17 +93,15 @@
         .r-revenue-val { font-size: 1.3rem; font-weight: 900; color: #00a14b; }
         .r-revenue-tax { font-size: 0.8rem; color: #8e44ad; font-weight: 800; margin-top: 4px; background: rgba(142, 68, 173, 0.1); padding: 4px 8px; border-radius: 8px; display: inline-block;}
 
-        /* ABA USUÁRIOS E TOGGLE SICOOB */
         .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         .user-card { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; display: flex; flex-direction: column; position: relative; transition: 0.3s;}
         .user-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
         .u-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .u-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; flex-shrink: 0; box-shadow: 0 4px 10px rgba(234,29,44,0.2);}
+        .u-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; flex-shrink: 0;}
         .u-info { flex: 1; overflow: hidden; }
         .u-name { font-size: 1.15rem; font-weight: 900; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
         .u-email { font-size: 0.85rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .u-data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; }
-        .u-data-row strong { color: #555; }
         
         .sicoob-area { background: #fdfdfd; border: 1px solid #eee; border-radius: 12px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;}
         .sicoob-logo-text { font-weight: 900; color: #00a14b; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
@@ -121,7 +115,6 @@
 
         .controls-area { background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #f0f0f0; margin-bottom: 25px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
         
-        /* SCROLLBAR CUSTOMIZADA */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
@@ -136,7 +129,11 @@
             <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span> <span class="admin-tag">Admin</span></div>
         </div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="window.switchTab('lojas', this)">
+            <li class="nav-item active" onclick="window.switchTab('dashboard', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                Dashboard Principal
+            </li>
+            <li class="nav-item" onclick="window.switchTab('lojas', this)">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 Lojas Parceiras
             </li>
@@ -172,11 +169,75 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                 Cupons Patrocinados
             </li>
+            <li class="nav-item" onclick="window.switchTab('avisos', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                Avisos Globais (Push)
+            </li>
         </ul>
     </aside>
 
     <main class="main-content">
         
+        <section id="dashboard" class="section active">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                Visão Global (Hoje)
+            </h2>
+            <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Resumo diário do funcionamento de todas as cidades e lojas interligadas.</p>
+            
+            <div class="metrics-grid">
+                <div class="metric-card green">
+                    <div class="m-title">Total Transacionado (Hoje)</div>
+                    <div class="m-value green" id="dash-trans-today">R$ 0,00</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="m-title">Lucro do App (10% Hoje)</div>
+                    <div class="m-value purple" id="dash-profit-today">R$ 0,00</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="m-title">Entregadores Online (Agora)</div>
+                    <div class="m-value" style="color: #0d6efd;" id="dash-online-drivers">0</div>
+                </div>
+                <div class="metric-card" style="border-left: 6px solid #ea1d2c;">
+                    <div class="m-title">Loja Destaque (Mais Vendas Hoje)</div>
+                    <div class="m-value" style="color: #111; font-size: 1.6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="dash-top-store">Nenhuma venda hoje</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.4rem; font-weight: 900; color: #111; margin-bottom: 20px; margin-top: 30px;">🗺️ Desempenho Histórico por Cidade</h3>
+            <ul class="ranking-list" id="dash-city-ranking"></ul>
+        </section>
+
+        <section id="avisos" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                Disparo de Avisos Globais
+            </h2>
+            <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Envie notificações e mensagens que aparecerão para todos os clientes assim que abrirem o aplicativo.</p>
+            
+            <div style="background:#fff; padding:30px; border-radius:16px; border:1px solid #eee; max-width:600px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                <div class="form-group">
+                    <label>Mensagem do Aviso</label>
+                    <input type="text" id="alert-text" placeholder="Ex: Hoje é dia de Frete Grátis com o cupom SICOOB!" style="font-weight:bold; color:#111;">
+                </div>
+                <div class="form-group">
+                    <label>Tipo (Cores do Banner)</label>
+                    <select id="alert-type">
+                        <option value="promo">🎉 Promoção (Vermelho - UaiPede)</option>
+                        <option value="success">✅ Informação Positiva (Verde)</option>
+                        <option value="info">📢 Comunicado Padrão (Azul)</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="window.saveAlert()" style="width:100%; margin-top:10px; padding:16px; font-size:1.1rem; justify-content:center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    Disparar Aviso Agora
+                </button>
+            </div>
+            
+            <h3 style="margin-top:40px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Avisos Ativos (Visíveis para Clientes)</h3>
+            <div id="alerts-list-container" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;"></div>
+        </section>
+
         <section id="cidades" class="section">
             <h2>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
@@ -299,7 +360,7 @@
             <div class="item-list" id="sponsor-coupons-list-container" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));"></div>
         </section>
 
-        <section id="lojas" class="section active">
+        <section id="lojas" class="section">
             <h2 id="form-store-title">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 Cadastrar Nova Loja
@@ -424,7 +485,14 @@
                     Controle de Pagamento aos Entregadores
                 </h2>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <select id="filter-repasse-date" onchange="window.renderRepasse()" style="font-weight: bold; padding: 8px 12px; border-radius: 8px;">
+                    
+                    <select id="filter-repasse-status" onchange="window.renderRepasse()" style="font-weight: bold; padding: 8px 12px; border-radius: 8px; border: 1px solid #ea1d2c; color: #ea1d2c; outline: none; cursor: pointer;">
+                        <option value="pending" selected>Apenas Pendentes (A Pagar)</option>
+                        <option value="paid">Já Pagos (Histórico)</option>
+                        <option value="all">Ver Todos</option>
+                    </select>
+
+                    <select id="filter-repasse-date" onchange="window.renderRepasse()" style="font-weight: bold; padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc;">
                         <option value="hoje" selected>Hoje</option>
                         <option value="7dias">Últimos 7 Dias</option>
                         <option value="mes">Último Mês</option>
@@ -434,17 +502,16 @@
             </div>
             
             <p style="font-size: 1rem; color: #666; margin-bottom: 30px;">
-                Veja exatamente quanto pagar para cada entregador. 
-                <br><span style="font-size: 0.85rem;">Nota: Mesmo se o cliente tiver Frete Grátis, o motoboy recebe o valor integral (saindo do repasse da loja/app).</span>
+                Veja exatamente quanto pagar para cada entregador. Ao fazer o repasse, clique em "Liquidar Pagamento" para zerar a conta no painel.
             </p>
 
             <div class="metrics-grid">
                 <div class="metric-card green">
-                    <div class="m-title">Total Geral a Pagar</div>
+                    <div class="m-title">Total (Filtro Atual)</div>
                     <div class="m-value green" id="repasse-total-val">R$ 0,00</div>
                 </div>
                 <div class="metric-card blue">
-                    <div class="m-title">Corridas Concluídas (Geral)</div>
+                    <div class="m-title">Corridas (Filtro Atual)</div>
                     <div class="m-value" style="color: #0d6efd;" id="repasse-total-rides">0</div>
                 </div>
             </div>
@@ -564,7 +631,7 @@
         const db = getFirestore(app);
 
         let allStores = []; let allDrivers = []; let globalBanners = []; let globalSponsors = []; let globalCities = [];
-        let globalUsers = []; let globalCoupons = [];
+        let globalUsers = []; let globalCoupons = []; let globalAlerts = [];
         let storeImgBase64 = ''; let bannerImgBase64 = ''; let sponsorImgBase64 = '';
         let editingStoreId = null; let editingDriverId = null;
         let allOrders = [];
@@ -593,6 +660,129 @@
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
+        }
+
+        // ==========================================
+        // 🟢 NOVO MÓDULO: AVISOS GLOBAIS (NOTÍCIAS) 
+        // ==========================================
+        onSnapshot(collection(db, "global_alerts"), (snapshot) => {
+            globalAlerts = [];
+            snapshot.forEach(doc => globalAlerts.push({ id: doc.id, ...doc.data() }));
+            globalAlerts.sort((a,b) => b.timestamp - a.timestamp);
+            renderAlerts();
+        });
+
+        window.saveAlert = async () => {
+            const text = document.getElementById('alert-text').value.trim();
+            const type = document.getElementById('alert-type').value;
+            if(!text) return alert("Digite o texto do aviso.");
+            try {
+                await addDoc(collection(db, "global_alerts"), { text, type, timestamp: Date.now(), active: true });
+                document.getElementById('alert-text').value = '';
+                alert("Aviso disparado para todos os usuários!");
+            } catch(e) { alert("Erro ao disparar aviso."); }
+        }
+        
+        window.deleteAlert = async (id) => {
+            if(confirm("Apagar e remover este aviso do app dos clientes?")) {
+                await deleteDoc(doc(db, "global_alerts", id));
+            }
+        }
+
+        function renderAlerts() {
+            const container = document.getElementById('alerts-list-container');
+            if(globalAlerts.length === 0) {
+                container.innerHTML = '<p style="color:#999;">Nenhum aviso ativo no momento.</p>'; return;
+            }
+            container.innerHTML = globalAlerts.map(a => {
+                let badgeColor = '#0d6efd'; let typeName = 'Comunicado';
+                if(a.type === 'promo') { badgeColor = '#ea1d2c'; typeName = 'Promoção'; }
+                if(a.type === 'success') { badgeColor = '#00a14b'; typeName = 'Sucesso'; }
+                
+                return `
+                <div style="background:#fff; padding:15px; border-radius:12px; border:1px solid #eee; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                    <div>
+                        <strong style="color: ${badgeColor}; text-transform:uppercase; font-size:0.75rem; background: ${badgeColor}15; padding: 4px 8px; border-radius: 6px;">${typeName}</strong>
+                        <div style="color:#111; font-size:1.05rem; font-weight:bold; margin-top:8px;">${a.text}</div>
+                        <div style="color:#999; font-size:0.75rem; margin-top: 4px;">Disparado em: ${new Date(a.timestamp).toLocaleString('pt-BR')}</div>
+                    </div>
+                    <button onclick="window.deleteAlert('${a.id}')" style="background:#fef0f0; border:1px solid #fbd5d5; padding: 10px; border-radius: 8px; color:#ea1d2c; cursor:pointer; font-weight:bold;">🗑️ Apagar</button>
+                </div>
+            `}).join('');
+        }
+
+        // ==========================================
+        // 🟢 NOVO MÓDULO: DASHBOARD PRINCIPAL 
+        // ==========================================
+        window.renderDashboard = () => {
+            if (!allOrders || !allStores) return;
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            
+            let transToday = 0;
+            let profitToday = 0;
+            const storeSalesToday = {};
+            const citySales = {};
+
+            allOrders.forEach(order => {
+                if (order.status === 'Cancelado') return;
+                
+                // Analytics por Cidade (Histórico Total)
+                const sId = order.storeId;
+                const store = allStores.find(s => s.id === sId);
+                const city = store ? store.city : 'Desconhecida';
+                
+                if (!citySales[city]) citySales[city] = { count: 0, revenue: 0 };
+                citySales[city].count++;
+                citySales[city].revenue += (order.total || 0);
+
+                // Analytics de Hoje
+                if (order.timestamp >= startOfToday) {
+                    transToday += (order.total || 0);
+                    profitToday += (order.total || 0) * 0.10; // 10% do app
+                    
+                    if (!storeSalesToday[sId]) storeSalesToday[sId] = { name: order.storeName, revenue: 0 };
+                    storeSalesToday[sId].revenue += (order.total || 0);
+                }
+            });
+
+            // Loja Destaque de Hoje
+            let topStoreName = "Nenhuma venda hoje";
+            let maxRev = 0;
+            for (let sId in storeSalesToday) {
+                if (storeSalesToday[sId].revenue > maxRev) {
+                    maxRev = storeSalesToday[sId].revenue;
+                    topStoreName = storeSalesToday[sId].name;
+                }
+            }
+
+            // Entregadores Online
+            const onlineDrivers = allDrivers.filter(d => (d.isOnline === true || d.isOnline === "true")).length;
+
+            document.getElementById('dash-trans-today').innerText = `R$ ${transToday.toFixed(2)}`;
+            document.getElementById('dash-profit-today').innerText = `R$ ${profitToday.toFixed(2)}`;
+            document.getElementById('dash-online-drivers').innerText = onlineDrivers;
+            document.getElementById('dash-top-store').innerText = topStoreName;
+
+            // Ranking de Cidades
+            const sortedCities = Object.keys(citySales).map(c => ({ name: c, ...citySales[c] })).sort((a,b) => b.count - a.count);
+            const cityContainer = document.getElementById('dash-city-ranking');
+            if(sortedCities.length === 0) {
+                cityContainer.innerHTML = '<li style="justify-content:center; color:#999; padding: 20px;">Nenhum dado de cidade disponível.</li>';
+            } else {
+                cityContainer.innerHTML = sortedCities.map((c, i) => `
+                    <li class="ranking-item" style="border-left: 5px solid #ea1d2c;">
+                        <div class="r-medal" style="font-size:1.5rem; width: 40px; color:#111;">${i+1}º</div>
+                        <div class="r-info">
+                            <div class="r-name" style="font-size:1.1rem;">📍 ${c.name}</div>
+                            <div class="r-orders">${c.count} pedidos totais gerados</div>
+                        </div>
+                        <div class="r-revenue">
+                            <div class="r-revenue-val" style="font-size:1.2rem;">R$ ${c.revenue.toFixed(2)}</div>
+                        </div>
+                    </li>
+                `).join('');
+            }
         }
 
         // ==========================================
@@ -671,7 +861,7 @@
         }
 
         // ==========================================
-        // 🟢 MÓDULO DE GESTÃO DE USUÁRIOS 🟢
+        // GESTÃO DE USUÁRIOS 
         // ==========================================
         onSnapshot(collection(db, "customers"), (snapshot) => {
             globalUsers = [];
@@ -754,40 +944,25 @@
         };
 
         window.toggleSicoobStatus = async (userId, isNowSicoob) => {
-            try {
-                await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob });
-            } catch(e) {
-                console.error("Erro ao atualizar status do Sicoob:", e);
-                alert("Erro de conexão ao salvar status.");
-                window.filterUsers(); 
-            }
+            try { await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob }); } catch(e) { window.filterUsers(); }
         };
 
         window.deleteUser = async (userId, userName) => {
             if (confirm(`⚠️ ATENÇÃO!\n\nTem certeza que deseja excluir a conta de ${userName}? Essa ação é permanente e ele perderá o acesso ao app.`)) {
-                try {
-                    await deleteDoc(doc(db, "customers", userId));
-                } catch(e) {
-                    alert("Erro ao excluir usuário.");
-                }
+                try { await deleteDoc(doc(db, "customers", userId)); } catch(e) { alert("Erro ao excluir usuário."); }
             }
         };
 
         // ==========================================
-        // 🟢 MÓDULO DE CUPONS PATROCINADOS (GLOBAL) 🟢
+        // CUPONS PATROCINADOS (GLOBAL) 
         // ==========================================
-        
-        // FUNÇÃO NOVA: Bloqueia o input de valor se for Frete Grátis
         window.toggleSponsorValueInput = () => {
             const type = document.getElementById('admin-sponsor-type').value;
             const valInput = document.getElementById('admin-sponsor-value');
             if(type === 'free_shipping') {
-                valInput.value = '';
-                valInput.disabled = true;
-                valInput.placeholder = "Não se aplica p/ Frete";
+                valInput.value = ''; valInput.disabled = true; valInput.placeholder = "Não se aplica p/ Frete";
             } else {
-                valInput.disabled = false;
-                valInput.placeholder = "Ex: 20 ou 10";
+                valInput.disabled = false; valInput.placeholder = "Ex: 20 ou 10";
             }
         };
 
@@ -802,7 +977,6 @@
             const code = document.getElementById('admin-sponsor-code').value.trim().toUpperCase();
             const type = document.getElementById('admin-sponsor-type').value;
             
-            // Se for Frete Grátis, valor será salvo como 0 para não bugar nada
             let value = parseFloat(document.getElementById('admin-sponsor-value').value);
             if (type === 'free_shipping') value = 0;
 
@@ -811,38 +985,15 @@
             const usageLimit = limitStr ? parseInt(limitStr) : null;
             const targetCity = document.getElementById('admin-sponsor-city').value;
 
-            // Validação
             if (!sponsorName || !code || !targetCity || (type !== 'free_shipping' && (isNaN(value) || value <= 0))) {
                 return alert("Preencha todos os campos obrigatórios e um valor de desconto válido.");
             }
 
             try {
-                await addDoc(collection(db, "coupons"), {
-                    code: code,
-                    type: type, 
-                    value: value,
-                    minOrder: minOrder,
-                    usageLimit: usageLimit,
-                    storeId: "GLOBAL", 
-                    targetCity: targetCity, 
-                    sponsorName: sponsorName,
-                    active: true,
-                    usedCount: 0,
-                    createdAt: Date.now()
-                });
-                
+                await addDoc(collection(db, "coupons"), { code, type, value, minOrder, usageLimit, storeId: "GLOBAL", targetCity, sponsorName, active: true, usedCount: 0, createdAt: Date.now() });
                 alert(`Sucesso! Cupom ${code} gerado para lojas de ${targetCity}.`);
-                
-                document.getElementById('admin-sponsor-name').value = '';
-                document.getElementById('admin-sponsor-code').value = '';
-                document.getElementById('admin-sponsor-value').value = '';
-                document.getElementById('admin-sponsor-min').value = '';
-                document.getElementById('admin-sponsor-limit').value = '';
-                
-            } catch (error) {
-                console.error(error);
-                alert("Erro ao criar cupom de patrocinador.");
-            }
+                document.getElementById('admin-sponsor-name').value = ''; document.getElementById('admin-sponsor-code').value = ''; document.getElementById('admin-sponsor-value').value = ''; document.getElementById('admin-sponsor-min').value = ''; document.getElementById('admin-sponsor-limit').value = '';
+            } catch (error) {}
         };
 
         function renderAdminSponsorCoupons() {
@@ -850,34 +1001,22 @@
             const sponsorCoupons = globalCoupons.filter(c => c.storeId === 'GLOBAL');
 
             if (sponsorCoupons.length === 0) {
-                container.innerHTML = '<p style="color:#999; padding: 20px; font-weight: 500;">Nenhum cupom de patrocinador ativo.</p>';
-                return;
+                container.innerHTML = '<p style="color:#999; padding: 20px; font-weight: 500;">Nenhum cupom de patrocinador ativo.</p>'; return;
             }
 
             container.innerHTML = sponsorCoupons.map(c => {
-                const statusBadge = c.active 
-                    ? '<span class="badge-status badge-active">🟢 Ativo</span>' 
-                    : '<span class="badge-status badge-suspended">🔴 Inativo</span>';
-                
-                const toggleBtn = c.active
-                    ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>`
-                    : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
+                const statusBadge = c.active ? '<span class="badge-status badge-active">🟢 Ativo</span>' : '<span class="badge-status badge-suspended">🔴 Inativo</span>';
+                const toggleBtn = c.active ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>` : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
 
-                // Texto customizado para Frete Grátis
                 let discountText = '';
                 if(c.type === 'percentage') discountText = `${c.value}%`;
                 else if(c.type === 'free_shipping') discountText = `FRETE GRÁTIS`;
                 else discountText = `R$ ${c.value.toFixed(2)}`;
 
-                let limitText = 'Ilimitado';
-                let esgotadoBadge = '';
-                
+                let limitText = 'Ilimitado'; let esgotadoBadge = '';
                 if (c.usageLimit) {
-                    const isEsgotado = c.usedCount >= c.usageLimit;
                     limitText = `${c.usedCount || 0} / ${c.usageLimit}`;
-                    if (isEsgotado) {
-                        esgotadoBadge = '<span style="color:#ea1d2c; font-weight:900; margin-left: 6px; background: rgba(234,29,44,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">ESGOTADO</span>';
-                    }
+                    if (c.usedCount >= c.usageLimit) esgotadoBadge = '<span style="color:#ea1d2c; font-weight:900; margin-left: 6px; background: rgba(234,29,44,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">ESGOTADO</span>';
                 }
 
                 return `
@@ -901,32 +1040,24 @@
             }).join('');
         }
 
-        window.toggleAdminCoupon = async (id, isActive) => {
-            try { await updateDoc(doc(db, "coupons", id), { active: isActive }); } catch(e) {}
-        };
-
-        window.deleteAdminCoupon = async (id) => {
-            if(confirm("Apagar este cupom global permanentemente?")) {
-                try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {}
-            }
-        };
+        window.toggleAdminCoupon = async (id, isActive) => { try { await updateDoc(doc(db, "coupons", id), { active: isActive }); } catch(e) {} };
+        window.deleteAdminCoupon = async (id) => { if(confirm("Apagar este cupom global permanentemente?")) { try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {} } };
 
         // ==========================================
-        // MÓDULO DE FATURAMENTO E REPASSE GLOBAL
+        // FATURAMENTO E REPASSE GLOBAL
         // ==========================================
         onSnapshot(collection(db, "orders"), (snapshot) => {
             allOrders = [];
             snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
             window.renderFaturamento();
             window.renderRepasse(); 
+            window.renderDashboard(); 
         });
 
         window.onCityFatChange = () => {
             const selectedCity = document.getElementById('filter-city-fat').value;
             const selectStore = document.getElementById('filter-store-fat');
-            
             selectStore.innerHTML = '<option value="all">Ver Todas as Lojas</option>';
-
             allStores.forEach(s => {
                 if (selectedCity === 'all' || s.city === selectedCity) {
                     selectStore.innerHTML += `<option value="${s.id}">${s.name}</option>`;
@@ -947,8 +1078,7 @@
             const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
             const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
 
-            let totalVendasApp = 0;
-            let totalPedidosApp = 0;
+            let totalVendasApp = 0; let totalPedidosApp = 0;
             const storeStatsMap = {};
 
             allOrders.forEach(order => {
@@ -972,12 +1102,7 @@
 
                 const sId = order.storeId;
                 if (!storeStatsMap[sId]) {
-                    storeStatsMap[sId] = { 
-                        id: sId, 
-                        name: order.storeName || 'Loja Desconhecida', 
-                        revenue: 0, 
-                        ordersCount: 0 
-                    };
+                    storeStatsMap[sId] = { id: sId, name: order.storeName || 'Loja Desconhecida', revenue: 0, ordersCount: 0 };
                 }
                 storeStatsMap[sId].revenue += vTotal;
                 storeStatsMap[sId].ordersCount++;
@@ -987,14 +1112,9 @@
             document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.10).toFixed(2)}`;
             document.getElementById('fat-pedidos').innerText = totalPedidosApp;
 
-            if (filterStore === 'all' && filterCityFat === 'all') {
-                document.getElementById('fat-card-title-vendas').innerText = 'Vendas Totais do App';
-            } else if (filterStore === 'all' && filterCityFat !== 'all') {
-                document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${filterCityFat}`;
-            } else {
-                const sName = allStores.find(s => s.id === filterStore)?.name || 'Loja';
-                document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${sName}`;
-            }
+            if (filterStore === 'all' && filterCityFat === 'all') { document.getElementById('fat-card-title-vendas').innerText = 'Vendas Totais do App'; } 
+            else if (filterStore === 'all' && filterCityFat !== 'all') { document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${filterCityFat}`; } 
+            else { const sName = allStores.find(s => s.id === filterStore)?.name || 'Loja'; document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${sName}`; }
 
             const rankingArray = Object.values(storeStatsMap).sort((a, b) => b.revenue - a.revenue);
             const listRender = document.getElementById('ranking-list-render');
@@ -1033,26 +1153,28 @@
             });
         };
 
-        // 🟢 NOVO MÓDULO DE CÁLCULO DE REPASSE PARA ENTREGADORES 🟢
+        // 🟢 CÁLCULO E LIQUIDAÇÃO DE REPASSE PARA ENTREGADORES 🟢
         window.renderRepasse = () => {
             if (!allOrders || !allDrivers) return;
 
             const filterDate = document.getElementById('filter-repasse-date').value;
+            const filterStatus = document.getElementById('filter-repasse-status').value;
             
             const nowTime = Date.now();
             const startOfToday = new Date().setHours(0,0,0,0);
             const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
             const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
 
-            let totalPayout = 0;
-            let totalRides = 0;
+            let totalPayout = 0; let totalRides = 0;
             const driverStats = {};
 
             allOrders.forEach(order => {
-                // Apenas conta pedidos concluídos na matemática
                 if (!['Concluído', 'Concluido', 'Entregue'].includes(order.status)) return;
-                // Apenas se tiver um motoboy vinculado
                 if (!order.driverId) return;
+
+                // Lógica do Filtro de Pagamento (Pendente vs Pago)
+                if (filterStatus === 'pending' && order.driverPaid) return;
+                if (filterStatus === 'paid' && !order.driverPaid) return;
 
                 let showOrder = true;
                 const compareTime = order.deliveredAt || order.timestamp;
@@ -1063,8 +1185,6 @@
                 
                 if (!showOrder) return;
 
-                // O valor que o motoboy deve ganhar. (5,00 padrão, salvo no pedido na hora do envio)
-                // Independente se o frete para o cliente foi grátis, esse valor é preenchido no momento em que a loja chama o motoboy.
                 const fee = parseFloat(order.platformDriverFee || 5);
                 totalPayout += fee;
                 totalRides++;
@@ -1092,11 +1212,20 @@
             const rankingArray = Object.values(driverStats).sort((a, b) => b.earned - a.earned);
 
             if (rankingArray.length === 0) {
-                listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 30px; background:#fff; border-radius:16px; border: 1px solid #f0f0f0; text-align:center; font-weight: 500;">Nenhuma entrega concluída neste período.</li>';
+                listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 30px; background:#fff; border-radius:16px; border: 1px solid #f0f0f0; text-align:center; font-weight: 500;">Nenhuma entrega encontrada para este filtro.</li>';
                 return;
             }
 
             rankingArray.forEach(d => {
+                let statusButtonHtml = '';
+                if (filterStatus === 'pending' && d.earned > 0) {
+                    statusButtonHtml = `<div style="background: #e6f4ea; color: #00a14b; padding: 8px 12px; cursor: pointer; text-align:center; font-weight: 900; border-radius: 8px; margin-top: 4px; border: 1px solid #badbcc; transition: 0.2s;" onmouseover="this.style.background='#00a14b'; this.style.color='#fff'" onmouseout="this.style.background='#e6f4ea'; this.style.color='#00a14b'" onclick="window.payDriver('${d.id}', '${d.name}')">✅ Liquidar Pagamento</div>`;
+                } else if (filterStatus === 'paid') {
+                    statusButtonHtml = `<div style="background: #f0f0f0; color: #777; padding: 6px 12px; text-align:center; font-weight: bold; border-radius: 8px; margin-top: 4px;">Acerto Realizado</div>`;
+                } else {
+                    statusButtonHtml = `<div style="background: #eef4ff; color: #0d6efd; padding: 6px 12px; text-align:center; font-weight: bold; border-radius: 8px; margin-top: 4px;">Histórico Geral</div>`;
+                }
+
                 listRender.innerHTML += `
                     <li class="ranking-item" style="border-left: 6px solid #00a14b;">
                         <div class="r-medal" style="font-size: 1.5rem; width: 40px;">🛵</div>
@@ -1104,13 +1233,52 @@
                             <div class="r-name" style="font-size: 1.15rem;">${d.name}</div>
                             <div class="r-orders">${d.rides} entregas concluídas</div>
                         </div>
-                        <div class="r-revenue">
+                        <div class="r-revenue" style="display:flex; flex-direction:column; align-items:flex-end;">
                             <div class="r-revenue-val" style="color: #00a14b; font-size: 1.4rem;">R$ ${d.earned.toFixed(2)}</div>
-                            <div class="r-revenue-tax" style="background: #e6f4ea; color: #00a14b; padding: 6px 12px;">Pendente de Repasse</div>
+                            ${statusButtonHtml}
                         </div>
                     </li>
                 `;
             });
+        };
+
+        // 🟢 FUNÇÃO PARA MARCAR COMO PAGO O ENTREGADOR 🟢
+        window.payDriver = async (driverId, driverName) => {
+            if(confirm(`Você já enviou o Pix/Dinheiro para ${driverName}?\n\nClicar em OK vai zerar as entregas pendentes dele no painel.`)) {
+                try {
+                    const filterDate = document.getElementById('filter-repasse-date').value;
+                    const nowTime = Date.now();
+                    const startOfToday = new Date().setHours(0,0,0,0);
+                    const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+                    const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+
+                    // Filtrar todos os pedidos não pagos desse motoboy na data selecionada
+                    const ordersToUpdate = allOrders.filter(order => {
+                        if (order.driverId !== driverId) return false;
+                        if (order.driverPaid) return false; 
+                        if (!['Concluído', 'Concluido', 'Entregue'].includes(order.status)) return false;
+
+                        let inDateRange = true;
+                        const compareTime = order.deliveredAt || order.timestamp;
+                        if (filterDate === 'hoje') inDateRange = compareTime >= startOfToday;
+                        else if (filterDate === '7dias') inDateRange = compareTime >= startOf7Days;
+                        else if (filterDate === 'mes') inDateRange = compareTime >= startOfMonth;
+                        return inDateRange;
+                    });
+
+                    if (ordersToUpdate.length === 0) return alert("Nenhum pedido para liquidar.");
+
+                    for (let o of ordersToUpdate) {
+                        await updateDoc(doc(db, "orders", o.id), { 
+                            driverPaid: true, 
+                            driverPaidAt: Date.now() 
+                        });
+                    }
+                    alert("Pagamento registrado com sucesso! A conta do entregador foi zerada no painel de pendentes.");
+                } catch(e) {
+                    alert("Erro ao registrar pagamento.");
+                }
+            }
         };
 
         // ==========================================
@@ -1232,6 +1400,7 @@
             snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
             renderStoreList(); 
             window.onCityFatChange(); 
+            window.renderDashboard();
         });
         
         window.saveStore = async () => { 
@@ -1360,7 +1529,12 @@
             }).join(''); 
         }
 
-        onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
+        onSnapshot(collection(db, "drivers"), (snapshot) => { 
+            allDrivers = []; 
+            snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); 
+            renderDriverList(); 
+            window.renderDashboard();
+        });
         
         window.saveDriver = async () => { 
             const name = document.getElementById('d-name').value.trim(); 
