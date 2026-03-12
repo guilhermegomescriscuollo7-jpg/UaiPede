@@ -34,7 +34,7 @@
         .btn-logout { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; margin-top: 8px; transition: 0.2s; }
         .btn-logout:active { background: rgba(255,255,255,0.2); }
 
-        /* STATUS TOGGLE (IOS STYLE) */
+        /* STATUS TOGGLE */
         .status-toggle { display: flex; flex-direction: column; align-items: flex-end; gap: 5px;}
         .status-badge { background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
         .status-badge span { font-size: 0.75rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
@@ -45,7 +45,7 @@
         input:checked + .slider { background-color: #00a14b; }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        /* TABS (FLUTUANTES) */
+        /* TABS */
         .tabs { display: flex; gap: 10px; padding: 0 20px; margin-top: -20px; position: relative; z-index: 101; }
         .tab-btn { flex: 1; padding: 14px 5px; text-align: center; font-weight: 800; font-size: 0.85rem; border-radius: 16px; border: none; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-transform: uppercase; letter-spacing: 0.5px;}
         .tab-btn.active { background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; box-shadow: 0 6px 15px rgba(234, 29, 44, 0.3); transform: translateY(-2px);}
@@ -56,7 +56,7 @@
         .section.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CARDS DE PEDIDO MELHORADOS (UI) */
+        /* CARDS DE PEDIDO MELHORADOS */
         .ride-card { background: #fff; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; transition: transform 0.2s;}
         .ride-card:active { transform: scale(0.98); }
         .ride-card.new { border: 2px solid #ea1d2c; animation: pulseBorder 2s infinite; position: relative; overflow: hidden;}
@@ -265,12 +265,10 @@
             }
         };
 
-        // NOVA FUNÇÃO: SAIR DO APP
         window.logoutDriver = async () => {
             if(confirm("Deseja realmente sair da sua conta? Você deixará de receber pedidos.")) {
                 if(loggedDriver && loggedDriver.id) {
                     try {
-                        // Força o entregador a ficar OFFLINE no banco antes de limpar o cache
                         await updateDoc(doc(db, "drivers", loggedDriver.id), { isOnline: false });
                     } catch(e) {
                         console.error("Erro ao deslogar:", e);
@@ -358,7 +356,11 @@
                 badge.style.display = 'none';
             }
 
-            container.innerHTML = allPendingOrders.map(order => `
+            container.innerHTML = allPendingOrders.map(order => {
+                const store = storesCache[order.storeId] || {};
+                const storeAddress = store.address || "Endereço da loja não informado";
+
+                return `
                 <div class="ride-card new">
                     <div class="r-header">
                         <span class="badge-new">NOVA CORRIDA</span>
@@ -373,6 +375,7 @@
                             <div class="step-dot dot-store"></div>
                             <small>Ponto de Coleta (Loja)</small>
                             <b>${order.storeName}</b>
+                            <p>${storeAddress}</p>
                         </div>
                         <div class="route-step">
                             <div class="step-dot dot-house"></div>
@@ -386,7 +389,8 @@
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         Aceitar Corrida
                     </button>
-                </div>`).join('');
+                </div>`;
+            }).join('');
         }
 
         function renderMyOrders() {
@@ -395,6 +399,7 @@
             
             container.innerHTML = myAcceptedOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
+                const storeAddress = store.address || "Endereço da loja não informado";
                 const qCust = encodeURIComponent(order.customer.address + ', ' + loggedDriver.city);
                 
                 return `
@@ -409,6 +414,7 @@
                             <div class="step-dot dot-store"></div>
                             <small>Retirar em:</small>
                             <b>${order.storeName}</b>
+                            <p>${storeAddress}</p>
                         </div>
                         <div class="route-step">
                             <div class="step-dot dot-house"></div>
