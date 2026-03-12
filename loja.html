@@ -65,27 +65,32 @@
         .search-input:focus { background: #fff; border-color: #ea1d2c; box-shadow: 0 0 0 3px rgba(234,29,44,0.1); }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; color: #ea1d2c; }
 
-        /* CUPONS NA LOJA (TICKET VERMELHO) */
-        .store-coupons-container { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        /* CUPONS NA LOJA (TICKET PREMIUM E COMPACTO) */
+        .store-coupons-container { display: flex; overflow-x: auto; gap: 12px; padding: 10px 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .store-coupons-container::-webkit-scrollbar { display: none; }
+        
         .ticket-coupon {
-            display: flex; background: #ea1d2c; color: #fff; border-radius: 8px; position: relative;
-            box-shadow: 0 4px 10px rgba(234, 29, 44, 0.2); transition: 0.2s; cursor: pointer; flex-shrink: 0; min-width: 260px;
+            display: flex; color: #fff; border-radius: 12px; position: relative;
+            transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; flex-shrink: 0; min-width: 220px; overflow: hidden;
         }
-        .ticket-coupon:active { transform: scale(0.96); }
+        .ticket-coupon:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); }
+        
         .ticket-coupon::before, .ticket-coupon::after {
-            content: ''; position: absolute; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;
+            content: ''; position: absolute; top: 50%; transform: translateY(-50%); width: 16px; height: 16px;
             background-color: #fff; border-radius: 50%; z-index: 2;
         }
-        .ticket-coupon::before { left: -10px; }
-        .ticket-coupon::after { right: -10px; }
-        .ticket-left { flex: 1; padding: 15px 15px 15px 25px; border-right: 2px dashed rgba(255, 255, 255, 0.5); display: flex; flex-direction: column; justify-content: center; }
-        .ticket-right { padding: 15px 25px 15px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .t-title { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 2px; }
-        .t-value { font-size: 1.8rem; font-weight: 900; line-height: 1; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        .t-code { background: #fff; color: #ea1d2c; font-weight: 900; font-size: 0.85rem; padding: 3px 8px; border-radius: 4px; display: inline-block; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 5px; text-align: center;}
-        .t-info { font-size: 0.7rem; opacity: 0.9; font-weight: 500; }
-        .t-click { font-size: 0.7rem; font-weight: bold; margin-top: 5px; background: rgba(0,0,0,0.15); padding: 4px 8px; border-radius: 12px; }
+        .ticket-coupon::before { left: -8px; box-shadow: inset -2px 0 3px rgba(0,0,0,0.05); }
+        .ticket-coupon::after { right: -8px; box-shadow: inset 2px 0 3px rgba(0,0,0,0.05); }
+        
+        .ticket-left { flex: 1; padding: 12px 10px 12px 20px; border-right: 2px dashed rgba(255, 255, 255, 0.4); display: flex; flex-direction: column; justify-content: center; }
+        .ticket-right { padding: 12px 20px 12px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 80px;}
+        
+        .t-title { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;}
+        .t-value { font-size: 1.4rem; font-weight: 900; line-height: 1; margin-bottom: 4px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .t-info { font-size: 0.65rem; opacity: 0.85; font-weight: 500; }
+        
+        .t-code { background: rgba(255,255,255,0.25); color: #fff; font-weight: 900; font-size: 0.8rem; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; text-align: center; border: 1px dashed rgba(255,255,255,0.5);}
+        .t-click { font-size: 0.65rem; font-weight: 900; background: #fff; padding: 5px 12px; border-radius: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); text-transform: uppercase; }
 
         /* MÓDULO DE PRODUTOS */
         .store-menu-filters { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; padding: 15px 20px; background: #fff; border-bottom: 1px solid #f2f2f2; position: sticky; top: 0; z-index: 100; scrollbar-width: none; -webkit-overflow-scrolling: touch; box-shadow: 0 2px 5px rgba(0,0,0,0.02); width: 100%; }
@@ -410,34 +415,41 @@
                 <div class="store-coupons-container">
                     ${storeCoupons.map(c => {
                         const isGlobal = c.storeId === 'GLOBAL';
-                        const bgColor = isGlobal ? '#00a14b' : '#ea1d2c';
-                        const sponsorTitle = isGlobal ? `🎁 Patrocínio ${c.sponsorName || 'Sicoob'}` : 'CUPOM DE DESCONTO';
+                        const bgStyle = isGlobal 
+                            ? 'background: linear-gradient(135deg, #00a14b, #00d262); box-shadow: 0 4px 12px rgba(0, 161, 75, 0.3);' 
+                            : 'background: linear-gradient(135deg, #ea1d2c, #ff5e6a); box-shadow: 0 4px 12px rgba(234, 29, 44, 0.3);';
+                        
+                        const sponsorTitle = isGlobal 
+                            ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> ' + (c.sponsorName || 'Patrocinador')
+                            : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> CUPOM DA LOJA';
 
                         const cVal = c.value || 0; const cMin = c.minOrder || 0;
                         
                         let valText = '';
-                        let valSize = '1.8rem';
+                        let valSize = '1.4rem';
                         if (c.type === 'percentage') {
                             valText = `${cVal}% OFF`;
                         } else if (c.type === 'free_shipping') {
                             valText = `FRETE GRÁTIS`;
-                            valSize = '1.4rem'; 
+                            valSize = '1.1rem'; 
                         } else {
                             valText = `R$ ${cVal.toFixed(2)} OFF`;
                         }
                         
-                        let minText = cMin > 0 ? `Acima de R$ ${cMin.toFixed(2)}` : 'Sem valor mínimo';
+                        let minText = cMin > 0 ? `Acima de R$ ${cMin.toFixed(2)}` : 'Sem mínimo';
                         
+                        const btnColor = isGlobal ? '#00a14b' : '#ea1d2c';
+
                         return `
-                        <div class="ticket-coupon" style="background-color: ${bgColor};" onclick="window.copyCoupon('${c.code}')">
+                        <div class="ticket-coupon" style="${bgStyle}" onclick="window.copyCoupon('${c.code}')">
                             <div class="ticket-left">
                                 <div class="t-title">${sponsorTitle}</div>
                                 <div class="t-value" style="font-size: ${valSize};">${valText}</div>
                                 <div class="t-info">${minText}</div>
                             </div>
                             <div class="ticket-right">
-                                <div class="t-code" style="color: ${bgColor};">${c.code}</div>
-                                <div class="t-click">COPIAR</div>
+                                <div class="t-code">${c.code}</div>
+                                <div class="t-click" style="color: ${btnColor};">COPIAR</div>
                             </div>
                         </div>`;
                     }).join('')}
