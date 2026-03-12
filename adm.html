@@ -58,11 +58,14 @@
         .card-img { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; background: #f4f5f7; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
         
         .actions-col { display: flex; gap: 10px; margin-left: auto; align-items: center; flex-wrap: wrap; justify-content: flex-end;}
-        .btn-edit, .btn-suspend, .btn-reactivate, .btn-del { border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
-        .btn-edit { color: #0d6efd; background: #eef4ff; } .btn-edit:hover { background: #dbe7ff; transform: translateY(-1px); }
-        .btn-suspend { color: #ea1d2c; background: #fef0f0; } .btn-suspend:hover { background: #fce4e4; transform: translateY(-1px); }
-        .btn-reactivate { color: #00a14b; background: #e6f4ea; } .btn-reactivate:hover { background: #d3f0db; transform: translateY(-1px); }
-        .btn-del { color: #777; background: #f4f4f4; } .btn-del:hover { background: #ea1d2c; color: #fff; transform: translateY(-1px); }
+        .btn-edit { color: #0d6efd; border: none; background: #eef4ff; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
+        .btn-edit:hover { background: #dbe7ff; transform: translateY(-1px); }
+        .btn-suspend { color: #ea1d2c; border: none; background: #fef0f0; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
+        .btn-suspend:hover { background: #fce4e4; transform: translateY(-1px); }
+        .btn-reactivate { color: #00a14b; border: none; background: #e6f4ea; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
+        .btn-reactivate:hover { background: #d3f0db; transform: translateY(-1px); }
+        .btn-del { color: #777; border: none; background: #f4f4f4; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
+        .btn-del:hover { background: #ea1d2c; color: #fff; transform: translateY(-1px); }
 
         .badge-status { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-top: 6px; letter-spacing: 0.5px;}
         .badge-active { background: #e6f4ea; color: #00a14b; }
@@ -133,11 +136,7 @@
             <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span> <span class="admin-tag">Admin</span></div>
         </div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="window.switchTab('dashboard', this)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-                Dashboard Principal
-            </li>
-            <li class="nav-item" onclick="window.switchTab('lojas', this)">
+            <li class="nav-item active" onclick="window.switchTab('lojas', this)">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 Lojas Parceiras
             </li>
@@ -175,73 +174,13 @@
             </li>
             <li class="nav-item" onclick="window.switchTab('avisos', this)">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                Avisos Globais (Push)
+                Avisos Globais
             </li>
         </ul>
     </aside>
 
     <main class="main-content">
         
-        <section id="dashboard" class="section active">
-            <h2>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-                Visão Global (Hoje)
-            </h2>
-            <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Resumo diário do funcionamento de todas as cidades e lojas interligadas.</p>
-            
-            <div class="metrics-grid">
-                <div class="metric-card green">
-                    <div class="m-title">Total Transacionado (Hoje)</div>
-                    <div class="m-value green" id="dash-trans-today">R$ 0,00</div>
-                </div>
-                <div class="metric-card purple">
-                    <div class="m-title">Lucro do App (10% Hoje)</div>
-                    <div class="m-value purple" id="dash-profit-today">R$ 0,00</div>
-                </div>
-                <div class="metric-card blue">
-                    <div class="m-title">Entregadores Online (Agora)</div>
-                    <div class="m-value" style="color: #0d6efd;" id="dash-online-drivers">0</div>
-                </div>
-                <div class="metric-card" style="border-left: 6px solid #ea1d2c;">
-                    <div class="m-title">Loja Destaque (Mais Vendas Hoje)</div>
-                    <div class="m-value" style="color: #111; font-size: 1.6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="dash-top-store">Nenhuma venda hoje</div>
-                </div>
-            </div>
-
-            <h3 style="font-size: 1.4rem; font-weight: 900; color: #111; margin-bottom: 20px; margin-top: 30px;">🗺️ Desempenho Histórico por Cidade</h3>
-            <ul class="ranking-list" id="dash-city-ranking"></ul>
-        </section>
-
-        <section id="avisos" class="section">
-            <h2>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                Disparo de Avisos Globais
-            </h2>
-            <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Envie notificações e mensagens que aparecerão para todos os clientes assim que abrirem o aplicativo.</p>
-            
-            <div style="background:#fff; padding:30px; border-radius:16px; border:1px solid #eee; max-width:600px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-                <div class="form-group">
-                    <label>Mensagem do Aviso</label>
-                    <input type="text" id="alert-text" placeholder="Ex: Hoje é dia de Frete Grátis com o cupom SICOOB!" style="font-weight:bold; color:#111;">
-                </div>
-                <div class="form-group">
-                    <label>Tipo (Cores do Banner)</label>
-                    <select id="alert-type">
-                        <option value="promo">🎉 Promoção (Vermelho - UaiPede)</option>
-                        <option value="success">✅ Informação Positiva (Verde)</option>
-                        <option value="info">📢 Comunicado Padrão (Azul)</option>
-                    </select>
-                </div>
-                <button class="btn" onclick="window.saveAlert()" style="width:100%; margin-top:10px; padding:16px; font-size:1.1rem; justify-content:center;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    Disparar Aviso Agora
-                </button>
-            </div>
-            
-            <h3 style="margin-top:40px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Avisos Ativos (Visíveis para Clientes)</h3>
-            <div id="alerts-list-container" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;"></div>
-        </section>
-
         <section id="cidades" class="section">
             <h2>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
@@ -364,7 +303,7 @@
             <div class="item-list" id="sponsor-coupons-list-container" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));"></div>
         </section>
 
-        <section id="lojas" class="section">
+        <section id="lojas" class="section active">
             <h2 id="form-store-title">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 Cadastrar Nova Loja
@@ -406,10 +345,6 @@
                         <option>Sorveterias</option><option>Mercados</option><option>Farmácias</option>
                         <option>Loja de Roupas</option><option>Açougue</option><option>Utilidades</option>
                     </select>
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Data de Vencimento (Mensalidade)</label>
-                    <input type="date" id="s-due-date">
                 </div>
             </div>
 
@@ -490,15 +425,9 @@
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
                 <h2 style="border: none; padding: 0; margin: 0;">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                    Controle de Pagamento aos Entregadores
+                    Repasse Entregadores
                 </h2>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <select id="filter-repasse-status" onchange="window.renderRepasse()" style="font-weight: bold; padding: 8px 12px; border-radius: 8px; border: 1px solid #ea1d2c; color: #ea1d2c; outline: none; cursor: pointer;">
-                        <option value="pending" selected>Apenas Pendentes (A Pagar)</option>
-                        <option value="paid">Já Pagos (Histórico)</option>
-                        <option value="all">Ver Todos</option>
-                    </select>
-
                     <select id="filter-repasse-date" onchange="window.renderRepasse()" style="font-weight: bold; padding: 8px 12px; border-radius: 8px;">
                         <option value="hoje" selected>Hoje</option>
                         <option value="7dias">Últimos 7 Dias</option>
@@ -509,16 +438,17 @@
             </div>
             
             <p style="font-size: 1rem; color: #666; margin-bottom: 30px;">
-                Veja exatamente quanto pagar para cada entregador. Ao fazer o Pix, clique em "Liquidar Pagamento" para zerar a conta pendente.
+                Veja exatamente quanto pagar para cada entregador. 
+                <br><span style="font-size: 0.85rem;">Nota: Mesmo se o cliente tiver Frete Grátis, o motoboy recebe o valor integral (saindo do repasse da loja/app).</span>
             </p>
 
             <div class="metrics-grid">
                 <div class="metric-card green">
-                    <div class="m-title">Total (Filtro Atual)</div>
+                    <div class="m-title">Total Geral a Pagar</div>
                     <div class="m-value green" id="repasse-total-val">R$ 0,00</div>
                 </div>
                 <div class="metric-card blue">
-                    <div class="m-title">Corridas (Filtro Atual)</div>
+                    <div class="m-title">Corridas Concluídas (Geral)</div>
                     <div class="m-value" style="color: #0d6efd;" id="repasse-total-rides">0</div>
                 </div>
             </div>
@@ -619,6 +549,36 @@
             <div class="item-list" id="sponsor-list-container" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));"></div>
         </section>
 
+        <section id="avisos" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                Avisos Globais (Notícias)
+            </h2>
+            <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Envie notificações e mensagens que aparecerão para todos os clientes assim que abrirem o aplicativo.</p>
+            
+            <div style="background:#fff; padding:30px; border-radius:16px; border:1px solid #eee; max-width:600px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                <div class="form-group">
+                    <label>Mensagem do Aviso</label>
+                    <input type="text" id="alert-text" placeholder="Ex: Hoje é dia de Frete Grátis com o cupom SICOOB!" style="font-weight:bold; color:#111;">
+                </div>
+                <div class="form-group">
+                    <label>Tipo (Cores do Banner)</label>
+                    <select id="alert-type">
+                        <option value="promo">🎉 Promoção (Vermelho - UaiPede)</option>
+                        <option value="success">✅ Informação Positiva (Verde)</option>
+                        <option value="info">📢 Comunicado Padrão (Azul)</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="window.saveAlert()" style="width:100%; margin-top:10px; padding:16px; font-size:1.1rem; justify-content:center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    Disparar Aviso Agora
+                </button>
+            </div>
+            
+            <h3 style="margin-top:40px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Avisos Ativos (Visíveis para Clientes)</h3>
+            <div id="alerts-list-container" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;"></div>
+        </section>
+
     </main>
 
     <script type="module">
@@ -670,124 +630,6 @@
         }
 
         // ==========================================
-        // 🟢 MÓDULO: AVISOS GLOBAIS (NOTÍCIAS) 
-        // ==========================================
-        onSnapshot(collection(db, "global_alerts"), (snapshot) => {
-            globalAlerts = [];
-            snapshot.forEach(doc => globalAlerts.push({ id: doc.id, ...doc.data() }));
-            globalAlerts.sort((a,b) => b.timestamp - a.timestamp);
-            renderAlerts();
-        });
-
-        window.saveAlert = async () => {
-            const text = document.getElementById('alert-text').value.trim();
-            const type = document.getElementById('alert-type').value;
-            if(!text) return alert("Digite o texto do aviso.");
-            try {
-                await addDoc(collection(db, "global_alerts"), { text, type, timestamp: Date.now(), active: true });
-                document.getElementById('alert-text').value = '';
-                alert("Aviso disparado para todos os usuários!");
-            } catch(e) { alert("Erro ao disparar aviso."); }
-        }
-        
-        window.deleteAlert = async (id) => {
-            if(confirm("Apagar e remover este aviso do app dos clientes?")) {
-                await deleteDoc(doc(db, "global_alerts", id));
-            }
-        }
-
-        function renderAlerts() {
-            const container = document.getElementById('alerts-list-container');
-            if(globalAlerts.length === 0) {
-                container.innerHTML = '<p style="color:#999;">Nenhum aviso ativo no momento.</p>'; return;
-            }
-            container.innerHTML = globalAlerts.map(a => {
-                let badgeColor = '#0d6efd'; let typeName = 'Comunicado';
-                if(a.type === 'promo') { badgeColor = '#ea1d2c'; typeName = 'Promoção'; }
-                if(a.type === 'success') { badgeColor = '#00a14b'; typeName = 'Sucesso'; }
-                
-                return `
-                <div style="background:#fff; padding:15px; border-radius:12px; border:1px solid #eee; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
-                    <div>
-                        <strong style="color: ${badgeColor}; text-transform:uppercase; font-size:0.75rem; background: ${badgeColor}15; padding: 4px 8px; border-radius: 6px;">${typeName}</strong>
-                        <div style="color:#111; font-size:1.05rem; font-weight:bold; margin-top:8px;">${a.text}</div>
-                        <div style="color:#999; font-size:0.75rem; margin-top: 4px;">Disparado em: ${new Date(a.timestamp).toLocaleString('pt-BR')}</div>
-                    </div>
-                    <button onclick="window.deleteAlert('${a.id}')" style="background:#fef0f0; border:1px solid #fbd5d5; padding: 10px; border-radius: 8px; color:#ea1d2c; cursor:pointer; font-weight:bold;">🗑️ Apagar</button>
-                </div>
-            `}).join('');
-        }
-
-        // ==========================================
-        // 🟢 MÓDULO: DASHBOARD PRINCIPAL 
-        // ==========================================
-        window.renderDashboard = () => {
-            if (!allOrders || !allStores) return;
-            const nowTime = Date.now();
-            const startOfToday = new Date().setHours(0,0,0,0);
-            
-            let transToday = 0;
-            let profitToday = 0;
-            const storeSalesToday = {};
-            const citySales = {};
-
-            allOrders.forEach(order => {
-                if (order.status === 'Cancelado') return;
-                
-                const sId = order.storeId;
-                const store = allStores.find(s => s.id === sId);
-                const city = store ? store.city : 'Desconhecida';
-                
-                if (!citySales[city]) citySales[city] = { count: 0, revenue: 0 };
-                citySales[city].count++;
-                citySales[city].revenue += (order.total || 0);
-
-                if (order.timestamp >= startOfToday) {
-                    transToday += (order.total || 0);
-                    profitToday += (order.total || 0) * 0.10; 
-                    
-                    if (!storeSalesToday[sId]) storeSalesToday[sId] = { name: order.storeName, revenue: 0 };
-                    storeSalesToday[sId].revenue += (order.total || 0);
-                }
-            });
-
-            let topStoreName = "Nenhuma venda hoje";
-            let maxRev = 0;
-            for (let sId in storeSalesToday) {
-                if (storeSalesToday[sId].revenue > maxRev) {
-                    maxRev = storeSalesToday[sId].revenue;
-                    topStoreName = storeSalesToday[sId].name;
-                }
-            }
-
-            const onlineDrivers = allDrivers.filter(d => (d.isOnline === true || d.isOnline === "true")).length;
-
-            document.getElementById('dash-trans-today').innerText = `R$ ${transToday.toFixed(2)}`;
-            document.getElementById('dash-profit-today').innerText = `R$ ${profitToday.toFixed(2)}`;
-            document.getElementById('dash-online-drivers').innerText = onlineDrivers;
-            document.getElementById('dash-top-store').innerText = topStoreName;
-
-            const sortedCities = Object.keys(citySales).map(c => ({ name: c, ...citySales[c] })).sort((a,b) => b.count - a.count);
-            const cityContainer = document.getElementById('dash-city-ranking');
-            if(sortedCities.length === 0) {
-                cityContainer.innerHTML = '<li style="justify-content:center; color:#999; padding: 20px;">Nenhum dado de cidade disponível.</li>';
-            } else {
-                cityContainer.innerHTML = sortedCities.map((c, i) => `
-                    <li class="ranking-item" style="border-left: 5px solid #ea1d2c;">
-                        <div class="r-medal" style="font-size:1.5rem; width: 40px; color:#111;">${i+1}º</div>
-                        <div class="r-info">
-                            <div class="r-name" style="font-size:1.1rem;">📍 ${c.name}</div>
-                            <div class="r-orders">${c.count} pedidos totais gerados</div>
-                        </div>
-                        <div class="r-revenue">
-                            <div class="r-revenue-val" style="font-size:1.2rem;">R$ ${c.revenue.toFixed(2)}</div>
-                        </div>
-                    </li>
-                `).join('');
-            }
-        }
-
-        // ==========================================
         // MÓDULO CIDADES
         // ==========================================
         onSnapshot(collection(db, "cities"), (snapshot) => {
@@ -801,20 +643,33 @@
         window.saveCity = async () => {
             const name = document.getElementById('c-name').value.trim();
             const state = document.getElementById('c-state').value.trim().toUpperCase();
+            
             if(!name || !state) return alert("Preencha o nome da cidade e a sigla do estado.");
+            
             const exists = globalCities.find(c => c.name.toLowerCase() === name.toLowerCase() && c.state === state);
             if(exists) return alert("Esta cidade já está cadastrada!");
+
             try {
                 await addDoc(collection(db, "cities"), { name, state });
-                document.getElementById('c-name').value = ''; document.getElementById('c-state').value = '';
-            } catch(e) { alert("Erro ao cadastrar cidade."); }
+                document.getElementById('c-name').value = '';
+                document.getElementById('c-state').value = '';
+            } catch(e) {
+                alert("Erro ao cadastrar cidade.");
+            }
         };
 
-        window.deleteCity = async (id) => { if(confirm("Tem certeza que deseja apagar esta cidade do aplicativo?")) await deleteDoc(doc(db, "cities", id)); };
+        window.deleteCity = async (id) => {
+            if(confirm("Tem certeza que deseja apagar esta cidade do aplicativo?")) {
+                await deleteDoc(doc(db, "cities", id));
+            }
+        };
 
         function renderCitiesList() {
             const container = document.getElementById('city-list-container');
-            if(globalCities.length === 0) { container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade cadastrada ainda.</p>`; return; }
+            if(globalCities.length === 0) {
+                container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade cadastrada ainda.</p>`;
+                return;
+            }
             container.innerHTML = globalCities.map(c => `
                 <div class="card-item" style="justify-content: space-between;">
                     <div style="display:flex; align-items:center; gap:12px;">
@@ -830,7 +685,16 @@
 
         function populateCityDropdowns() {
             const cityOptions = globalCities.map(c => `<option value="${c.name} - ${c.state}">${c.name} - ${c.state}</option>`).join('');
-            const fillSelect = (id, prepend) => { const el = document.getElementById(id); if (el) { const val = el.value; el.innerHTML = prepend + cityOptions; if(val) el.value = val; } };
+
+            const fillSelect = (id, prepend) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const val = el.value;
+                    el.innerHTML = prepend + cityOptions;
+                    if(val) el.value = val;
+                }
+            };
+
             fillSelect('s-city', '<option value="">Selecione a cidade...</option>');
             fillSelect('d-city', '<option value="">Selecione a cidade...</option>');
             fillSelect('b-city', '<option value="all">Todas as Cidades (Global)</option>');
@@ -841,220 +705,592 @@
         }
 
         // ==========================================
-        // GESTÃO DE USUÁRIOS E SICOOB
+        // GESTÃO DE USUÁRIOS
         // ==========================================
         onSnapshot(collection(db, "customers"), (snapshot) => {
-            globalUsers = []; let sicoobCount = 0;
-            snapshot.forEach(doc => { const user = { id: doc.id, ...doc.data() }; globalUsers.push(user); if (user.isSicoob) sicoobCount++; });
-            document.getElementById('total-users').innerText = globalUsers.length; document.getElementById('total-sicoob').innerText = sicoobCount;
+            globalUsers = [];
+            let sicoobCount = 0;
+            snapshot.forEach(doc => {
+                const user = { id: doc.id, ...doc.data() };
+                globalUsers.push(user);
+                if (user.isSicoob) sicoobCount++;
+            });
+            
+            document.getElementById('total-users').innerText = globalUsers.length;
+            document.getElementById('total-sicoob').innerText = sicoobCount;
+            
             window.filterUsers();
         });
 
         window.filterUsers = () => {
-            const cityFilter = document.getElementById('filter-user-city').value; const searchFilter = document.getElementById('filter-user-search').value.toLowerCase().trim();
+            const cityFilter = document.getElementById('filter-user-city').value;
+            const searchFilter = document.getElementById('filter-user-search').value.toLowerCase().trim();
             const container = document.getElementById('users-container');
+
             let filtered = globalUsers;
-            if (cityFilter !== 'all') filtered = filtered.filter(u => u.city === cityFilter);
-            if (searchFilter !== '') filtered = filtered.filter(u => (u.name && u.name.toLowerCase().includes(searchFilter)) || (u.email && u.email.toLowerCase().includes(searchFilter)));
-            if (filtered.length === 0) { container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999; font-size: 1.1rem; font-weight: 500;">Nenhum usuário encontrado.</div>`; return; }
+
+            if (cityFilter !== 'all') {
+                filtered = filtered.filter(u => u.city === cityFilter);
+            }
+            if (searchFilter !== '') {
+                filtered = filtered.filter(u => 
+                    (u.name && u.name.toLowerCase().includes(searchFilter)) || 
+                    (u.email && u.email.toLowerCase().includes(searchFilter))
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999; font-size: 1.1rem; font-weight: 500;">Nenhum usuário encontrado.</div>`;
+                return;
+            }
+
             filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
             container.innerHTML = filtered.map(u => {
-                const initial = u.name ? u.name.charAt(0).toUpperCase() : '?'; const cityBadge = u.city ? u.city : 'Cidade não informada';
-                const isSicoob = u.isSicoob ? true : false; const phoneStr = u.phone ? u.phone : 'Não informado'; const safeName = u.name ? u.name.replace(/'/g, "\\'") : 'Cliente';
+                const initial = u.name ? u.name.charAt(0).toUpperCase() : '?';
+                const cityBadge = u.city ? u.city : 'Cidade não informada';
+                const isSicoob = u.isSicoob ? true : false;
+                const phoneStr = u.phone ? u.phone : 'Não informado';
+                const safeName = u.name ? u.name.replace(/'/g, "\\'") : 'Cliente';
+
                 return `
                 <div class="user-card">
-                    <div class="u-header"><div class="u-avatar">${initial}</div><div class="u-info"><div class="u-name" title="${u.name}">${u.name || 'Cliente'}</div><div class="u-email" title="${u.email}">${u.email || ''}</div></div></div>
+                    <div class="u-header">
+                        <div class="u-avatar">${initial}</div>
+                        <div class="u-info">
+                            <div class="u-name" title="${u.name}">${u.name || 'Cliente'}</div>
+                            <div class="u-email" title="${u.email}">${u.email || ''}</div>
+                        </div>
+                    </div>
+                    
                     <div class="badge-city" style="margin-bottom: 18px; width: fit-content;">📍 ${cityBadge}</div>
-                    <div class="u-data-row"><strong>Telefone:</strong> <span>${phoneStr}</span></div><div class="u-data-row" style="margin-bottom: 20px;"><strong>Cadastrado em:</strong> <span>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '--'}</span></div>
-                    <div class="sicoob-area"><div class="sicoob-logo-text"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Associado Patrocinador</div><label class="toggle-switch"><input type="checkbox" ${isSicoob ? 'checked' : ''} onchange="window.toggleSicoobStatus('${u.id}', this.checked)"><span class="slider"></span></label></div>
-                    <button class="btn-delete" style="color: #ea1d2c; border: 1px solid #fbd5d5; background: #fef0f0; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; justify-content:center; margin-top: auto; transition: 0.3s;" onmouseover="this.style.background='#ea1d2c'; this.style.color='#fff'" onmouseout="this.style.background='#fef0f0'; this.style.color='#ea1d2c'" onclick="window.deleteUser('${u.id}', '${safeName}')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Excluir Usuário</button>
+                    
+                    <div class="u-data-row"><strong>Telefone:</strong> <span>${phoneStr}</span></div>
+                    <div class="u-data-row" style="margin-bottom: 20px;"><strong>Cadastrado em:</strong> <span>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '--'}</span></div>
+
+                    <div class="sicoob-area">
+                        <div class="sicoob-logo-text">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            Associado Patrocinador
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${isSicoob ? 'checked' : ''} onchange="window.toggleSicoobStatus('${u.id}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn-delete" style="color: #ea1d2c; border: 1px solid #fbd5d5; background: #fef0f0; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; justify-content:center; margin-top: auto; transition: 0.3s;" onmouseover="this.style.background='#ea1d2c'; this.style.color='#fff'" onmouseout="this.style.background='#fef0f0'; this.style.color='#ea1d2c'" onclick="window.deleteUser('${u.id}', '${safeName}')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        Excluir Usuário
+                    </button>
                 </div>`;
             }).join('');
         };
-        window.toggleSicoobStatus = async (userId, isNowSicoob) => { try { await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob }); } catch(e) { window.filterUsers(); } };
-        window.deleteUser = async (userId, userName) => { if (confirm(`⚠️ ATENÇÃO!\n\nTem certeza que deseja excluir a conta de ${userName}?`)) try { await deleteDoc(doc(db, "customers", userId)); } catch(e) {} };
+
+        window.toggleSicoobStatus = async (userId, isNowSicoob) => {
+            try {
+                await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob });
+            } catch(e) {
+                console.error("Erro ao atualizar status do Sicoob:", e);
+                alert("Erro de conexão ao salvar status.");
+                window.filterUsers(); 
+            }
+        };
+
+        window.deleteUser = async (userId, userName) => {
+            if (confirm(`⚠️ ATENÇÃO!\n\nTem certeza que deseja excluir a conta de ${userName}? Essa ação é permanente e ele perderá o acesso ao app.`)) {
+                try {
+                    await deleteDoc(doc(db, "customers", userId));
+                } catch(e) {
+                    alert("Erro ao excluir usuário.");
+                }
+            }
+        };
 
         // ==========================================
         // CUPONS PATROCINADOS GLOBAIS
         // ==========================================
         window.toggleSponsorValueInput = () => {
-            const type = document.getElementById('admin-sponsor-type').value; const valInput = document.getElementById('admin-sponsor-value');
-            if(type === 'free_shipping') { valInput.value = ''; valInput.disabled = true; valInput.placeholder = "Não se aplica p/ Frete"; } 
-            else { valInput.disabled = false; valInput.placeholder = "Ex: 20 ou 10"; }
+            const type = document.getElementById('admin-sponsor-type').value;
+            const valInput = document.getElementById('admin-sponsor-value');
+            if(type === 'free_shipping') {
+                valInput.value = '';
+                valInput.disabled = true;
+                valInput.placeholder = "Não se aplica p/ Frete";
+            } else {
+                valInput.disabled = false;
+                valInput.placeholder = "Ex: 20 ou 10";
+            }
         };
 
-        onSnapshot(collection(db, "coupons"), (snapshot) => { globalCoupons = []; snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() })); renderAdminSponsorCoupons(); });
+        onSnapshot(collection(db, "coupons"), (snapshot) => {
+            globalCoupons = [];
+            snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() }));
+            renderAdminSponsorCoupons();
+        });
 
         window.createSponsorCoupon = async () => {
-            const sponsorName = document.getElementById('admin-sponsor-name').value.trim(); const code = document.getElementById('admin-sponsor-code').value.trim().toUpperCase(); const type = document.getElementById('admin-sponsor-type').value;
-            let value = parseFloat(document.getElementById('admin-sponsor-value').value); if (type === 'free_shipping') value = 0;
-            const minOrder = parseFloat(document.getElementById('admin-sponsor-min').value) || 0; const usageLimit = parseInt(document.getElementById('admin-sponsor-limit').value) || null; const targetCity = document.getElementById('admin-sponsor-city').value;
-            if (!sponsorName || !code || !targetCity || (type !== 'free_shipping' && (isNaN(value) || value <= 0))) return alert("Preencha os campos.");
+            const sponsorName = document.getElementById('admin-sponsor-name').value.trim();
+            const code = document.getElementById('admin-sponsor-code').value.trim().toUpperCase();
+            const type = document.getElementById('admin-sponsor-type').value;
+            
+            let value = parseFloat(document.getElementById('admin-sponsor-value').value);
+            if (type === 'free_shipping') value = 0;
+
+            const minOrder = parseFloat(document.getElementById('admin-sponsor-min').value) || 0;
+            const limitStr = document.getElementById('admin-sponsor-limit').value.trim();
+            const usageLimit = limitStr ? parseInt(limitStr) : null;
+            const targetCity = document.getElementById('admin-sponsor-city').value;
+
+            if (!sponsorName || !code || !targetCity || (type !== 'free_shipping' && (isNaN(value) || value <= 0))) {
+                return alert("Preencha todos os campos obrigatórios e um valor de desconto válido.");
+            }
+
             try {
-                await addDoc(collection(db, "coupons"), { code, type, value, minOrder, usageLimit, storeId: "GLOBAL", targetCity, sponsorName, active: true, usedCount: 0, createdAt: Date.now() });
-                alert(`Cupom ${code} gerado para ${targetCity}.`);
-                document.getElementById('admin-sponsor-name').value = ''; document.getElementById('admin-sponsor-code').value = ''; document.getElementById('admin-sponsor-value').value = ''; document.getElementById('admin-sponsor-min').value = ''; document.getElementById('admin-sponsor-limit').value = '';
-            } catch (error) {}
+                await addDoc(collection(db, "coupons"), {
+                    code: code,
+                    type: type, 
+                    value: value,
+                    minOrder: minOrder,
+                    usageLimit: usageLimit,
+                    storeId: "GLOBAL", 
+                    targetCity: targetCity, 
+                    sponsorName: sponsorName,
+                    active: true,
+                    usedCount: 0,
+                    createdAt: Date.now()
+                });
+                
+                alert(`Sucesso! Cupom ${code} gerado para lojas de ${targetCity}.`);
+                
+                document.getElementById('admin-sponsor-name').value = '';
+                document.getElementById('admin-sponsor-code').value = '';
+                document.getElementById('admin-sponsor-value').value = '';
+                document.getElementById('admin-sponsor-min').value = '';
+                document.getElementById('admin-sponsor-limit').value = '';
+                
+            } catch (error) {
+                console.error(error);
+                alert("Erro ao criar cupom de patrocinador.");
+            }
         };
 
         function renderAdminSponsorCoupons() {
-            const container = document.getElementById('sponsor-coupons-list-container'); const sponsorCoupons = globalCoupons.filter(c => c.storeId === 'GLOBAL');
-            if (sponsorCoupons.length === 0) { container.innerHTML = '<p style="color:#999; padding: 20px; font-weight: 500;">Nenhum cupom ativo.</p>'; return; }
+            const container = document.getElementById('sponsor-coupons-list-container');
+            const sponsorCoupons = globalCoupons.filter(c => c.storeId === 'GLOBAL');
+
+            if (sponsorCoupons.length === 0) {
+                container.innerHTML = '<p style="color:#999; padding: 20px; font-weight: 500;">Nenhum cupom de patrocinador ativo.</p>';
+                return;
+            }
+
             container.innerHTML = sponsorCoupons.map(c => {
-                const statusBadge = c.active ? '<span class="badge-status badge-active">🟢 Ativo</span>' : '<span class="badge-status badge-suspended">🔴 Inativo</span>';
-                const toggleBtn = c.active ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>` : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
-                let discountText = ''; if(c.type === 'percentage') discountText = `${c.value}%`; else if(c.type === 'free_shipping') discountText = `FRETE GRÁTIS`; else discountText = `R$ ${c.value.toFixed(2)}`;
-                let limitText = 'Ilimitado'; let esgotadoBadge = '';
-                if (c.usageLimit) { limitText = `${c.usedCount || 0} / ${c.usageLimit}`; if (c.usedCount >= c.usageLimit) esgotadoBadge = '<span style="color:#ea1d2c; font-weight:900; margin-left: 6px; background: rgba(234,29,44,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">ESGOTADO</span>'; }
+                const statusBadge = c.active 
+                    ? '<span class="badge-status badge-active">🟢 Ativo</span>' 
+                    : '<span class="badge-status badge-suspended">🔴 Inativo</span>';
+                
+                const toggleBtn = c.active
+                    ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>`
+                    : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
+
+                let discountText = '';
+                if(c.type === 'percentage') discountText = `${c.value}%`;
+                else if(c.type === 'free_shipping') discountText = `FRETE GRÁTIS`;
+                else discountText = `R$ ${c.value.toFixed(2)}`;
+
+                let limitText = 'Ilimitado';
+                let esgotadoBadge = '';
+                
+                if (c.usageLimit) {
+                    const isEsgotado = c.usedCount >= c.usageLimit;
+                    limitText = `${c.usedCount || 0} / ${c.usageLimit}`;
+                    if (isEsgotado) {
+                        esgotadoBadge = '<span style="color:#ea1d2c; font-weight:900; margin-left: 6px; background: rgba(234,29,44,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">ESGOTADO</span>';
+                    }
+                }
+
                 return `
                 <div class="card-item" style="flex-direction: column; align-items: flex-start; ${!c.active ? 'opacity: 0.6;' : ''}">
-                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; border-bottom:1px solid #f0f0f0; padding-bottom:15px; margin-bottom:15px;"><strong style="color:#111; font-size:1.3rem; font-weight: 900; display:flex; align-items:center;">${c.code} ${esgotadoBadge}</strong>${statusBadge}</div>
-                    <div style="font-size:0.9rem; color:#555; line-height: 1.6; width:100%;"><strong>Patrocinador:</strong> <span style="color:#111;">${c.sponsorName}</span><br><strong>Cidade Alvo:</strong> <span class="badge-city" style="margin: 2px 0 2px 5px; font-size: 0.7rem;">📍 ${c.targetCity}</span><br><strong>Desconto:</strong> <span style="${c.type === 'free_shipping' ? 'color:#ea1d2c;' : 'color:#00a14b;'} font-weight:bold; background:#f4f5f7; padding:2px 6px; border-radius:4px;">${discountText}</span><br><strong>Pedido Mínimo:</strong> R$ ${c.minOrder > 0 ? c.minOrder.toFixed(2) : '0,00'}<br><strong>Usos:</strong> ${limitText}<br></div>
-                    <div class="actions-col" style="margin-top: 15px; width: 100%; justify-content: flex-end; border-top: 1px solid #f0f0f0; padding-top: 15px;">${toggleBtn}<button class="btn-del" onclick="window.deleteAdminCoupon('${c.id}')">Excluir</button></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; border-bottom:1px solid #f0f0f0; padding-bottom:15px; margin-bottom:15px;">
+                        <strong style="color:#111; font-size:1.3rem; font-weight: 900; display:flex; align-items:center;">${c.code} ${esgotadoBadge}</strong>
+                        ${statusBadge}
+                    </div>
+                    <div style="font-size:0.9rem; color:#555; line-height: 1.6; width:100%;">
+                        <strong>Patrocinador:</strong> <span style="color:#111;">${c.sponsorName}</span><br>
+                        <strong>Cidade Alvo:</strong> <span class="badge-city" style="margin: 2px 0 2px 5px; font-size: 0.7rem;">📍 ${c.targetCity}</span><br>
+                        <strong>Desconto:</strong> <span style="${c.type === 'free_shipping' ? 'color:#ea1d2c;' : 'color:#00a14b;'} font-weight:bold; background:#f4f5f7; padding:2px 6px; border-radius:4px;">${discountText}</span><br>
+                        <strong>Pedido Mínimo:</strong> R$ ${c.minOrder > 0 ? c.minOrder.toFixed(2) : '0,00'}<br>
+                        <strong>Usos:</strong> ${limitText}<br>
+                    </div>
+                    <div class="actions-col" style="margin-top: 15px; width: 100%; justify-content: flex-end; border-top: 1px solid #f0f0f0; padding-top: 15px;">
+                        ${toggleBtn}
+                        <button class="btn-del" onclick="window.deleteAdminCoupon('${c.id}')">Excluir</button>
+                    </div>
                 </div>`;
             }).join('');
         }
-        window.toggleAdminCoupon = async (id, isActive) => { try { await updateDoc(doc(db, "coupons", id), { active: isActive }); } catch(e) {} };
-        window.deleteAdminCoupon = async (id) => { if(confirm("Apagar permanentemente?")) try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {} };
+
+        window.toggleAdminCoupon = async (id, isActive) => {
+            try { await updateDoc(doc(db, "coupons", id), { active: isActive }); } catch(e) {}
+        };
+
+        window.deleteAdminCoupon = async (id) => {
+            if(confirm("Apagar este cupom global permanentemente?")) {
+                try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {}
+            }
+        };
 
         // ==========================================
-        // 🟢 GESTÃO DE MENSALIDADES DAS LOJAS 🟢
+        // MÓDULO DE FATURAMENTO E REPASSE GLOBAL
         // ==========================================
-        onSnapshot(collection(db, "orders"), (snapshot) => { allOrders = []; snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() })); window.renderFaturamento(); window.renderRepasse(); window.renderDashboard(); });
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            allOrders = [];
+            snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
+            window.renderFaturamento();
+            window.renderRepasse(); 
+        });
 
         window.onCityFatChange = () => {
-            const selectedCity = document.getElementById('filter-city-fat').value; const selectStore = document.getElementById('filter-store-fat'); selectStore.innerHTML = '<option value="all">Ver Todas as Lojas</option>';
-            allStores.forEach(s => { if (selectedCity === 'all' || s.city === selectedCity) { selectStore.innerHTML += `<option value="${s.id}">${s.name}</option>`; } });
+            const selectedCity = document.getElementById('filter-city-fat').value;
+            const selectStore = document.getElementById('filter-store-fat');
+            
+            selectStore.innerHTML = '<option value="all">Ver Todas as Lojas</option>';
+
+            allStores.forEach(s => {
+                if (selectedCity === 'all' || s.city === selectedCity) {
+                    selectStore.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+                }
+            });
             window.renderFaturamento();
         };
 
         window.renderFaturamento = () => {
             if (!allOrders || !allStores) return;
-            const filterDate = document.getElementById('filter-faturamento').value; const filterStore = document.getElementById('filter-store-fat').value; const filterCityFat = document.getElementById('filter-city-fat').value;
-            const nowTime = Date.now(); const startOfToday = new Date().setHours(0,0,0,0); const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000); const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
-            let totalVendasApp = 0; let totalPedidosApp = 0; const storeStatsMap = {};
+
+            const filterDate = document.getElementById('filter-faturamento').value;
+            const filterStore = document.getElementById('filter-store-fat').value; 
+            const filterCityFat = document.getElementById('filter-city-fat').value;
+
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+
+            let totalVendasApp = 0;
+            let totalPedidosApp = 0;
+            const storeStatsMap = {};
 
             allOrders.forEach(order => {
                 if (order.status === 'Cancelado') return;
+
                 let showOrder = true;
-                if (filterDate === 'hoje') showOrder = order.timestamp >= startOfToday; else if (filterDate === '7dias') showOrder = order.timestamp >= startOf7Days; else if (filterDate === 'mes') showOrder = order.timestamp >= startOfMonth;
+                if (filterDate === 'hoje') showOrder = order.timestamp >= startOfToday;
+                else if (filterDate === '7dias') showOrder = order.timestamp >= startOf7Days;
+                else if (filterDate === 'mes') showOrder = order.timestamp >= startOfMonth;
+                
                 if (!showOrder) return;
+
                 const storeOfOrder = allStores.find(s => s.id === order.storeId);
+                
                 if (filterCityFat !== 'all' && (!storeOfOrder || storeOfOrder.city !== filterCityFat)) return;
                 if (filterStore !== 'all' && order.storeId !== filterStore) return;
-                const vTotal = order.total || 0; totalVendasApp += vTotal; totalPedidosApp++;
+
+                const vTotal = order.total || 0;
+                totalVendasApp += vTotal;
+                totalPedidosApp++;
+
                 const sId = order.storeId;
-                if (!storeStatsMap[sId]) { storeStatsMap[sId] = { id: sId, name: order.storeName || 'Loja Desconhecida', revenue: 0, ordersCount: 0 }; }
-                storeStatsMap[sId].revenue += vTotal; storeStatsMap[sId].ordersCount++;
+                if (!storeStatsMap[sId]) {
+                    storeStatsMap[sId] = { 
+                        id: sId, 
+                        name: order.storeName || 'Loja Desconhecida', 
+                        revenue: 0, 
+                        ordersCount: 0 
+                    };
+                }
+                storeStatsMap[sId].revenue += vTotal;
+                storeStatsMap[sId].ordersCount++;
             });
 
-            document.getElementById('fat-total-vendas').innerText = `R$ ${totalVendasApp.toFixed(2)}`; document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.10).toFixed(2)}`; document.getElementById('fat-pedidos').innerText = totalPedidosApp;
-            if (filterStore === 'all' && filterCityFat === 'all') { document.getElementById('fat-card-title-vendas').innerText = 'Vendas Totais do App'; } else if (filterStore === 'all' && filterCityFat !== 'all') { document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${filterCityFat}`; } else { const sName = allStores.find(s => s.id === filterStore)?.name || 'Loja'; document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${sName}`; }
-            const rankingArray = Object.values(storeStatsMap).sort((a, b) => b.revenue - a.revenue); const listRender = document.getElementById('ranking-list-render'); listRender.innerHTML = '';
-            if (rankingArray.length === 0) { listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 30px; background:#fff; border-radius:16px; border: 1px solid #f0f0f0; text-align:center; font-weight: 500;">Nenhuma venda contabilizada.</li>'; return; }
+            document.getElementById('fat-total-vendas').innerText = `R$ ${totalVendasApp.toFixed(2)}`;
+            document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.10).toFixed(2)}`;
+            document.getElementById('fat-pedidos').innerText = totalPedidosApp;
+
+            if (filterStore === 'all' && filterCityFat === 'all') {
+                document.getElementById('fat-card-title-vendas').innerText = 'Vendas Totais do App';
+            } else if (filterStore === 'all' && filterCityFat !== 'all') {
+                document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${filterCityFat}`;
+            } else {
+                const sName = allStores.find(s => s.id === filterStore)?.name || 'Loja';
+                document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${sName}`;
+            }
+
+            const rankingArray = Object.values(storeStatsMap).sort((a, b) => b.revenue - a.revenue);
+            const listRender = document.getElementById('ranking-list-render');
+            listRender.innerHTML = '';
+
+            if (rankingArray.length === 0) {
+                listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 30px; background:#fff; border-radius:16px; border: 1px solid #f0f0f0; text-align:center; font-weight: 500;">Nenhuma venda contabilizada neste período.</li>';
+                return;
+            }
+
             const medals = ['🥇', '🥈', '🥉'];
+            
             rankingArray.forEach((storeObj, index) => {
-                let medalDisplay = index < 3 && filterStore === 'all' ? medals[index] : `<span style="font-size:1.2rem; color: #999;">${index + 1}º</span>`; if (filterStore !== 'all') medalDisplay = '🏪'; 
-                const lojaData = allStores.find(s => s.id === storeObj.id); const logoImg = lojaData && lojaData.logo ? lojaData.logo : 'https://via.placeholder.com/50'; const tax10percent = storeObj.revenue * 0.10;
-                listRender.innerHTML += `<li class="ranking-item"><div class="r-medal">${medalDisplay}</div><img src="${logoImg}" class="r-logo"><div class="r-info"><div class="r-name">${storeObj.name}</div><div class="r-orders">${storeObj.ordersCount} pedidos concluídos</div></div><div class="r-revenue"><div class="r-revenue-val">R$ ${storeObj.revenue.toFixed(2)}</div><div class="r-revenue-tax">Taxa (10%): R$ ${tax10percent.toFixed(2)}</div></div></li>`;
+                let medalDisplay = index < 3 && filterStore === 'all' ? medals[index] : `<span style="font-size:1.2rem; color: #999;">${index + 1}º</span>`;
+                if (filterStore !== 'all') medalDisplay = '🏪'; 
+
+                const lojaData = allStores.find(s => s.id === storeObj.id);
+                const logoImg = lojaData && lojaData.logo ? lojaData.logo : 'https://via.placeholder.com/50';
+                
+                const tax10percent = storeObj.revenue * 0.10;
+
+                listRender.innerHTML += `
+                    <li class="ranking-item">
+                        <div class="r-medal">${medalDisplay}</div>
+                        <img src="${logoImg}" class="r-logo">
+                        <div class="r-info">
+                            <div class="r-name">${storeObj.name}</div>
+                            <div class="r-orders">${storeObj.ordersCount} pedidos concluídos</div>
+                        </div>
+                        <div class="r-revenue">
+                            <div class="r-revenue-val">R$ ${storeObj.revenue.toFixed(2)}</div>
+                            <div class="r-revenue-tax">Taxa (10%): R$ ${tax10percent.toFixed(2)}</div>
+                        </div>
+                    </li>
+                `;
             });
         };
 
-        // 🟢 CÁLCULO E LIQUIDAÇÃO DE PAGAMENTO ENTREGADORES 🟢
         window.renderRepasse = () => {
             if (!allOrders || !allDrivers) return;
-            const filterDate = document.getElementById('filter-repasse-date').value; const filterStatus = document.getElementById('filter-repasse-status').value;
-            const nowTime = Date.now(); const startOfToday = new Date().setHours(0,0,0,0); const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000); const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
-            let totalPayout = 0; let totalRides = 0; const driverStats = {};
+
+            const filterDate = document.getElementById('filter-repasse-date').value;
+            
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+
+            let totalPayout = 0;
+            let totalRides = 0;
+            const driverStats = {};
 
             allOrders.forEach(order => {
                 if (!['Concluído', 'Concluido', 'Entregue'].includes(order.status)) return;
                 if (!order.driverId) return;
-                if (filterStatus === 'pending' && order.driverPaid) return;
-                if (filterStatus === 'paid' && !order.driverPaid) return;
 
-                let showOrder = true; const compareTime = order.deliveredAt || order.timestamp;
-                if (filterDate === 'hoje') showOrder = compareTime >= startOfToday; else if (filterDate === '7dias') showOrder = compareTime >= startOf7Days; else if (filterDate === 'mes') showOrder = compareTime >= startOfMonth;
+                let showOrder = true;
+                const compareTime = order.deliveredAt || order.timestamp;
+
+                if (filterDate === 'hoje') showOrder = compareTime >= startOfToday;
+                else if (filterDate === '7dias') showOrder = compareTime >= startOf7Days;
+                else if (filterDate === 'mes') showOrder = compareTime >= startOfMonth;
+                
                 if (!showOrder) return;
 
-                const fee = parseFloat(order.platformDriverFee || 5); totalPayout += fee; totalRides++;
+                const fee = parseFloat(order.platformDriverFee || 5);
+                totalPayout += fee;
+                totalRides++;
+
                 const dId = order.driverId;
-                if (!driverStats[dId]) { const driverObj = allDrivers.find(d => d.id === dId); driverStats[dId] = { id: dId, name: driverObj ? driverObj.name : (order.driverName || 'Entregador'), rides: 0, earned: 0 }; }
-                driverStats[dId].rides++; driverStats[dId].earned += fee;
+                if (!driverStats[dId]) {
+                    const driverObj = allDrivers.find(d => d.id === dId);
+                    driverStats[dId] = {
+                        id: dId,
+                        name: driverObj ? driverObj.name : (order.driverName || 'Entregador Não Identificado'),
+                        rides: 0,
+                        earned: 0
+                    };
+                }
+                driverStats[dId].rides++;
+                driverStats[dId].earned += fee;
             });
 
-            document.getElementById('repasse-total-val').innerText = `R$ ${totalPayout.toFixed(2)}`; document.getElementById('repasse-total-rides').innerText = totalRides;
-            const listRender = document.getElementById('repasse-list-render'); listRender.innerHTML = '';
+            document.getElementById('repasse-total-val').innerText = `R$ ${totalPayout.toFixed(2)}`;
+            document.getElementById('repasse-total-rides').innerText = totalRides;
+
+            const listRender = document.getElementById('repasse-list-render');
+            listRender.innerHTML = '';
+
             const rankingArray = Object.values(driverStats).sort((a, b) => b.earned - a.earned);
 
-            if (rankingArray.length === 0) { listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 30px; background:#fff; border-radius:16px; border: 1px solid #f0f0f0; text-align:center; font-weight: 500;">Nenhuma entrega encontrada.</li>'; return; }
+            if (rankingArray.length === 0) {
+                listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 30px; background:#fff; border-radius:16px; border: 1px solid #f0f0f0; text-align:center; font-weight: 500;">Nenhuma entrega concluída neste período.</li>';
+                return;
+            }
 
             rankingArray.forEach(d => {
-                let statusButtonHtml = '';
-                if (filterStatus === 'pending' && d.earned > 0) { statusButtonHtml = `<div style="background: #e6f4ea; color: #00a14b; padding: 8px 12px; cursor: pointer; text-align:center; font-weight: 900; border-radius: 8px; margin-top: 4px; border: 1px solid #badbcc; transition: 0.2s;" onmouseover="this.style.background='#00a14b'; this.style.color='#fff'" onmouseout="this.style.background='#e6f4ea'; this.style.color='#00a14b'" onclick="window.payDriver('${d.id}', '${d.name}')">✅ Liquidar Pagamento</div>`; } 
-                else if (filterStatus === 'paid') { statusButtonHtml = `<div style="background: #f0f0f0; color: #777; padding: 6px 12px; text-align:center; font-weight: bold; border-radius: 8px; margin-top: 4px;">Acerto Realizado</div>`; } 
-                else { statusButtonHtml = `<div style="background: #eef4ff; color: #0d6efd; padding: 6px 12px; text-align:center; font-weight: bold; border-radius: 8px; margin-top: 4px;">Histórico Geral</div>`; }
-
                 listRender.innerHTML += `
                     <li class="ranking-item" style="border-left: 6px solid #00a14b;">
                         <div class="r-medal" style="font-size: 1.5rem; width: 40px;">🛵</div>
-                        <div class="r-info"><div class="r-name" style="font-size: 1.15rem;">${d.name}</div><div class="r-orders">${d.rides} entregas concluídas</div></div>
-                        <div class="r-revenue" style="display:flex; flex-direction:column; align-items:flex-end;"><div class="r-revenue-val" style="color: #00a14b; font-size: 1.4rem;">R$ ${d.earned.toFixed(2)}</div>${statusButtonHtml}</div>
-                    </li>`;
+                        <div class="r-info">
+                            <div class="r-name" style="font-size: 1.15rem;">${d.name}</div>
+                            <div class="r-orders">${d.rides} entregas concluídas</div>
+                        </div>
+                        <div class="r-revenue">
+                            <div class="r-revenue-val" style="color: #00a14b; font-size: 1.4rem;">R$ ${d.earned.toFixed(2)}</div>
+                            <div class="r-revenue-tax" style="background: #e6f4ea; color: #00a14b; padding: 6px 12px;">Pendente de Repasse</div>
+                        </div>
+                    </li>
+                `;
             });
         };
 
-        window.payDriver = async (driverId, driverName) => {
-            if(confirm(`Você já enviou o Pix/Dinheiro para ${driverName}?\n\nClicar em OK vai zerar as entregas pendentes dele no painel.`)) {
-                try {
-                    const filterDate = document.getElementById('filter-repasse-date').value; const nowTime = Date.now(); const startOfToday = new Date().setHours(0,0,0,0); const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000); const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
-                    const ordersToUpdate = allOrders.filter(order => {
-                        if (order.driverId !== driverId || order.driverPaid || !['Concluído', 'Concluido', 'Entregue'].includes(order.status)) return false;
-                        let inDateRange = true; const compareTime = order.deliveredAt || order.timestamp;
-                        if (filterDate === 'hoje') inDateRange = compareTime >= startOfToday; else if (filterDate === '7dias') inDateRange = compareTime >= startOf7Days; else if (filterDate === 'mes') inDateRange = compareTime >= startOfMonth;
-                        return inDateRange;
-                    });
-                    if (ordersToUpdate.length === 0) return alert("Nenhum pedido para liquidar.");
-                    for (let o of ordersToUpdate) { await updateDoc(doc(db, "orders", o.id), { driverPaid: true, driverPaidAt: Date.now() }); }
-                    alert("Pagamento registrado com sucesso! A conta do entregador foi zerada.");
-                } catch(e) { alert("Erro ao registrar pagamento."); }
+        // ==========================================
+        // MÓDULO DE PATROCINADORES DA ABERTURA
+        // ==========================================
+        document.getElementById('sp-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) { resizeAndCompressImage(file, (compressedBase64) => { sponsorImgBase64 = compressedBase64; }); }
+        });
+
+        onSnapshot(collection(db, "sponsors"), (snapshot) => {
+            globalSponsors = [];
+            snapshot.forEach(doc => globalSponsors.push({ id: doc.id, ...doc.data() }));
+            globalSponsors.sort((a,b) => a.timestamp - b.timestamp);
+            renderSponsors();
+        });
+
+        window.saveSponsor = async () => {
+            if(!sponsorImgBase64) return alert("Selecione uma imagem!");
+            const city = document.getElementById('sp-city').value;
+
+            const btn = document.getElementById('btn-save-sponsor');
+            btn.innerText = "Gravando..."; btn.disabled = true;
+            try {
+                await addDoc(collection(db, "sponsors"), { 
+                    image: sponsorImgBase64,
+                    duration: parseInt(document.getElementById('sp-duration').value),
+                    transition: document.getElementById('sp-transition').value,
+                    city: city,
+                    timestamp: Date.now()
+                });
+                sponsorImgBase64 = ''; document.getElementById('sp-image').value = '';
+                alert("Patrocinador gravado com sucesso! Ele permanecerá ativo até ser removido.");
+            } catch(e) {
+                alert("Erro ao salvar. Verifique sua conexão.");
+            } finally {
+                btn.innerHTML = `Gravar Patrocinador`; 
+                btn.disabled = false;
             }
         };
 
+        function renderSponsors() {
+            const container = document.getElementById('sponsor-list-container');
+            container.innerHTML = globalSponsors.map((s, index) => {
+                let effectName = 'Esmaecer';
+                if(s.transition === 'zoom') effectName = 'Aproximar (Zoom)';
+                if(s.transition === 'slide') effectName = 'Deslizar (Slide)';
+
+                let cityBadge = s.city === 'all' ? 'Global (Todas)' : s.city;
+
+                return `
+                <div class="card-item" style="flex-direction:column; align-items:flex-start; width: 100%; max-width: 260px; padding: 15px;">
+                    <div style="background:#111; color:white; padding:6px 10px; border-radius:8px; font-size:0.75rem; font-weight:800; margin-bottom:10px; letter-spacing: 0.5px;">Ordem: ${index + 1}º</div>
+                    <img src="${s.image}" style="width:100%; height:250px; object-fit:cover; border-radius:10px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size:0.85rem; color:#555; margin-top:15px; width: 100%; line-height: 1.5;">
+                        <span class="badge-city" style="width: 100%; justify-content: center; margin-bottom: 8px;">📍 ${cityBadge}</span><br>
+                        ⏳ Duração: <strong>${s.duration || 2}s</strong><br>
+                        ✨ Efeito: <strong>${effectName}</strong>
+                    </div>
+                    <button class="btn-del" onclick="window.deleteSponsor('${s.id}')" style="margin-left:0; margin-top:15px; width:100%; border: 1px solid #f0f0f0; padding:10px; justify-content:center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        Remover Patrocinador
+                    </button>
+                </div>
+            `;
+            }).join('');
+        }
+        window.deleteSponsor = async (id) => { if(confirm("Remover este patrocinador da tela de abertura?")) await deleteDoc(doc(db, "sponsors", id)); };
+
         // ==========================================
-        // 🟢 CADASTRAR/EDITAR LOJA + MENSALIDADE 🟢
+        // MÓDULO BANNERS 
         // ==========================================
-        document.getElementById('s-logo').addEventListener('change', function(e) { const file = e.target.files[0]; if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); } });
+        document.getElementById('b-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) { resizeAndCompressImage(file, (compressedBase64) => { bannerImgBase64 = compressedBase64; }); }
+        });
+        
+        onSnapshot(collection(db, "banners"), (snapshot) => { 
+            globalBanners = []; 
+            snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() })); 
+            renderBanners(); 
+        });
+        
+        window.saveBanner = async () => { 
+            if(!bannerImgBase64) return alert("Selecione uma imagem!"); 
+            const city = document.getElementById('b-city').value;
+            await addDoc(collection(db, "banners"), { image: bannerImgBase64, city: city }); 
+            bannerImgBase64 = ''; document.getElementById('b-image').value = ''; alert("Banner adicionado!"); 
+        };
+        
+        function renderBanners() { 
+            const container = document.getElementById('banner-list-container'); 
+            container.innerHTML = globalBanners.map(b => {
+                let cityBadge = (!b.city || b.city === 'all') ? 'Global (Todas as Cidades)' : b.city;
+                return `
+                <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
+                    <img src="${b.image}" style="width:100%; height:140px; object-fit:cover; border-radius:10px; border: 1px solid #eee;">
+                    <span class="badge-city" style="margin-top: 15px; width: 100%; justify-content: center; padding: 8px;">📍 ${cityBadge}</span>
+                    <button class="btn-del" onclick="window.deleteBanner('${b.id}')" style="margin-left:0; margin-top:10px; width:100%; justify-content:center; padding: 10px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> 
+                        Excluir Banner
+                    </button>
+                </div>`;
+            }).join(''); 
+        }
+        
+        window.deleteBanner = async (id) => { if(confirm("Remover este banner do aplicativo?")) { await deleteDoc(doc(db, "banners", id)); } };
+
+        // ==========================================
+        // MÓDULO LOJAS E ENTREGADORES 
+        // ==========================================
+        document.getElementById('s-logo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); }
+        });
+        
+        onSnapshot(collection(db, "stores"), (snapshot) => { 
+            allStores = []; 
+            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
+            renderStoreList(); 
+            window.onCityFatChange(); 
+        });
         
         window.saveStore = async () => { 
-            const name = document.getElementById('s-name').value.trim(); const docId = document.getElementById('s-doc').value.trim();
-            const cep = document.getElementById('s-cep').value.trim(); const street = document.getElementById('s-street').value.trim();
-            const email = document.getElementById('s-email').value.trim(); const pass = document.getElementById('s-pass').value.trim(); 
-            const cat = document.getElementById('s-cat').value; const cityDropdownVal = document.getElementById('s-city').value;
-            const dueDateVal = document.getElementById('s-due-date').value;
+            const name = document.getElementById('s-name').value.trim(); 
+            const docId = document.getElementById('s-doc').value.trim();
+            const cep = document.getElementById('s-cep').value.trim();
+            const street = document.getElementById('s-street').value.trim();
+            const email = document.getElementById('s-email').value.trim(); 
+            const pass = document.getElementById('s-pass').value.trim(); 
+            const cat = document.getElementById('s-cat').value; 
+            const cityDropdownVal = document.getElementById('s-city').value;
 
             if(!name || !email || !pass) return alert("Preencha ao menos nome, e-mail e senha da loja."); 
-            if(!cityDropdownVal) return alert("Por favor, selecione uma cidade para a loja."); 
+            if(!cityDropdownVal) return alert("Por favor, selecione uma cidade para a loja. Se a lista estiver vazia, cadastre a cidade na aba 'Cidades'."); 
             
-            // Grava a data de vencimento em Timestamp (meio dia para evitar bug de fuso horário)
-            const dueDateTimestamp = dueDateVal ? new Date(dueDateVal + 'T12:00:00').getTime() : null;
-
             const storeData = { 
                 name, email, password: pass, cat,
-                doc: docId, cep, street, city: cityDropdownVal,
-                dueDate: dueDateTimestamp
+                doc: docId, cep, street, city: cityDropdownVal 
             };
 
             if (editingStoreId) { 
                 const emailExists = allStores.find(s => s.email === email && s.id !== editingStoreId); 
                 if(emailExists) return alert("Já existe outra loja usando este e-mail."); 
+                
                 if (storeImgBase64) storeData.logo = storeImgBase64; 
                 await updateDoc(doc(db, "stores", editingStoreId), storeData); 
                 alert("Loja atualizada com sucesso!"); 
             } else { 
                 const emailExists = allStores.find(s => s.email === email); 
                 if(emailExists) return alert("Já existe uma loja cadastrada com este e-mail."); 
-                storeData.status = 'Aberto'; storeData.isActive = true; storeData.logo = storeImgBase64 || 'https://via.placeholder.com/60';
+                
+                storeData.status = 'Aberto';
+                storeData.isActive = true;
+                storeData.logo = storeImgBase64 || 'https://via.placeholder.com/60';
+                
                 await addDoc(collection(db, "stores"), storeData); 
                 alert("Loja cadastrada com sucesso!"); 
             } 
@@ -1062,59 +1298,63 @@
         };
 
         window.editStore = (id) => { 
-            editingStoreId = id; const store = allStores.find(s => s.id === id); if(!store) return; 
-            document.getElementById('s-name').value = store.name; document.getElementById('s-doc').value = store.doc || ''; 
-            document.getElementById('s-cep').value = store.cep || ''; document.getElementById('s-street').value = store.street || ''; 
-            document.getElementById('s-city').value = store.city || ''; document.getElementById('s-email').value = store.email; 
-            document.getElementById('s-pass').value = store.password; document.getElementById('s-cat').value = store.cat || 'Restaurantes'; 
+            editingStoreId = id; 
+            const store = allStores.find(s => s.id === id); 
+            if(!store) return; 
             
-            if (store.dueDate) {
-                const dateObj = new Date(store.dueDate);
-                document.getElementById('s-due-date').value = dateObj.toISOString().split('T')[0];
-            } else {
-                document.getElementById('s-due-date').value = '';
-            }
-
-            document.getElementById('s-logo').value = ''; storeImgBase64 = ''; 
-            document.getElementById('form-store-title').innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar Loja`; 
-            document.getElementById('btn-save-store').innerHTML = `Salvar Alterações`; document.getElementById('btn-save-store').style.background = "linear-gradient(135deg, #0d6efd, #5a9df8)"; document.getElementById('btn-save-store').style.boxShadow = "0 4px 12px rgba(13, 110, 253, 0.2)"; document.getElementById('btn-cancel-edit').style.display = "inline-flex"; 
+            document.getElementById('s-name').value = store.name; 
+            document.getElementById('s-doc').value = store.doc || ''; 
+            document.getElementById('s-cep').value = store.cep || ''; 
+            document.getElementById('s-street').value = store.street || ''; 
+            document.getElementById('s-city').value = store.city || ''; 
+            document.getElementById('s-email').value = store.email; 
+            document.getElementById('s-pass').value = store.password; 
+            document.getElementById('s-cat').value = store.cat || 'Restaurantes'; 
+            document.getElementById('s-logo').value = ''; 
+            storeImgBase64 = ''; 
+            
+            document.getElementById('form-store-title').innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                Editar Loja
+            `; 
+            document.getElementById('btn-save-store').innerHTML = `Salvar Alterações`; 
+            document.getElementById('btn-save-store').style.background = "linear-gradient(135deg, #0d6efd, #5a9df8)"; 
+            document.getElementById('btn-save-store').style.boxShadow = "0 4px 12px rgba(13, 110, 253, 0.2)"; 
+            document.getElementById('btn-cancel-edit').style.display = "inline-flex"; 
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
         };
 
         window.cancelEdit = () => { 
-            editingStoreId = null; document.getElementById('s-name').value = ''; document.getElementById('s-doc').value = ''; 
-            document.getElementById('s-cep').value = ''; document.getElementById('s-street').value = ''; document.getElementById('s-city').value = ''; 
-            document.getElementById('s-email').value = ''; document.getElementById('s-pass').value = ''; document.getElementById('s-logo').value = ''; 
-            document.getElementById('s-due-date').value = ''; storeImgBase64 = ''; 
-            document.getElementById('form-store-title').innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Cadastrar Nova Loja`; 
-            document.getElementById('btn-save-store').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Registrar Loja`; 
-            document.getElementById('btn-save-store').style.background = "linear-gradient(135deg, #ea1d2c, #ff4b58)"; document.getElementById('btn-save-store').style.boxShadow = "0 4px 12px rgba(234, 29, 44, 0.2)"; document.getElementById('btn-cancel-edit').style.display = "none"; 
+            editingStoreId = null; 
+            document.getElementById('s-name').value = ''; 
+            document.getElementById('s-doc').value = ''; 
+            document.getElementById('s-cep').value = ''; 
+            document.getElementById('s-street').value = ''; 
+            document.getElementById('s-city').value = ''; 
+            document.getElementById('s-email').value = ''; 
+            document.getElementById('s-pass').value = ''; 
+            document.getElementById('s-logo').value = ''; 
+            storeImgBase64 = ''; 
+
+            document.getElementById('form-store-title').innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Cadastrar Nova Loja
+            `; 
+            document.getElementById('btn-save-store').innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                Registrar Loja
+            `; 
+            document.getElementById('btn-save-store').style.background = "linear-gradient(135deg, #ea1d2c, #ff4b58)"; 
+            document.getElementById('btn-save-store').style.boxShadow = "0 4px 12px rgba(234, 29, 44, 0.2)"; 
+            document.getElementById('btn-cancel-edit').style.display = "none"; 
         };
 
         window.toggleSubscription = async (id) => { const store = allStores.find(s => s.id === id); if (store) { const newStatus = store.isActive === false ? true : false; await updateDoc(doc(db, "stores", id), { isActive: newStatus }); } };
         window.deleteStore = async (id) => { if(confirm("Tem certeza que deseja apagar esta loja PERMANENTEMENTE?\n\nIsso também apagará todos os produtos dela!")) { await deleteDoc(doc(db, "stores", id)); const q = query(collection(db, "products"), where("storeId", "==", id)); const querySnapshot = await getDocs(q); querySnapshot.forEach(async (document) => { await deleteDoc(doc(db, "products", document.id)); }); } };
 
-        // Botão para Renovar Mensalidade (+ 1 mês)
-        window.renewSubscription = async (storeId, currentDue) => {
-            if(confirm("Confirmar o recebimento da mensalidade desta loja?\n\nA data de vencimento será empurrada 1 mês para a frente e a loja será reativada automaticamente.")) {
-                try {
-                    const date = new Date(currentDue);
-                    date.setMonth(date.getMonth() + 1);
-                    await updateDoc(doc(db, "stores", storeId), { 
-                        dueDate: date.getTime(),
-                        isActive: true // Garante que a loja volta a funcionar se estivesse bloqueada
-                    });
-                    alert("Mensalidade renovada com sucesso!");
-                } catch(e) {
-                    alert("Erro ao renovar mensalidade.");
-                }
-            }
-        };
-
         function renderStoreList() { 
             const container = document.getElementById('store-list-container'); 
             if(allStores.length === 0) { container.innerHTML = `<p style="font-size:1rem; font-weight:500; color:#999; text-align:center; padding: 20px;">Nenhuma loja cadastrada.</p>`; return; } 
-            
             container.innerHTML = allStores.map(s => { 
                 const isActive = s.isActive !== false; 
                 const cardClass = isActive ? 'card-item' : 'card-item suspended'; 
@@ -1123,23 +1363,6 @@
                 const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; 
                 const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear Acesso' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear Acesso'; 
                 
-                // 🟢 LÓGICA DE EXIBIÇÃO DA MENSALIDADE NO ADMIN 🟢
-                let dueBadge = '';
-                let payButton = '';
-                if (s.dueDate) {
-                    const daysLeft = Math.ceil((s.dueDate - Date.now()) / (1000 * 60 * 60 * 24));
-                    if (daysLeft < 0) {
-                        dueBadge = `<span class="badge-status" style="background:#fef0f0; color:#ea1d2c; border: 1px solid #fbd5d5;">Vencida há ${Math.abs(daysLeft)} dias</span>`;
-                    } else if (daysLeft <= 3) {
-                        dueBadge = `<span class="badge-status" style="background:#fff3cd; color:#856404; border: 1px solid #ffeeba;">Vence em ${daysLeft} dias</span>`;
-                    } else {
-                        dueBadge = `<span class="badge-status" style="background:#e6f4ea; color:#00a14b; border: 1px solid #badbcc;">Mensalidade Ok (Vence dia ${new Date(s.dueDate).toLocaleDateString('pt-BR')})</span>`;
-                    }
-                    payButton = `<button class="btn-reactivate" style="background:#111; color:#fff;" onclick="window.renewSubscription('${s.id}', ${s.dueDate})">💵 Confirmar Pagamento (+1 Mês)</button>`;
-                } else {
-                    dueBadge = `<span class="badge-status" style="background:#f4f5f7; color:#777; border: 1px solid #ddd;">Sem Vencimento Definido</span>`;
-                }
-
                 return ` 
                 <div class="${cardClass}"> 
                     <img src="${s.logo}" class="card-img"> 
@@ -1148,10 +1371,8 @@
                         <span style="font-size:0.85rem; color:#888; font-weight: 500;">CNPJ/CPF: ${s.doc || 'Não informado'} | <span class="badge-city" style="margin:0 0 0 5px;">📍 ${s.city || 'Cidade não definida'}</span></span><br>
                         <span style="font-size:0.85rem; color:#555; font-weight: 600;">✉️ ${s.email} &nbsp;|&nbsp; 🔑 ${s.password}</span><br> 
                         <span class="${badgeClass}" style="margin-top: 8px;">${badgeText}</span> 
-                        ${dueBadge}
                     </div> 
                     <div class="actions-col" style="flex-direction: column; align-items: flex-end; gap: 8px;"> 
-                        ${payButton}
                         <div style="display:flex; gap: 8px;">
                             <button class="btn-edit" onclick="window.editStore('${s.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> 
                             <button class="${toggleBtnClass}" onclick="window.toggleSubscription('${s.id}')">${toggleBtnText}</button> 
@@ -1163,34 +1384,102 @@
             }).join(''); 
         }
 
-        // ==========================================
-        // PATROCINADORES DE ABERTURA
-        // ==========================================
-        document.getElementById('sp-image').addEventListener('change', function(e) { const file = e.target.files[0]; if (file) { resizeAndCompressImage(file, (compressedBase64) => { sponsorImgBase64 = compressedBase64; }); } });
-        onSnapshot(collection(db, "sponsors"), (snapshot) => { globalSponsors = []; snapshot.forEach(doc => globalSponsors.push({ id: doc.id, ...doc.data() })); globalSponsors.sort((a,b) => a.timestamp - b.timestamp); renderSponsors(); });
-        window.saveSponsor = async () => { if(!sponsorImgBase64) return alert("Selecione uma imagem!"); const city = document.getElementById('sp-city').value; const btn = document.getElementById('btn-save-sponsor'); btn.innerText = "Gravando..."; btn.disabled = true; try { await addDoc(collection(db, "sponsors"), { image: sponsorImgBase64, duration: parseInt(document.getElementById('sp-duration').value), transition: document.getElementById('sp-transition').value, city: city, timestamp: Date.now() }); sponsorImgBase64 = ''; document.getElementById('sp-image').value = ''; alert("Patrocinador gravado com sucesso! Ele permanecerá ativo até ser removido."); } catch(e) { alert("Erro ao salvar. Verifique sua conexão."); } finally { btn.innerHTML = `Gravar Patrocinador`; btn.disabled = false; } };
-        function renderSponsors() { const container = document.getElementById('sponsor-list-container'); container.innerHTML = globalSponsors.map((s, index) => { let effectName = 'Esmaecer'; if(s.transition === 'zoom') effectName = 'Aproximar (Zoom)'; if(s.transition === 'slide') effectName = 'Deslizar (Slide)'; let cityBadge = s.city === 'all' ? 'Global (Todas)' : s.city; return ` <div class="card-item" style="flex-direction:column; align-items:flex-start; width: 100%; max-width: 260px; padding: 15px;"> <div style="background:#111; color:white; padding:6px 10px; border-radius:8px; font-size:0.75rem; font-weight:800; margin-bottom:10px; letter-spacing: 0.5px;">Ordem: ${index + 1}º</div> <img src="${s.image}" style="width:100%; height:250px; object-fit:cover; border-radius:10px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05);"> <div style="font-size:0.85rem; color:#555; margin-top:15px; width: 100%; line-height: 1.5;"> <span class="badge-city" style="width: 100%; justify-content: center; margin-bottom: 8px;">📍 ${cityBadge}</span><br> ⏳ Duração: <strong>${s.duration || 2}s</strong><br> ✨ Efeito: <strong>${effectName}</strong> </div> <button class="btn-del" onclick="window.deleteSponsor('${s.id}')" style="margin-left:0; margin-top:15px; width:100%; border: 1px solid #f0f0f0; padding:10px; justify-content:center;"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Remover Patrocinador </button> </div> `; }).join(''); }
-        window.deleteSponsor = async (id) => { if(confirm("Remover este patrocinador da tela de abertura?")) await deleteDoc(doc(db, "sponsors", id)); };
-
-        // ==========================================
-        // BANNERS 
-        // ==========================================
-        document.getElementById('b-image').addEventListener('change', function(e) { const file = e.target.files[0]; if (file) { resizeAndCompressImage(file, (compressedBase64) => { bannerImgBase64 = compressedBase64; }); } });
-        onSnapshot(collection(db, "banners"), (snapshot) => { globalBanners = []; snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() })); renderBanners(); });
-        window.saveBanner = async () => { if(!bannerImgBase64) return alert("Selecione uma imagem!"); const city = document.getElementById('b-city').value; await addDoc(collection(db, "banners"), { image: bannerImgBase64, city: city }); bannerImgBase64 = ''; document.getElementById('b-image').value = ''; alert("Banner adicionado!"); };
-        function renderBanners() { const container = document.getElementById('banner-list-container'); container.innerHTML = globalBanners.map(b => { let cityBadge = (!b.city || b.city === 'all') ? 'Global (Todas as Cidades)' : b.city; return ` <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;"> <img src="${b.image}" style="width:100%; height:140px; object-fit:cover; border-radius:10px; border: 1px solid #eee;"> <span class="badge-city" style="margin-top: 15px; width: 100%; justify-content: center; padding: 8px;">📍 ${cityBadge}</span> <button class="btn-del" onclick="window.deleteBanner('${b.id}')" style="margin-left:0; margin-top:10px; width:100%; justify-content:center; padding: 10px;"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Excluir Banner </button> </div>`; }).join(''); }
-        window.deleteBanner = async (id) => { if(confirm("Remover este banner do aplicativo?")) { await deleteDoc(doc(db, "banners", id)); } };
-
-        // ==========================================
-        // ENTREGADORES 
-        // ==========================================
         onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
-        window.saveDriver = async () => { const name = document.getElementById('d-name').value.trim(); const phone = document.getElementById('d-phone').value.trim(); const email = document.getElementById('d-email').value.trim(); const pass = document.getElementById('d-pass').value.trim(); const city = document.getElementById('d-city').value; if(!name || !email || !pass || !phone) return alert("Preencha todos os dados."); if(!city) return alert("Selecione a cidade do entregador."); if (editingDriverId) { const emailExists = allDrivers.find(d => d.email === email && d.id !== editingDriverId); if(emailExists) return alert("Já existe outro entregador usando este e-mail."); await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass, city }); alert("Entregador atualizado!"); } else { const emailExists = allDrivers.find(d => d.email === email); if(emailExists) return alert("Já existe um entregador com este e-mail."); await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); alert("Entregador cadastrado!"); } window.cancelEditDriver(); };
-        window.editDriver = (id) => { editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; document.getElementById('d-name').value = driver.name; document.getElementById('d-phone').value = driver.phone; document.getElementById('d-email').value = driver.email; document.getElementById('d-pass').value = driver.password; document.getElementById('d-city').value = driver.city || ''; document.getElementById('form-driver-title').innerHTML = ` <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg> Editar Entregador `; document.getElementById('btn-save-driver').innerHTML = `Salvar Alterações`; document.getElementById('btn-save-driver').style.background = "linear-gradient(135deg, #0d6efd, #5a9df8)"; document.getElementById('btn-save-driver').style.boxShadow = "0 4px 12px rgba(13, 110, 253, 0.2)"; document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); };
-        window.cancelEditDriver = () => { editingDriverId = null; document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; document.getElementById('d-email').value = ''; document.getElementById('d-pass').value = ''; document.getElementById('d-city').value = ''; document.getElementById('form-driver-title').innerHTML = ` <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg> Cadastrar Entregador `; document.getElementById('btn-save-driver').innerHTML = `Registrar Entregador`; document.getElementById('btn-save-driver').style.background = "linear-gradient(135deg, #ea1d2c, #ff4b58)"; document.getElementById('btn-save-driver').style.boxShadow = "0 4px 12px rgba(234, 29, 44, 0.2)"; document.getElementById('btn-cancel-driver-edit').style.display = "none"; };
+        
+        window.saveDriver = async () => { 
+            const name = document.getElementById('d-name').value.trim(); 
+            const phone = document.getElementById('d-phone').value.trim(); 
+            const email = document.getElementById('d-email').value.trim(); 
+            const pass = document.getElementById('d-pass').value.trim(); 
+            const city = document.getElementById('d-city').value;
+
+            if(!name || !email || !pass || !phone) return alert("Preencha todos os dados."); 
+            if(!city) return alert("Selecione a cidade do entregador.");
+
+            if (editingDriverId) { 
+                const emailExists = allDrivers.find(d => d.email === email && d.id !== editingDriverId); 
+                if(emailExists) return alert("Já existe outro entregador usando este e-mail."); 
+                await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass, city }); 
+                alert("Entregador atualizado!"); 
+            } else { 
+                const emailExists = allDrivers.find(d => d.email === email); 
+                if(emailExists) return alert("Já existe um entregador com este e-mail."); 
+                await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); 
+                alert("Entregador cadastrado!"); 
+            } 
+            window.cancelEditDriver(); 
+        };
+
+        window.editDriver = (id) => { 
+            editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; 
+            document.getElementById('d-name').value = driver.name; 
+            document.getElementById('d-phone').value = driver.phone; 
+            document.getElementById('d-email').value = driver.email; 
+            document.getElementById('d-pass').value = driver.password; 
+            document.getElementById('d-city').value = driver.city || '';
+            
+            document.getElementById('form-driver-title').innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+                Editar Entregador
+            `; 
+            document.getElementById('btn-save-driver').innerHTML = `Salvar Alterações`; 
+            document.getElementById('btn-save-driver').style.background = "linear-gradient(135deg, #0d6efd, #5a9df8)"; 
+            document.getElementById('btn-save-driver').style.boxShadow = "0 4px 12px rgba(13, 110, 253, 0.2)"; 
+            document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; 
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
+        };
+
+        window.cancelEditDriver = () => { 
+            editingDriverId = null; 
+            document.getElementById('d-name').value = ''; 
+            document.getElementById('d-phone').value = ''; 
+            document.getElementById('d-email').value = ''; 
+            document.getElementById('d-pass').value = ''; 
+            document.getElementById('d-city').value = '';
+            
+            document.getElementById('form-driver-title').innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+                Cadastrar Entregador
+            `; 
+            document.getElementById('btn-save-driver').innerHTML = `Registrar Entregador`; 
+            document.getElementById('btn-save-driver').style.background = "linear-gradient(135deg, #ea1d2c, #ff4b58)"; 
+            document.getElementById('btn-save-driver').style.boxShadow = "0 4px 12px rgba(234, 29, 44, 0.2)"; 
+            document.getElementById('btn-cancel-driver-edit').style.display = "none"; 
+        };
+
         window.toggleDriverStatus = async (id) => { const driver = allDrivers.find(d => d.id === id); if (driver) { const newStatus = driver.isActive === false ? true : false; await updateDoc(doc(db, "drivers", id), { isActive: newStatus }); } };
         window.deleteDriver = async (id) => { if(confirm("Tem certeza que deseja remover este entregador do sistema?")) { await deleteDoc(doc(db, "drivers", id)); } };
-        function renderDriverList() { const container = document.getElementById('driver-list-container'); if(allDrivers.length === 0) { container.innerHTML = `<p style="font-size:1rem; font-weight:500; color:#999; text-align:center; padding: 20px;">Nenhum entregador cadastrado.</p>`; return; } container.innerHTML = allDrivers.map(d => { const isActive = d.isActive !== false; const cardClass = isActive ? 'card-item' : 'card-item suspended'; const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; const badgeText = isActive ? '✅ Acesso Liberado' : '❌ Acesso Bloqueado'; const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear'; return ` <div class="${cardClass}"> <div class="card-img" style="color:#0d6efd; background:#eef4ff; border:none; box-shadow: 0 4px 10px rgba(13,110,253,0.15);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg></div> <div style="flex-grow: 1; line-height: 1.5;"> <strong style="font-size: 1.2rem; font-weight: 900; color: #111; letter-spacing: -0.5px;">${d.name}</strong><br> <span style="font-size:0.85rem; color:#888; font-weight: 500;">📞 ${d.phone} | <span class="badge-city" style="margin:0 0 0 5px;">📍 ${d.city || 'Não definida'}</span></span><br> <span style="font-size:0.85rem; color:#555; font-weight: 600;">✉️ ${d.email} &nbsp;|&nbsp; 🔑 ${d.password}</span><br> <span class="${badgeClass}" style="margin-top: 8px;">${badgeText}</span> </div> <div class="actions-col" style="flex-direction: column; align-items: flex-end; gap: 8px;"> <div style="display:flex; gap: 8px;"> <button class="btn-edit" onclick="window.editDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> <button class="${toggleBtnClass}" onclick="window.toggleDriverStatus('${d.id}')">${toggleBtnText}</button> </div> <button class="btn-del" onclick="window.deleteDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Apagar</button> </div> </div> `; }).join(''); }
+        
+        function renderDriverList() { 
+            const container = document.getElementById('driver-list-container'); 
+            if(allDrivers.length === 0) { container.innerHTML = `<p style="font-size:1rem; font-weight:500; color:#999; text-align:center; padding: 20px;">Nenhum entregador cadastrado.</p>`; return; } 
+            container.innerHTML = allDrivers.map(d => { 
+                const isActive = d.isActive !== false; 
+                const cardClass = isActive ? 'card-item' : 'card-item suspended'; 
+                const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; 
+                const badgeText = isActive ? '✅ Acesso Liberado' : '❌ Acesso Bloqueado'; 
+                const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; 
+                const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear'; 
+                
+                return ` 
+                <div class="${cardClass}"> 
+                    <div class="card-img" style="color:#0d6efd; background:#eef4ff; border:none; box-shadow: 0 4px 10px rgba(13,110,253,0.15);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg></div> 
+                    <div style="flex-grow: 1; line-height: 1.5;"> 
+                        <strong style="font-size: 1.2rem; font-weight: 900; color: #111; letter-spacing: -0.5px;">${d.name}</strong><br> 
+                        <span style="font-size:0.85rem; color:#888; font-weight: 500;">📞 ${d.phone} | <span class="badge-city" style="margin:0 0 0 5px;">📍 ${d.city || 'Não definida'}</span></span><br>
+                        <span style="font-size:0.85rem; color:#555; font-weight: 600;">✉️ ${d.email} &nbsp;|&nbsp; 🔑 ${d.password}</span><br> 
+                        <span class="${badgeClass}" style="margin-top: 8px;">${badgeText}</span> 
+                    </div> 
+                    <div class="actions-col" style="flex-direction: column; align-items: flex-end; gap: 8px;"> 
+                        <div style="display:flex; gap: 8px;">
+                            <button class="btn-edit" onclick="window.editDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> 
+                            <button class="${toggleBtnClass}" onclick="window.toggleDriverStatus('${d.id}')">${toggleBtnText}</button> 
+                        </div>
+                        <button class="btn-del" onclick="window.deleteDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Apagar</button> 
+                    </div> 
+                </div> `; 
+            }).join(''); 
+        }
     </script>
 </body>
 </html>
