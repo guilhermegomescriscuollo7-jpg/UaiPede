@@ -361,14 +361,26 @@
                         const sponsorTitle = isGlobal ? `🎁 Patrocínio ${c.sponsorName || 'Sicoob'}` : 'CUPOM DE DESCONTO';
 
                         const cVal = c.value || 0; const cMin = c.minOrder || 0;
-                        let valText = c.type === 'percentage' ? `${cVal}% OFF` : `R$ ${cVal.toFixed(2)} OFF`;
+                        
+                        // 🟢 ALTERAÇÃO PARA EXIBIR 'FRETE GRÁTIS' NO CUPOM 🟢
+                        let valText = '';
+                        let valSize = '1.8rem';
+                        if (c.type === 'percentage') {
+                            valText = `${cVal}% OFF`;
+                        } else if (c.type === 'free_shipping') {
+                            valText = `FRETE GRÁTIS`;
+                            valSize = '1.4rem'; // Diminui a fonte levemente pra caber no card
+                        } else {
+                            valText = `R$ ${cVal.toFixed(2)} OFF`;
+                        }
+                        
                         let minText = cMin > 0 ? `Acima de R$ ${cMin.toFixed(2)}` : 'Sem valor mínimo';
                         
                         return `
                         <div class="ticket-coupon" style="background-color: ${bgColor};" onclick="window.copyCoupon('${c.code}')">
                             <div class="ticket-left">
                                 <div class="t-title">${sponsorTitle}</div>
-                                <div class="t-value">${valText}</div>
+                                <div class="t-value" style="font-size: ${valSize};">${valText}</div>
                                 <div class="t-info">${minText}</div>
                             </div>
                             <div class="ticket-right">
