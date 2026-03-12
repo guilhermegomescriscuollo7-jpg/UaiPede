@@ -101,14 +101,14 @@
             <h2>UaiPede Entregas</h2>
             <div class="form-group"><label>E-mail</label><input type="email" id="login-email" class="form-input"></div>
             <div class="form-group"><label>Senha</label><input type="password" id="login-pass" class="form-input"></div>
-            <button class="btn-login" onclick="window.loginDriver()">Entrar</button>
+            <button class="btn-login" onclick="window.loginDriver()">Acessar Painel</button>
         </div>
     </div>
 
     <div id="app-screen">
         <header>
             <div class="app-logo">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
                 <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span></div>
             </div>
             <div class="header-top">
@@ -125,14 +125,14 @@
 
         <div class="tabs">
             <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; display:none;">0</span></button>
-            <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Atuais</button>
+            <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Em Andamento</button>
             <button class="tab-btn inactive" id="tab-historico" onclick="window.switchTab('historico')">Realizadas</button>
         </div>
 
         <div class="content-area">
             <div id="sec-novas" class="section active">
-                <div id="offline-msg" class="empty-msg"><h3>Você está Fora de Serviço</h3></div>
-                <div id="no-rides-msg" class="empty-msg" style="display: none;"><h3>Buscando corridas...</h3></div>
+                <div id="offline-msg" class="empty-msg"><h3>Você está Fora de Serviço</h3><p>Fique online para receber corridas.</p></div>
+                <div id="no-rides-msg" class="empty-msg" style="display: none;"><h3>Buscando corridas...</h3><p>Logo uma loja chamará.</p></div>
                 <div id="available-rides-list"></div>
             </div>
             <div id="sec-minhas" class="section"><div id="no-active-msg" class="empty-msg"><h3>Nenhuma entrega em andamento</h3></div><div id="my-rides-list"></div></div>
@@ -202,7 +202,12 @@
             document.getElementById('status-text').style.color = isOnline ? "#00a14b" : "#fff";
             document.getElementById('offline-msg').style.display = isOnline ? 'none' : 'block';
             renderAvailableOrders(); 
-            if(loggedDriver) await updateDoc(doc(db, "drivers", loggedDriver.id), { isOnline: isOnline });
+            
+            try {
+                if(loggedDriver) await updateDoc(doc(db, "drivers", loggedDriver.id), { isOnline: isOnline });
+            } catch(e) {
+                console.error(e);
+            }
         };
 
         window.switchTab = (tab) => {
@@ -219,18 +224,16 @@
         }
 
         function startListeners() {
-            // 🟢 CONSULTA SIMPLIFICADA PARA EVITAR ERRO DE ÍNDICE 🟢
+            // 🟢 FILTRO TOTALMENTE LIVRE PARA DESTRUIR O BLOQUEIO DE CIDADE 🟢
             onSnapshot(collection(db, "orders"), (snapshot) => {
                 let tempPending = [];
-                let drCity = (loggedDriver.city || "").toLowerCase().split('-')[0].trim();
 
                 snapshot.forEach(docSnap => {
                     const order = { id: docSnap.id, ...docSnap.data() };
-                    // Filtro manual em JS para garantir funcionamento
+                    
+                    // Sem trava de cidade: se a loja pedir entregador, cai pra quem estiver online!
                     if (order.status === "Aguardando Entregador") {
-                        const store = storesCache[order.storeId] || {};
-                        const stCity = (store.city || "").toLowerCase().split('-')[0].trim();
-                        if (!drCity || stCity === drCity) tempPending.push(order);
+                        tempPending.push(order);
                     }
                 });
 
@@ -238,6 +241,7 @@
                     window.playAlertSound();
                     window.showSystemNotification();
                 }
+                
                 allPendingOrders = tempPending;
                 availableCount = allPendingOrders.length;
                 renderAvailableOrders();
@@ -298,9 +302,9 @@
             const list = filtered.map(o => {
                 const fee = parseFloat(o.platformDriverFee || 5);
                 total += fee;
-                return `<div class="ride-card" style="border-left:5px solid #00a14b; padding:15px; margin-bottom:15px;"><b>R$ ${fee.toFixed(2)}</b> - ${o.storeName}</div>`;
+                return `<div class="ride-card" style="border-left:5px solid #00a14b; padding:10px;"><b>R$ ${fee.toFixed(2)}</b> - ${o.storeName}</div>`;
             }).join('');
-            container.innerHTML = `<div style="background:#fff; padding:20px; border-radius:16px; margin-bottom:20px; text-align:center;"><b>Total do dia: R$ ${total.toFixed(2)}</b> <br> <span style="font-size:0.9rem; color:#777;">(${filtered.length} entregas)</span></div>` + list;
+            container.innerHTML = `<div style="background:#fff; padding:15px; border-radius:12px; margin-bottom:15px; text-align:center;"><b>Total: R$ ${total.toFixed(2)}</b> (${filtered.length} entregas)</div>` + list;
         };
 
         window.acceptOrder = async (id, btn) => {
