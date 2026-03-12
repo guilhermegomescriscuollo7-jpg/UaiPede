@@ -239,7 +239,7 @@
         let prodQty = 1; let basePriceCalc = 0; let storeCoupons = [];
         window.currentStoreModalContent = {};
         
-        let isFirstLoad = true; // Variável para controlar os 3 segundos da animação inicial
+        let isFirstLoad = true; // Variável para controlar os 2 segundos da animação inicial
 
         const params = new URLSearchParams(window.location.search);
         const storeIdParam = params.get('id');
@@ -319,12 +319,12 @@
                 onSnapshot(query(collection(db, "products"), where("storeId", "==", storeIdParam)), (snapshot) => {
                     currentStoreProducts = []; snapshot.forEach(docP => currentStoreProducts.push({ id: docP.id, ...docP.data() }));
                     
-                    // 🟢 TRAVA DE 3 SEGUNDOS APENAS PARA A PRIMEIRA VEZ QUE ABRIR A LOJA
+                    // 🟢 TRAVA DE 2 SEGUNDOS APENAS PARA A PRIMEIRA VEZ QUE ABRIR A LOJA
                     if (isFirstLoad) {
                         setTimeout(() => {
                             renderFullStore(s, dynamicStatus);
                             isFirstLoad = false;
-                        }, 3000); // Exatos 3 segundos de carregamento obrigatório
+                        }, 2000); // Exatos 2 segundos de carregamento obrigatório
                     } else {
                         // Se for uma atualização em tempo real (loja mudou um preço), atualiza na hora sem piscar a tela
                         renderFullStore(s, dynamicStatus);
