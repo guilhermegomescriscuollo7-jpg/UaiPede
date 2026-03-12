@@ -43,7 +43,7 @@
         .summary-line { display: flex; justify-content: space-between; font-size: 0.95rem; color: #555; margin-bottom: 10px; font-weight: 500;}
         .summary-total { display: flex; justify-content: space-between; font-size: 1.2rem; color: #ea1d2c; font-weight: 900; margin-top: 10px; padding-top: 15px; border-top: 1px dashed #eee; }
 
-        /* 🟢 ÁREA DO CUPOM E LISTA 🟢 */
+        /* ÁREA DO CUPOM E LISTA */
         .coupon-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; }
         .coupon-input-group { display: flex; gap: 10px; }
         .coupon-input-group input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; text-transform: uppercase; font-size: 0.95rem; outline: none; background: #f9f9f9;}
@@ -297,7 +297,6 @@
             }
             document.getElementById('cart-content').style.display = 'block';
 
-            // 🟢 AUTO-PREENCHER ENDEREÇO DO USUÁRIO (Incluindo Cidade) 🟢
             if (userEmail) {
                 try {
                     const userQ = query(collection(db, "customers"), where("email", "==", userEmail));
@@ -305,7 +304,6 @@
                     if (!userSnap.empty) {
                         const userData = userSnap.docs[0].data();
                         
-                        // Verifica se existe o nó address estruturado
                         if (userData.address) {
                             if (typeof userData.address === 'object') {
                                 document.getElementById('end-rua').value = userData.address.rua || '';
@@ -314,7 +312,6 @@
                                 document.getElementById('end-cidade').value = userData.city || userData.address.cidade || '';
                                 document.getElementById('end-comp').value = userData.address.comp || '';
                             } 
-                            // Tratamento antigo via string separada por virgulas
                             else if (typeof userData.address === 'string') {
                                 const parts = userData.address.split(',');
                                 document.getElementById('end-rua').value = parts[0] ? parts[0].trim() : '';
@@ -331,7 +328,6 @@
                     console.error("Erro ao buscar endereço do usuário:", e);
                 }
             } 
-            // Fallback para LocalStorage se o Firebase falhar ou demorar
             else if (loggedCustomer) {
                 if (loggedCustomer.address && typeof loggedCustomer.address === 'string') {
                     const parts = loggedCustomer.address.split(',');
@@ -343,19 +339,16 @@
                 }
             }
 
-            // Buscar dados da loja para taxa de entrega
             try {
                 const storeId = cart[0].storeId;
                 const storeSnap = await getDoc(doc(db, "stores", storeId));
                 if (storeSnap.exists()) {
                     storeDataCache = storeSnap.data();
-                    storeDeliveryFee = storeDataCache.deliveryFee || 0;
                     originalDeliveryFee = storeDataCache.deliveryFee || 0;
                     currentDeliveryFee = originalDeliveryFee;
                 }
             } catch (e) { console.error("Erro ao buscar loja:", e); }
 
-            // Checa se tem cupom aplicado na sessão
             const savedCoupon = JSON.parse(sessionStorage.getItem('appliedCoupon'));
             if(savedCoupon) {
                 document.getElementById('coupon-code').value = savedCoupon.code;
@@ -411,7 +404,6 @@
                 const storeCity = storeDataCache ? storeDataCache.city : null;
                 let availableCoupons = [];
 
-                // Cupons da Loja (Locais)
                 const qLocal = query(collection(db, "coupons"), where("storeId", "==", storeId), where("active", "==", true));
                 const snapLocal = await getDocs(qLocal);
                 snapLocal.forEach(docC => {
@@ -421,7 +413,6 @@
                     }
                 });
 
-                // Cupons Patrocinados (Globais) - Apenas se for associado
                 if (storeCity && isSponsorAssociated) {
                     const qGlobal = query(collection(db, "coupons"), where("storeId", "==", "GLOBAL"), where("targetCity", "==", storeCity), where("active", "==", true));
                     const snapGlobal = await getDocs(qGlobal);
@@ -438,19 +429,31 @@
                     return;
                 }
 
+                // 🟢 RENDERIZAÇÃO MELHORADA DOS CUPONS NO MODAL DO CARRINHO 🟢
                 container.innerHTML = availableCoupons.map(c => {
                     const isGlobal = c.storeId === 'GLOBAL';
                     const bgColor = isGlobal ? '#00a14b' : '#ea1d2c';
                     const sponsorTitle = isGlobal ? `🎁 Patrocínio ${c.sponsorName || 'Exclusivo'}` : '🏷️ CUPOM DA LOJA';
 
-                    let descText = c.type === 'percentage' ? `${c.value}% OFF` : `R$ ${c.value.toFixed(2)} OFF`;
+                    let descText = '';
+                    let valSize = '2rem';
+                    
+                    if (c.type === 'percentage') {
+                        descText = `${c.value}% OFF`;
+                    } else if (c.type === 'free_shipping') {
+                        descText = `FRETE GRÁTIS`;
+                        valSize = '1.4rem'; // Diminui a fonte no modal para caber perfeitamente
+                    } else {
+                        descText = `R$ ${c.value.toFixed(2)} OFF`;
+                    }
+
                     let minText = c.minOrder > 0 ? `Compras acima de R$ ${c.minOrder.toFixed(2)}` : 'Sem valor mínimo para uso';
                     
                     return `
                     <div style="background-color: ${bgColor}; display: flex; color: #fff; border-radius: 12px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; transition: 0.2s;" onclick="window.useCouponFromList('${c.code}')">
                         <div style="flex: 1; padding: 20px; border-right: 2px dashed rgba(255, 255, 255, 0.5); display: flex; flex-direction: column; justify-content: center;">
                             <div style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 6px;">${sponsorTitle}</div>
-                            <div style="font-size: 2rem; font-weight: 900; line-height: 1; margin-bottom: 6px;">${descText}</div>
+                            <div style="font-size: ${valSize}; font-weight: 900; line-height: 1; margin-bottom: 6px;">${descText}</div>
                             <div style="font-size: 0.85rem; font-weight: 500;">${minText}</div>
                         </div>
                         <div style="padding: 20px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px;">
@@ -501,7 +504,6 @@
                 let coupon = snap.docs[0].data();
                 coupon.id = snap.docs[0].id; 
                 
-                // VERIFICAÇÃO GLOBAL / PATROCINADOR
                 if (coupon.storeId === "GLOBAL") {
                     if (storeDataCache && coupon.targetCity && storeDataCache.city !== coupon.targetCity) {
                         msg.style.color = '#ea1d2c'; msg.innerText = `Este cupom é válido apenas para lojas de ${coupon.targetCity.split(' - ')[0]}.`;
@@ -566,6 +568,7 @@
             window.updateTotalsUI();
         };
 
+        // 🟢 ATUALIZAÇÃO DOS CÁLCULOS DO CARRINHO (FRETE GRÁTIS) 🟢
         window.updateTotalsUI = () => {
             const feeTextElement = document.getElementById('delivery-fee-val');
             
@@ -578,17 +581,27 @@
             }
 
             if (appliedCoupon) {
+                // Cálculo de acordo com o tipo de cupom
                 if (appliedCoupon.type === 'fixed') {
                     discountAmount = parseFloat(appliedCoupon.value);
+                    if (discountAmount > subtotalStore) discountAmount = subtotalStore;
                 } else if (appliedCoupon.type === 'percentage') {
                     discountAmount = subtotalStore * (parseFloat(appliedCoupon.value) / 100);
+                    if (discountAmount > subtotalStore) discountAmount = subtotalStore;
+                } else if (appliedCoupon.type === 'free_shipping') {
+                    // O desconto de frete grátis zera exatamente a taxa de entrega atual
+                    discountAmount = currentDeliveryFee; 
                 }
-                
-                if (discountAmount > subtotalStore) discountAmount = subtotalStore;
 
                 document.getElementById('discount-line').style.display = 'flex';
                 document.getElementById('discount-badge').innerText = appliedCoupon.code;
-                document.getElementById('discount-val').innerText = `- R$ ${discountAmount.toFixed(2)}`;
+                
+                // Texto visual para avisar que o desconto foi no frete
+                if (appliedCoupon.type === 'free_shipping') {
+                    document.getElementById('discount-val').innerText = `- R$ ${discountAmount.toFixed(2)} (Frete)`;
+                } else {
+                    document.getElementById('discount-val').innerText = `- R$ ${discountAmount.toFixed(2)}`;
+                }
             } else {
                 discountAmount = 0;
                 document.getElementById('discount-line').style.display = 'none';
@@ -644,7 +657,6 @@
                 currentDeliveryFee = 0;
             }
 
-            // Recalcula ou remove o cupom dependendo do novo subtotal
             if (appliedCoupon && subtotalStore < parseFloat(appliedCoupon.minOrder)) {
                 window.removeCoupon(true);
             } else if (appliedCoupon) {
@@ -686,7 +698,6 @@
                 const cidade = document.getElementById('end-cidade').value.trim();
                 const comp = document.getElementById('end-comp').value.trim();
 
-                // 🟢 Validação também exige Cidade agora 🟢
                 if(!rua || !num || !bairro || !cidade) {
                     alert("Por favor, preencha a Rua, Número, Bairro e Cidade para entrega."); return;
                 }
