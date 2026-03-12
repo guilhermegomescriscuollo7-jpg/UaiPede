@@ -620,8 +620,9 @@
                     <div class="rep-value" style="color:#8e44ad;" id="rep-avg">R$ 0,00</div>
                 </div>
                 <div class="report-card" style="border-left: 5px solid #f39c12;">
-                    <div class="rep-title">Descontos (Cupons)</div>
-                    <div class="rep-value" style="color:#f39c12;" id="rep-discounts">R$ 0,00</div>
+                    <div class="rep-title">Retenção de Clientes</div>
+                    <div class="rep-value" style="color:#f39c12; font-size: 1.3rem;" id="rep-retention">✨ 0% / 💖 0%</div>
+                    <div style="font-size: 0.75rem; color: #777; margin-top: 5px;">Novos vs. Fiéis</div>
                 </div>
                 <div class="report-card" style="border-left: 5px solid #00cec9;">
                     <div class="rep-title">Delivery vs Retirada</div>
@@ -653,10 +654,26 @@
 
                 <div class="report-details" style="background:#fff; padding:20px; border-radius:12px; border:1px solid #eee;">
                     <h3 class="rep-section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f39c12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Vendas por Dia da Semana
+                    </h3>
+                    <ul id="rep-best-days" style="list-style:none; padding:0; display:flex; flex-direction:column; gap:10px;"></ul>
+                </div>
+
+                <div class="report-details" style="background:#fff; padding:20px; border-radius:12px; border:1px solid #eee;">
+                    <h3 class="rep-section-title">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                         Dias e Horários de Pico
                     </h3>
                     <ul id="rep-peak-hours" style="list-style:none; padding:0; display:flex; flex-direction:column; gap:10px;"></ul>
+                </div>
+
+                <div class="report-details" style="background:#fff; padding:20px; border-radius:12px; border:1px solid #eee;">
+                    <h3 class="rep-section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        Top Bairros (Mapa de Calor)
+                    </h3>
+                    <ul id="rep-top-neighborhoods" style="list-style:none; padding:0; display:flex; flex-direction:column; gap:10px;"></ul>
                 </div>
 
                 <div class="report-details" style="background:#fff; padding:20px; border-radius:12px; border:1px solid #eee;">
@@ -828,7 +845,6 @@
 
         function playAlertSound() {
             try {
-                // Sintetizador de Voz
                 if ('speechSynthesis' in window) {
                     const msg = new SpeechSynthesisUtterance("Atenção! Você tem um novo pedido.");
                     msg.lang = 'pt-BR';
@@ -836,7 +852,6 @@
                     window.speechSynthesis.speak(msg);
                 }
 
-                // Som de alerta da cozinha
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 const ctx = new AudioContext();
                 
@@ -1214,15 +1229,27 @@
             const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
             const startOfSemester = nowTime - (180 * 24 * 60 * 60 * 1000);
 
+            // Contagem global de pedidos por cliente para saber quem é "Novo" ou "Fiel"
+            const globalCustomerCounts = {};
+            globalOrders.forEach(o => {
+                if (o.status === 'Cancelado') return;
+                const cName = o.customerName || 'Desconhecido';
+                globalCustomerCounts[cName] = (globalCustomerCounts[cName] || 0) + 1;
+            });
+
             let totalRevenue = 0; let orderCount = 0;
             let payPix = 0; let payCard = 0; let payCash = 0;
             
-            let totalDiscounts = 0;
             let deliveryCount = 0; let pickupCount = 0;
             let totalPrepTimeMins = 0; let prepTimeCount = 0;
+            
+            let newCustomerOrders = 0; let loyalCustomerOrders = 0;
+
             const productSales = {};
             const customerSales = {};
             const peakHours = {};
+            const daySales = {};
+            const neighborhoodSales = {};
 
             globalOrders.forEach(order => {
                 if (order.status === 'Cancelado') return; 
@@ -1242,11 +1269,17 @@
 
                 orderCount++;
                 totalRevenue += (order.total || 0);
-                totalDiscounts += (order.discount || 0);
 
+                // Entrega vs Retirada
                 const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
                 if(isPickup) pickupCount++; else deliveryCount++;
 
+                // Retenção
+                const cName = order.customerName || 'Desconhecido';
+                if (globalCustomerCounts[cName] > 1) loyalCustomerOrders++;
+                else newCustomerOrders++;
+
+                // Tempo Médio
                 if (order.dispatchedAt && order.timestamp) {
                     let mins = (order.dispatchedAt - order.timestamp) / 60000;
                     if (mins > 0 && mins < 300) { 
@@ -1255,20 +1288,43 @@
                     }
                 }
 
-                let h = new Date(order.timestamp).getHours();
+                // Vendas por Dia da Semana
+                const dateObj = new Date(order.timestamp);
+                const dayName = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'][dateObj.getDay()];
+                daySales[dayName] = (daySales[dayName] || 0) + (order.total || 0);
+
+                // Mapa de Calor (Bairros)
+                let bairro = 'Não informado';
+                if (!isPickup && order.customer && order.customer.address) {
+                    const addr = order.customer.address;
+                    // Tenta extrair o Bairro da string "Rua X, 123 - Bairro Y, Cidade Z"
+                    const parts = addr.split(' - ');
+                    if (parts.length > 1) {
+                        const subParts = parts[1].split(',');
+                        bairro = subParts[0].trim();
+                    }
+                }
+                if (!isPickup && bairro !== 'Não informado') {
+                    neighborhoodSales[bairro] = (neighborhoodSales[bairro] || 0) + 1;
+                }
+
+                // Horários de Pico
+                let h = dateObj.getHours();
                 let range = `${h}h às ${h+1}h`;
                 peakHours[range] = (peakHours[range] || 0) + 1;
 
-                let cName = order.customerName || 'Cliente não identificado';
+                // Top Clientes
                 if(!customerSales[cName]) customerSales[cName] = { count: 0, total: 0 };
                 customerSales[cName].count++;
                 customerSales[cName].total += (order.total || 0);
 
+                // Pagamentos
                 const pm = (order.paymentMethod || '').toLowerCase();
                 if (pm.includes('pix')) payPix++; 
                 else if (pm.includes('cartão') || pm.includes('cartao')) payCard++; 
                 else if (pm.includes('dinheiro')) payCash++;
 
+                // Produtos
                 if(order.items && Array.isArray(order.items)) {
                     order.items.forEach(item => {
                         if(!productSales[item.name]) { productSales[item.name] = { qty: 0, revenue: 0 }; }
@@ -1278,38 +1334,60 @@
                 }
             });
 
+            // Cálculos Finais dos Cards
             const avgTicket = orderCount > 0 ? (totalRevenue / orderCount) : 0;
             const deliveryPct = orderCount > 0 ? Math.round((deliveryCount / orderCount) * 100) : 0;
             const pickupPct = orderCount > 0 ? Math.round((pickupCount / orderCount) * 100) : 0;
             const avgPrep = prepTimeCount > 0 ? Math.round(totalPrepTimeMins / prepTimeCount) : 0;
+            
+            const totalRetentionOrders = newCustomerOrders + loyalCustomerOrders;
+            const newPct = totalRetentionOrders > 0 ? Math.round((newCustomerOrders / totalRetentionOrders) * 100) : 0;
+            const loyalPct = totalRetentionOrders > 0 ? Math.round((loyalCustomerOrders / totalRetentionOrders) * 100) : 0;
 
+            // Injeção nos Cards
             document.getElementById('rep-revenue').innerText = `R$ ${totalRevenue.toFixed(2)}`;
             document.getElementById('rep-count').innerText = orderCount;
             document.getElementById('rep-avg').innerText = `R$ ${avgTicket.toFixed(2)}`;
-            document.getElementById('rep-discounts').innerText = `R$ ${totalDiscounts.toFixed(2)}`;
+            document.getElementById('rep-retention').innerText = `✨ ${newPct}% / 💖 ${loyalPct}%`;
             document.getElementById('rep-delivery-vs-pickup').innerText = `🛵 ${deliveryPct}% / 🚶 ${pickupPct}%`;
             document.getElementById('rep-prep-time').innerText = `⏱️ ${avgPrep} min`;
 
+            // Listas Inferiores
             document.getElementById('rep-payments').innerHTML = `
                 <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#997404" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line><polyline points="22 8.5 12 15.5 2 8.5"></polyline><polyline points="2 15.5 12 8.5 22 15.5"></polyline><line x1="12" y1="2" x2="12" y2="8.5"></line></svg> Pix</span> <strong>${payPix}</strong></li>
                 <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#084298" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Cartão</span> <strong>${payCard}</strong></li>
                 <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f5132" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle></svg> Dinheiro</span> <strong>${payCash}</strong></li>
             `;
 
+            // Dias da Semana
+            const sortedDays = Object.keys(daySales).map(d => ({ day: d, val: daySales[d] })).sort((a, b) => b.val - a.val);
+            const daysContainer = document.getElementById('rep-best-days');
+            if(sortedDays.length === 0 || sortedDays[0].val === 0) daysContainer.innerHTML = '<li style="justify-content:center; color:#999;">Sem vendas registradas.</li>';
+            else daysContainer.innerHTML = sortedDays.filter(d => d.val > 0).map(d => `<li><span>📅 ${d.day}</span> <strong style="color:#00a14b;">R$ ${d.val.toFixed(2)}</strong></li>`).join('');
+
+            // Mapa de Calor (Bairros)
+            const sortedBairros = Object.keys(neighborhoodSales).map(b => ({ name: b, count: neighborhoodSales[b] })).sort((a, b) => b.count - a.count).slice(0, 5);
+            const bairrosContainer = document.getElementById('rep-top-neighborhoods');
+            if(sortedBairros.length === 0) bairrosContainer.innerHTML = '<li style="justify-content:center; color:#999;">Sem dados de entrega.</li>';
+            else bairrosContainer.innerHTML = sortedBairros.map((b, i) => `<li><span><b>${i+1}º</b> ${b.name}</span> <strong style="color:#ea1d2c;">${b.count} pedidos</strong></li>`).join('');
+
+            // Top 5 Produtos
             const sortedProducts = Object.keys(productSales).map(n => ({ name: n, qty: productSales[n].qty, rev: productSales[n].revenue })).sort((a, b) => b.qty - a.qty).slice(0, 5); 
             const topProdContainer = document.getElementById('rep-top-products');
             if(sortedProducts.length === 0) topProdContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem vendas.</li>`;
             else topProdContainer.innerHTML = sortedProducts.map((p, i) => `<li><span><b>${i+1}º</b> ${p.name}</span> <div style="text-align:right;">${p.qty}x<br><strong style="font-size:0.8rem; color:#ea1d2c;">R$ ${p.rev.toFixed(2)}</strong></div></li>`).join('');
 
+            // Top 5 Clientes
             const sortedCustomers = Object.keys(customerSales).map(n => ({ name: n, count: customerSales[n].count, total: customerSales[n].total })).sort((a, b) => b.total - a.total).slice(0, 5);
             const topCustContainer = document.getElementById('rep-top-customers');
             if(sortedCustomers.length === 0) topCustContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem dados.</li>`;
             else topCustContainer.innerHTML = sortedCustomers.map((c, i) => `<li><span><b>${i+1}º</b> ${c.name}</span> <div style="text-align:right;">${c.count} pedidos<br><strong style="font-size:0.8rem; color:#00a14b;">R$ ${c.total.toFixed(2)}</strong></div></li>`).join('');
 
+            // Horários de Pico
             const sortedHours = Object.keys(peakHours).map(h => ({ range: h, count: peakHours[h] })).sort((a, b) => b.count - a.count).slice(0, 5);
             const peakContainer = document.getElementById('rep-peak-hours');
             if(sortedHours.length === 0) peakContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem dados.</li>`;
-            else peakContainer.innerHTML = sortedHours.map(h => `<li><span>🕒 ${h.range}</span> <strong>${h.count} pedidos</strong></li>`).join('');
+            else peakContainer.innerHTML = sortedHours.map(h => `<li><span>🕒 ${h.range}</span> <strong style="color:#0d6efd;">${h.count} pedidos</strong></li>`).join('');
         };
 
         const qCoupons = query(collection(db, "coupons"), where("storeId", "==", loggedStore.id));
