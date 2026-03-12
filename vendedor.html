@@ -11,6 +11,12 @@
         
         .mobile-header { display: none; }
 
+        /* 🟢 AVISOS DE PAGAMENTO E BLOQUEIO DE TELA 🟢 */
+        #payment-warning-banner { background: #ff9800; color: #fff; padding: 12px 20px; text-align: center; font-weight: bold; font-size: 0.95rem; display: none; z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
+        #payment-block-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; padding: 30px;}
+        #payment-block-overlay h1 { color: #ea1d2c; font-size: 2.5rem; margin-bottom: 15px; }
+        #payment-block-overlay p { font-size: 1.1rem; color: #ccc; line-height: 1.6; max-width: 600px; }
+
         /* SIDEBAR / MENU */
         .sidebar { width: 260px; background: #fff; border-right: 1px solid #eee; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.02); z-index: 100; flex-shrink: 0; height: 100vh; }
         .store-header { padding: 25px 20px; border-bottom: 1px solid #f2f2f2; text-align: center; }
@@ -69,7 +75,6 @@
         .btn-dispatch { background: #0d6efd; }
         .btn-call-driver { background: #ea1d2c; }
         
-        /* BOTÃO DE CHAT NO KANBAN */
         .btn-chat-kanban { width: 100%; background: #fff; border: 1px solid #ccc; color: #333; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 8px; cursor: pointer; transition: 0.2s;}
         .btn-chat-kanban:hover { background: #f4f5f7; border-color: #bbb; }
 
@@ -227,10 +232,22 @@
             .ticket-coupon::before, .ticket-coupon::after { background-color: #f4f5f7; }
             .mod-modal-content { width: 100%; height: 100vh; border-radius: 0; }
             .chat-content { width: 100%; height: 100vh; border-radius: 0; }
+
+            #payment-warning-banner { padding-top: 15px; }
         }
     </style>
 </head>
 <body>
+
+    <div id="payment-warning-banner">
+        ⚠️ Atenção: Sua mensalidade vence em X dias. Regularize o pagamento para evitar o bloqueio da loja.
+    </div>
+
+    <div id="payment-block-overlay">
+        <h1>Loja Bloqueada</h1>
+        <p>Sua loja foi temporariamente desativada pois a sua mensalidade encontra-se em atraso.</p>
+        <p style="margin-top: 20px; font-weight: bold; color: #fff;">Por favor, entre em contato com a equipe UaiPede para realizar o pagamento e reativar seus acessos.</p>
+    </div>
 
     <div class="mobile-header">
         <div style="display:flex; align-items:center; gap:10px;">
@@ -833,33 +850,34 @@
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 const ctx = new AudioContext();
-                ctx.resume().then(() => { alert("Inteligência Artificial e Alertas ativados com sucesso! Você ouvirá avisos para novos pedidos."); });
+                ctx.resume();
+                
+                if ('speechSynthesis' in window) {
+                    let msg = new SpeechSynthesisUtterance("");
+                    window.speechSynthesis.speak(msg);
+                }
+                
+                alert("Áudio e Alertas ativados com sucesso! O som tocará perfeitamente agora.");
             } catch(e) {}
-
-            if ("Notification" in window) {
-                Notification.requestPermission();
-            }
+            if ("Notification" in window) Notification.requestPermission();
         };
 
         window.closeToast = () => { document.getElementById('new-order-toast').classList.remove('show'); };
 
-        // 🟢 SOM DA CAIXA REGISTRADORA + VOZ DA IA 🟢
         function playAlertSound() {
             try {
-                // 1. Toca o som de Caixa Registradora (Dinheiro)
                 const toqueCaixa = new Audio('https://www.myinstants.com/media/sounds/cash-register-purchase.mp3'); 
                 toqueCaixa.play().catch(e => console.log("Áudio bloqueado pelo navegador"));
 
-                // 2. A voz entra logo em seguida (com delay para não atropelar muito o som da caixa)
                 setTimeout(() => {
                     if ('speechSynthesis' in window) {
                         const msg = new SpeechSynthesisUtterance("Uai Pede! Você tem um novo pedido!");
                         msg.lang = 'pt-BR';
-                        msg.rate = 1.15;  // Voz mais rápida/animada
-                        msg.pitch = 1.3;  // Voz mais aguda
+                        msg.rate = 1.15;  
+                        msg.pitch = 1.3;  
                         window.speechSynthesis.speak(msg);
                     }
-                }, 800); // 800ms de atraso
+                }, 800); 
                 
             } catch (e) {}
         }
@@ -889,6 +907,7 @@
             }
         };
 
+        // 🟢 ESCUTAR A MENSALIDADE DA LOJA EM TEMPO REAL 🟢
         onSnapshot(doc(db, "stores", loggedStore.id), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
@@ -908,6 +927,28 @@
                 window.renderScheduleUI(data.schedule || {});
                 window.updateStatusBtn();
                 window.loadCategoriesAndProducts();
+
+                // CONTROLE DE VENCIMENTO / MENSALIDADE
+                if (data.dueDate) {
+                    const daysLeft = Math.ceil((data.dueDate - Date.now()) / (1000 * 60 * 60 * 24));
+                    const warningBanner = document.getElementById('payment-warning-banner');
+                    const blockOverlay = document.getElementById('payment-block-overlay');
+
+                    if (daysLeft < 0) {
+                        blockOverlay.style.display = 'flex';
+                        warningBanner.style.display = 'none';
+                        if (data.status === 'Aberto') {
+                            updateDoc(doc(db, "stores", loggedStore.id), { status: 'Fechado', isActive: false });
+                        }
+                    } else if (daysLeft <= 3) {
+                        blockOverlay.style.display = 'none';
+                        warningBanner.style.display = 'block';
+                        warningBanner.innerText = `⚠️ Atenção: Sua mensalidade vence em ${daysLeft} dia(s). Efetue o pagamento para evitar o bloqueio da loja.`;
+                    } else {
+                        blockOverlay.style.display = 'none';
+                        warningBanner.style.display = 'none';
+                    }
+                }
             }
         });
 
