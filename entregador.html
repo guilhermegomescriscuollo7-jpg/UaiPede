@@ -358,7 +358,12 @@
 
             container.innerHTML = allPendingOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
-                const storeAddress = store.address || "Endereço da loja não informado";
+                // Puxando do campo "street" e "city" (como foi cadastrado no adm.html)
+                let storeAddress = "Endereço da loja não informado";
+                if (store.street) {
+                    storeAddress = store.street;
+                    if (store.city) storeAddress += ` - ${store.city}`;
+                }
 
                 return `
                 <div class="ride-card new">
@@ -399,7 +404,14 @@
             
             container.innerHTML = myAcceptedOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
-                const storeAddress = store.address || "Endereço da loja não informado";
+                
+                // Puxando do campo "street" e "city" (como foi cadastrado no adm.html)
+                let storeAddress = "Endereço da loja não informado";
+                if (store.street) {
+                    storeAddress = store.street;
+                    if (store.city) storeAddress += ` - ${store.city}`;
+                }
+                
                 const qCust = encodeURIComponent(order.customer.address + ', ' + loggedDriver.city);
                 
                 return `
