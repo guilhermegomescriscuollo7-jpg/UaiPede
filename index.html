@@ -21,187 +21,173 @@
         .skip-splash #sponsor-wrapper { display: none !important; }
 
         /* BANNER APP */
-        #install-banner { display: none; background: #111; color: #fff; padding: 12px 20px; justify-content: space-between; align-items: center; font-size: 0.9rem; }
-        .btn-install { background: #ea1d2c; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        
-        /* SPLASH & SPONSOR */
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
-        #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .splash-logo-container { display: flex; align-items: center; gap: 12px; animation: pulseSplash 1.5s ease-in-out infinite alternate; }
-        @keyframes pulseSplash { 0% { transform: scale(0.95); } 100% { transform: scale(1.05); } }
-        .splash-swoosh { width: 60px; height: auto; transform: rotate(-10deg); }
-        .splash-text { font-size: 2.5rem; font-weight: 700; color: #ea1d2c; letter-spacing: -1.5px; margin: 0; }
-        
-        #sponsor-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99998; display: none; align-items: center; justify-content: center; }
-        #sponsor-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-        #sponsor-content img { width: 100%; height: 100%; object-fit: cover; }
-        .effect-fade { opacity: 0; transition: opacity 0.6s ease; }
-        .effect-fade.active { opacity: 1; }
+        #install-banner { display: none; background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; z-index: 10000; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+        .app-info { display: flex; align-items: center; gap: 10px; }
+        .app-icon { width: 36px; height: 36px; background: #ea1d2c; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .app-text { font-size: 0.8rem; line-height: 1.2; }
+        .btn-install { background: #ea1d2c; color: #fff; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; cursor: pointer;}
+        .close-banner { background: none; border: none; color: #999; font-size: 1.2rem; cursor: pointer; margin-right: 10px;}
 
-        /* CABEÇALHO COM LOGO E SELETOR */
-        .brand-header { background: #fff; padding: 0 15px; height: 70px; position: fixed; top: 0; left: 0; width: 100%; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
-        
-        .brand-logo-container { display: flex; align-items: center; gap: 6px; }
-        .brand-logo-container svg { width: 32px; height: auto; transform: rotate(-10deg); }
-        .brand-logo-container span { font-size: 1.4rem; font-weight: 900; color: #ea1d2c; letter-spacing: -0.5px; }
-        
-        .city-selector-btn { display: flex; align-items: center; gap: 6px; background: #fff5f5; border: 1px solid #fbd5d5; padding: 8px 12px; border-radius: 50px; color: #ea1d2c; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; max-width: 160px;}
-        .city-selector-btn:active { transform: scale(0.95); background: #ffebeb; }
-        .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
+        /* AVISOS GLOBAIS (NOVO SISTEMA DE NOTÍCIAS) */
+        #global-alerts-container { padding: 0 20px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 10;}
+        .global-alert-card { background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden; border: 1px solid #eee; animation: slideDown 0.3s ease;}
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .global-alert-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+        .global-alert-card.promo::before { background: #ea1d2c; }
+        .global-alert-card.success::before { background: #00a14b; }
+        .global-alert-card.info::before { background: #0d6efd; }
+        .alert-text { font-size: 0.85rem; color: #111; font-weight: 700; flex: 1; padding: 0 10px; line-height: 1.4;}
+        .alert-close { background: #f4f5f7; border: none; font-size: 1rem; color: #777; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .alert-close:active { transform: scale(0.9); background: #eee; }
 
-        /* MODAL DE ESCOLHA DE CIDADE */
-        .city-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; }
-        .city-modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
-        .city-modal-content { background: #fff; width: 90%; max-width: 400px; border-radius: 24px; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; position: relative; max-height: 90vh; display: flex; flex-direction: column;}
-        .city-modal-close { position: absolute; top: 15px; right: 15px; background: #f4f5f7; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; display: none; align-items: center; justify-content: center; cursor: pointer; color: #555;}
+        /* TELA DE ABERTURA E PATROCINADORES */
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #ea1d2c; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.5s ease; }
+        .splash-logo { width: 120px; margin-bottom: 20px; animation: pulse 1.5s infinite; }
+        .splash-title { color: #fff; font-size: 2.5rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
         
-        .city-modal-icon { width: 65px; height: 65px; background: #fff5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ea1d2c; margin: 0 auto 15px; }
-        .city-modal-title { font-size: 1.4rem; font-weight: 900; color: #111; margin-bottom: 8px; }
-        .city-modal-desc { font-size: 0.95rem; color: #777; margin-bottom: 25px; line-height: 1.4; }
-        
-        /* BARRA DE PESQUISA DE CIDADES */
-        .city-search-box { position: relative; margin-bottom: 15px; width: 100%; }
-        .city-search-box svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
-        .city-search-box input { width: 100%; padding: 14px 12px 14px 40px; border: 1px solid #eee; border-radius: 12px; font-size: 0.95rem; outline: none; background: #fdfdfd; transition: 0.2s; font-family: 'Roboto', sans-serif;}
-        .city-search-box input:focus { border-color: #ea1d2c; background: #fff; }
+        #sponsor-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #sponsor-wrapper.fade-in { animation: fadeIn 0.5s ease forwards; }
+        #sponsor-wrapper.zoom-in .sponsor-img { animation: zoomIn 0.8s ease forwards; }
+        #sponsor-wrapper.slide-up { animation: slideUp 0.6s ease forwards; }
 
-        .city-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding-right: 5px; flex: 1; }
-        .city-list::-webkit-scrollbar { width: 4px; }
-        .city-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
-        
-        .city-item-btn { width: 100%; background: #fff; border: 1px solid #f2f2f2; padding: 18px 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 700; color: #111; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .city-item-btn:active { background: #fff5f5; border-color: #ea1d2c; transform: scale(0.98); }
-        .city-item-btn svg { color: #ccc; transition: color 0.2s;}
-        .city-item-btn:active svg { color: #ea1d2c; }
+        .sponsor-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0;}
+        .sponsor-label { position: absolute; bottom: 30px; background: rgba(0,0,0,0.6); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; z-index: 2;}
 
-        /* BANNERS E CATEGORIAS */
-        .banner-carousel-wrapper { background: #f8f8f8; padding: 15px 15px 0; display: none; }
-        .banner-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 12px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .banner-track::-webkit-scrollbar { display: none; }
-        .banner-slide { flex: 0 0 100%; height: 150px; border-radius: 12px; object-fit: cover; scroll-snap-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(1.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        .button-scroll-container { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; padding: 15px; background: #f8f8f8; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
-        .button-scroll-container::-webkit-scrollbar { display: none; }
-        .button-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; padding: 12px 5px; border-radius: 16px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; flex: 0 0 auto; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .button-item:active { transform: scale(0.95); }
-        .filter-icon { width: 32px; height: 32px; margin-bottom: 8px; color: #ea1d2c; transition: color 0.3s ease; }
-        .button-item span { font-size: 0.75rem; color: #717171; font-weight: 600; line-height: 1.1; transition: color 0.3s ease; white-space: nowrap;}
-        .button-item.active { background-color: #ea1d2c; border-color: #ea1d2c; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
-        .button-item.active span { color: #fff; }
-        .button-item.active .filter-icon { color: #fff; } 
-        
-        .section-title { padding: 5px 15px 10px; font-size: 1.1rem; font-weight: 700; color: #333; }
+        /* CABEÇALHO */
+        .header { background-color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; top: 0; width: 100%; z-index: 100; height: 70px; transition: top 0.3s;}
+        .logo { font-size: 1.8rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+        .logo .uai { color: #ea1d2c; }
+        .logo .pede { color: #111; }
+        .user-icon { background-color: #f4f4f4; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; color: #111; }
+
+        /* SELETOR DE LOCALIZAÇÃO */
+        .location-selector { padding: 12px 20px; background: #fff; display: flex; align-items: center; gap: 10px; cursor: pointer; border-bottom: 1px solid #f0f0f0;}
+        .location-selector .city-name { font-weight: bold; color: #ea1d2c; font-size: 0.95rem; }
+        .location-selector .icon { color: #ea1d2c; }
+
+        /* CARROSSEL DE BANNERS */
+        .banners-container { padding: 15px 20px; overflow-x: auto; display: flex; gap: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .banners-container::-webkit-scrollbar { display: none; }
+        .banner { width: 280px; height: 130px; border-radius: 16px; flex-shrink: 0; background-color: #ddd; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.08); scroll-snap-align: start; }
+
+        /* FILTROS DE CATEGORIA */
+        .categories-filter { padding: 10px 20px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #f0f0f0; background: #fff; position: sticky; top: 70px; z-index: 90; }
+        .categories-filter::-webkit-scrollbar { display: none; }
+        .button-item { background: #f4f5f7; border: none; padding: 10px 16px; border-radius: 25px; font-weight: 600; font-size: 0.85rem; color: #555; white-space: nowrap; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
+        .button-item.active { background: #ea1d2c; color: #fff; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.3); }
 
         /* LISTA DE LOJAS */
-        .store-list { padding: 0 15px; }
-        .store-card { display: flex; align-items: center; padding: 15px; margin-bottom: 12px; border-radius: 12px; cursor: pointer; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #f2f2f2; transition: 0.2s; text-decoration: none; }
-        .store-card:active { transform: scale(0.98); background-color: #f9f9f9; }
-        .store-card.closed { opacity: 0.55; filter: grayscale(100%); }
-        .store-card.closed:active { transform: none; background-color: #fff; }
-        .store-logo { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 1px solid #eee; object-fit: cover; flex-shrink: 0;}
-        .store-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
+        .section-title { padding: 20px 20px 10px; font-size: 1.2rem; color: #111; font-weight: 900; }
+        .store-list { display: flex; flex-direction: column; padding: 0 20px; gap: 15px; }
         
-        .store-name { font-size: 1.1rem; font-weight: 800; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
+        .store-card { background-color: #fff; border-radius: 16px; padding: 15px; display: flex; align-items: center; gap: 15px; text-decoration: none; color: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; transition: transform 0.2s; }
+        .store-card:active { transform: scale(0.98); }
+        .store-card.closed { opacity: 0.6; filter: grayscale(100%); }
+        .store-logo { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; background-color: #eee; border: 1px solid #f4f4f4; flex-shrink: 0;}
+        .store-info { flex-grow: 1; }
+        .store-name { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 4px; }
+        .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; gap: 6px; }
+        .dot { font-size: 10px; color: #ccc; }
+
+        /* NAVEGAÇÃO INFERIOR */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background-color: #fff; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); border-top: 1px solid #eee; z-index: 100; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+        .nav-item { text-decoration: none; color: #999; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; font-weight: 600; gap: 4px; transition: 0.2s; }
+        .nav-item.active { color: #ea1d2c; }
+        .nav-item svg { stroke: currentColor; stroke-width: 2.5; transition: 0.2s; }
+        .nav-item.active svg { transform: translateY(-2px); }
+
+        /* MODAL SELECIONAR CIDADE */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; }
+        .modal-overlay.active { display: flex; animation: fadeInBg 0.3s forwards; }
+        .modal-content { background: #fff; width: 100%; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; animation: slideUp 0.3s forwards; padding-bottom: env(safe-area-inset-bottom); }
+        .modal-header { padding: 20px; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 1.1rem; color: #111; font-weight: 900; }
+        .modal-body { padding: 0; max-height: 60vh; overflow-y: auto; }
+        .city-option { padding: 18px 20px; border-bottom: 1px solid #f2f2f2; font-size: 1rem; color: #333; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 500;}
+        .city-option:hover, .city-option:active { background: #f9f9f9; }
         
-        .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-        .store-details .dot { color: #ccc; font-size: 0.6rem; }
-
-        /* MENU INFERIOR */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
-        .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
-        .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
-        .nav-link.active { color: #ea1d2c; font-weight: bold; }
-
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .empty-state { text-align: center; padding: 40px 20px; color: #777; }
-        .empty-state svg { color: #ccc; margin-bottom: 15px; }
-        .empty-state h3 { color: #111; font-size: 1.1rem; margin-bottom: 5px; font-weight: 800;}
+        @keyframes fadeInBg { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <div class="splash-logo-container">
-            <svg class="splash-swoosh" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/>
-            </svg>
-            <h1 class="splash-text">UaiPede</h1>
-        </div>
+        <svg class="splash-logo" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
+        <div class="splash-title">UaiPede</div>
     </div>
 
-    <div id="sponsor-wrapper"><div id="sponsor-content"></div></div>
+    <div id="sponsor-wrapper">
+        <img id="sponsor-img" class="sponsor-img" src="" alt="Patrocinador">
+        <div class="sponsor-label">Patrocínio</div>
+    </div>
 
     <div id="install-banner">
-        <div><strong>UaiPede</strong><br><span style="color:#aaa; font-size:0.8rem;">Instale o app para pedir mais rápido!</span></div>
+        <div class="app-info">
+            <button class="close-banner" onclick="closeInstallBanner()">✕</button>
+            <div class="app-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M5 15 Q 50 55 95 15"></path></svg></div>
+            <div class="app-text"><strong>UaiPede Delivery</strong><br>Instale o app para pedir mais rápido!</div>
+        </div>
         <button class="btn-install" id="btn-install-app">Instalar</button>
     </div>
 
-    <header class="brand-header">
-        <div class="brand-logo-container">
-            <svg viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="10" stroke-linecap="round"/>
-            </svg>
-            <span>UaiPede</span>
-        </div>
-        
-        <button class="city-selector-btn" onclick="window.openCityModal(true)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span class="city-name-label" id="header-city-name">Carregando...</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </button>
+    <header class="header" id="main-header">
+        <div class="logo"><span class="uai">Uai</span><span class="pede">Pede</span></div>
+        <a href="login.html" class="user-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
     </header>
 
-    <main id="main-content" style="display: none;">
-        <div class="banner-carousel-wrapper" id="banner-wrapper"><div class="banner-track" id="banner-track"></div></div>
+    <div id="location-selector" class="location-selector" onclick="window.openCityModal()">
+        <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+        <span class="city-name" id="current-city-display">Selecione sua cidade...</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
 
-        <section class="button-scroll-container" id="category-filters">
-            <div class="button-item active" onclick="window.filterCategory('Todos', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg><span>Todos</span></div>
-            <div class="button-item" onclick="window.filterCategory('Restaurantes', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg><span>Restaurantes</span></div>
-            <div class="button-item" onclick="window.filterCategory('Lanches', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 10.93c-.15-2.92-2.31-5.38-5.18-5.83C15.22 4.41 13.68 4 12 4s-3.22.41-4.81 1.1c-2.87.45-5.03 2.91-5.18 5.83H2v2h2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4h2v-2h-.01zM18 17H6v-4h12v4z"/></svg><span>Lanches</span></div>
-            <div class="button-item" onclick="window.filterCategory('Bares', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg><span>Bares</span></div>
-            <div class="button-item" onclick="window.filterCategory('Sorveterias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M12 2C8.69 2 6 4.69 6 8c0 3.08 2.31 5.64 5.25 5.95V22h1.5v-8.05C15.69 13.64 18 11.08 18 8c0-3.31-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg><span>Sorveterias</span></div>
-            <div class="button-item" onclick="window.filterCategory('Mercados', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Mercados</span></div>
-            <div class="button-item" onclick="window.filterCategory('Farmácias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span>Farmácias</span></div>
-            <div class="button-item" onclick="window.filterCategory('Loja de Roupas', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v2h2v11h16V10h2V8zM12 3.19l7 3.91V8h-2v11H7V8H5V7.1l7-3.91z"/></svg><span>Moda</span></div>
-            <div class="button-item" onclick="window.filterCategory('Açougue', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20.5 3.5l-6 6c-.39-.39-1.02-.39-1.41 0L3.5 19.09l1.41 1.41 9.59-9.59c.39.39 1.02.39 1.41 0l6-6V3.5h-1.41z"/></svg><span>Açougue</span></div>
-            <div class="button-item" onclick="window.filterCategory('Utilidades', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg><span>Utilidades</span></div>
-        </section>
+    <div id="global-alerts-container"></div>
 
-        <h2 class="section-title" id="list-title">Lojas</h2>
-        <div class="store-list" id="store-list-container"></div>
-    </main>
+    <div class="banners-container" id="banners-container">
+        <div style="padding: 20px; color:#999; font-size:0.9rem;">Buscando promoções...</div>
+    </div>
 
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-link active"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img" alt="Início"><span>Início</span></a>
-        <a href="pedidos.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1150/1150592.png" class="nav-icon-img" alt="Pedidos"><span>Pedidos</span></a>
-        <a href="perfil.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="nav-icon-img" alt="Perfil"><span>Perfil</span></a>
-    </nav>
+    <div class="categories-filter" id="category-filters">
+        <button class="button-item active" onclick="window.filterCategory('Todos', this)">Tudo</button>
+        <button class="button-item" onclick="window.filterCategory('Restaurantes', this)">🍕 Restaurantes</button>
+        <button class="button-item" onclick="window.filterCategory('Lanches', this)">🍔 Lanches</button>
+        <button class="button-item" onclick="window.filterCategory('Bares', this)">🍻 Bebidas</button>
+        <button class="button-item" onclick="window.filterCategory('Sorveterias', this)">🍦 Doces</button>
+        <button class="button-item" onclick="window.filterCategory('Mercados', this)">🛒 Mercados</button>
+        <button class="button-item" onclick="window.filterCategory('Farmácias', this)">💊 Farmácias</button>
+    </div>
 
-    <div id="city-modal" class="city-modal-overlay">
-        <div class="city-modal-content">
-            <button class="city-modal-close" id="btn-close-city-modal" onclick="window.closeCityModal()">✕</button>
-            <div class="city-modal-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+    <h2 class="section-title" id="list-title">Lojas</h2>
+    <div class="store-list" id="store-list-container"></div>
+
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item active"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Início</a>
+        <a href="pedidos.html" class="nav-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>Pedidos</a>
+        <a href="login.html" class="nav-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Perfil</a>
+    </div>
+
+    <div id="city-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Onde você está?</h3>
+                <button onclick="window.closeCityModal()" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">✕</button>
             </div>
-            <h2 class="city-modal-title">Onde você está?</h2>
-            <p class="city-modal-desc">Selecione sua cidade para ver os melhores<br>estabelecimentos perto de você.</p>
-            
-            <div class="city-search-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="city-search-input" placeholder="Buscar cidade..." oninput="window.filterCityList()">
-            </div>
-
-            <div class="city-list" id="modal-city-list">
-                <p style="color:#aaa; font-size:0.9rem;">Buscando cidades...</p>
+            <div class="modal-body" id="city-list-render">
+                <div style="padding: 20px; text-align: center; color: #777;">Buscando cidades...</div>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -214,256 +200,236 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // VARIÁVEIS GLOBAIS
-        let allStores = []; 
-        let allBanners = [];
-        let globalCities = [];
-        let allActiveSponsors = [];
+        let globalStores = [];
+        let currentCategoryFilter = null;
+        let selectedCity = localStorage.getItem('userCity') || null;
         
-        let currentCategoryFilter = null; 
-        let bannerInterval; 
-        let userCity = localStorage.getItem('userCity');
-        
-        // INSTALAÇÃO DO PWA
-        let deferredPrompt;
-        const installBanner = document.getElementById('install-banner');
-        const installBtn = document.getElementById('btn-install-app');
-        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBanner.style.display = 'flex'; });
-        installBtn.addEventListener('click', async () => { installBanner.style.display = 'none'; if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; } });
-        
-        // CARREGAMENTO EM TEMPO REAL 
-        onSnapshot(collection(db, "cities"), (snapshot) => {
-            globalCities = [];
-            snapshot.forEach(doc => globalCities.push({ id: doc.id, ...doc.data() }));
-            globalCities.sort((a,b) => a.name.localeCompare(b.name));
-            
-            if(document.getElementById('city-modal').classList.contains('active')) {
-                window.openCityModal(!(!userCity)); 
-            }
-        });
+        // 🟢 SISTEMA DE AVISOS GLOBAIS 🟢
+        let dismissedAlerts = JSON.parse(localStorage.getItem('dismissedAlerts')) || [];
 
-        onSnapshot(collection(db, "stores"), (snapshot) => {
-            allStores = [];
-            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() }));
-            if(userCity) window.renderStores();
-        });
+        onSnapshot(collection(db, "global_alerts"), (snapshot) => {
+            const container = document.getElementById('global-alerts-container');
+            let alertsHtml = '';
+            let alerts = [];
 
-        onSnapshot(collection(db, "banners"), (snapshot) => {
-            allBanners = [];
-            snapshot.forEach(doc => allBanners.push({ id: doc.id, ...doc.data() }));
-            if(userCity) window.renderBanners();
-        });
+            snapshot.forEach(doc => alerts.push({ id: doc.id, ...doc.data() }));
+            alerts.sort((a,b) => b.timestamp - a.timestamp); // Mais recentes primeiro
 
-        onSnapshot(collection(db, "sponsors"), (snapshot) => {
-            allActiveSponsors = [];
-            snapshot.forEach(doc => allActiveSponsors.push({ id: doc.id, ...doc.data() }));
-            allActiveSponsors.sort((a,b) => a.timestamp - b.timestamp);
-        });
+            alerts.forEach(alertData => {
+                if (!dismissedAlerts.includes(alertData.id)) {
+                    let typeClass = 'info'; let icon = '📢';
+                    if(alertData.type === 'promo') { typeClass = 'promo'; icon = '🎉'; }
+                    if(alertData.type === 'success') { typeClass = 'success'; icon = '✅'; }
 
-        // INICIALIZAÇÃO DA TELA 
-        window.addEventListener('load', () => {
-            const splash = document.getElementById('splash-screen');
-            const sponsorWrapper = document.getElementById('sponsor-wrapper');
-            const sponsorContent = document.getElementById('sponsor-content');
-
-            if (sessionStorage.getItem('splashShown') === 'true') {
-                if (splash) splash.style.display = 'none';
-                if (sponsorWrapper) sponsorWrapper.style.display = 'none';
-                
-                if (!userCity) { 
-                    window.openCityModal(false); 
-                } else { 
-                    document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
-                    window.loadCityContent(); 
-                }
-                return;
-            }
-
-            sessionStorage.setItem('splashShown', 'true');
-            
-            setTimeout(() => {
-                if (splash) splash.classList.add('hidden'); 
-                
-                setTimeout(() => { 
-                    if (splash) splash.style.display = 'none'; 
-                    
-                    if (!userCity) {
-                        window.openCityModal(false);
-                    } else {
-                        document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
-                        
-                        const citySponsors = allActiveSponsors.filter(s => !s.city || s.city === 'all' || s.city === userCity);
-                        if(citySponsors.length > 0 && sponsorWrapper) {
-                            sponsorWrapper.style.display = 'flex';
-                            let indexAtual = 0;
-                            function mostrarProximoPatrocinador() {
-                                if (indexAtual >= citySponsors.length) {
-                                    sponsorWrapper.style.transition = "opacity 0.5s ease"; 
-                                    sponsorWrapper.style.opacity = "0";
-                                    setTimeout(() => { sponsorWrapper.style.display = 'none'; window.loadCityContent(); }, 500); 
-                                    return;
-                                }
-                                const spAtual = citySponsors[indexAtual];
-                                const classEfeito = `effect-${spAtual.transition || 'fade'}`;
-                                const tempoMs = (spAtual.duration || 2) * 1000;
-                                sponsorContent.className = classEfeito; 
-                                sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador" style="width:100%; height:100%; object-fit:cover;">`;
-                                void sponsorContent.offsetWidth; 
-                                sponsorContent.classList.add('active'); 
-                                setTimeout(() => {
-                                    sponsorContent.classList.remove('active'); 
-                                    setTimeout(() => { indexAtual++; mostrarProximoPatrocinador(); }, 600); 
-                                }, tempoMs); 
-                            }
-                            mostrarProximoPatrocinador(); 
-                        } else {
-                            if (sponsorWrapper) sponsorWrapper.style.display = 'none'; 
-                            window.loadCityContent();
-                        }
-                    }
-                }, 500); 
-            }, 1500); 
-        });
-
-        // FUNÇÕES DO MODAL DE CIDADES (COM PESQUISA E DESIGN AJUSTADO)
-        window.openCityModal = (canClose = true) => {
-            const modal = document.getElementById('city-modal');
-            const closeBtn = document.getElementById('btn-close-city-modal');
-            
-            document.getElementById('city-search-input').value = '';
-            
-            if (canClose && userCity) { closeBtn.style.display = 'flex'; } 
-            else { closeBtn.style.display = 'none'; }
-
-            window.renderCityList(globalCities);
-            modal.classList.add('active');
-        };
-
-        window.renderCityList = (citiesToRender) => {
-            const listContainer = document.getElementById('modal-city-list');
-            if (citiesToRender.length === 0) {
-                listContainer.innerHTML = '<p style="color:#aaa; text-align:center; padding: 20px;">Nenhuma cidade encontrada.</p>';
-            } else {
-                listContainer.innerHTML = citiesToRender.map(c => {
-                    const cityString = `${c.name} - ${c.state}`;
-                    const isSelected = userCity === cityString;
-                    return `
-                    <button class="city-item-btn" onclick="window.selectCity('${cityString}')" ${isSelected ? 'style="border-color:#ea1d2c; background:#fff5f5;"' : ''}>
-                        <span style="font-weight: 700; color: #111;">${c.name} <span style="font-weight: normal; color: #888; font-size: 0.85rem;">(${c.state})</span></span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${isSelected ? '#ea1d2c' : '#ccc'}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
+                    alertsHtml += `
+                        <div class="global-alert-card ${typeClass}" id="alert-${alertData.id}">
+                            <div style="font-size: 1.4rem;">${icon}</div>
+                            <div class="alert-text">${alertData.text}</div>
+                            <button class="alert-close" onclick="window.dismissAlert('${alertData.id}')">✕</button>
+                        </div>
                     `;
-                }).join('');
-            }
-        };
-
-        window.filterCityList = () => {
-            const query = document.getElementById('city-search-input').value.toLowerCase().trim();
-            if (!query) {
-                window.renderCityList(globalCities);
-                return;
-            }
-            const filtered = globalCities.filter(c => 
-                c.name.toLowerCase().includes(query) || 
-                c.state.toLowerCase().includes(query)
-            );
-            window.renderCityList(filtered);
-        };
-
-        window.closeCityModal = () => { document.getElementById('city-modal').classList.remove('active'); };
-
-        window.selectCity = (cityString) => {
-            userCity = cityString;
-            localStorage.setItem('userCity', cityString);
-            document.getElementById('header-city-name').innerText = cityString.split(' - ')[0];
-            closeCityModal();
-            window.loadCityContent();
-        };
-
-        // RENDERIZAÇÃO CENTRAL 
-        window.loadCityContent = () => {
-            document.getElementById('main-content').style.display = 'block';
-            window.renderBanners();
-            window.renderStores();
-        }
-
-        window.renderBanners = () => {
-            const bannerContainer = document.getElementById('banner-wrapper');
-            const track = document.getElementById('banner-track');
-            if(!userCity) return;
-
-            let bannersHtml = '';
-            allBanners.forEach(b => {
-                if (!b.city || b.city === 'all' || b.city === userCity) {
-                    bannersHtml += `<img src="${b.image}" class="banner-slide">`;
                 }
             });
+            container.innerHTML = alertsHtml;
+        });
+
+        window.dismissAlert = (id) => {
+            dismissedAlerts.push(id);
+            localStorage.setItem('dismissedAlerts', JSON.stringify(dismissedAlerts));
+            const alertEl = document.getElementById(`alert-${id}`);
+            if(alertEl) alertEl.style.display = 'none';
+        };
+
+        // LÓGICA DE INSTALAÇÃO DO PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const banner = document.getElementById('install-banner');
+            const header = document.getElementById('main-header');
+            const isBannerDismissed = sessionStorage.getItem('installBannerDismissed');
             
-            if(bannersHtml === '') { 
-                bannerContainer.style.display = 'none'; 
-            } else { 
-                bannerContainer.style.display = 'block'; 
-                track.innerHTML = bannersHtml; 
-                clearInterval(bannerInterval);
-                let currentIndex = 0;
-                bannerInterval = setInterval(() => {
-                    if (track.children.length > 1) {
-                        currentIndex++;
-                        if(currentIndex >= track.children.length) currentIndex = 0;
-                        track.scrollTo({ left: (track.clientWidth + 12) * currentIndex, behavior: 'smooth' });
+            if (!isBannerDismissed) {
+                banner.style.display = 'flex';
+                header.style.top = '60px'; 
+            }
+        });
+
+        document.getElementById('btn-install-app').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    closeInstallBanner();
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        window.closeInstallBanner = () => {
+            document.getElementById('install-banner').style.display = 'none';
+            document.getElementById('main-header').style.top = '0';
+            sessionStorage.setItem('installBannerDismissed', 'true');
+        };
+
+        // LÓGICA DA SPLASH SCREEN & PATROCÍNIO
+        window.onload = async () => {
+            if (!selectedCity) {
+                document.getElementById('current-city-display').innerText = "Selecionar cidade...";
+                window.openCityModal();
+            } else {
+                document.getElementById('current-city-display').innerText = selectedCity;
+            }
+
+            if (sessionStorage.getItem('splashShown') !== 'true') {
+                setTimeout(async () => {
+                    document.getElementById('splash-screen').style.opacity = '0';
+                    setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 500);
+                    
+                    try {
+                        const snap = await getDocs(collection(db, "sponsors"));
+                        let sponsors = [];
+                        snap.forEach(doc => {
+                            const data = doc.data();
+                            if(data.city === 'all' || data.city === selectedCity) {
+                                sponsors.push(data);
+                            }
+                        });
+
+                        if (sponsors.length > 0) {
+                            const sponsor = sponsors[Math.floor(Math.random() * sponsors.length)];
+                            const wrapper = document.getElementById('sponsor-wrapper');
+                            const img = document.getElementById('sponsor-img');
+                            
+                            img.src = sponsor.image;
+                            wrapper.style.display = 'flex';
+                            
+                            if(sponsor.transition === 'zoom') wrapper.classList.add('zoom-in');
+                            else if(sponsor.transition === 'slide') wrapper.classList.add('slide-up');
+                            else wrapper.classList.add('fade-in');
+
+                            setTimeout(() => {
+                                wrapper.style.display = 'none';
+                                sessionStorage.setItem('splashShown', 'true');
+                            }, (sponsor.duration || 2) * 1000);
+                        } else {
+                            sessionStorage.setItem('splashShown', 'true');
+                        }
+                    } catch (e) {
+                        sessionStorage.setItem('splashShown', 'true');
                     }
-                }, 3500);
+                }, 1500);
+            }
+            
+            loadCities();
+            if(selectedCity) {
+                loadBanners();
+                loadStores();
             }
         };
+
+        // SELETOR DE CIDADES
+        async function loadCities() {
+            try {
+                const snap = await getDocs(collection(db, "cities"));
+                const container = document.getElementById('city-list-render');
+                if(snap.empty) { container.innerHTML = '<div style="padding: 20px; text-align: center; color: #777;">Nenhuma cidade cadastrada ainda.</div>'; return; }
+                
+                let html = '';
+                snap.forEach(doc => {
+                    const c = doc.data();
+                    const fullCity = `${c.name} - ${c.state}`;
+                    html += `
+                        <div class="city-option" onclick="window.selectCity('${fullCity}')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            ${fullCity}
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch(e) {}
+        }
+
+        window.openCityModal = () => { document.getElementById('city-modal').classList.add('active'); };
+        window.closeCityModal = () => { 
+            if(selectedCity) document.getElementById('city-modal').classList.remove('active'); 
+            else alert("Você precisa selecionar uma cidade para ver as lojas.");
+        };
+        
+        window.selectCity = (cityStr) => {
+            selectedCity = cityStr;
+            localStorage.setItem('userCity', cityStr);
+            document.getElementById('current-city-display').innerText = cityStr;
+            window.closeCityModal();
+            loadBanners();
+            loadStores();
+        };
+
+        // CARREGA BANNERS
+        function loadBanners() {
+            onSnapshot(collection(db, "banners"), (snapshot) => {
+                const container = document.getElementById('banners-container');
+                let hasBanners = false;
+                container.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const b = doc.data();
+                    if(b.city === 'all' || b.city === selectedCity) {
+                        container.innerHTML += `<img src="${b.image}" class="banner" alt="Promoção">`;
+                        hasBanners = true;
+                    }
+                });
+                if(!hasBanners) { container.style.display = 'none'; } else { container.style.display = 'flex'; }
+            });
+        }
+
+        // CARREGA LOJAS
+        function loadStores() {
+            onSnapshot(collection(db, "stores"), (snapshot) => {
+                globalStores = [];
+                snapshot.forEach(doc => {
+                    const s = doc.data();
+                    if (s.isActive !== false && s.city === selectedCity) { 
+                        let dynamicStatus = s.status || 'Aberto';
+                        if (dynamicStatus === 'Aberto' && s.schedule) {
+                            const now = new Date();
+                            const currentMins = now.getHours() * 60 + now.getMinutes();
+                            const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+                            const todaySch = s.schedule[daysMap[now.getDay()]];
+                            if (!todaySch || !todaySch.active) { dynamicStatus = 'Fechado'; } 
+                            else {
+                                const [oH, oM] = (todaySch.open || '00:00').split(':').map(Number);
+                                const [cH, cM] = (todaySch.close || '23:59').split(':').map(Number);
+                                const openMins = (oH || 0) * 60 + (oM || 0);
+                                const closeMins = (cH || 0) * 60 + (cM || 0);
+                                let isOpen = (closeMins >= openMins) ? (currentMins >= openMins && currentMins <= closeMins) : (currentMins >= openMins || currentMins <= closeMins);
+                                if (!isOpen) dynamicStatus = 'Fechado';
+                            }
+                        }
+                        globalStores.push({ id: doc.id, ...s, dynamicStatus });
+                    }
+                });
+                window.renderStores();
+            });
+        }
 
         window.renderStores = () => {
             const container = document.getElementById('store-list-container');
-            if(!userCity) return;
-
-            let filteredStores = allStores.filter(s => s.city === userCity);
-            filteredStores = filteredStores.filter(s => s.isActive !== false);
+            
+            let filteredStores = globalStores;
+            if (currentCategoryFilter) {
+                filteredStores = globalStores.filter(s => (s.cat || 'Geral') === currentCategoryFilter);
+            }
+            
+            filteredStores.sort((a, b) => {
+                if (a.dynamicStatus === 'Aberto' && b.dynamicStatus === 'Fechado') return -1;
+                if (a.dynamicStatus === 'Fechado' && b.dynamicStatus === 'Aberto') return 1;
+                return 0;
+            });
 
             if (filteredStores.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                        <h3>Poxa, ainda não chegamos aí!</h3>
-                        <p>Nenhuma loja ativa cadastrada em ${userCity.split(' - ')[0]} no momento.</p>
-                    </div>`;
+                container.innerHTML = `<div style="text-align: center; padding: 40px 20px; color: #717171;">Nenhuma loja encontrada na sua cidade nesta categoria.</div>`;
                 return;
             }
-
-            if (currentCategoryFilter && currentCategoryFilter !== 'Todos') {
-                filteredStores = filteredStores.filter(s => s.cat && s.cat.toLowerCase().includes(currentCategoryFilter.toLowerCase()));
-                if(filteredStores.length === 0) {
-                    container.innerHTML = `<p style="padding: 30px 0; color: #999; text-align: center;">Nenhuma loja encontrada nesta categoria.</p>`; 
-                    return;
-                }
-            }
-
-            const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
-            const currentDayStr = daysMap[now.getDay()]; const currentMins = now.getHours() * 60 + now.getMinutes();
-
-            filteredStores = filteredStores.map(s => {
-                let dynamicStatus = s.status || 'Aberto';
-                if (dynamicStatus === 'Aberto' && s.schedule) {
-                    const todaySch = s.schedule[currentDayStr];
-                    if (!todaySch || !todaySch.active) { dynamicStatus = 'Fechado'; } 
-                    else {
-                        const [oH, oM] = (todaySch.open || '00:00').split(':').map(Number);
-                        const [cH, cM] = (todaySch.close || '23:59').split(':').map(Number);
-                        const openMins = (oH || 0) * 60 + (oM || 0); const closeMins = (cH || 0) * 60 + (cM || 0);
-                        let isOpen = (closeMins >= openMins) ? (currentMins >= openMins && currentMins <= closeMins) : (currentMins >= openMins || currentMins <= closeMins);
-                        if (!isOpen) dynamicStatus = 'Fechado';
-                    }
-                }
-                return { ...s, dynamicStatus };
-            });
-
-            filteredStores.sort((a, b) => {
-                const getWeight = (store) => { if (store.dynamicStatus === 'Fechado') return 1; return 0; };
-                return getWeight(a) - getWeight(b);
-            });
 
             container.innerHTML = filteredStores.map(s => {
                 const isClosed = s.dynamicStatus === 'Fechado';
