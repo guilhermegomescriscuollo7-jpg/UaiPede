@@ -24,6 +24,18 @@
         #install-banner { display: none; background: #111; color: #fff; padding: 12px 20px; justify-content: space-between; align-items: center; font-size: 0.9rem; }
         .btn-install { background: #ea1d2c; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         
+        /* AVISOS GLOBAIS (NOVO) */
+        #global-alerts-container { padding: 0 15px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 10;}
+        .global-alert-card { background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden; border: 1px solid #eee; animation: slideDown 0.3s ease;}
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .global-alert-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+        .global-alert-card.promo::before { background: #ea1d2c; }
+        .global-alert-card.success::before { background: #00a14b; }
+        .global-alert-card.info::before { background: #0d6efd; }
+        .alert-text { font-size: 0.85rem; color: #111; font-weight: 700; flex: 1; padding: 0 10px; line-height: 1.4;}
+        .alert-close { background: #f4f5f7; border: none; font-size: 1rem; color: #777; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .alert-close:active { transform: scale(0.9); background: #eee; }
+
         /* SPLASH & SPONSOR */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
         #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -154,6 +166,9 @@
     </header>
 
     <main id="main-content" style="display: none;">
+        
+        <div id="global-alerts-container"></div>
+        
         <div class="banner-carousel-wrapper" id="banner-wrapper"><div class="banner-track" id="banner-track"></div></div>
 
         <section class="button-scroll-container" id="category-filters">
@@ -224,6 +239,44 @@
         let bannerInterval; 
         let userCity = localStorage.getItem('userCity');
         
+        // 🟢 LÓGICA DE AVISOS GLOBAIS 🟢
+        let dismissedAlerts = JSON.parse(localStorage.getItem('dismissedAlerts')) || [];
+
+        onSnapshot(collection(db, "global_alerts"), (snapshot) => {
+            const container = document.getElementById('global-alerts-container');
+            if(!container) return;
+            
+            let alertsHtml = '';
+            let alerts = [];
+
+            snapshot.forEach(doc => alerts.push({ id: doc.id, ...doc.data() }));
+            alerts.sort((a,b) => b.timestamp - a.timestamp);
+
+            alerts.forEach(alertData => {
+                if (alertData.active !== false && !dismissedAlerts.includes(alertData.id)) {
+                    let typeClass = 'info'; let icon = '📢';
+                    if(alertData.type === 'promo') { typeClass = 'promo'; icon = '🎉'; }
+                    if(alertData.type === 'success') { typeClass = 'success'; icon = '✅'; }
+
+                    alertsHtml += `
+                        <div class="global-alert-card ${typeClass}" id="alert-${alertData.id}">
+                            <div style="font-size: 1.4rem;">${icon}</div>
+                            <div class="alert-text">${alertData.text}</div>
+                            <button class="alert-close" onclick="window.dismissAlert('${alertData.id}')">✕</button>
+                        </div>
+                    `;
+                }
+            });
+            container.innerHTML = alertsHtml;
+        });
+
+        window.dismissAlert = (id) => {
+            dismissedAlerts.push(id);
+            localStorage.setItem('dismissedAlerts', JSON.stringify(dismissedAlerts));
+            const alertEl = document.getElementById(`alert-${id}`);
+            if(alertEl) alertEl.style.display = 'none';
+        };
+
         // INSTALAÇÃO DO PWA
         let deferredPrompt;
         const installBanner = document.getElementById('install-banner');
@@ -325,7 +378,7 @@
             }, 1500); 
         });
 
-        // FUNÇÕES DO MODAL DE CIDADES (COM PESQUISA E DESIGN AJUSTADO)
+        // FUNÇÕES DO MODAL DE CIDADES
         window.openCityModal = (canClose = true) => {
             const modal = document.getElementById('city-modal');
             const closeBtn = document.getElementById('btn-close-city-modal');
