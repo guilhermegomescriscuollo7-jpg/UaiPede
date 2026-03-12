@@ -2,192 +2,554 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UaiPede - Início</title>
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - UaiPede</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    
-    <script>
-        if (sessionStorage.getItem('splashShown') === 'true') {
-            document.documentElement.classList.add('skip-splash');
-        }
-    </script>
-
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; padding-top: 70px; }
-
-        .skip-splash #splash-screen, 
-        .skip-splash #sponsor-wrapper { display: none !important; }
-
-        /* BANNER APP */
-        #install-banner { display: none; background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; z-index: 10000; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
-        .app-info { display: flex; align-items: center; gap: 10px; }
-        .app-icon { width: 36px; height: 36px; background: #ea1d2c; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        .app-text { font-size: 0.8rem; line-height: 1.2; }
-        .btn-install { background: #ea1d2c; color: #fff; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; cursor: pointer;}
-        .close-banner { background: none; border: none; color: #999; font-size: 1.2rem; cursor: pointer; margin-right: 10px;}
-
-        /* AVISOS GLOBAIS (NOVO SISTEMA) */
-        #global-alerts-container { padding: 0 20px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 10;}
-        .global-alert-card { background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden; border: 1px solid #eee; animation: slideDown 0.3s ease;}
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .global-alert-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
-        .global-alert-card.promo::before { background: #ea1d2c; }
-        .global-alert-card.success::before { background: #00a14b; }
-        .global-alert-card.info::before { background: #0d6efd; }
-        .alert-text { font-size: 0.85rem; color: #111; font-weight: 700; flex: 1; padding: 0 10px; line-height: 1.4;}
-        .alert-close { background: #f4f5f7; border: none; font-size: 1rem; color: #777; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
-        .alert-close:active { transform: scale(0.9); background: #eee; }
-
-        /* TELA DE ABERTURA E PATROCINADORES */
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #ea1d2c; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.5s ease; }
-        .splash-logo { width: 120px; margin-bottom: 20px; animation: pulse 1.5s infinite; }
-        .splash-title { color: #fff; font-size: 2.5rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background-color: #f4f5f7; display: flex; height: 100vh; overflow: hidden; color: #333; }
         
-        #sponsor-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        #sponsor-wrapper.fade-in { animation: fadeIn 0.5s ease forwards; }
-        #sponsor-wrapper.zoom-in .sponsor-img { animation: zoomIn 0.8s ease forwards; }
-        #sponsor-wrapper.slide-up { animation: slideUp 0.6s ease forwards; }
+        /* SIDEBAR / MENU */
+        .sidebar { width: 270px; background: #111; color: #fff; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; box-shadow: 4px 0 15px rgba(0,0,0,0.1); z-index: 10; }
+        .sidebar-header { padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; }
+        .app-logo-text { font-size: 1.6rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+        .app-logo-text .uai { color: #ea1d2c; }
+        .app-logo-text .pede { color: #fff; }
+        .app-logo-text .admin-tag { font-size: 0.8rem; color: #888; font-weight: 500; font-style: normal; margin-left: 5px; }
 
-        .sponsor-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0;}
-        .sponsor-label { position: absolute; bottom: 30px; background: rgba(0,0,0,0.6); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; z-index: 2;}
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes zoomIn { from { transform: scale(1.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        /* CABEÇALHO ORIGINAL */
-        .header { background-color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; top: 0; width: 100%; z-index: 100; height: 70px; transition: top 0.3s;}
-        .logo { font-size: 1.8rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
-        .logo .uai { color: #ea1d2c; }
-        .logo .pede { color: #111; }
-        .user-icon { background-color: #f4f4f4; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; color: #111; }
-
-        /* SELETOR DE LOCALIZAÇÃO ORIGINAL */
-        .location-selector { padding: 12px 20px; background: #fff; display: flex; align-items: center; gap: 10px; cursor: pointer; border-bottom: 1px solid #f0f0f0;}
-        .location-selector .city-name { font-weight: bold; color: #ea1d2c; font-size: 0.95rem; }
-        .location-selector .icon { color: #ea1d2c; }
-
-        /* CARROSSEL DE BANNERS */
-        .banners-container { padding: 15px 20px; overflow-x: auto; display: flex; gap: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        .banners-container::-webkit-scrollbar { display: none; }
-        .banner { width: 280px; height: 130px; border-radius: 16px; flex-shrink: 0; background-color: #ddd; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.08); scroll-snap-align: start; }
-
-        /* FILTROS DE CATEGORIA ORIGINAIS (COM EMOJIS) */
-        .categories-filter { padding: 10px 20px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #f0f0f0; background: #fff; position: sticky; top: 70px; z-index: 90; }
-        .categories-filter::-webkit-scrollbar { display: none; }
-        .button-item { background: #f4f5f7; border: none; padding: 10px 16px; border-radius: 25px; font-weight: 600; font-size: 0.85rem; color: #555; white-space: nowrap; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
-        .button-item.active { background: #ea1d2c; color: #fff; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.3); }
-
-        /* LISTA DE LOJAS */
-        .section-title { padding: 20px 20px 10px; font-size: 1.2rem; color: #111; font-weight: 900; }
-        .store-list { display: flex; flex-direction: column; padding: 0 20px; gap: 15px; }
+        .nav-menu { list-style: none; flex: 1; margin-top: 15px; padding: 0 10px; }
+        .nav-item { padding: 15px 15px; margin-bottom: 5px; border-radius: 12px; cursor: pointer; color: #aaa; transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; font-weight: 500; font-size: 0.95rem; }
+        .nav-item svg { stroke: #aaa; transition: 0.3s; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; transform: translateX(5px); }
+        .nav-item:hover svg { stroke: #fff; }
+        .nav-item.active { background: rgba(234, 29, 44, 0.1); color: #ea1d2c; font-weight: 700; border-left: 4px solid #ea1d2c; border-radius: 0 12px 12px 0; }
+        .nav-item.active svg { stroke: #ea1d2c; }
         
-        .store-card { background-color: #fff; border-radius: 16px; padding: 15px; display: flex; align-items: center; gap: 15px; text-decoration: none; color: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; transition: transform 0.2s; }
-        .store-card:active { transform: scale(0.98); }
-        .store-card.closed { opacity: 0.6; filter: grayscale(100%); }
-        .store-logo { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; background-color: #eee; border: 1px solid #f4f4f4; flex-shrink: 0;}
-        .store-info { flex-grow: 1; }
-        .store-name { font-size: 1.05rem; font-weight: 800; color: #111; margin-bottom: 4px; }
-        .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; gap: 6px; }
-        .dot { font-size: 10px; color: #ccc; }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; position: relative; background: #f4f5f7; }
+        .section { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.03); margin-bottom: 30px; border: 1px solid #eaeaea; }
+        .section.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* NAVEGAÇÃO INFERIOR ORIGINAL (COM SVGS) */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background-color: #fff; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); border-top: 1px solid #eee; z-index: 100; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
-        .nav-item { text-decoration: none; color: #999; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; font-weight: 600; gap: 4px; transition: 0.2s; }
-        .nav-item.active { color: #ea1d2c; }
-        .nav-item svg { stroke: currentColor; stroke-width: 2.5; transition: 0.2s; }
-        .nav-item.active svg { transform: translateY(-2px); }
-
-        /* MODAL SELECIONAR CIDADE */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; }
-        .modal-overlay.active { display: flex; animation: fadeInBg 0.3s forwards; }
-        .modal-content { background: #fff; width: 100%; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; animation: slideUp 0.3s forwards; padding-bottom: env(safe-area-inset-bottom); }
-        .modal-header { padding: 20px; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h3 { font-size: 1.1rem; color: #111; font-weight: 900; }
-        .modal-body { padding: 0; max-height: 60vh; overflow-y: auto; }
-        .city-option { padding: 18px 20px; border-bottom: 1px solid #f2f2f2; font-size: 1rem; color: #333; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 500;}
-        .city-option:hover, .city-option:active { background: #f9f9f9; }
+        h2 { margin-bottom: 25px; color: #111; padding-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.6rem; border-bottom: 2px solid #f2f2f2; }
         
-        @keyframes fadeInBg { from { opacity: 0; } to { opacity: 1; } }
+        /* FORMULÁRIOS MODERNOS */
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 0.8rem; margin-bottom: 6px; color: #777; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
+        input, select { width: 100%; padding: 14px 16px; border: 1px solid #e5e5e5; border-radius: 10px; outline: none; font-family: 'Roboto', sans-serif; background: #fdfdfd; transition: all 0.3s ease; font-size: 0.95rem; color: #333;}
+        input:focus, select:focus { border-color: #ea1d2c; background: #fff; box-shadow: 0 0 0 4px rgba(234, 29, 44, 0.1);}
+        input:disabled { background-color: #f0f0f0; color: #aaa; cursor: not-allowed; }
+        input[type="range"] { padding: 0; border: none; cursor: pointer; background: transparent; box-shadow: none; }
+        
+        /* BOTÕES ESTILIZADOS */
+        .btn { background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; border: none; padding: 14px 24px; border-radius: 10px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; box-shadow: 0 4px 12px rgba(234, 29, 44, 0.2);}
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(234, 29, 44, 0.35);}
+        .btn:active { transform: translateY(1px); box-shadow: 0 2px 8px rgba(234, 29, 44, 0.2);}
+        
+        .btn-secondary { background: #f0f0f0; color: #555; border: none; padding: 14px 24px; border-radius: 10px; font-weight: bold; cursor: pointer; display: none; margin-left: 10px; transition: 0.3s;}
+        .btn-secondary:hover { background: #e4e4e4; color: #111; }
+        
+        /* LISTAS E CARDS */
+        .item-list { margin-top: 25px; display: grid; grid-template-columns: 1fr; gap: 18px; }
+        .card-item { border: 1px solid #f0f0f0; padding: 22px; border-radius: 16px; display: flex; align-items: center; gap: 18px; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.3s ease;}
+        .card-item:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-color: #ea1d2c; }
+        .card-item.suspended { background: #fffaffa; border-color: #fbd5d5; } 
+        .card-item.suspended:hover { border-color: #ea1d2c; }
+        
+        .card-img { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; background: #f4f5f7; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
+        
+        .actions-col { display: flex; gap: 10px; margin-left: auto; align-items: center; flex-wrap: wrap; justify-content: flex-end;}
+        .btn-edit { color: #0d6efd; border: none; background: #eef4ff; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
+        .btn-edit:hover { background: #dbe7ff; transform: translateY(-1px); }
+        .btn-suspend { color: #ea1d2c; border: none; background: #fef0f0; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
+        .btn-suspend:hover { background: #fce4e4; transform: translateY(-1px); }
+        .btn-reactivate { color: #00a14b; border: none; background: #e6f4ea; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
+        .btn-reactivate:hover { background: #d3f0db; transform: translateY(-1px); }
+        .btn-del { color: #777; border: none; background: #f4f4f4; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
+        .btn-del:hover { background: #ea1d2c; color: #fff; transform: translateY(-1px); }
+
+        .badge-status { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-top: 6px; letter-spacing: 0.5px;}
+        .badge-active { background: #e6f4ea; color: #00a14b; }
+        .badge-suspended { background: #fef0f0; color: #ea1d2c; }
+        .badge-city { background: #eef4ff; color: #0d6efd; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;}
+
+        /* ABA FATURAMENTO E RANKING */
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 35px; }
+        .metric-card { background: #fff; padding: 30px 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; position: relative; overflow: hidden; transition: 0.3s;}
+        .metric-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+        .metric-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 6px; background: linear-gradient(to bottom, #ea1d2c, #ff6b76); }
+        .metric-card.purple::before { background: linear-gradient(to bottom, #8e44ad, #b86ce0); }
+        .metric-card.blue::before { background: linear-gradient(to bottom, #0d6efd, #5a9df8); }
+        .metric-card.green::before { background: linear-gradient(to bottom, #00a14b, #28d078); }
+        .m-title { font-size: 0.85rem; color: #888; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; letter-spacing: 0.5px;}
+        .m-value { font-size: 2.5rem; font-weight: 900; color: #111; letter-spacing: -1px;}
+        .m-value.green { color: #00a14b; }
+        .m-value.purple { color: #8e44ad; }
+
+        .ranking-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 15px; }
+        .ranking-item { background: #fff; padding: 20px 25px; border-radius: 16px; border: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+        .ranking-item:hover { transform: scale(1.02); border-color: #ddd; box-shadow: 0 8px 25px rgba(0,0,0,0.05); z-index: 2; position: relative;}
+        .r-medal { font-size: 2rem; width: 50px; text-align: center; font-weight: 900; color: #ccc; }
+        .r-logo { width: 55px; height: 55px; border-radius: 14px; object-fit: cover; border: 2px solid #f4f4f4; margin-right: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+        .r-info { flex: 1; }
+        .r-name { font-size: 1.2rem; font-weight: 800; color: #111; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;}
+        .r-orders { font-size: 0.9rem; color: #777; font-weight: 600; }
+        .r-revenue { text-align: right; }
+        .r-revenue-val { font-size: 1.3rem; font-weight: 900; color: #00a14b; }
+        .r-revenue-tax { font-size: 0.8rem; color: #8e44ad; font-weight: 800; margin-top: 4px; background: rgba(142, 68, 173, 0.1); padding: 4px 8px; border-radius: 8px; display: inline-block;}
+
+        /* ABA USUÁRIOS E TOGGLE SICOOB */
+        .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .user-card { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; display: flex; flex-direction: column; position: relative; transition: 0.3s;}
+        .user-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+        .u-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .u-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; flex-shrink: 0; box-shadow: 0 4px 10px rgba(234,29,44,0.2);}
+        .u-info { flex: 1; overflow: hidden; }
+        .u-name { font-size: 1.15rem; font-weight: 900; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
+        .u-email { font-size: 0.85rem; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .u-data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; }
+        .u-data-row strong { color: #555; }
+        
+        .sicoob-area { background: #fdfdfd; border: 1px solid #eee; border-radius: 12px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;}
+        .sicoob-logo-text { font-weight: 900; color: #00a14b; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        
+        .toggle-switch { position: relative; width: 54px; height: 28px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ddd; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        input:checked + .slider { background-color: #00a14b; }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        .controls-area { background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #f0f0f0; margin-bottom: 25px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+        
+        /* SCROLLBAR CUSTOMIZADA */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #aaa; }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <svg class="splash-logo" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
-        <div class="splash-title">UaiPede</div>
-    </div>
-
-    <div id="sponsor-wrapper">
-        <img id="sponsor-img" class="sponsor-img" src="" alt="Patrocinador">
-        <div class="sponsor-label">Patrocínio</div>
-    </div>
-
-    <div id="install-banner">
-        <div class="app-info">
-            <button class="close-banner" onclick="closeInstallBanner()">✕</button>
-            <div class="app-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M5 15 Q 50 55 95 15"></path></svg></div>
-            <div class="app-text"><strong>UaiPede Delivery</strong><br>Instale a app para pedir mais rápido!</div>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
+            <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span> <span class="admin-tag">Admin</span></div>
         </div>
-        <button class="btn-install" id="btn-install-app">Instalar</button>
-    </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="window.switchTab('lojas', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Lojas Parceiras
+            </li>
+            <li class="nav-item" onclick="window.switchTab('cidades', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Cidades Atendidas
+            </li>
+            <li class="nav-item" onclick="window.switchTab('usuarios', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Clientes Cadastrados
+            </li>
+            <li class="nav-item" onclick="window.switchTab('faturamento', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                Faturamento das Lojas
+            </li>
+            <li class="nav-item" onclick="window.switchTab('repasse', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                Repasse Entregadores
+            </li>
+            <li class="nav-item" onclick="window.switchTab('entregadores', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+                Gerenciar Entregadores
+            </li>
+            <li class="nav-item" onclick="window.switchTab('banners', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Banners Home
+            </li>
+            <li class="nav-item" onclick="window.switchTab('patrocinadores', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Patrocínio Abertura
+            </li>
+            <li class="nav-item" onclick="window.switchTab('patrocinadores-cupons', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                Cupons Patrocinados
+            </li>
+        </ul>
+    </aside>
 
-    <header class="header" id="main-header">
-        <div class="logo"><span class="uai">Uai</span><span class="pede">Pede</span></div>
-        <a href="login.html" class="user-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </a>
-    </header>
-
-    <div id="location-selector" class="location-selector" onclick="window.openCityModal()">
-        <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
-        <span class="city-name" id="current-city-display">Selecione sua cidade...</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-    </div>
-
-    <div id="global-alerts-container"></div>
-
-    <div class="banners-container" id="banners-container">
-        <div style="padding: 20px; color:#999; font-size:0.9rem;">Buscando promoções...</div>
-    </div>
-
-    <div class="categories-filter" id="category-filters">
-        <button class="button-item active" onclick="window.filterCategory('Todos', this)">Tudo</button>
-        <button class="button-item" onclick="window.filterCategory('Restaurantes', this)">🍕 Restaurantes</button>
-        <button class="button-item" onclick="window.filterCategory('Lanches', this)">🍔 Lanches</button>
-        <button class="button-item" onclick="window.filterCategory('Bares', this)">🍻 Bebidas</button>
-        <button class="button-item" onclick="window.filterCategory('Sorveterias', this)">🍦 Doces</button>
-        <button class="button-item" onclick="window.filterCategory('Mercados', this)">🛒 Mercados</button>
-        <button class="button-item" onclick="window.filterCategory('Farmácias', this)">💊 Farmácias</button>
-    </div>
-
-    <h2 class="section-title" id="list-title">Lojas</h2>
-    <div class="store-list" id="store-list-container"></div>
-
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item active"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Início</a>
-        <a href="pedidos.html" class="nav-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>Pedidos</a>
-        <a href="login.html" class="nav-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Perfil</a>
-    </div>
-
-    <div id="city-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Onde você está?</h3>
-                <button onclick="window.closeCityModal()" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">✕</button>
+    <main class="main-content">
+        
+        <section id="cidades" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Regiões de Atendimento
+            </h2>
+            <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Cadastre as cidades onde o UaiPede funciona. Essa cidade será vinculada a lojas, entregadores e banners.</p>
+            
+            <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 35px;">
+                <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                    <label>Nome da Cidade</label>
+                    <input type="text" id="c-name" placeholder="Ex: Doresópolis">
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <label>Estado (UF)</label>
+                    <input type="text" id="c-state" placeholder="Ex: MG" maxlength="2" style="text-transform: uppercase;">
+                </div>
+                <button class="btn" onclick="window.saveCity()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Cadastrar
+                </button>
             </div>
-            <div class="modal-body" id="city-list-render">
-                <div style="padding: 20px; text-align: center; color: #777;">Buscando cidades...</div>
+
+            <h3 style="font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Cidades Ativas no Aplicativo</h3>
+            <div class="item-list" id="city-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
+        </section>
+
+        <section id="usuarios" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Gestão de Clientes
+            </h2>
+            <p style="font-size:1rem; color:#666; margin-bottom:25px;">Gerencie os usuários do aplicativo, filtre por cidade e ative benefícios exclusivos de Patrocinador (Ex: Sicoob).</p>
+
+            <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                <div style="background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #f0f0f0; flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <div style="font-size: 2.2rem; font-weight: 900; color: #ea1d2c;" id="total-users">0</div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: #888; text-transform: uppercase;">Total de Clientes</div>
+                </div>
+                <div style="background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #f0f0f0; flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <div style="font-size: 2.2rem; font-weight: 900; color: #00a14b;" id="total-sicoob">0</div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: #888; text-transform: uppercase;">Associados Ativos</div>
+                </div>
             </div>
-        </div>
-    </div>
+
+            <div class="controls-area">
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                    <label>Filtrar por Cidade</label>
+                    <select id="filter-user-city" onchange="window.filterUsers()">
+                        <option value="all">Todas as Cidades</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 2; min-width: 200px;">
+                    <label>Pesquisar por Nome ou E-mail</label>
+                    <input type="text" id="filter-user-search" placeholder="Digite para buscar..." oninput="window.filterUsers()">
+                </div>
+            </div>
+
+            <div class="users-grid" id="users-container">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999; font-weight: 500;">Carregando usuários...</div>
+            </div>
+        </section>
+
+        <section id="patrocinadores-cupons" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                Cupons de Patrocinadores (Global)
+            </h2>
+            <p style="font-size:1rem; color:#666; margin-bottom:25px;">Crie cupons patrocinados por empresas. O cliente associado poderá usar esse desconto em qualquer loja da cidade.</p>
+            
+            <div style="background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #f0f0f0; max-width: 650px; margin-bottom: 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div class="form-group">
+                    <label>Nome do Patrocinador (Ex: Sicoob Cred Plus)</label>
+                    <input type="text" id="admin-sponsor-name" placeholder="Nome da instituição">
+                </div>
+
+                <div class="form-group">
+                    <label>Código do Cupom</label>
+                    <input type="text" id="admin-sponsor-code" placeholder="Ex: SICOOB20" style="text-transform: uppercase; font-weight: bold; color: #ea1d2c;">
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Tipo de Desconto</label>
+                        <select id="admin-sponsor-type" onchange="window.toggleSponsorValueInput()">
+                            <option value="fixed">Fixo em Dinheiro (R$)</option>
+                            <option value="percentage">Porcentagem (%)</option>
+                            <option value="free_shipping">Frete Grátis</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Valor do Desconto</label>
+                        <input type="number" id="admin-sponsor-value" step="0.01" placeholder="Ex: 20 ou 10">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Pedido Mínimo (R$)</label>
+                        <input type="number" id="admin-sponsor-min" step="0.01" placeholder="Opcional. Ex: 50.00">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Limite de Usos (Opcional)</label>
+                        <input type="number" id="admin-sponsor-limit" placeholder="Ex: 50">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Cidade de Atuação</label>
+                        <select id="admin-sponsor-city">
+                            <option value="">Carregando cidades...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="window.createSponsorCoupon()" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #00a14b, #28d078); box-shadow: 0 4px 12px rgba(0, 161, 75, 0.2); margin-top: 15px; font-size: 1.05rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Gerar Cupom do Patrocinador
+                </button>
+            </div>
+
+            <h3 style="font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Cupons Globais Ativos</h3>
+            <div class="item-list" id="sponsor-coupons-list-container" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));"></div>
+        </section>
+
+        <section id="lojas" class="section active">
+            <h2 id="form-store-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Cadastrar Nova Loja
+            </h2>
+            
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 2;">
+                    <label>Nome da Loja</label>
+                    <input type="text" id="s-name" placeholder="Ex: Hakuna Batata">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>CNPJ ou CPF do Responsável</label>
+                    <input type="text" id="s-doc" placeholder="000.000.000-00">
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>CEP</label>
+                    <input type="text" id="s-cep" placeholder="00000-000">
+                </div>
+                <div class="form-group" style="flex: 3;">
+                    <label>Endereço Completo (Rua, Número e Bairro)</label>
+                    <input type="text" id="s-street" placeholder="Rua Exemplo, 123 - Centro">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Cidade da Loja</label>
+                    <select id="s-city">
+                        <option value="">Cadastre uma cidade primeiro...</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Categoria principal</label>
+                    <select id="s-cat">
+                        <option>Restaurantes</option><option>Lanches</option><option>Bares</option>
+                        <option>Sorveterias</option><option>Mercados</option><option>Farmácias</option>
+                        <option>Loja de Roupas</option><option>Açougue</option><option>Utilidades</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; border-top: 2px dashed #f0f0f0; padding-top: 20px; margin-top: 10px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>E-mail (Login do Lojista)</label>
+                    <input type="email" id="s-email" placeholder="loja@email.com">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Senha de Acesso</label>
+                    <input type="text" id="s-pass" placeholder="Defina a senha (ex: loja123)"> 
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Logo da Loja (Opcional na edição)</label>
+                    <input type="file" id="s-logo" accept="image/*" style="padding: 10px;">
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px; display: flex; gap: 15px;">
+                <button class="btn" id="btn-save-store" onclick="window.saveStore()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    Registrar Loja
+                </button>
+                <button class="btn-secondary" id="btn-cancel-edit" onclick="window.cancelEdit()">Cancelar Edição</button>
+            </div>
+            
+            <h3 style="margin-top: 45px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Lojas Cadastradas</h3>
+            <div class="item-list" id="store-list-container"></div>
+        </section>
+
+        <section id="faturamento" class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                <h2 style="border: none; padding: 0; margin: 0;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    Faturamento das Lojas
+                </h2>
+                
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <select id="filter-city-fat" onchange="window.onCityFatChange()" style="padding: 8px; border-radius: 8px;">
+                        <option value="all">Todas as Cidades</option>
+                    </select>
+
+                    <select id="filter-store-fat" onchange="window.renderFaturamento()" style="color: #ea1d2c; font-weight: bold; border-color: rgba(234, 29, 44, 0.3); padding: 8px; border-radius: 8px;">
+                        <option value="all">Ver Todas as Lojas</option>
+                    </select>
+
+                    <select id="filter-faturamento" onchange="window.renderFaturamento()" style="font-weight: bold; padding: 8px; border-radius: 8px;">
+                        <option value="hoje" selected>Hoje</option>
+                        <option value="7dias">Últimos 7 Dias</option>
+                        <option value="mes">Último Mês</option>
+                        <option value="todos">Todo o Histórico</option>
+                    </select>
+                </div>
+            </div>
+            
+            <p style="font-size: 1rem; color: #666; margin-bottom: 30px;">Acompanhe as vendas das lojas e a comissão da plataforma (10%).</p>
+
+            <div class="metrics-grid">
+                <div class="metric-card green">
+                    <div class="m-title" id="fat-card-title-vendas">Vendas Totais</div>
+                    <div class="m-value green" id="fat-total-vendas">R$ 0,00</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="m-title"><span>Sua Taxa (10%)</span></div>
+                    <div class="m-value purple" id="fat-taxa-app">R$ 0,00</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="m-title">Pedidos Concluídos</div>
+                    <div class="m-value" style="color: #0d6efd;" id="fat-pedidos">0</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.4rem; font-weight: 900; color: #111; margin-bottom: 20px; margin-top: 30px;">🏆 Detalhamento de Lojas</h3>
+            <ul class="ranking-list" id="ranking-list-render"></ul>
+        </section>
+
+        <section id="repasse" class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                <h2 style="border: none; padding: 0; margin: 0;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    Controle de Pagamento aos Entregadores
+                </h2>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <select id="filter-repasse-date" onchange="window.renderRepasse()" style="font-weight: bold; padding: 8px 12px; border-radius: 8px;">
+                        <option value="hoje" selected>Hoje</option>
+                        <option value="7dias">Últimos 7 Dias</option>
+                        <option value="mes">Último Mês</option>
+                        <option value="todos">Todo o Histórico</option>
+                    </select>
+                </div>
+            </div>
+            
+            <p style="font-size: 1rem; color: #666; margin-bottom: 30px;">
+                Veja exatamente quanto pagar para cada entregador. 
+                <br><span style="font-size: 0.85rem;">Nota: Mesmo se o cliente tiver Frete Grátis, o motoboy recebe o valor integral (saindo do repasse da loja/app).</span>
+            </p>
+
+            <div class="metrics-grid">
+                <div class="metric-card green">
+                    <div class="m-title">Total Geral a Pagar</div>
+                    <div class="m-value green" id="repasse-total-val">R$ 0,00</div>
+                </div>
+                <div class="metric-card blue">
+                    <div class="m-title">Corridas Concluídas (Geral)</div>
+                    <div class="m-value" style="color: #0d6efd;" id="repasse-total-rides">0</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.4rem; font-weight: 900; color: #111; margin-bottom: 20px; margin-top: 30px;">Detalhes por Entregador</h3>
+            <ul class="ranking-list" id="repasse-list-render"></ul>
+        </section>
+
+        <section id="entregadores" class="section">
+            <h2 id="form-driver-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+                Cadastrar Entregador
+            </h2>
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 2;"><label>Nome Completo</label><input type="text" id="d-name" placeholder="Ex: Carlos Silva"></div>
+                <div class="form-group" style="flex: 1;"><label>WhatsApp / Telefone</label><input type="tel" id="d-phone" placeholder="Ex: (37) 99999-9999"></div>
+                <div class="form-group" style="flex: 1;"><label>Cidade de Atuação</label><select id="d-city"><option value="">Selecione...</option></select></div>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;"><label>E-mail (Login)</label><input type="email" id="d-email" placeholder="entregador@email.com"></div>
+                <div class="form-group" style="flex: 1;"><label>Senha</label><input type="text" id="d-pass" placeholder="Senha do app"></div>
+            </div>
+            
+            <div style="margin-top: 10px; display: flex; gap: 15px;">
+                <button class="btn" id="btn-save-driver" onclick="window.saveDriver()">Registrar Entregador</button>
+                <button class="btn-secondary" id="btn-cancel-driver-edit" onclick="window.cancelEditDriver()">Cancelar Edição</button>
+            </div>
+            
+            <h3 style="margin-top: 45px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Entregadores Cadastrados</h3>
+            <div class="item-list" id="driver-list-container"></div>
+        </section>
+
+        <section id="banners" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                Banners do Aplicativo
+            </h2>
+            <p style="font-size:1rem; color:#666; margin-bottom:25px;">Estes banners aparecem girando na tela inicial dos clientes. Você pode definir para qual cidade o banner será exibido.</p>
+            
+            <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px;">
+                <div class="form-group" style="flex: 1; margin-bottom:0;"><label>Imagem do Banner</label><input type="file" id="b-image" accept="image/*" style="padding: 10px;"></div>
+                <div class="form-group" style="flex: 1; margin-bottom:0;">
+                    <label>Cidade de Exibição</label>
+                    <select id="b-city">
+                        <option value="all">Todas as Cidades (Global)</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="window.saveBanner()">Adicionar ao Carrossel</button>
+            </div>
+            
+            <h3 style="margin-top: 40px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Banners Ativos</h3>
+            <div class="item-list" id="banner-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
+        </section>
+
+        <section id="patrocinadores" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Patrocinadores da Abertura
+            </h2>
+            <p style="font-size:1rem; color:#666; margin-bottom:25px;">Aparecem na tela inicial (Splash Screen) ao abrir o app. Especifique a cidade para publicidade local.</p>
+            
+            <div style="background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Imagem do Patrocinador (Vertical)</label>
+                        <input type="file" id="sp-image" accept="image/*" style="padding: 10px;">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Cidade de Exibição</label>
+                        <select id="sp-city">
+                            <option value="all">Todas as Cidades (Global)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 10px;">
+                    <div class="form-group" style="flex:1; background:#f9f9f9; padding:20px; border-radius:12px; border:1px solid #eee;">
+                        <label style="display:flex; justify-content:space-between; margin-bottom:15px; font-size: 0.9rem;">
+                            Tempo de Exibição: <span id="dur-val" style="color:#ea1d2c; font-weight:900;">2 Segundos</span>
+                        </label>
+                        <input type="range" id="sp-duration" min="1" max="10" value="2" step="1" style="width:100%; accent-color:#ea1d2c;" oninput="document.getElementById('dur-val').innerText = this.value + ' Segundos'">
+                    </div>
+
+                    <div class="form-group" style="flex:1;">
+                        <label>Efeito de Transição</label>
+                        <select id="sp-transition" style="font-weight:bold; color:#111;">
+                            <option value="fade">Esmaecer (Surge Suavemente)</option>
+                            <option value="zoom">Aproximar (Efeito Zoom In)</option>
+                            <option value="slide">Deslizar de Baixo (Sobe pela tela)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn" id="btn-save-sponsor" onclick="window.saveSponsor()" style="width:100%; padding:16px; font-size:1.1rem; justify-content:center; margin-top: 10px;">Gravar Patrocinador</button>
+            </div>
+
+            <h3 style="margin-top: 45px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Patrocinadores Ativos</h3>
+            <div class="item-list" id="sponsor-list-container" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));"></div>
+        </section>
+
+    </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -197,270 +559,903 @@
             messagingSenderId: "1029498697239",
             appId: "1:1029498697239:web:3ebc070bbd65048bd9ce52"
         };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let globalStores = [];
-        let currentCategoryFilter = null;
-        let selectedCity = localStorage.getItem('userCity') || null;
-        
-        // 🟢 LÓGICA DOS AVISOS GLOBAIS EM TEMPO REAL 🟢
-        let dismissedAlerts = JSON.parse(localStorage.getItem('dismissedAlerts')) || [];
+        let allStores = []; let allDrivers = []; let globalBanners = []; let globalSponsors = []; let globalCities = [];
+        let globalUsers = []; let globalCoupons = [];
+        let storeImgBase64 = ''; let bannerImgBase64 = ''; let sponsorImgBase64 = '';
+        let editingStoreId = null; let editingDriverId = null;
+        let allOrders = [];
 
-        onSnapshot(collection(db, "global_alerts"), (snapshot) => {
-            const container = document.getElementById('global-alerts-container');
-            if(!container) return;
-            
-            let alertsHtml = '';
-            let alerts = [];
-
-            snapshot.forEach(doc => alerts.push({ id: doc.id, ...doc.data() }));
-            alerts.sort((a,b) => b.timestamp - a.timestamp); // Mais recentes no topo
-
-            alerts.forEach(alertData => {
-                // Se não foi fechado pelo usuário e ainda está ativo, renderiza.
-                if (alertData.active !== false && !dismissedAlerts.includes(alertData.id)) {
-                    let typeClass = 'info'; let icon = '📢';
-                    if(alertData.type === 'promo') { typeClass = 'promo'; icon = '🎉'; }
-                    if(alertData.type === 'success') { typeClass = 'success'; icon = '✅'; }
-
-                    alertsHtml += `
-                        <div class="global-alert-card ${typeClass}" id="alert-${alertData.id}">
-                            <div style="font-size: 1.4rem;">${icon}</div>
-                            <div class="alert-text">${alertData.text}</div>
-                            <button class="alert-close" onclick="window.dismissAlert('${alertData.id}')">✕</button>
-                        </div>
-                    `;
-                }
-            });
-            container.innerHTML = alertsHtml;
-        });
-
-        window.dismissAlert = (id) => {
-            dismissedAlerts.push(id);
-            localStorage.setItem('dismissedAlerts', JSON.stringify(dismissedAlerts));
-            const alertEl = document.getElementById(`alert-${id}`);
-            if(alertEl) alertEl.style.display = 'none';
+        window.switchTab = (tabId, el) => {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active');
         };
 
-        // LÓGICA DE INSTALAÇÃO DO PWA
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const banner = document.getElementById('install-banner');
-            const header = document.getElementById('main-header');
-            const isBannerDismissed = sessionStorage.getItem('installBannerDismissed');
-            
-            if (!isBannerDismissed) {
-                banner.style.display = 'flex';
-                header.style.top = '60px'; 
-            }
+        function resizeAndCompressImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width; let height = img.height;
+                    const MAX_WIDTH = 800; 
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.7));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ==========================================
+        // MÓDULO CIDADES
+        // ==========================================
+        onSnapshot(collection(db, "cities"), (snapshot) => {
+            globalCities = [];
+            snapshot.forEach(doc => globalCities.push({ id: doc.id, ...doc.data() }));
+            globalCities.sort((a, b) => a.name.localeCompare(b.name));
+            renderCitiesList();
+            populateCityDropdowns();
         });
 
-        document.getElementById('btn-install-app').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    closeInstallBanner();
-                }
-                deferredPrompt = null;
-            }
-        });
-
-        window.closeInstallBanner = () => {
-            document.getElementById('install-banner').style.display = 'none';
-            document.getElementById('main-header').style.top = '0';
-            sessionStorage.setItem('installBannerDismissed', 'true');
-        };
-
-        // LÓGICA DA SPLASH SCREEN & PATROCÍNIO
-        window.onload = async () => {
-            if (!selectedCity) {
-                document.getElementById('current-city-display').innerText = "Selecionar cidade...";
-                window.openCityModal();
-            } else {
-                document.getElementById('current-city-display').innerText = selectedCity;
-            }
-
-            if (sessionStorage.getItem('splashShown') !== 'true') {
-                setTimeout(async () => {
-                    document.getElementById('splash-screen').style.opacity = '0';
-                    setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 500);
-                    
-                    try {
-                        const snap = await getDocs(collection(db, "sponsors"));
-                        let sponsors = [];
-                        snap.forEach(doc => {
-                            const data = doc.data();
-                            if(data.city === 'all' || data.city === selectedCity) {
-                                sponsors.push(data);
-                            }
-                        });
-
-                        if (sponsors.length > 0) {
-                            const sponsor = sponsors[Math.floor(Math.random() * sponsors.length)];
-                            const wrapper = document.getElementById('sponsor-wrapper');
-                            const img = document.getElementById('sponsor-img');
-                            
-                            img.src = sponsor.image;
-                            wrapper.style.display = 'flex';
-                            
-                            if(sponsor.transition === 'zoom') wrapper.classList.add('zoom-in');
-                            else if(sponsor.transition === 'slide') wrapper.classList.add('slide-up');
-                            else wrapper.classList.add('fade-in');
-
-                            setTimeout(() => {
-                                wrapper.style.display = 'none';
-                                sessionStorage.setItem('splashShown', 'true');
-                            }, (sponsor.duration || 2) * 1000);
-                        } else {
-                            sessionStorage.setItem('splashShown', 'true');
-                        }
-                    } catch (e) {
-                        sessionStorage.setItem('splashShown', 'true');
-                    }
-                }, 1500);
-            }
+        window.saveCity = async () => {
+            const name = document.getElementById('c-name').value.trim();
+            const state = document.getElementById('c-state').value.trim().toUpperCase();
             
-            loadCities();
-            if(selectedCity) {
-                loadBanners();
-                loadStores();
-            }
-        };
+            if(!name || !state) return alert("Preencha o nome da cidade e a sigla do estado.");
+            
+            const exists = globalCities.find(c => c.name.toLowerCase() === name.toLowerCase() && c.state === state);
+            if(exists) return alert("Esta cidade já está cadastrada!");
 
-        // SELETOR DE CIDADES
-        async function loadCities() {
             try {
-                const snap = await getDocs(collection(db, "cities"));
-                const container = document.getElementById('city-list-render');
-                if(snap.empty) { container.innerHTML = '<div style="padding: 20px; text-align: center; color: #777;">Nenhuma cidade cadastrada ainda.</div>'; return; }
-                
-                let html = '';
-                snap.forEach(doc => {
-                    const c = doc.data();
-                    const fullCity = `${c.name} - ${c.state}`;
-                    html += `
-                        <div class="city-option" onclick="window.selectCity('${fullCity}')">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                            ${fullCity}
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch(e) {}
-        }
-
-        window.openCityModal = () => { document.getElementById('city-modal').classList.add('active'); };
-        window.closeCityModal = () => { 
-            if(selectedCity) document.getElementById('city-modal').classList.remove('active'); 
-            else alert("Você precisa selecionar uma cidade para ver as lojas.");
-        };
-        
-        window.selectCity = (cityStr) => {
-            selectedCity = cityStr;
-            localStorage.setItem('userCity', cityStr);
-            document.getElementById('current-city-display').innerText = cityStr;
-            window.closeCityModal();
-            loadBanners();
-            loadStores();
-        };
-
-        // CARREGA BANNERS
-        let bannerInterval;
-        function loadBanners() {
-            onSnapshot(collection(db, "banners"), (snapshot) => {
-                const container = document.getElementById('banners-container');
-                let hasBanners = false;
-                container.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const b = doc.data();
-                    if(b.city === 'all' || b.city === selectedCity) {
-                        container.innerHTML += `<img src="${b.image}" class="banner" alt="Promoção">`;
-                        hasBanners = true;
-                    }
-                });
-                if(!hasBanners) { container.style.display = 'none'; } else { container.style.display = 'flex'; }
-            });
-        }
-
-        // CARREGA LOJAS
-        function loadStores() {
-            onSnapshot(collection(db, "stores"), (snapshot) => {
-                globalStores = [];
-                snapshot.forEach(doc => {
-                    const s = doc.data();
-                    if (s.isActive !== false && s.city === selectedCity) { 
-                        let dynamicStatus = s.status || 'Aberto';
-                        if (dynamicStatus === 'Aberto' && s.schedule) {
-                            const now = new Date();
-                            const currentMins = now.getHours() * 60 + now.getMinutes();
-                            const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
-                            const todaySch = s.schedule[daysMap[now.getDay()]];
-                            if (!todaySch || !todaySch.active) { dynamicStatus = 'Fechado'; } 
-                            else {
-                                const [oH, oM] = (todaySch.open || '00:00').split(':').map(Number);
-                                const [cH, cM] = (todaySch.close || '23:59').split(':').map(Number);
-                                const openMins = (oH || 0) * 60 + (oM || 0);
-                                const closeMins = (cH || 0) * 60 + (cM || 0);
-                                let isOpen = (closeMins >= openMins) ? (currentMins >= openMins && currentMins <= closeMins) : (currentMins >= openMins || currentMins <= closeMins);
-                                if (!isOpen) dynamicStatus = 'Fechado';
-                            }
-                        }
-                        globalStores.push({ id: doc.id, ...s, dynamicStatus });
-                    }
-                });
-                window.renderStores();
-            });
-        }
-
-        window.renderStores = () => {
-            const container = document.getElementById('store-list-container');
-            
-            let filteredStores = globalStores;
-            if (currentCategoryFilter) {
-                filteredStores = globalStores.filter(s => (s.cat || 'Geral') === currentCategoryFilter);
+                await addDoc(collection(db, "cities"), { name, state });
+                document.getElementById('c-name').value = '';
+                document.getElementById('c-state').value = '';
+            } catch(e) {
+                alert("Erro ao cadastrar cidade.");
             }
-            
-            filteredStores.sort((a, b) => {
-                if (a.dynamicStatus === 'Aberto' && b.dynamicStatus === 'Fechado') return -1;
-                if (a.dynamicStatus === 'Fechado' && b.dynamicStatus === 'Aberto') return 1;
-                return 0;
-            });
+        };
 
-            if (filteredStores.length === 0) {
-                container.innerHTML = `<div style="text-align: center; padding: 40px 20px; color: #717171;">Nenhuma loja encontrada na sua cidade nesta categoria.</div>`;
+        window.deleteCity = async (id) => {
+            if(confirm("Tem certeza que deseja apagar esta cidade do aplicativo?")) {
+                await deleteDoc(doc(db, "cities", id));
+            }
+        };
+
+        function renderCitiesList() {
+            const container = document.getElementById('city-list-container');
+            if(globalCities.length === 0) {
+                container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade cadastrada ainda.</p>`;
+                return;
+            }
+            container.innerHTML = globalCities.map(c => `
+                <div class="card-item" style="justify-content: space-between;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <strong style="font-size: 1.15rem; color: #111;">${c.name} - ${c.state}</strong>
+                    </div>
+                    <button class="btn-del" onclick="window.deleteCity('${c.id}')" style="background: transparent; border: none; padding: 5px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function populateCityDropdowns() {
+            const cityOptions = globalCities.map(c => `<option value="${c.name} - ${c.state}">${c.name} - ${c.state}</option>`).join('');
+
+            const fillSelect = (id, prepend) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const val = el.value;
+                    el.innerHTML = prepend + cityOptions;
+                    if(val) el.value = val;
+                }
+            };
+
+            fillSelect('s-city', '<option value="">Selecione a cidade...</option>');
+            fillSelect('d-city', '<option value="">Selecione a cidade...</option>');
+            fillSelect('b-city', '<option value="all">Todas as Cidades (Global)</option>');
+            fillSelect('sp-city', '<option value="all">Todas as Cidades (Global)</option>');
+            fillSelect('filter-city-fat', '<option value="all">Todas as Cidades</option>');
+            fillSelect('filter-user-city', '<option value="all">Todas as Cidades</option>');
+            fillSelect('admin-sponsor-city', '<option value="">Selecione a cidade...</option>');
+        }
+
+        // ==========================================
+        // 🟢 MÓDULO DE GESTÃO DE USUÁRIOS 🟢
+        // ==========================================
+        onSnapshot(collection(db, "customers"), (snapshot) => {
+            globalUsers = [];
+            let sicoobCount = 0;
+            snapshot.forEach(doc => {
+                const user = { id: doc.id, ...doc.data() };
+                globalUsers.push(user);
+                if (user.isSicoob) sicoobCount++;
+            });
+            
+            document.getElementById('total-users').innerText = globalUsers.length;
+            document.getElementById('total-sicoob').innerText = sicoobCount;
+            
+            window.filterUsers();
+        });
+
+        window.filterUsers = () => {
+            const cityFilter = document.getElementById('filter-user-city').value;
+            const searchFilter = document.getElementById('filter-user-search').value.toLowerCase().trim();
+            const container = document.getElementById('users-container');
+
+            let filtered = globalUsers;
+
+            if (cityFilter !== 'all') {
+                filtered = filtered.filter(u => u.city === cityFilter);
+            }
+            if (searchFilter !== '') {
+                filtered = filtered.filter(u => 
+                    (u.name && u.name.toLowerCase().includes(searchFilter)) || 
+                    (u.email && u.email.toLowerCase().includes(searchFilter))
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999; font-size: 1.1rem; font-weight: 500;">Nenhum usuário encontrado.</div>`;
                 return;
             }
 
-            container.innerHTML = filteredStores.map(s => {
-                const isClosed = s.dynamicStatus === 'Fechado';
-                const cardClass = isClosed ? 'store-card closed' : 'store-card';
-                let statusText = s.dynamicStatus; let statusColor = isClosed ? '#717171' : '#00a14b'; 
-                
+            filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+            container.innerHTML = filtered.map(u => {
+                const initial = u.name ? u.name.charAt(0).toUpperCase() : '?';
+                const cityBadge = u.city ? u.city : 'Cidade não informada';
+                const isSicoob = u.isSicoob ? true : false;
+                const phoneStr = u.phone ? u.phone : 'Não informado';
+                const safeName = u.name ? u.name.replace(/'/g, "\\'") : 'Cliente';
+
                 return `
-                <a href="loja.html?id=${s.id}" class="${cardClass}">
-                    <img src="${s.logo || 'https://via.placeholder.com/80'}" class="store-logo" alt="Logo">
-                    <div class="store-info">
-                        <div class="store-name">${s.name}</div>
-                        <div class="store-details"><span>${s.cat || 'Geral'}</span><span class="dot">•</span><span style="font-weight: bold; color: ${statusColor};">${statusText}</span></div>
+                <div class="user-card">
+                    <div class="u-header">
+                        <div class="u-avatar">${initial}</div>
+                        <div class="u-info">
+                            <div class="u-name" title="${u.name}">${u.name || 'Cliente'}</div>
+                            <div class="u-email" title="${u.email}">${u.email || ''}</div>
+                        </div>
                     </div>
-                </a>`;
+                    
+                    <div class="badge-city" style="margin-bottom: 18px; width: fit-content;">📍 ${cityBadge}</div>
+                    
+                    <div class="u-data-row"><strong>Telefone:</strong> <span>${phoneStr}</span></div>
+                    <div class="u-data-row" style="margin-bottom: 20px;"><strong>Cadastrado em:</strong> <span>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '--'}</span></div>
+
+                    <div class="sicoob-area">
+                        <div class="sicoob-logo-text">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            Associado Patrocinador
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${isSicoob ? 'checked' : ''} onchange="window.toggleSicoobStatus('${u.id}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn-delete" style="color: #ea1d2c; border: 1px solid #fbd5d5; background: #fef0f0; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; justify-content:center; margin-top: auto; transition: 0.3s;" onmouseover="this.style.background='#ea1d2c'; this.style.color='#fff'" onmouseout="this.style.background='#fef0f0'; this.style.color='#ea1d2c'" onclick="window.deleteUser('${u.id}', '${safeName}')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        Excluir Usuário
+                    </button>
+                </div>`;
             }).join('');
         };
 
-        window.filterCategory = (categoryName, element) => {
-            document.querySelectorAll('#category-filters .button-item').forEach(btn => btn.classList.remove('active'));
-            if (categoryName === 'Todos' || currentCategoryFilter === categoryName) {
-                currentCategoryFilter = null; document.querySelector('#category-filters .button-item').classList.add('active'); document.getElementById('list-title').innerText = "Lojas";
-            } else {
-                element.classList.add('active'); currentCategoryFilter = categoryName; document.getElementById('list-title').innerText = "Lojas - " + element.querySelector('span').innerText;
+        window.toggleSicoobStatus = async (userId, isNowSicoob) => {
+            try {
+                await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob });
+            } catch(e) {
+                console.error("Erro ao atualizar status do Sicoob:", e);
+                alert("Erro de conexão ao salvar status.");
+                window.filterUsers(); 
             }
-            window.renderStores();
         };
 
+        window.deleteUser = async (userId, userName) => {
+            if (confirm(`⚠️ ATENÇÃO!\n\nTem certeza que deseja excluir a conta de ${userName}? Essa ação é permanente e ele perderá o acesso ao app.`)) {
+                try {
+                    await deleteDoc(doc(db, "customers", userId));
+                } catch(e) {
+                    alert("Erro ao excluir usuário.");
+                }
+            }
+        };
+
+        // ==========================================
+        // 🟢 MÓDULO DE CUPONS PATROCINADOS (GLOBAL) 🟢
+        // ==========================================
+        
+        // FUNÇÃO NOVA: Bloqueia o input de valor se for Frete Grátis
+        window.toggleSponsorValueInput = () => {
+            const type = document.getElementById('admin-sponsor-type').value;
+            const valInput = document.getElementById('admin-sponsor-value');
+            if(type === 'free_shipping') {
+                valInput.value = '';
+                valInput.disabled = true;
+                valInput.placeholder = "Não se aplica p/ Frete";
+            } else {
+                valInput.disabled = false;
+                valInput.placeholder = "Ex: 20 ou 10";
+            }
+        };
+
+        onSnapshot(collection(db, "coupons"), (snapshot) => {
+            globalCoupons = [];
+            snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() }));
+            renderAdminSponsorCoupons();
+        });
+
+        window.createSponsorCoupon = async () => {
+            const sponsorName = document.getElementById('admin-sponsor-name').value.trim();
+            const code = document.getElementById('admin-sponsor-code').value.trim().toUpperCase();
+            const type = document.getElementById('admin-sponsor-type').value;
+            
+            // Se for Frete Grátis, valor será salvo como 0 para não bugar nada
+            let value = parseFloat(document.getElementById('admin-sponsor-value').value);
+            if (type === 'free_shipping') value = 0;
+
+            const minOrder = parseFloat(document.getElementById('admin-sponsor-min').value) || 0;
+            const limitStr = document.getElementById('admin-sponsor-limit').value.trim();
+            const usageLimit = limitStr ? parseInt(limitStr) : null;
+            const targetCity = document.getElementById('admin-sponsor-city').value;
+
+            // Validação
+            if (!sponsorName || !code || !targetCity || (type !== 'free_shipping' && (isNaN(value) || value <= 0))) {
+                return alert("Preencha todos os campos obrigatórios e um valor de desconto válido.");
+            }
+
+            try {
+                await addDoc(collection(db, "coupons"), {
+                    code: code,
+                    type: type, 
+                    value: value,
+                    minOrder: minOrder,
+                    usageLimit: usageLimit,
+                    storeId: "GLOBAL", 
+                    targetCity: targetCity, 
+                    sponsorName: sponsorName,
+                    active: true,
+                    usedCount: 0,
+                    createdAt: Date.now()
+                });
+                
+                alert(`Sucesso! Cupom ${code} gerado para lojas de ${targetCity}.`);
+                
+                document.getElementById('admin-sponsor-name').value = '';
+                document.getElementById('admin-sponsor-code').value = '';
+                document.getElementById('admin-sponsor-value').value = '';
+                document.getElementById('admin-sponsor-min').value = '';
+                document.getElementById('admin-sponsor-limit').value = '';
+                
+            } catch (error) {
+                console.error(error);
+                alert("Erro ao criar cupom de patrocinador.");
+            }
+        };
+
+        function renderAdminSponsorCoupons() {
+            const container = document.getElementById('sponsor-coupons-list-container');
+            const sponsorCoupons = globalCoupons.filter(c => c.storeId === 'GLOBAL');
+
+            if (sponsorCoupons.length === 0) {
+                container.innerHTML = '<p style="color:#999; padding: 20px; font-weight: 500;">Nenhum cupom de patrocinador ativo.</p>';
+                return;
+            }
+
+            container.innerHTML = sponsorCoupons.map(c => {
+                const statusBadge = c.active 
+                    ? '<span class="badge-status badge-active">🟢 Ativo</span>' 
+                    : '<span class="badge-status badge-suspended">🔴 Inativo</span>';
+                
+                const toggleBtn = c.active
+                    ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>`
+                    : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
+
+                // Texto customizado para Frete Grátis
+                let discountText = '';
+                if(c.type === 'percentage') discountText = `${c.value}%`;
+                else if(c.type === 'free_shipping') discountText = `FRETE GRÁTIS`;
+                else discountText = `R$ ${c.value.toFixed(2)}`;
+
+                let limitText = 'Ilimitado';
+                let esgotadoBadge = '';
+                
+                if (c.usageLimit) {
+                    const isEsgotado = c.usedCount >= c.usageLimit;
+                    limitText = `${c.usedCount || 0} / ${c.usageLimit}`;
+                    if (isEsgotado) {
+                        esgotadoBadge = '<span style="color:#ea1d2c; font-weight:900; margin-left: 6px; background: rgba(234,29,44,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">ESGOTADO</span>';
+                    }
+                }
+
+                return `
+                <div class="card-item" style="flex-direction: column; align-items: flex-start; ${!c.active ? 'opacity: 0.6;' : ''}">
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; border-bottom:1px solid #f0f0f0; padding-bottom:15px; margin-bottom:15px;">
+                        <strong style="color:#111; font-size:1.3rem; font-weight: 900; display:flex; align-items:center;">${c.code} ${esgotadoBadge}</strong>
+                        ${statusBadge}
+                    </div>
+                    <div style="font-size:0.9rem; color:#555; line-height: 1.6; width:100%;">
+                        <strong>Patrocinador:</strong> <span style="color:#111;">${c.sponsorName}</span><br>
+                        <strong>Cidade Alvo:</strong> <span class="badge-city" style="margin: 2px 0 2px 5px; font-size: 0.7rem;">📍 ${c.targetCity}</span><br>
+                        <strong>Desconto:</strong> <span style="${c.type === 'free_shipping' ? 'color:#ea1d2c;' : 'color:#00a14b;'} font-weight:bold; background:#f4f5f7; padding:2px 6px; border-radius:4px;">${discountText}</span><br>
+                        <strong>Pedido Mínimo:</strong> R$ ${c.minOrder > 0 ? c.minOrder.toFixed(2) : '0,00'}<br>
+                        <strong>Usos:</strong> ${limitText}<br>
+                    </div>
+                    <div class="actions-col" style="margin-top: 15px; width: 100%; justify-content: flex-end; border-top: 1px solid #f0f0f0; padding-top: 15px;">
+                        ${toggleBtn}
+                        <button class="btn-del" onclick="window.deleteAdminCoupon('${c.id}')">Excluir</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.toggleAdminCoupon = async (id, isActive) => {
+            try { await updateDoc(doc(db, "coupons", id), { active: isActive }); } catch(e) {}
+        };
+
+        window.deleteAdminCoupon = async (id) => {
+            if(confirm("Apagar este cupom global permanentemente?")) {
+                try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {}
+            }
+        };
+
+        // ==========================================
+        // MÓDULO DE FATURAMENTO E REPASSE GLOBAL
+        // ==========================================
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            allOrders = [];
+            snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
+            window.renderFaturamento();
+            window.renderRepasse(); 
+        });
+
+        window.onCityFatChange = () => {
+            const selectedCity = document.getElementById('filter-city-fat').value;
+            const selectStore = document.getElementById('filter-store-fat');
+            
+            selectStore.innerHTML = '<option value="all">Ver Todas as Lojas</option>';
+
+            allStores.forEach(s => {
+                if (selectedCity === 'all' || s.city === selectedCity) {
+                    selectStore.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+                }
+            });
+            window.renderFaturamento();
+        };
+
+        window.renderFaturamento = () => {
+            if (!allOrders || !allStores) return;
+
+            const filterDate = document.getElementById('filter-faturamento').value;
+            const filterStore = document.getElementById('filter-store-fat').value; 
+            const filterCityFat = document.getElementById('filter-city-fat').value;
+
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+
+            let totalVendasApp = 0;
+            let totalPedidosApp = 0;
+            const storeStatsMap = {};
+
+            allOrders.forEach(order => {
+                if (order.status === 'Cancelado') return;
+
+                let showOrder = true;
+                if (filterDate === 'hoje') showOrder = order.timestamp >= startOfToday;
+                else if (filterDate === '7dias') showOrder = order.timestamp >= startOf7Days;
+                else if (filterDate === 'mes') showOrder = order.timestamp >= startOfMonth;
+                
+                if (!showOrder) return;
+
+                const storeOfOrder = allStores.find(s => s.id === order.storeId);
+                
+                if (filterCityFat !== 'all' && (!storeOfOrder || storeOfOrder.city !== filterCityFat)) return;
+                if (filterStore !== 'all' && order.storeId !== filterStore) return;
+
+                const vTotal = order.total || 0;
+                totalVendasApp += vTotal;
+                totalPedidosApp++;
+
+                const sId = order.storeId;
+                if (!storeStatsMap[sId]) {
+                    storeStatsMap[sId] = { 
+                        id: sId, 
+                        name: order.storeName || 'Loja Desconhecida', 
+                        revenue: 0, 
+                        ordersCount: 0 
+                    };
+                }
+                storeStatsMap[sId].revenue += vTotal;
+                storeStatsMap[sId].ordersCount++;
+            });
+
+            document.getElementById('fat-total-vendas').innerText = `R$ ${totalVendasApp.toFixed(2)}`;
+            document.getElementById('fat-taxa-app').innerText = `R$ ${(totalVendasApp * 0.10).toFixed(2)}`;
+            document.getElementById('fat-pedidos').innerText = totalPedidosApp;
+
+            if (filterStore === 'all' && filterCityFat === 'all') {
+                document.getElementById('fat-card-title-vendas').innerText = 'Vendas Totais do App';
+            } else if (filterStore === 'all' && filterCityFat !== 'all') {
+                document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${filterCityFat}`;
+            } else {
+                const sName = allStores.find(s => s.id === filterStore)?.name || 'Loja';
+                document.getElementById('fat-card-title-vendas').innerText = `Vendas: ${sName}`;
+            }
+
+            const rankingArray = Object.values(storeStatsMap).sort((a, b) => b.revenue - a.revenue);
+            const listRender = document.getElementById('ranking-list-render');
+            listRender.innerHTML = '';
+
+            if (rankingArray.length === 0) {
+                listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 30px; background:#fff; border-radius:16px; border: 1px solid #f0f0f0; text-align:center; font-weight: 500;">Nenhuma venda contabilizada neste período.</li>';
+                return;
+            }
+
+            const medals = ['🥇', '🥈', '🥉'];
+            
+            rankingArray.forEach((storeObj, index) => {
+                let medalDisplay = index < 3 && filterStore === 'all' ? medals[index] : `<span style="font-size:1.2rem; color: #999;">${index + 1}º</span>`;
+                if (filterStore !== 'all') medalDisplay = '🏪'; 
+
+                const lojaData = allStores.find(s => s.id === storeObj.id);
+                const logoImg = lojaData && lojaData.logo ? lojaData.logo : 'https://via.placeholder.com/50';
+                
+                const tax10percent = storeObj.revenue * 0.10;
+
+                listRender.innerHTML += `
+                    <li class="ranking-item">
+                        <div class="r-medal">${medalDisplay}</div>
+                        <img src="${logoImg}" class="r-logo">
+                        <div class="r-info">
+                            <div class="r-name">${storeObj.name}</div>
+                            <div class="r-orders">${storeObj.ordersCount} pedidos concluídos</div>
+                        </div>
+                        <div class="r-revenue">
+                            <div class="r-revenue-val">R$ ${storeObj.revenue.toFixed(2)}</div>
+                            <div class="r-revenue-tax">Taxa (10%): R$ ${tax10percent.toFixed(2)}</div>
+                        </div>
+                    </li>
+                `;
+            });
+        };
+
+        // 🟢 NOVO MÓDULO DE CÁLCULO DE REPASSE PARA ENTREGADORES 🟢
+        window.renderRepasse = () => {
+            if (!allOrders || !allDrivers) return;
+
+            const filterDate = document.getElementById('filter-repasse-date').value;
+            
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+
+            let totalPayout = 0;
+            let totalRides = 0;
+            const driverStats = {};
+
+            allOrders.forEach(order => {
+                // Apenas conta pedidos concluídos na matemática
+                if (!['Concluído', 'Concluido', 'Entregue'].includes(order.status)) return;
+                // Apenas se tiver um motoboy vinculado
+                if (!order.driverId) return;
+
+                let showOrder = true;
+                const compareTime = order.deliveredAt || order.timestamp;
+
+                if (filterDate === 'hoje') showOrder = compareTime >= startOfToday;
+                else if (filterDate === '7dias') showOrder = compareTime >= startOf7Days;
+                else if (filterDate === 'mes') showOrder = compareTime >= startOfMonth;
+                
+                if (!showOrder) return;
+
+                // O valor que o motoboy deve ganhar. (5,00 padrão, salvo no pedido na hora do envio)
+                // Independente se o frete para o cliente foi grátis, esse valor é preenchido no momento em que a loja chama o motoboy.
+                const fee = parseFloat(order.platformDriverFee || 5);
+                totalPayout += fee;
+                totalRides++;
+
+                const dId = order.driverId;
+                if (!driverStats[dId]) {
+                    const driverObj = allDrivers.find(d => d.id === dId);
+                    driverStats[dId] = {
+                        id: dId,
+                        name: driverObj ? driverObj.name : (order.driverName || 'Entregador Não Identificado'),
+                        rides: 0,
+                        earned: 0
+                    };
+                }
+                driverStats[dId].rides++;
+                driverStats[dId].earned += fee;
+            });
+
+            document.getElementById('repasse-total-val').innerText = `R$ ${totalPayout.toFixed(2)}`;
+            document.getElementById('repasse-total-rides').innerText = totalRides;
+
+            const listRender = document.getElementById('repasse-list-render');
+            listRender.innerHTML = '';
+
+            const rankingArray = Object.values(driverStats).sort((a, b) => b.earned - a.earned);
+
+            if (rankingArray.length === 0) {
+                listRender.innerHTML = '<li style="justify-content:center; color:#999; padding: 30px; background:#fff; border-radius:16px; border: 1px solid #f0f0f0; text-align:center; font-weight: 500;">Nenhuma entrega concluída neste período.</li>';
+                return;
+            }
+
+            rankingArray.forEach(d => {
+                listRender.innerHTML += `
+                    <li class="ranking-item" style="border-left: 6px solid #00a14b;">
+                        <div class="r-medal" style="font-size: 1.5rem; width: 40px;">🛵</div>
+                        <div class="r-info">
+                            <div class="r-name" style="font-size: 1.15rem;">${d.name}</div>
+                            <div class="r-orders">${d.rides} entregas concluídas</div>
+                        </div>
+                        <div class="r-revenue">
+                            <div class="r-revenue-val" style="color: #00a14b; font-size: 1.4rem;">R$ ${d.earned.toFixed(2)}</div>
+                            <div class="r-revenue-tax" style="background: #e6f4ea; color: #00a14b; padding: 6px 12px;">Pendente de Repasse</div>
+                        </div>
+                    </li>
+                `;
+            });
+        };
+
+        // ==========================================
+        // MÓDULO DE PATROCINADORES DA ABERTURA
+        // ==========================================
+        document.getElementById('sp-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) { resizeAndCompressImage(file, (compressedBase64) => { sponsorImgBase64 = compressedBase64; }); }
+        });
+
+        onSnapshot(collection(db, "sponsors"), (snapshot) => {
+            globalSponsors = [];
+            snapshot.forEach(doc => globalSponsors.push({ id: doc.id, ...doc.data() }));
+            globalSponsors.sort((a,b) => a.timestamp - b.timestamp);
+            renderSponsors();
+        });
+
+        window.saveSponsor = async () => {
+            if(!sponsorImgBase64) return alert("Selecione uma imagem!");
+            const city = document.getElementById('sp-city').value;
+
+            const btn = document.getElementById('btn-save-sponsor');
+            btn.innerText = "Gravando..."; btn.disabled = true;
+            try {
+                await addDoc(collection(db, "sponsors"), { 
+                    image: sponsorImgBase64,
+                    duration: parseInt(document.getElementById('sp-duration').value),
+                    transition: document.getElementById('sp-transition').value,
+                    city: city,
+                    timestamp: Date.now()
+                });
+                sponsorImgBase64 = ''; document.getElementById('sp-image').value = '';
+                alert("Patrocinador gravado com sucesso! Ele permanecerá ativo até ser removido.");
+            } catch(e) {
+                alert("Erro ao salvar. Verifique sua conexão.");
+            } finally {
+                btn.innerHTML = `Gravar Patrocinador`; 
+                btn.disabled = false;
+            }
+        };
+
+        function renderSponsors() {
+            const container = document.getElementById('sponsor-list-container');
+            container.innerHTML = globalSponsors.map((s, index) => {
+                let effectName = 'Esmaecer';
+                if(s.transition === 'zoom') effectName = 'Aproximar (Zoom)';
+                if(s.transition === 'slide') effectName = 'Deslizar (Slide)';
+
+                let cityBadge = s.city === 'all' ? 'Global (Todas)' : s.city;
+
+                return `
+                <div class="card-item" style="flex-direction:column; align-items:flex-start; width: 100%; max-width: 260px; padding: 15px;">
+                    <div style="background:#111; color:white; padding:6px 10px; border-radius:8px; font-size:0.75rem; font-weight:800; margin-bottom:10px; letter-spacing: 0.5px;">Ordem: ${index + 1}º</div>
+                    <img src="${s.image}" style="width:100%; height:250px; object-fit:cover; border-radius:10px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size:0.85rem; color:#555; margin-top:15px; width: 100%; line-height: 1.5;">
+                        <span class="badge-city" style="width: 100%; justify-content: center; margin-bottom: 8px;">📍 ${cityBadge}</span><br>
+                        ⏳ Duração: <strong>${s.duration || 2}s</strong><br>
+                        ✨ Efeito: <strong>${effectName}</strong>
+                    </div>
+                    <button class="btn-del" onclick="window.deleteSponsor('${s.id}')" style="margin-left:0; margin-top:15px; width:100%; border: 1px solid #f0f0f0; padding:10px; justify-content:center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        Remover Patrocinador
+                    </button>
+                </div>
+            `;
+            }).join('');
+        }
+        window.deleteSponsor = async (id) => { if(confirm("Remover este patrocinador da tela de abertura?")) await deleteDoc(doc(db, "sponsors", id)); };
+
+        // ==========================================
+        // MÓDULO BANNERS 
+        // ==========================================
+        document.getElementById('b-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) { resizeAndCompressImage(file, (compressedBase64) => { bannerImgBase64 = compressedBase64; }); }
+        });
+        
+        onSnapshot(collection(db, "banners"), (snapshot) => { 
+            globalBanners = []; 
+            snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() })); 
+            renderBanners(); 
+        });
+        
+        window.saveBanner = async () => { 
+            if(!bannerImgBase64) return alert("Selecione uma imagem!"); 
+            const city = document.getElementById('b-city').value;
+            await addDoc(collection(db, "banners"), { image: bannerImgBase64, city: city }); 
+            bannerImgBase64 = ''; document.getElementById('b-image').value = ''; alert("Banner adicionado!"); 
+        };
+        
+        function renderBanners() { 
+            const container = document.getElementById('banner-list-container'); 
+            container.innerHTML = globalBanners.map(b => {
+                let cityBadge = (!b.city || b.city === 'all') ? 'Global (Todas as Cidades)' : b.city;
+                return `
+                <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
+                    <img src="${b.image}" style="width:100%; height:140px; object-fit:cover; border-radius:10px; border: 1px solid #eee;">
+                    <span class="badge-city" style="margin-top: 15px; width: 100%; justify-content: center; padding: 8px;">📍 ${cityBadge}</span>
+                    <button class="btn-del" onclick="window.deleteBanner('${b.id}')" style="margin-left:0; margin-top:10px; width:100%; justify-content:center; padding: 10px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> 
+                        Excluir Banner
+                    </button>
+                </div>`;
+            }).join(''); 
+        }
+        
+        window.deleteBanner = async (id) => { if(confirm("Remover este banner do aplicativo?")) { await deleteDoc(doc(db, "banners", id)); } };
+
+        // ==========================================
+        // MÓDULO LOJAS E ENTREGADORES 
+        // ==========================================
+        document.getElementById('s-logo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); }
+        });
+        
+        onSnapshot(collection(db, "stores"), (snapshot) => { 
+            allStores = []; 
+            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
+            renderStoreList(); 
+            window.onCityFatChange(); 
+        });
+        
+        window.saveStore = async () => { 
+            const name = document.getElementById('s-name').value.trim(); 
+            const docId = document.getElementById('s-doc').value.trim();
+            const cep = document.getElementById('s-cep').value.trim();
+            const street = document.getElementById('s-street').value.trim();
+            const email = document.getElementById('s-email').value.trim(); 
+            const pass = document.getElementById('s-pass').value.trim(); 
+            const cat = document.getElementById('s-cat').value; 
+            const cityDropdownVal = document.getElementById('s-city').value;
+
+            if(!name || !email || !pass) return alert("Preencha ao menos nome, e-mail e senha da loja."); 
+            if(!cityDropdownVal) return alert("Por favor, selecione uma cidade para a loja. Se a lista estiver vazia, cadastre a cidade na aba 'Cidades'."); 
+            
+            const storeData = { 
+                name, email, password: pass, cat,
+                doc: docId, cep, street, city: cityDropdownVal 
+            };
+
+            if (editingStoreId) { 
+                const emailExists = allStores.find(s => s.email === email && s.id !== editingStoreId); 
+                if(emailExists) return alert("Já existe outra loja usando este e-mail."); 
+                
+                if (storeImgBase64) storeData.logo = storeImgBase64; 
+                await updateDoc(doc(db, "stores", editingStoreId), storeData); 
+                alert("Loja atualizada com sucesso!"); 
+            } else { 
+                const emailExists = allStores.find(s => s.email === email); 
+                if(emailExists) return alert("Já existe uma loja cadastrada com este e-mail."); 
+                
+                storeData.status = 'Aberto';
+                storeData.isActive = true;
+                storeData.logo = storeImgBase64 || 'https://via.placeholder.com/60';
+                
+                await addDoc(collection(db, "stores"), storeData); 
+                alert("Loja cadastrada com sucesso!"); 
+            } 
+            window.cancelEdit(); 
+        };
+
+        window.editStore = (id) => { 
+            editingStoreId = id; 
+            const store = allStores.find(s => s.id === id); 
+            if(!store) return; 
+            
+            document.getElementById('s-name').value = store.name; 
+            document.getElementById('s-doc').value = store.doc || ''; 
+            document.getElementById('s-cep').value = store.cep || ''; 
+            document.getElementById('s-street').value = store.street || ''; 
+            document.getElementById('s-city').value = store.city || ''; 
+            document.getElementById('s-email').value = store.email; 
+            document.getElementById('s-pass').value = store.password; 
+            document.getElementById('s-cat').value = store.cat || 'Restaurantes'; 
+            document.getElementById('s-logo').value = ''; 
+            storeImgBase64 = ''; 
+            
+            document.getElementById('form-store-title').innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                Editar Loja
+            `; 
+            document.getElementById('btn-save-store').innerHTML = `Salvar Alterações`; 
+            document.getElementById('btn-save-store').style.background = "linear-gradient(135deg, #0d6efd, #5a9df8)"; 
+            document.getElementById('btn-save-store').style.boxShadow = "0 4px 12px rgba(13, 110, 253, 0.2)"; 
+            document.getElementById('btn-cancel-edit').style.display = "inline-flex"; 
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
+        };
+
+        window.cancelEdit = () => { 
+            editingStoreId = null; 
+            document.getElementById('s-name').value = ''; 
+            document.getElementById('s-doc').value = ''; 
+            document.getElementById('s-cep').value = ''; 
+            document.getElementById('s-street').value = ''; 
+            document.getElementById('s-city').value = ''; 
+            document.getElementById('s-email').value = ''; 
+            document.getElementById('s-pass').value = ''; 
+            document.getElementById('s-logo').value = ''; 
+            storeImgBase64 = ''; 
+
+            document.getElementById('form-store-title').innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Cadastrar Nova Loja
+            `; 
+            document.getElementById('btn-save-store').innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                Registrar Loja
+            `; 
+            document.getElementById('btn-save-store').style.background = "linear-gradient(135deg, #ea1d2c, #ff4b58)"; 
+            document.getElementById('btn-save-store').style.boxShadow = "0 4px 12px rgba(234, 29, 44, 0.2)"; 
+            document.getElementById('btn-cancel-edit').style.display = "none"; 
+        };
+
+        window.toggleSubscription = async (id) => { const store = allStores.find(s => s.id === id); if (store) { const newStatus = store.isActive === false ? true : false; await updateDoc(doc(db, "stores", id), { isActive: newStatus }); } };
+        window.deleteStore = async (id) => { if(confirm("Tem certeza que deseja apagar esta loja PERMANENTEMENTE?\n\nIsso também apagará todos os produtos dela!")) { await deleteDoc(doc(db, "stores", id)); const q = query(collection(db, "products"), where("storeId", "==", id)); const querySnapshot = await getDocs(q); querySnapshot.forEach(async (document) => { await deleteDoc(doc(db, "products", document.id)); }); } };
+
+        function renderStoreList() { 
+            const container = document.getElementById('store-list-container'); 
+            if(allStores.length === 0) { container.innerHTML = `<p style="font-size:1rem; font-weight:500; color:#999; text-align:center; padding: 20px;">Nenhuma loja cadastrada.</p>`; return; } 
+            container.innerHTML = allStores.map(s => { 
+                const isActive = s.isActive !== false; 
+                const cardClass = isActive ? 'card-item' : 'card-item suspended'; 
+                const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; 
+                const badgeText = isActive ? '✅ Loja Ativa' : '❌ Loja Bloqueada'; 
+                const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; 
+                const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear Acesso' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear Acesso'; 
+                
+                return ` 
+                <div class="${cardClass}"> 
+                    <img src="${s.logo}" class="card-img"> 
+                    <div style="flex-grow: 1; line-height: 1.5;"> 
+                        <strong style="font-size: 1.2rem; font-weight: 900; color: #111; letter-spacing: -0.5px;">${s.name}</strong><br> 
+                        <span style="font-size:0.85rem; color:#888; font-weight: 500;">CNPJ/CPF: ${s.doc || 'Não informado'} | <span class="badge-city" style="margin:0 0 0 5px;">📍 ${s.city || 'Cidade não definida'}</span></span><br>
+                        <span style="font-size:0.85rem; color:#555; font-weight: 600;">✉️ ${s.email} &nbsp;|&nbsp; 🔑 ${s.password}</span><br> 
+                        <span class="${badgeClass}" style="margin-top: 8px;">${badgeText}</span> 
+                    </div> 
+                    <div class="actions-col" style="flex-direction: column; align-items: flex-end; gap: 8px;"> 
+                        <div style="display:flex; gap: 8px;">
+                            <button class="btn-edit" onclick="window.editStore('${s.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> 
+                            <button class="${toggleBtnClass}" onclick="window.toggleSubscription('${s.id}')">${toggleBtnText}</button> 
+                        </div>
+                        <button class="btn-del" onclick="window.deleteStore('${s.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Apagar Loja</button> 
+                    </div> 
+                </div> 
+                `; 
+            }).join(''); 
+        }
+
+        onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
+        
+        window.saveDriver = async () => { 
+            const name = document.getElementById('d-name').value.trim(); 
+            const phone = document.getElementById('d-phone').value.trim(); 
+            const email = document.getElementById('d-email').value.trim(); 
+            const pass = document.getElementById('d-pass').value.trim(); 
+            const city = document.getElementById('d-city').value;
+
+            if(!name || !email || !pass || !phone) return alert("Preencha todos os dados."); 
+            if(!city) return alert("Selecione a cidade do entregador.");
+
+            if (editingDriverId) { 
+                const emailExists = allDrivers.find(d => d.email === email && d.id !== editingDriverId); 
+                if(emailExists) return alert("Já existe outro entregador usando este e-mail."); 
+                await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass, city }); 
+                alert("Entregador atualizado!"); 
+            } else { 
+                const emailExists = allDrivers.find(d => d.email === email); 
+                if(emailExists) return alert("Já existe um entregador com este e-mail."); 
+                await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); 
+                alert("Entregador cadastrado!"); 
+            } 
+            window.cancelEditDriver(); 
+        };
+
+        window.editDriver = (id) => { 
+            editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; 
+            document.getElementById('d-name').value = driver.name; 
+            document.getElementById('d-phone').value = driver.phone; 
+            document.getElementById('d-email').value = driver.email; 
+            document.getElementById('d-pass').value = driver.password; 
+            document.getElementById('d-city').value = driver.city || '';
+            
+            document.getElementById('form-driver-title').innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+                Editar Entregador
+            `; 
+            document.getElementById('btn-save-driver').innerHTML = `Salvar Alterações`; 
+            document.getElementById('btn-save-driver').style.background = "linear-gradient(135deg, #0d6efd, #5a9df8)"; 
+            document.getElementById('btn-save-driver').style.boxShadow = "0 4px 12px rgba(13, 110, 253, 0.2)"; 
+            document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; 
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
+        };
+
+        window.cancelEditDriver = () => { 
+            editingDriverId = null; 
+            document.getElementById('d-name').value = ''; 
+            document.getElementById('d-phone').value = ''; 
+            document.getElementById('d-email').value = ''; 
+            document.getElementById('d-pass').value = ''; 
+            document.getElementById('d-city').value = '';
+            
+            document.getElementById('form-driver-title').innerHTML = `
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+                Cadastrar Entregador
+            `; 
+            document.getElementById('btn-save-driver').innerHTML = `Registrar Entregador`; 
+            document.getElementById('btn-save-driver').style.background = "linear-gradient(135deg, #ea1d2c, #ff4b58)"; 
+            document.getElementById('btn-save-driver').style.boxShadow = "0 4px 12px rgba(234, 29, 44, 0.2)"; 
+            document.getElementById('btn-cancel-driver-edit').style.display = "none"; 
+        };
+
+        window.toggleDriverStatus = async (id) => { const driver = allDrivers.find(d => d.id === id); if (driver) { const newStatus = driver.isActive === false ? true : false; await updateDoc(doc(db, "drivers", id), { isActive: newStatus }); } };
+        window.deleteDriver = async (id) => { if(confirm("Tem certeza que deseja remover este entregador do sistema?")) { await deleteDoc(doc(db, "drivers", id)); } };
+        
+        function renderDriverList() { 
+            const container = document.getElementById('driver-list-container'); 
+            if(allDrivers.length === 0) { container.innerHTML = `<p style="font-size:1rem; font-weight:500; color:#999; text-align:center; padding: 20px;">Nenhum entregador cadastrado.</p>`; return; } 
+            container.innerHTML = allDrivers.map(d => { 
+                const isActive = d.isActive !== false; 
+                const cardClass = isActive ? 'card-item' : 'card-item suspended'; 
+                const badgeClass = isActive ? 'badge-status badge-active' : 'badge-status badge-suspended'; 
+                const badgeText = isActive ? '✅ Acesso Liberado' : '❌ Acesso Bloqueado'; 
+                const toggleBtnClass = isActive ? 'btn-suspend' : 'btn-reactivate'; 
+                const toggleBtnText = isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> Bloquear' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Desbloquear'; 
+                
+                return ` 
+                <div class="${cardClass}"> 
+                    <div class="card-img" style="color:#0d6efd; background:#eef4ff; border:none; box-shadow: 0 4px 10px rgba(13,110,253,0.15);"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg></div> 
+                    <div style="flex-grow: 1; line-height: 1.5;"> 
+                        <strong style="font-size: 1.2rem; font-weight: 900; color: #111; letter-spacing: -0.5px;">${d.name}</strong><br> 
+                        <span style="font-size:0.85rem; color:#888; font-weight: 500;">📞 ${d.phone} | <span class="badge-city" style="margin:0 0 0 5px;">📍 ${d.city || 'Não definida'}</span></span><br>
+                        <span style="font-size:0.85rem; color:#555; font-weight: 600;">✉️ ${d.email} &nbsp;|&nbsp; 🔑 ${d.password}</span><br> 
+                        <span class="${badgeClass}" style="margin-top: 8px;">${badgeText}</span> 
+                    </div> 
+                    <div class="actions-col" style="flex-direction: column; align-items: flex-end; gap: 8px;"> 
+                        <div style="display:flex; gap: 8px;">
+                            <button class="btn-edit" onclick="window.editDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Editar</button> 
+                            <button class="${toggleBtnClass}" onclick="window.toggleDriverStatus('${d.id}')">${toggleBtnText}</button> 
+                        </div>
+                        <button class="btn-del" onclick="window.deleteDriver('${d.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Apagar</button> 
+                    </div> 
+                </div> `; 
+            }).join(''); 
+        }
     </script>
 </body>
 </html>
