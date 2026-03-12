@@ -8,85 +8,140 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f4f5f7; color: #333; overflow-x: hidden; }
+
+        /* TELA DE LOGIN DO MOTOBOY */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { background: #fff; width: 100%; max-width: 400px; padding: 30px; border-radius: 16px; text-align: center; }
-        .login-box h2 { color: #ea1d2c; font-weight: 900; margin-bottom: 5px; font-size: 1.8rem; }
-        .login-box p { color: #777; font-size: 0.9rem; margin-bottom: 25px; }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-size: 0.8rem; color: #555; font-weight: bold; margin-bottom: 5px; text-transform: uppercase;}
-        .form-input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; background: #f9f9f9; }
-        .btn-login { width: 100%; background: #ea1d2c; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        .login-box { background: #fff; width: 100%; max-width: 380px; padding: 40px 30px; border-radius: 24px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .login-box h2 { color: #ea1d2c; font-weight: 900; margin-bottom: 5px; font-size: 1.8rem; letter-spacing: -0.5px;}
+        .login-box p { color: #777; font-size: 0.95rem; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 0.8rem; color: #555; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .form-input { width: 100%; padding: 16px; border: 1px solid #e5e5e5; border-radius: 12px; font-size: 1rem; outline: none; background: #fdfdfd; transition: 0.3s; color: #333;}
+        .form-input:focus { border-color: #ea1d2c; box-shadow: 0 0 0 4px rgba(234, 29, 44, 0.1); background: #fff;}
+        .btn-login { width: 100%; background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.15rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 15px rgba(234, 29, 44, 0.25); transition: 0.3s; }
+        .btn-login:active { transform: translateY(2px); box-shadow: 0 2px 8px rgba(234, 29, 44, 0.2); }
+
+        /* APP PRINCIPAL */
         #app-screen { display: none; padding-bottom: 80px; }
-        header { background: #111; color: #fff; padding: 20px 20px 25px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;}
-        .app-logo { text-align: center; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .app-logo-text { font-size: 2rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+        
+        header { background: #111; color: #fff; padding: 30px 20px 35px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100;}
+        
+        /* LOGO DO TOPO */
+        .app-logo { text-align: center; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .app-logo-text { font-size: 2.2rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
         .app-logo-text .uai { color: #ea1d2c; }
         .app-logo-text .pede { color: #fff; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .driver-info h1 { font-size: 1.3rem; font-weight: 900; color: #fff; margin: 0; }
-        .status-toggle { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 20px; }
-        .status-toggle span { font-size: 0.85rem; font-weight: bold; color: #fff; }
-        .toggle-switch { position: relative; width: 44px; height: 24px; }
+
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .driver-info h1 { font-size: 1.4rem; font-weight: 900; color: #fff; margin: 0; letter-spacing: -0.5px;}
+        
+        /* BOTÃO EM SERVIÇO / FORA DE SERVIÇO */
+        .status-toggle { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); padding: 10px 16px; border-radius: 24px; }
+        .status-toggle span { font-size: 0.85rem; font-weight: 800; color: #fff; letter-spacing: 0.5px;}
+        .toggle-switch { position: relative; width: 46px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
         input:checked + .slider { background-color: #00a14b; }
         input:checked + .slider:before { transform: translateX(20px); }
-        .tabs { display: flex; gap: 5px; padding: 0 15px; margin-top: -20px; position: relative; z-index: 101; }
-        .tab-btn { flex: 1; padding: 12px 2px; text-align: center; font-weight: bold; font-size: 0.8rem; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s;}
-        .tab-btn.active { background: #ea1d2c; color: #fff; }
-        .tab-btn.inactive { background: #fff; color: #555; border: 1px solid #eee; }
-        .content-area { padding: 20px 15px; }
+
+        /* ABAS */
+        .tabs { display: flex; gap: 8px; padding: 0 20px; margin-top: -25px; position: relative; z-index: 101; }
+        .tab-btn { flex: 1; padding: 16px 5px; text-align: center; font-weight: 800; font-size: 0.85rem; border-radius: 14px; border: none; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);}
+        .tab-btn.active { background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; box-shadow: 0 6px 15px rgba(234, 29, 44, 0.25); }
+        .tab-btn.inactive { background: #fff; color: #777; border: 1px solid #eee; }
+
+        .content-area { padding: 25px 20px; }
         .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.3s ease; }
-        .ride-card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f2f2f2; position: relative; overflow: hidden;}
-        .ride-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: #0d6efd; }
-        .ride-card.new { border: 2px solid #ea1d2c; animation: pulseBorder 1.5s infinite; }
-        @keyframes pulseBorder { 0% { border-color: #ea1d2c; } 50% { border-color: transparent; } 100% { border-color: #ea1d2c; } }
-        .r-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 15px; }
-        .r-fee { font-size: 1.4rem; font-weight: 900; color: #00a14b; display: flex; align-items: center; gap: 6px;}
+        .section.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CARD DE CORRIDA */
+        .ride-card { background: #fff; border-radius: 20px; padding: 22px; margin-bottom: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; transition: transform 0.2s;}
+        .ride-card:active { transform: scale(0.98); }
+        .ride-card.new { border: 2px solid #ea1d2c; animation: pulseBorder 2s infinite; }
+        
+        @keyframes pulseBorder { 
+            0% { border-color: rgba(234, 29, 44, 1); box-shadow: 0 0 0 0 rgba(234, 29, 44, 0.4); } 
+            70% { border-color: rgba(234, 29, 44, 0.5); box-shadow: 0 0 0 10px rgba(234, 29, 44, 0); } 
+            100% { border-color: rgba(234, 29, 44, 1); box-shadow: 0 0 0 0 rgba(234, 29, 44, 0); } 
+        }
+
+        .r-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .r-fee { font-size: 1.6rem; font-weight: 900; color: #00a14b; letter-spacing: -0.5px;}
         .r-id { font-size: 0.8rem; color: #888; font-weight: bold;}
-        .route-box { display: flex; flex-direction: column; margin-bottom: 20px; position: relative;}
-        .route-box::after { content: ''; position: absolute; left: 11px; top: 20px; bottom: 80px; width: 2px; background: #ddd; z-index: 1;}
-        .r-point { display: flex; gap: 15px; align-items: flex-start; position: relative; z-index: 2; margin-bottom: 10px;}
-        .r-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.7rem; color: #fff; font-weight: bold;}
-        .r-icon.store { background: #111; border: 2px solid #fff; box-shadow: 0 0 0 2px #111;}
-        .r-icon.customer { background: #ea1d2c; border: 2px solid #fff; box-shadow: 0 0 0 2px #ea1d2c;}
-        .r-details h4 { font-size: 0.9rem; color: #777; text-transform: uppercase; margin-bottom: 2px; }
-        .r-details p { font-size: 1.05rem; color: #111; font-weight: bold; margin: 0;}
-        .r-address { font-size: 0.85rem; color: #555; margin-top: 2px; line-height: 1.3;}
-        .nav-buttons-row { display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; padding-left: 39px; }
-        .btn-waze { flex: 1; background: #f0f7ff; color: #0099ff; border: 1px solid #bce3ff; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .pay-method-badge { display: inline-block; background: #fdf5e6; color: #997404; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #f9e1b5; margin-bottom: 15px;}
-        .btn-action { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;}
-        .btn-accept { background: #ea1d2c; color: #fff; }
-        .btn-finish { background: #00a14b; color: #fff; }
-        .empty-msg { text-align: center; padding: 50px 20px; color: #999; }
-        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 8px solid #ea1d2c; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 18px; display: flex; align-items: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+
+        /* Estilização de Textos Internos dos Cards injetados via JS */
+        .ride-card p {
+            background: #f9f9f9;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: #555;
+            border-left: 3px solid #ddd;
+            line-height: 1.4;
+        }
+        .ride-card.new p { border-left-color: #ea1d2c; }
+        .ride-card p b { color: #111; font-weight: 900; display: block; margin-bottom: 4px; font-size: 1rem;}
+
+        /* BOTÃO DE NAVEGAÇÃO WAZE */
+        .btn-waze { background: #eef4ff; color: #0d6efd; padding: 14px; border-radius: 12px; border: none; font-weight: 800; font-size: 1rem; width: 100%; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; cursor: pointer; box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);}
+        .btn-waze:active { background: #dbe7ff; transform: scale(0.98);}
+
+        .btn-action { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.15rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;}
+        .btn-action:active { transform: scale(0.98); }
+        .btn-accept { background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.25);}
+        .btn-finish { background: linear-gradient(135deg, #00a14b, #28d078); color: #fff; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.25);}
+
+        .empty-msg { text-align: center; padding: 50px 20px; }
+        .empty-msg svg { width: 80px; height: 80px; color: #e0e0e0; margin-bottom: 15px; }
+        .empty-msg h3 { color: #111; font-weight: 900; font-size: 1.3rem; margin-bottom: 8px;}
+        .empty-msg p { color: #777; font-size: 0.95rem; }
+
+        /* NOTIFICAÇÃO SONORA TOAST */
+        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); border: 1px solid #f0f0f0;}
         .toast-msg.show { top: 20px; }
-        .filter-box { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;}
-        .filter-box input { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; font-weight: bold;}
+
+        /* FILTRO DE HISTÓRICO */
+        .filter-box { background: #fff; padding: 20px; border-radius: 16px; border: 1px solid #eee; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+        .filter-box label { font-weight: 800; color: #555; font-size: 0.95rem; text-transform: uppercase;}
+        .filter-box input { padding: 12px 16px; border-radius: 10px; border: 1px solid #e5e5e5; outline: none; font-weight: bold; color: #111; font-family: 'Roboto', sans-serif; font-size: 1rem; background: #f9f9f9;}
+        .filter-box input:focus { border-color: #ea1d2c; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
+            <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
             <h2>UaiPede Entregas</h2>
-            <div class="form-group"><label>E-mail</label><input type="email" id="login-email" class="form-input"></div>
-            <div class="form-group"><label>Senha</label><input type="password" id="login-pass" class="form-input"></div>
-            <button class="btn-login" onclick="window.loginDriver()">Entrar</button>
+            <p>Área exclusiva do entregador</p>
+            
+            <div class="form-group">
+                <label>Seu E-mail</label>
+                <input type="email" id="login-email" class="form-input" placeholder="exemplo@email.com">
+            </div>
+            <div class="form-group">
+                <label>Sua Senha</label>
+                <input type="password" id="login-pass" class="form-input" placeholder="••••••••">
+            </div>
+            
+            <button class="btn-login" onclick="window.loginDriver()">Acessar Painel</button>
         </div>
     </div>
 
     <div id="app-screen">
         <header>
             <div class="app-logo">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
                 <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span></div>
             </div>
+
             <div class="header-top">
-                <div class="driver-info"><h1 id="driver-name-display">Olá</h1></div>
+                <div class="driver-info">
+                    <h1 id="driver-name-display">Olá, Parceiro</h1>
+                </div>
                 <div class="status-toggle">
                     <span id="status-text">FORA DE SERVIÇO</span>
                     <label class="toggle-switch">
@@ -98,27 +153,63 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; display:none;">0</span></button>
-            <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Atuais</button>
+            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; margin-left:2px; display:none; font-weight: 900;">0</span></button>
+            <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Em Andamento</button>
             <button class="tab-btn inactive" id="tab-historico" onclick="window.switchTab('historico')">Realizadas</button>
         </div>
 
         <div class="content-area">
+            
             <div id="sec-novas" class="section active">
-                <div id="offline-msg" class="empty-msg"><h3>Você está Fora de Serviço</h3></div>
-                <div id="no-rides-msg" class="empty-msg" style="display: none;"><h3>Buscando corridas...</h3></div>
+                <div id="offline-msg" class="empty-msg" style="display: block;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <h3>Você está Fora de Serviço</h3>
+                    <p>Ligue a chave no topo da tela para começar a receber solicitações de entrega na sua região.</p>
+                </div>
+                <div id="no-rides-msg" class="empty-msg" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <h3>Buscando corridas...</h3>
+                    <p>Fique atento, logo uma loja chamará um entregador.</p>
+                </div>
+                
                 <div id="available-rides-list"></div>
             </div>
-            <div id="sec-minhas" class="section"><div id="no-active-msg" class="empty-msg"><h3>Nenhuma entrega em andamento</h3></div><div id="my-rides-list"></div></div>
+
+            <div id="sec-minhas" class="section">
+                <div id="no-active-msg" class="empty-msg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"></path><path d="M5 2h14"></path><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path></svg>
+                    <h3>Nenhuma entrega em andamento</h3>
+                    <p>As corridas que você aceitar aparecerão aqui para acompanhamento.</p>
+                </div>
+                <div id="my-rides-list"></div>
+            </div>
+
             <div id="sec-historico" class="section">
-                <div class="filter-box"><label>Data:</label><input type="date" id="history-date-filter" onchange="window.renderHistoryOrders()"></div>
+                <div class="filter-box">
+                    <label>Filtro do dia:</label>
+                    <input type="date" id="history-date-filter" onchange="window.renderHistoryOrders()">
+                </div>
+                
+                <div id="no-history-msg" class="empty-msg" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <h3>Nenhuma corrida neste dia</h3>
+                    <p>Você não concluiu nenhuma entrega na data selecionada.</p>
+                </div>
+                
                 <div id="history-rides-list"></div>
             </div>
+
         </div>
     </div>
 
     <div id="new-ride-toast" class="toast-msg">
-        <h4 style="color:#ea1d2c; font-weight:900;">NOVA ENTREGA!</h4>
+        <div style="background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; width: 50px; height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.3);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </div>
+        <div>
+            <h4 style="margin:0; color:#111; font-size:1.2rem; font-weight:900; letter-spacing:-0.5px;">NOVA ENTREGA!</h4>
+            <p style="margin:0; font-size:0.95rem; color:#555; margin-top:2px;">Toque para ver os detalhes da corrida.</p>
+        </div>
     </div>
 
     <script type="module">
@@ -140,19 +231,31 @@
         let isOnline = false;
         let storesCache = {}; 
         let availableCount = 0;
+        
         let allPendingOrders = [];
         let myAcceptedOrders = [];
-        let myHistoryOrders = [];
+        let myHistoryOrders = []; 
 
         window.onload = async () => {
             if (loggedDriver && loggedDriver.id) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'block';
-                document.getElementById('driver-name-display').innerText = `Olá, ${loggedDriver.name.split(' ')[0]}`;
-                if ("Notification" in window) Notification.requestPermission();
-                document.getElementById('history-date-filter').value = new Date().toISOString().split('T')[0];
+                
+                const firstName = loggedDriver.name ? loggedDriver.name.split(' ')[0] : 'Parceiro';
+                document.getElementById('driver-name-display').innerText = `Olá, ${firstName}`;
+                
+                if ("Notification" in window) {
+                    Notification.requestPermission();
+                }
+
+                const todayIso = new Date().toISOString().split('T')[0];
+                document.getElementById('history-date-filter').value = todayIso;
+                
                 await loadStoresCache();
                 startListeners();
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('app-screen').style.display = 'none';
             }
         };
 
@@ -160,31 +263,82 @@
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
             const btn = document.querySelector('.btn-login');
+
+            if (!email || !pass) return alert("Preencha e-mail e senha.");
+            btn.innerText = "Verificando..."; btn.disabled = true;
+
             try {
                 const q = query(collection(db, "drivers"), where("email", "==", email), where("password", "==", pass));
                 const snap = await getDocs(q);
-                if (snap.empty) return alert("Erro");
-                loggedDriver = { id: snap.docs[0].id, ...snap.docs[0].data() };
+
+                if (snap.empty) {
+                    alert("Acesso negado. Verifique os dados.");
+                    btn.innerText = "Acessar Painel"; btn.disabled = false;
+                    return;
+                }
+
+                const docData = snap.docs[0];
+                const driverData = docData.data();
+
+                if (driverData.isActive === false) {
+                    alert("Sua conta está suspensa. Procure o suporte.");
+                    btn.innerText = "Acessar Painel"; btn.disabled = false;
+                    return;
+                }
+
+                loggedDriver = { id: docData.id, ...driverData };
                 localStorage.setItem('loggedDriver', JSON.stringify(loggedDriver));
                 window.location.reload();
-            } catch(e) {}
+
+            } catch(e) {
+                console.error(e);
+                alert("Erro de conexão.");
+                btn.innerText = "Acessar Painel"; btn.disabled = false;
+            }
         };
 
         window.toggleOnlineStatus = async () => {
             isOnline = document.getElementById('driver-status-toggle').checked;
-            document.getElementById('status-text').innerText = isOnline ? "EM SERVIÇO" : "FORA DE SERVIÇO";
-            document.getElementById('status-text').style.color = isOnline ? "#00a14b" : "#fff";
-            document.getElementById('offline-msg').style.display = isOnline ? 'none' : 'block';
+            const statusText = document.getElementById('status-text');
+            const offlineMsg = document.getElementById('offline-msg');
+            const noRidesMsg = document.getElementById('no-rides-msg');
+
+            if (isOnline) {
+                statusText.innerText = "EM SERVIÇO";
+                statusText.style.color = "#00a14b";
+                offlineMsg.style.display = 'none';
+                if(availableCount === 0) noRidesMsg.style.display = 'block';
+            } else {
+                statusText.innerText = "FORA DE SERVIÇO";
+                statusText.style.color = "#fff";
+                offlineMsg.style.display = 'block';
+                noRidesMsg.style.display = 'none';
+                document.getElementById('available-rides-list').innerHTML = ''; 
+            }
             renderAvailableOrders(); 
-            if(loggedDriver) await updateDoc(doc(db, "drivers", loggedDriver.id), { isOnline: isOnline });
+
+            try {
+                if(loggedDriver && loggedDriver.id) {
+                    await updateDoc(doc(db, "drivers", loggedDriver.id), { 
+                        isOnline: isOnline 
+                    });
+                }
+            } catch(e) {
+                console.error("Erro ao sincronizar status online no banco:", e);
+            }
         };
 
         window.switchTab = (tab) => {
             document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.classList.add('inactive'); });
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
             document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.remove('inactive');
             document.getElementById(`sec-${tab}`).classList.add('active');
-            if(tab === 'historico') window.renderHistoryOrders();
+            
+            if(tab === 'historico') {
+                window.renderHistoryOrders();
+            }
         };
 
         async function loadStoresCache() {
@@ -193,14 +347,13 @@
         }
 
         function startListeners() {
-            // 🟢 CONSULTA SIMPLIFICADA PARA EVITAR ERRO DE ÍNDICE 🟢
+            // Escuta global de pedidos
             onSnapshot(collection(db, "orders"), (snapshot) => {
                 let tempPending = [];
                 let drCity = (loggedDriver.city || "").toLowerCase().split('-')[0].trim();
 
                 snapshot.forEach(docSnap => {
                     const order = { id: docSnap.id, ...docSnap.data() };
-                    // Filtro manual em JS para garantir funcionamento
                     if (order.status === "Aguardando Entregador") {
                         const store = storesCache[order.storeId] || {};
                         const stCity = (store.city || "").toLowerCase().split('-')[0].trim();
@@ -210,85 +363,239 @@
 
                 if(isOnline && tempPending.length > availableCount) {
                     window.playAlertSound();
+                    window.showToast();
                     window.showSystemNotification();
                 }
+                
                 allPendingOrders = tempPending;
                 availableCount = allPendingOrders.length;
                 renderAvailableOrders();
             });
 
+            // Escuta pedidos específicos do entregador
             onSnapshot(query(collection(db, "orders"), where("driverId", "==", loggedDriver.id)), (snapshot) => {
-                myAcceptedOrders = []; myHistoryOrders = [];
+                myAcceptedOrders = [];
+                myHistoryOrders = []; 
+                
                 snapshot.forEach(docSnap => {
                     const order = { id: docSnap.id, ...docSnap.data() };
-                    if (order.status === 'Saiu para Entrega') myAcceptedOrders.push(order);
-                    if (['Concluído', 'Concluido', 'Entregue'].includes(order.status)) myHistoryOrders.push(order);
+                    
+                    if (order.status === 'Saiu para Entrega') {
+                        myAcceptedOrders.push(order);
+                    }
+                    
+                    if (['Concluído', 'Concluido', 'Entregue'].includes(order.status)) {
+                        myHistoryOrders.push(order); 
+                    }
                 });
+                
                 renderMyOrders();
+                
+                if (document.getElementById('sec-historico').classList.contains('active')) {
+                    window.renderHistoryOrders();
+                }
             });
         }
 
         window.showSystemNotification = () => {
             if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("UaiPede Entregas", { body: "🚀 Nova entrega disponível!" });
+                new Notification("UaiPede Entregas", {
+                    body: "🚀 Nova entrega disponível na sua cidade!",
+                    icon: "https://cdn-icons-png.flaticon.com/512/709/709790.png"
+                });
             }
         };
 
         function renderAvailableOrders() {
             const container = document.getElementById('available-rides-list');
-            if (!isOnline) { container.innerHTML = ''; return; }
-            document.getElementById('no-rides-msg').style.display = allPendingOrders.length === 0 ? 'block' : 'none';
-            container.innerHTML = allPendingOrders.map(order => `
+            const badge = document.getElementById('badge-novas');
+            const noRidesMsg = document.getElementById('no-rides-msg');
+
+            if (!isOnline) { container.innerHTML = ''; badge.style.display = 'none'; return; }
+            if (allPendingOrders.length === 0) { container.innerHTML = ''; noRidesMsg.style.display = 'block'; badge.style.display = 'none'; return; }
+
+            noRidesMsg.style.display = 'none';
+            badge.style.display = 'inline-block';
+            badge.innerText = allPendingOrders.length;
+
+            container.innerHTML = allPendingOrders.map(order => {
+                const fee = order.platformDriverFee || order.deliveryFee || 5.00; 
+
+                return `
                 <div class="ride-card new">
-                    <div class="r-header"><div class="r-fee">R$ ${(order.platformDriverFee || 5).toFixed(2)}</div></div>
-                    <p><b>${order.storeName}</b> ➔ ${order.customerName}</p>
-                    <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">Aceitar Corrida</button>
-                </div>`).join('');
+                    <div class="r-header">
+                        <div class="r-fee">
+                            <span style="font-size: 0.8rem; color:#888; display:block; font-weight:700; text-transform: uppercase;">Ganho da Entrega</span>
+                            R$ ${parseFloat(fee).toFixed(2)}
+                        </div>
+                        <div class="r-id" style="background:#f4f5f7; padding:6px 12px; border-radius:10px;">#${order.id.substring(0,5).toUpperCase()}</div>
+                    </div>
+                    
+                    <p><b><span style="color:#ea1d2c;">🏪 Coleta:</span> ${order.storeName}</b></p>
+                    <p><b><span style="color:#00a14b;">📍 Entrega:</span> ${order.customerName}</b></p>
+                    
+                    <button class="btn-action btn-accept" style="margin-top: 15px;" onclick="window.acceptOrder('${order.id}', this)">Aceitar Corrida</button>
+                </div>`;
+            }).join('');
         }
 
         function renderMyOrders() {
             const container = document.getElementById('my-rides-list');
-            document.getElementById('no-active-msg').style.display = myAcceptedOrders.length === 0 ? 'block' : 'none';
+            const noMsg = document.getElementById('no-active-msg');
+
+            if (myAcceptedOrders.length === 0) { container.innerHTML = ''; noMsg.style.display = 'block'; return; }
+            noMsg.style.display = 'none';
+
+            let safeCity = loggedDriver.city || '';
+
             container.innerHTML = myAcceptedOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
-                const qCust = encodeURIComponent(order.customer.address + ', ' + loggedDriver.city);
+                const fee = order.platformDriverFee || order.deliveryFee || 5.00;
+
+                const qStore = encodeURIComponent((store.street || '') + ', ' + safeCity);
+                const qCust = encodeURIComponent((order.customer.address || '') + ', ' + safeCity);
+
                 return `
                 <div class="ride-card">
-                    <p><b>Coleta:</b> ${order.storeName}</p>
-                    <p><b>Entrega:</b> ${order.customer.address}</p>
-                    <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qCust}&navigate=yes', '_blank')">Abrir Waze</button>
-                    <button class="btn-action btn-finish" onclick="window.finishDelivery('${order.id}')">Concluir</button>
+                    <div class="r-header" style="border-bottom:none; margin-bottom:0; padding-bottom:5px;">
+                        <div class="r-fee" style="color:#111;">
+                            <span style="font-size: 0.8rem; color:#888; display:block; font-weight:700; text-transform: uppercase;">A Receber</span>
+                            R$ ${parseFloat(fee).toFixed(2)}
+                        </div>
+                        <div class="r-id" style="color:#0d6efd; background:#eef4ff; padding:6px 12px; border-radius:10px;">EM ANDAMENTO #${order.id.substring(0,5).toUpperCase()}</div>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><b><span style="color:#111;">🏪 Loja:</span> ${order.storeName}</b></p>
+                        <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qStore}&navigate=yes', '_blank')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            Waze até a Loja
+                        </button>
+                        
+                        <p><b><span style="color:#ea1d2c;">📍 Cliente:</span> ${order.customer.address}</b></p>
+                        <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qCust}&navigate=yes', '_blank')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            Waze até o Cliente
+                        </button>
+                    </div>
+
+                    <button class="btn-action btn-finish" style="margin-top: 20px;" onclick="window.finishDelivery('${order.id}')">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Concluir Entrega
+                    </button>
                 </div>`;
             }).join('');
         }
 
         window.renderHistoryOrders = () => {
             const container = document.getElementById('history-rides-list');
-            const selectedDate = document.getElementById('history-date-filter').value;
-            const filterStart = new Date(selectedDate + 'T00:00:00').getTime();
-            const filterEnd = filterStart + 86400000;
-            const filtered = myHistoryOrders.filter(o => (o.deliveredAt || o.timestamp) >= filterStart && (o.deliveredAt || o.timestamp) < filterEnd);
-            let total = 0;
-            const list = filtered.map(o => {
-                const fee = parseFloat(o.platformDriverFee || 5);
-                total += fee;
-                return `<div class="ride-card" style="border-left:5px solid #00a14b; padding:10px;"><b>R$ ${fee.toFixed(2)}</b> - ${o.storeName}</div>`;
+            const noMsg = document.getElementById('no-history-msg');
+            const selectedDateStr = document.getElementById('history-date-filter').value;
+            
+            if (!selectedDateStr) return;
+
+            const [year, month, day] = selectedDateStr.split('-');
+            const filterStart = new Date(year, month - 1, day).getTime();
+            const filterEnd = filterStart + (24 * 60 * 60 * 1000);
+
+            const filteredHistory = myHistoryOrders.filter(order => {
+                const orderTime = order.deliveredAt || order.timestamp || 0;
+                return orderTime >= filterStart && orderTime < filterEnd;
+            });
+
+            filteredHistory.sort((a, b) => (b.deliveredAt || b.timestamp) - (a.deliveredAt || a.timestamp));
+
+            if (filteredHistory.length === 0) {
+                container.innerHTML = '';
+                noMsg.style.display = 'block';
+                return;
+            }
+
+            noMsg.style.display = 'none';
+
+            let totalFeeDay = 0;
+            const listHtml = filteredHistory.map(o => {
+                const fee = parseFloat(o.platformDriverFee || o.deliveryFee || 5.00);
+                totalFeeDay += fee;
+                
+                const timeObj = new Date(o.deliveredAt || o.timestamp);
+                const timeStr = timeObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+                return `
+                <div class="ride-card" style="border-left: 5px solid #00a14b; padding: 20px; margin-bottom: 15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
+                        <b style="font-size:1.3rem; color:#00a14b; font-weight: 900;">+ R$ ${fee.toFixed(2)}</b> 
+                        <span style="color:#888; font-weight:bold; background:#f4f5f7; padding:4px 8px; border-radius:8px; font-size:0.75rem;">#${o.id.substring(0,5).toUpperCase()}</span>
+                    </div>
+                    <div style="font-size:0.95rem; color:#555; line-height: 1.5;">
+                        <b style="color: #111;">${o.storeName}</b> <br> 
+                        <span style="font-size:0.85rem;">➔ ${o.customerName}</span><br>
+                        <span style="font-size:0.75rem; color:#aaa; margin-top: 5px; display: block;">Entregue às ${timeStr}</span>
+                    </div>
+                </div>`;
             }).join('');
-            container.innerHTML = `<div style="background:#fff; padding:15px; border-radius:12px; margin-bottom:15px; text-align:center;"><b>Total: R$ ${total.toFixed(2)}</b> (${filtered.length} entregas)</div>` + list;
+
+            const summaryHtml = `
+                <div style="background: #fff; padding: 20px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; border: 1px solid #f0f0f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                    <div style="text-align: center; flex: 1; border-right: 1px dashed #ddd;">
+                        <div style="font-size: 0.8rem; color: #888; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Entregas</div>
+                        <div style="font-size: 2rem; font-weight: 900; color: #111;">${filteredHistory.length}</div>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <div style="font-size: 0.8rem; color: #888; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Total do Dia</div>
+                        <div style="font-size: 2rem; font-weight: 900; color: #00a14b;">R$ ${totalFeeDay.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = summaryHtml + listHtml;
         };
 
-        window.acceptOrder = async (id, btn) => {
-            btn.innerText = "Aceitando...";
-            await updateDoc(doc(db, "orders", id), { status: 'Saiu para Entrega', driverId: loggedDriver.id, driverName: loggedDriver.name, driverPhone: loggedDriver.phone || "" });
-            window.switchTab('minhas');
+        window.acceptOrder = async (orderId, btnElement) => {
+            if(!confirm("Tem certeza que deseja aceitar esta entrega?")) return;
+            const originalText = btnElement.innerText;
+            btnElement.innerText = "Aceitando..."; btnElement.disabled = true;
+            try {
+                await updateDoc(doc(db, "orders", orderId), {
+                    status: 'Saiu para Entrega',
+                    driverId: loggedDriver.id,
+                    driverName: loggedDriver.name,
+                    driverPhone: loggedDriver.phone || ""
+                });
+                window.switchTab('minhas');
+            } catch(e) {
+                alert("Erro ao aceitar corrida. Outro entregador pode ter pego ou sua conexão falhou.");
+                btnElement.innerText = originalText; btnElement.disabled = false;
+            }
         };
 
-        window.finishDelivery = async (id) => {
-            if(confirm("Concluir?")) await updateDoc(doc(db, "orders", id), { status: 'Concluído', deliveredAt: Date.now() });
+        window.finishDelivery = async (orderId) => {
+            if(!confirm("Concluiu a entrega no endereço do cliente?")) return;
+            try {
+                await updateDoc(doc(db, "orders", orderId), { status: 'Concluído', deliveredAt: Date.now() });
+                alert("Entrega concluída com sucesso! Adicionada ao seu histórico.");
+            } catch(e) { alert("Erro ao finalizar corrida. Tente novamente."); }
         };
 
         window.playAlertSound = () => {
-            try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5); } catch(e){}
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                [880, 1100, 880, 1100].forEach((f, i) => {
+                    const o = ctx.createOscillator(); const g = ctx.createGain();
+                    o.type = 'sine'; o.connect(g); g.connect(ctx.destination);
+                    o.frequency.setValueAtTime(f, now + (i * 0.3)); g.gain.setValueAtTime(0.5, now + (i * 0.3));
+                    g.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.3) + 0.2);
+                    o.start(now + (i * 0.3)); o.stop(now + (i * 0.3) + 0.3);
+                });
+            } catch (e) {}
+        };
+
+        window.showToast = () => {
+            const toast = document.getElementById('new-ride-toast');
+            toast.classList.add('show');
+            toast.onclick = () => { toast.classList.remove('show'); window.switchTab('novas'); };
+            setTimeout(() => { toast.classList.remove('show'); }, 8000);
         };
     </script>
 </body>
