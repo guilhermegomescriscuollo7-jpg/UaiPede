@@ -611,19 +611,10 @@
                     <div class="rep-title">Faturamento Bruto</div>
                     <div class="rep-value" style="color:#00a14b;" id="rep-revenue">R$ 0,00</div>
                 </div>
-                <div class="report-card" style="border-left: 5px solid #0d6efd;">
-                    <div class="rep-title">Faturamento Líquido (Sua Parte)</div>
-                    <div class="rep-value" style="color:#0d6efd;" id="rep-net-revenue">R$ 0,00</div>
-                </div>
-                <div class="report-card" style="border-left: 5px solid #ea1d2c;">
-                    <div class="rep-title">Taxa da Plataforma (10%)</div>
-                    <div class="rep-value" style="color:#ea1d2c;" id="rep-app-fee">R$ 0,00</div>
-                </div>
                 <div class="report-card" style="border-left: 5px solid #111;">
                     <div class="rep-title">Total de Pedidos</div>
                     <div class="rep-value" style="color:#111;" id="rep-count">0</div>
                 </div>
-                
                 <div class="report-card" style="border-left: 5px solid #8e44ad;">
                     <div class="rep-title">Ticket Médio por Cliente</div>
                     <div class="rep-value" style="color:#8e44ad;" id="rep-avg">R$ 0,00</div>
@@ -835,12 +826,9 @@
 
         window.closeToast = () => { document.getElementById('new-order-toast').classList.remove('show'); };
 
-        // ===============================================
-        // 🟢 NOVO SISTEMA DE ALERTA DE ÁUDIO INTELIGENTE
-        // ===============================================
         function playAlertSound() {
             try {
-                // 1. Sintetizador de Voz (Avisa que tem pedido)
+                // Sintetizador de Voz
                 if ('speechSynthesis' in window) {
                     const msg = new SpeechSynthesisUtterance("Atenção! Você tem um novo pedido.");
                     msg.lang = 'pt-BR';
@@ -848,7 +836,7 @@
                     window.speechSynthesis.speak(msg);
                 }
 
-                // 2. Som longo de alerta da cozinha (Toca após a voz começar)
+                // Som de alerta da cozinha
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 const ctx = new AudioContext();
                 
@@ -856,22 +844,19 @@
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
                     osc.connect(gain); gain.connect(ctx.destination);
-                    osc.type = 'sine'; // Som suave e longo
+                    osc.type = 'sine'; 
                     osc.frequency.setValueAtTime(freq, startTime);
                     gain.gain.setValueAtTime(0.5, startTime);
-                    gain.gain.setTargetAtTime(0.0001, startTime + duration - 0.2, 0.2); // Fade out
+                    gain.gain.setTargetAtTime(0.0001, startTime + duration - 0.2, 0.2);
                     osc.start(startTime);
                     osc.stop(startTime + duration);
                 };
 
                 const now = ctx.currentTime;
-                // Atraso de 2.5s para a IA terminar de falar
-                playTone(880, now + 2.5, 1.5); // Bip longo 1
-                playTone(1100, now + 4.2, 2.0); // Bip longo 2 (agudo)
+                playTone(880, now + 2.5, 1.5); 
+                playTone(1100, now + 4.2, 2.0); 
                 
-            } catch (e) {
-                console.warn("Áudio bloqueado pelo navegador. Clique em Ativar Alertas.");
-            }
+            } catch (e) {}
         }
 
         function triggerNewOrderAlert() {
@@ -921,7 +906,6 @@
             }
         });
 
-        // ESCUTAR ENTREGADORES ONLINE
         const qDrivers = collection(db, "drivers");
         onSnapshot(qDrivers, (snapshot) => {
             onlineDriversCount = 0;
@@ -1011,14 +995,12 @@
             }
         };
 
-        // 🟢 ATUALIZAÇÃO NO STATUS PARA SALVAR TIMESTAMPS (Para o Tempo Médio)
         window.updateOrderStatus = async (btnElement, orderId, newStatus) => {
             const prevText = btnElement.innerHTML;
             btnElement.innerHTML = 'Aguarde...';
             btnElement.disabled = true;
             
             const updateObj = { status: newStatus };
-            // Salvando os tempos para a métrica
             if (newStatus === 'Aceito') updateObj.acceptedAt = Date.now();
             if (newStatus === 'Em Preparo') updateObj.prepStartedAt = Date.now();
             if (newStatus === 'Saiu para Entrega' || newStatus === 'Pronto para Retirada') updateObj.dispatchedAt = Date.now();
@@ -1052,7 +1034,7 @@
                     await updateDoc(doc(db, "orders", orderId), { 
                         status: 'Aguardando Entregador', 
                         platformDriverFee: driverFeeToSave,
-                        dispatchedAt: Date.now() // Conta como despachado para métricas
+                        dispatchedAt: Date.now() 
                     }); 
                 } catch(e) { 
                     alert("Erro ao solicitar entregador.");
@@ -1062,7 +1044,6 @@
             }
         };
 
-        // KANBAN
         const qOrders = query(collection(db, "orders"), where("storeId", "==", loggedStore.id));
 
         onSnapshot(qOrders, (snapshot) => {
@@ -1209,10 +1190,6 @@
             return `<div class="order-card" ${isPickup ? 'style="border-left: 5px solid #ffc107;"' : ''}><div class="order-header"><div style="display:flex; flex-direction:column;"><span class="order-id">#${shortId} ${orderTypeBadge}</span><div style="margin-top:3px;">${sellerBadge}</div></div><div class="order-time" style="font-size:0.75rem; color:#888; text-align: right; display: flex; flex-direction: column; gap: 2px;"><strong style="color: #555;">${orderDatePart}</strong><span>${orderTimePart}</span></div></div><div class="customer-info"><strong style="display:flex; align-items:center; gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>${order.customerName}</strong>${addressHtml}${chatBtn}</div><ul class="order-items" style="list-style:none; padding:0;">${itemsList}</ul>${paymentBadge}${discountHtml}<div class="order-total">R$ ${(order.total || 0).toFixed(2)}</div>${actionBtn}</div>`;
         }
 
-        // ==========================================
-        // 🟢 NOVO MÓDULO DE MÉTRICAS AVANÇADAS 🟢
-        // ==========================================
-        
         window.clearDateFilter = () => {
             document.getElementById('filter-reports-date').value = '';
             window.renderReports();
@@ -1240,7 +1217,6 @@
             let totalRevenue = 0; let orderCount = 0;
             let payPix = 0; let payCard = 0; let payCash = 0;
             
-            // Novas Variáveis
             let totalDiscounts = 0;
             let deliveryCount = 0; let pickupCount = 0;
             let totalPrepTimeMins = 0; let prepTimeCount = 0;
@@ -1268,37 +1244,31 @@
                 totalRevenue += (order.total || 0);
                 totalDiscounts += (order.discount || 0);
 
-                // Entrega vs Retirada
                 const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
                 if(isPickup) pickupCount++; else deliveryCount++;
 
-                // Tempo Médio (Do pedido até o despacho)
                 if (order.dispatchedAt && order.timestamp) {
                     let mins = (order.dispatchedAt - order.timestamp) / 60000;
-                    if (mins > 0 && mins < 300) { // Ignora se passar de 5h (provável erro operacional)
+                    if (mins > 0 && mins < 300) { 
                         totalPrepTimeMins += mins;
                         prepTimeCount++;
                     }
                 }
 
-                // Horários de Pico
                 let h = new Date(order.timestamp).getHours();
                 let range = `${h}h às ${h+1}h`;
                 peakHours[range] = (peakHours[range] || 0) + 1;
 
-                // Top Clientes
                 let cName = order.customerName || 'Cliente não identificado';
                 if(!customerSales[cName]) customerSales[cName] = { count: 0, total: 0 };
                 customerSales[cName].count++;
                 customerSales[cName].total += (order.total || 0);
 
-                // Pagamentos
                 const pm = (order.paymentMethod || '').toLowerCase();
                 if (pm.includes('pix')) payPix++; 
                 else if (pm.includes('cartão') || pm.includes('cartao')) payCard++; 
                 else if (pm.includes('dinheiro')) payCash++;
 
-                // Produtos
                 if(order.items && Array.isArray(order.items)) {
                     order.items.forEach(item => {
                         if(!productSales[item.name]) { productSales[item.name] = { qty: 0, revenue: 0 }; }
@@ -1308,51 +1278,40 @@
                 }
             });
 
-            // Cálculos Finais dos Cards
             const avgTicket = orderCount > 0 ? (totalRevenue / orderCount) : 0;
-            const netRevenue = totalRevenue * 0.90; // Desconta 10%
-            const appFee = totalRevenue * 0.10;
             const deliveryPct = orderCount > 0 ? Math.round((deliveryCount / orderCount) * 100) : 0;
             const pickupPct = orderCount > 0 ? Math.round((pickupCount / orderCount) * 100) : 0;
             const avgPrep = prepTimeCount > 0 ? Math.round(totalPrepTimeMins / prepTimeCount) : 0;
 
-            // Injeção nos Cards Superiores
             document.getElementById('rep-revenue').innerText = `R$ ${totalRevenue.toFixed(2)}`;
-            document.getElementById('rep-net-revenue').innerText = `R$ ${netRevenue.toFixed(2)}`;
-            document.getElementById('rep-app-fee').innerText = `R$ ${appFee.toFixed(2)}`;
             document.getElementById('rep-count').innerText = orderCount;
             document.getElementById('rep-avg').innerText = `R$ ${avgTicket.toFixed(2)}`;
             document.getElementById('rep-discounts').innerText = `R$ ${totalDiscounts.toFixed(2)}`;
             document.getElementById('rep-delivery-vs-pickup').innerText = `🛵 ${deliveryPct}% / 🚶 ${pickupPct}%`;
             document.getElementById('rep-prep-time').innerText = `⏱️ ${avgPrep} min`;
 
-            // Listas
             document.getElementById('rep-payments').innerHTML = `
                 <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#997404" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line><polyline points="22 8.5 12 15.5 2 8.5"></polyline><polyline points="2 15.5 12 8.5 22 15.5"></polyline><line x1="12" y1="2" x2="12" y2="8.5"></line></svg> Pix</span> <strong>${payPix}</strong></li>
                 <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#084298" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Cartão</span> <strong>${payCard}</strong></li>
                 <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f5132" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle></svg> Dinheiro</span> <strong>${payCash}</strong></li>
             `;
 
-            // Top 5 Produtos
             const sortedProducts = Object.keys(productSales).map(n => ({ name: n, qty: productSales[n].qty, rev: productSales[n].revenue })).sort((a, b) => b.qty - a.qty).slice(0, 5); 
             const topProdContainer = document.getElementById('rep-top-products');
             if(sortedProducts.length === 0) topProdContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem vendas.</li>`;
             else topProdContainer.innerHTML = sortedProducts.map((p, i) => `<li><span><b>${i+1}º</b> ${p.name}</span> <div style="text-align:right;">${p.qty}x<br><strong style="font-size:0.8rem; color:#ea1d2c;">R$ ${p.rev.toFixed(2)}</strong></div></li>`).join('');
 
-            // Top 5 Clientes
             const sortedCustomers = Object.keys(customerSales).map(n => ({ name: n, count: customerSales[n].count, total: customerSales[n].total })).sort((a, b) => b.total - a.total).slice(0, 5);
             const topCustContainer = document.getElementById('rep-top-customers');
             if(sortedCustomers.length === 0) topCustContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem dados.</li>`;
             else topCustContainer.innerHTML = sortedCustomers.map((c, i) => `<li><span><b>${i+1}º</b> ${c.name}</span> <div style="text-align:right;">${c.count} pedidos<br><strong style="font-size:0.8rem; color:#00a14b;">R$ ${c.total.toFixed(2)}</strong></div></li>`).join('');
 
-            // Horários de Pico
             const sortedHours = Object.keys(peakHours).map(h => ({ range: h, count: peakHours[h] })).sort((a, b) => b.count - a.count).slice(0, 5);
             const peakContainer = document.getElementById('rep-peak-hours');
             if(sortedHours.length === 0) peakContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem dados.</li>`;
             else peakContainer.innerHTML = sortedHours.map(h => `<li><span>🕒 ${h.range}</span> <strong>${h.count} pedidos</strong></li>`).join('');
         };
 
-        // GESTÃO DE CUPONS
         const qCoupons = query(collection(db, "coupons"), where("storeId", "==", loggedStore.id));
         onSnapshot(qCoupons, (snapshot) => {
             globalCoupons = []; snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() })); window.renderCoupons();
@@ -1381,7 +1340,6 @@
         window.toggleCoupon = async (id, makeActive) => { try { await updateDoc(doc(db, "coupons", id), { active: makeActive }); } catch(e) {} };
         window.deleteCoupon = async (id) => { if(confirm("Apagar permanentemente?")) try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {} };
 
-        // GESTÃO DO CARDÁPIO
         let currentEditingId = null; let editorImageBase64 = ''; let currentPriceType = 'simples'; let editingVariants = []; let editingModifiers = []; 
         let globalProducts = [];
         let myCategories = ['Geral', 'Destaques'];
@@ -1393,7 +1351,6 @@
             window.loadCategoriesAndProducts();
         });
 
-        // COMPRESSÃO DE IMAGENS
         document.getElementById('ed-img-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -1701,7 +1658,7 @@
                         <div style="background:#fff; border:1px dashed #ccc; padding:15px; border-radius:8px;">
                             <h4 style="font-size:0.9rem; color:#333; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between;">Opções de Modificadores <span style="background:#eee; color:#555; padding:2px 8px; border-radius:12px; font-size:0.75rem;">${cat.options.length} opções</span></h4>
                             ${optionsHtml}
-                            <button style="background:none; border:none; color:#0d6efd; font-weight:bold; cursor:pointer; font-size:0.9rem; margin-top:10px; display:flex; align-items:center; gap:4px;" onclick="window.addModOption(${cIndex})"><svg width="16" height="16" viewBox="0 0 24 24" fill=\"none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Adicionar modificador</button>
+                            <button style="background:none; border:none; color:#0d6efd; font-weight:bold; cursor:pointer; font-size:0.9rem; margin-top:10px; display:flex; align-items:center; gap:4px;" onclick="window.addModOption(${cIndex})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Adicionar modificador</button>
                         </div>
                     </div>
                 </div>`;
