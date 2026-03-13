@@ -287,6 +287,12 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg>
                 <span>Cardápio</span>
             </li>
+            
+            <li class="nav-item" onclick="window.switchTab('estoque', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                <span>Estoque</span>
+            </li>
+
             <li class="nav-item" onclick="window.switchTab('cupons', this)">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                 <span>Cupons</span>
@@ -418,18 +424,6 @@
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 15px; margin-bottom: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee; align-items: center;">
-                            <div class="form-group" style="margin: 0; display: flex; align-items: center;">
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #111; font-size: 0.9rem; margin: 0; text-transform: none;">
-                                    <input type="checkbox" id="ed-has-stock" style="width: 20px; height: 20px; accent-color: #ea1d2c; cursor: pointer;" onchange="window.toggleStockField()">
-                                    <strong>Ativar Controle de Estoque</strong>
-                                </label>
-                            </div>
-                            <div class="form-group" id="stock-field-container" style="flex: 1; margin: 0; display: none;">
-                                <input type="number" id="ed-stock-qty" class="form-input" placeholder="Quantidade disponível (Ex: 50)" min="0" style="padding: 10px;">
-                            </div>
-                        </div>
-
                         <div class="editor-card">
                             <div class="card-header-flex">
                                 <span class="card-title">Preço</span>
@@ -498,6 +492,22 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <section id="estoque" class="section config-scroll">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 style="border: none; margin: 0; padding: 0;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    Controle de Estoque
+                </h2>
+            </div>
+            
+            <p style="color: #666; margin-bottom: 25px;">
+                O controle de estoque é <strong>opcional</strong>. Ative apenas nos produtos que você deseja monitorar a quantidade em tempo real. Produtos sem o controle ativado terão venda ilimitada.
+            </p>
+
+            <div id="stock-list-container" style="display: flex; flex-direction: column; gap: 15px;">
+                </div>
         </section>
 
         <section id="cupons" class="section">
@@ -908,6 +918,7 @@
             document.getElementById(tabId).classList.add('active');
             el.classList.add('active');
             if(tabId === 'cardapio') { window.loadCategoriesAndProducts(); window.clearEditor(); }
+            if(tabId === 'estoque') { window.renderStock(); }
             if(tabId === 'relatorios') { window.renderReports(); }
         };
 
@@ -1227,7 +1238,7 @@
             }
             else if (order.status === 'Saiu para Entrega') {
                 sellerBadge = `<span style="color:#f59e0b; font-size:0.75rem; font-weight:bold;">Em Rota</span>`;
-                actionBtn = `<div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #f59e0b; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 0 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>Com o Entregador</div><button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus(this, '${order.id}', 'Concluído')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Marcar como Entregue</button>`;
+                actionBtn = `<div style="text-align:center; margin-bottom: 8px; font-size: 0.9rem; color: #f59e0b; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 1 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>Com o Entregador</div><button class="btn-action" style="background:#00a14b;" onclick="window.updateOrderStatus(this, '${order.id}', 'Concluído')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Marcar como Entregue</button>`;
             }
             else if (order.status === 'Entregue' || order.status === 'Concluído' || order.status === 'Concluido') {
                 sellerBadge = `<span style="color:#00a14b; font-size:0.75rem; font-weight:bold;">Finalizado</span>`;
@@ -1243,6 +1254,96 @@
 
             return `<div class="order-card" ${isPickup ? 'style="border-left: 5px solid #ffc107;"' : ''}><div class="order-header"><div style="display:flex; flex-direction:column;"><span class="order-id">#${shortId} ${orderTypeBadge}</span><div style="margin-top:3px;">${sellerBadge}</div></div><div class="order-time" style="font-size:0.75rem; color:#888; text-align: right; display: flex; flex-direction: column; gap: 2px;"><strong style="color: #555;">${orderDatePart}</strong><span>${orderTimePart}</span></div></div><div class="customer-info"><strong style="display:flex; align-items:center; gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>${order.customerName}</strong>${addressHtml}${chatBtn}</div><ul class="order-items" style="list-style:none; padding:0;">${itemsList}</ul>${paymentBadge}${discountHtml}<div class="order-total">R$ ${(order.total || 0).toFixed(2)}</div>${actionBtn}</div>`;
         }
+
+        // 🟢 CÓDIGO DA NOVA ABA DE ESTOQUE 🟢
+        window.renderStock = () => {
+            const container = document.getElementById('stock-list-container');
+            if (globalProducts.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Você ainda não cadastrou nenhum produto.</p>';
+                return;
+            }
+            
+            // Ordena colocando quem tem controle de estoque ativado primeiro
+            let sortedProducts = [...globalProducts].sort((a,b) => {
+                if(a.hasStockControl === b.hasStockControl) return (a.name || '').localeCompare(b.name || '');
+                return a.hasStockControl ? -1 : 1;
+            });
+
+            container.innerHTML = sortedProducts.map(p => {
+                let isChecked = p.hasStockControl ? 'checked' : '';
+                let qty = p.stockQuantity || 0;
+                let min = p.minStock || 0;
+                let displayInputs = p.hasStockControl ? 'flex' : 'none';
+                
+                let statusBadge = '';
+                if (p.hasStockControl) {
+                    if (qty <= 0) statusBadge = `<span style="background:#fef0f0; color:#ea1d2c; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:800;">Esgotado (0)</span>`;
+                    else if (qty <= min) statusBadge = `<span style="background:#fff3cd; color:#856404; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:800;">Baixo: ${qty} un</span>`;
+                    else statusBadge = `<span style="background:#e6f4ea; color:#00a14b; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:800;">Ok: ${qty} un</span>`;
+                } else {
+                    statusBadge = `<span style="color:#aaa; font-size:0.8rem; font-weight:bold;">Ilimitado (Desativado)</span>`;
+                }
+
+                return `
+                <div class="editor-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; padding: 20px;">
+                    <div style="display:flex; align-items:center; gap:15px; flex:1; min-width:250px;">
+                        <img src="${p.image || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; border-radius:8px; object-fit:cover; border:1px solid #eee;">
+                        <div>
+                            <strong style="font-size:1.1rem; color:#111;">${p.name}</strong><br>
+                            <div style="margin-top: 6px;">${statusBadge}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; background:#f9f9f9; padding:10px 15px; border-radius:8px; border:1px solid #f2f2f2;">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin:0;">
+                            <input type="checkbox" id="stock-toggle-${p.id}" ${isChecked} onchange="window.toggleProductStock('${p.id}', this.checked)" style="width:20px; height:20px; accent-color:#ea1d2c; cursor:pointer;">
+                            <span style="font-size:0.85rem; font-weight:bold; color:#333;">Controlar?</span>
+                        </label>
+                        
+                        <div id="stock-inputs-${p.id}" style="display:${displayInputs}; gap:10px; align-items:center;">
+                            <div style="display:flex; flex-direction:column;">
+                                <label style="font-size:0.7rem; color:#777; margin-bottom:2px;">Qtd Atual</label>
+                                <input type="number" id="stock-qty-${p.id}" value="${qty}" style="width:80px; padding:10px; border-radius:8px; border:1px solid #ddd; text-align:center; font-weight:bold;">
+                            </div>
+                            <div style="display:flex; flex-direction:column;">
+                                <label style="font-size:0.7rem; color:#777; margin-bottom:2px;">Mínimo</label>
+                                <input type="number" id="stock-min-${p.id}" value="${min}" style="width:80px; padding:10px; border-radius:8px; border:1px solid #ddd; text-align:center; font-weight:bold;">
+                            </div>
+                            <button onclick="window.saveProductStock('${p.id}')" style="background:#0d6efd; color:#fff; border:none; padding:10px 15px; border-radius:8px; font-weight:bold; cursor:pointer; align-self:flex-end;">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        };
+
+        window.toggleProductStock = async (id, isChecked) => {
+            document.getElementById(`stock-inputs-${id}`).style.display = isChecked ? 'flex' : 'none';
+            try {
+                await updateDoc(doc(db, "products", id), { hasStockControl: isChecked });
+            } catch(e) { 
+                alert("Erro ao ativar/desativar controle."); 
+            }
+        };
+
+        window.saveProductStock = async (id) => {
+            const qty = parseInt(document.getElementById(`stock-qty-${id}`).value) || 0;
+            const min = parseInt(document.getElementById(`stock-min-${id}`).value) || 0;
+            
+            if (qty < 0 || min < 0) return alert("As quantidades não podem ser negativas.");
+
+            try {
+                await updateDoc(doc(db, "products", id), { 
+                    stockQuantity: qty, 
+                    minStock: min 
+                });
+                alert("Estoque atualizado com sucesso!");
+            } catch(e) {
+                alert("Erro ao salvar o estoque.");
+            }
+        };
+
+        // ==========================================
 
         window.clearDateFilter = () => {
             document.getElementById('filter-reports-date').value = '';
@@ -1438,361 +1539,6 @@
 
         window.toggleCoupon = async (id, makeActive) => { try { await updateDoc(doc(db, "coupons", id), { active: makeActive }); } catch(e) {} };
         window.deleteCoupon = async (id) => { if(confirm("Apagar permanentemente?")) try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {} };
-
-        let currentEditingId = null; let editorImageBase64 = ''; let currentPriceType = 'simples'; let editingVariants = []; let editingModifiers = []; 
-        let globalProducts = [];
-        let myCategories = ['Geral', 'Destaques'];
-
-        const qProducts = query(collection(db, "products"), where("storeId", "==", loggedStore.id));
-        onSnapshot(qProducts, (snapshot) => {
-            globalProducts = [];
-            snapshot.forEach(doc => globalProducts.push({ id: doc.id, ...doc.data() }));
-            window.loadCategoriesAndProducts();
-        });
-
-        document.getElementById('ed-img-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) { 
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 600; 
-                        const MAX_HEIGHT = 600;
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                        } else {
-                            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                        }
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        editorImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                        
-                        document.getElementById('ed-img-preview').src = editorImageBase64;
-                        document.getElementById('ed-img-preview').style.display = 'block';
-                    }
-                    img.src = evt.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // 🟢 CONTROLE DE ESTOQUE (LOGICA) 🟢
-        window.toggleStockField = () => {
-            const hasStock = document.getElementById('ed-has-stock').checked;
-            document.getElementById('stock-field-container').style.display = hasStock ? 'block' : 'none';
-        };
-
-        window.toggleWeightFields = () => {
-            const unit = document.getElementById('ed-unit').value;
-            const kgFields = document.getElementById('kg-fields');
-            const priceInput = document.getElementById('ed-price');
-            
-            if(unit === 'kg') {
-                kgFields.style.display = 'flex';
-                priceInput.readOnly = true;
-                priceInput.style.backgroundColor = '#f4f5f7';
-                window.calcKgPrice();
-            } else {
-                kgFields.style.display = 'none';
-                priceInput.readOnly = false;
-                priceInput.style.backgroundColor = '#fff';
-            }
-        };
-
-        window.calcKgPrice = () => {
-            const priceKg = parseFloat(document.getElementById('ed-price-kg').value);
-            const weight = parseFloat(document.getElementById('ed-weight').value);
-            if(!isNaN(priceKg) && !isNaN(weight)) {
-                document.getElementById('ed-price').value = (priceKg * weight).toFixed(2);
-            } else {
-                document.getElementById('ed-price').value = '';
-            }
-        };
-
-        window.setPriceType = (type) => {
-            currentPriceType = type;
-            if (type === 'simples') {
-                document.getElementById('tab-simples').classList.add('active'); document.getElementById('tab-variantes').classList.remove('active');
-                document.getElementById('panel-simples').style.display = 'block'; document.getElementById('panel-variantes').style.display = 'none';
-            } else {
-                document.getElementById('tab-variantes').classList.add('active'); document.getElementById('tab-simples').classList.remove('active');
-                document.getElementById('panel-variantes').style.display = 'block'; document.getElementById('panel-simples').style.display = 'none';
-                if (editingVariants.length === 0) { editingVariants.push({ name: 'Pequeno', price: '' }); editingVariants.push({ name: 'Médio', price: '' }); }
-                window.renderVariantList();
-            }
-        };
-
-        window.renderVariantList = () => {
-            const container = document.getElementById('variants-list-container'); const countBadge = document.getElementById('var-count');
-            container.innerHTML = '';
-            if(editingVariants.length > 0) { countBadge.innerText = editingVariants.length; countBadge.style.display = 'inline-block'; } 
-            else { countBadge.style.display = 'none'; }
-            editingVariants.forEach((v, index) => {
-                container.innerHTML += `
-                    <div class="variant-row">
-                        <span class="drag-handle" style="font-size: 1rem; margin:0;">⋮⋮</span>
-                        <input type="text" placeholder="Ex: Pequeno" value="${v.name}" oninput="window.updateVarData(${index}, 'name', this.value)">
-                        <input type="number" class="var-price" placeholder="R$ 0,00" value="${v.price}" step="0.01" oninput="window.updateVarData(${index}, 'price', this.value)">
-                        <button class="btn-rem-var" onclick="window.removeVariantRow(${index})" style="background:none; border:none; color:#ea1d2c; cursor:pointer;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        </button>
-                    </div>`;
-            });
-        };
-
-        window.updateVarData = (index, field, value) => { if (field === 'price') editingVariants[index][field] = value !== '' ? parseFloat(value) : ''; else editingVariants[index][field] = value; };
-        window.addVariantRow = () => { editingVariants.push({ name: '', price: '' }); window.renderVariantList(); };
-        window.removeVariantRow = (index) => { editingVariants.splice(index, 1); window.renderVariantList(); };
-
-        window.promptNewCategory = async () => {
-            const catName = prompt("Digite o nome da nova categoria:");
-            if(catName && catName.trim() !== "") {
-                if(!myCategories.includes(catName.trim())) { 
-                    myCategories.push(catName.trim()); 
-                    try { await updateDoc(doc(db, "stores", loggedStore.id), { categories: myCategories }); } catch(e) {}
-                } 
-                else { alert("Esta categoria já existe!"); }
-            }
-        };
-
-        window.deleteCategory = async (catName) => {
-            if(confirm(`Tem certeza que deseja excluir a categoria "${catName}"?\nOs produtos serão movidos para "Geral".`)) {
-                myCategories = myCategories.filter(c => c !== catName); 
-                try { await updateDoc(doc(db, "stores", loggedStore.id), { categories: myCategories }); } catch(e) {}
-                globalProducts.forEach(async (p) => {
-                    if (p.category === catName) { try { await updateDoc(doc(db, "products", p.id), { category: 'Geral' }); } catch(e){} }
-                });
-                if (document.getElementById('ed-category').value === catName) document.getElementById('ed-category').value = 'Geral';
-            }
-        };
-
-        window.loadCategoriesAndProducts = () => {
-            const container = document.getElementById('product-list-container'); 
-            const catSelect = document.getElementById('ed-category');
-            container.innerHTML = ''; catSelect.innerHTML = '';
-
-            let productCategories = globalProducts.map(p => p.category || 'Geral');
-            let allUniqueCategories = [...new Set([...myCategories, ...productCategories])];
-
-            allUniqueCategories.sort((a, b) => {
-                if (a === 'Destaques') return -1;
-                if (b === 'Destaques') return 1;
-                if (a === 'Geral' && b !== 'Destaques') return -1;
-                if (b === 'Geral' && a !== 'Destaques') return 1;
-                return a.localeCompare(b);
-            });
-
-            allUniqueCategories.forEach(catName => {
-                catSelect.innerHTML += `<option value="${catName}">${catName}</option>`;
-                const prodsInCat = globalProducts.filter(p => (p.category || 'Geral') === catName);
-                const deleteBtnHTML = (catName !== 'Geral' && catName !== 'Destaques') ? `<button class="btn-del-cat" title="Excluir" onclick="window.deleteCategory('${catName}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>` : '';
-                
-                let blockHTML = `
-                    <div class="category-block">
-                        <div class="category-header">
-                            <div><span style="font-weight: normal; font-size:0.75rem;">Nome da categoria</span><br><span style="color:#111; font-size:1rem;">${catName}</span></div>
-                            <div class="cat-actions"><button class="btn-add-prod-cat" onclick="window.openEditorNew('${catName}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Produto</button>${deleteBtnHTML}</div>
-                        </div>`;
-                
-                if (prodsInCat.length === 0) { 
-                    blockHTML += `<div style="padding: 15px; font-size:0.85rem; color:#999; text-align:center;">Nenhum produto nesta categoria.</div>`; 
-                } else {
-                    prodsInCat.forEach(p => {
-                        let subText = '';
-                        if (p.variants && p.variants.length > 0) { subText = `${p.variants.length} Variantes`; } 
-                        else {
-                            if(p.unit === 'kg' && p.weight) { subText = `R$ ${(p.price || 0).toFixed(2)} (${p.weight}kg)`; } 
-                            else { subText = `R$ ${(p.price || 0).toFixed(2)}`; }
-                        }
-                        let inactiveStyle = p.isActive === false ? 'opacity: 0.5; background: #fafafa;' : '';
-                        let inactiveBadge = p.isActive === false ? '<span style="background:#ea1d2c; color:#fff; font-size:0.6rem; padding:2px 6px; border-radius:4px; margin-left:5px;">Inativo</span>' : '';
-                        let promoBadge = p.isPromo === true ? '<span style="background:#ea1d2c; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; letter-spacing:0.5px; text-transform:uppercase;">Promoção</span>' : '';
-                        
-                        // Renderização da Badge de Estoque
-                        let stockBadge = '';
-                        if (p.hasStockControl) {
-                            let stockColor = p.stockQuantity > 0 ? '#00a14b' : '#ea1d2c';
-                            let stockText = p.stockQuantity > 0 ? `Estoque: ${p.stockQuantity}` : 'Esgotado';
-                            stockBadge = `<span style="background:${stockColor}15; color:${stockColor}; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; letter-spacing:0.5px;">${stockText}</span>`;
-                        }
-
-                        blockHTML += `
-                            <div class="product-row" id="row-prod-${p.id}" onclick="window.openEditorEdit('${p.id}')" style="${inactiveStyle}">
-                                <div class="drag-handle">⋮⋮</div><img src="${p.image}" class="row-img">
-                                <div class="row-info"><div class="row-name" style="display:flex; align-items:center; flex-wrap:wrap;">${p.name} ${inactiveBadge} ${promoBadge} ${stockBadge}</div><div class="row-sub">${subText}</div></div>
-                            </div>`;
-                    });
-                }
-                blockHTML += `</div>`; container.innerHTML += blockHTML;
-            });
-        };
-
-        window.clearEditor = () => {
-            currentEditingId = null; document.getElementById('ed-name').value = ''; document.getElementById('ed-desc').value = '';
-            document.getElementById('ed-img-file').value = ''; document.getElementById('ed-img-preview').src = '';
-            document.getElementById('ed-img-preview').style.display = 'none'; document.getElementById('btn-delete').style.display = 'none';
-            editorImageBase64 = ''; document.getElementById('ed-price').value = ''; document.getElementById('ed-var-title').value = '';
-            document.getElementById('ed-status').value = 'true'; document.getElementById('ed-promo').value = 'false';
-            document.getElementById('ed-unit').value = 'un'; document.getElementById('ed-price-kg').value = ''; document.getElementById('ed-weight').value = '';
-            document.getElementById('kg-fields').style.display = 'none'; document.getElementById('ed-price').readOnly = false; document.getElementById('ed-price').style.backgroundColor = '#fff';
-            
-            document.getElementById('ed-has-stock').checked = false; document.getElementById('ed-stock-qty').value = ''; window.toggleStockField();
-
-            editingVariants = []; editingModifiers = []; window.updateModBadge(); window.setPriceType('simples'); 
-            document.querySelectorAll('.product-row').forEach(row => row.classList.remove('selected'));
-        };
-
-        window.openEditorNew = (categoryName) => { window.clearEditor(); document.getElementById('ed-category').value = categoryName; document.getElementById('ed-name').focus(); };
-        
-        window.openEditorEdit = (productId) => {
-            window.clearEditor(); currentEditingId = productId;
-            document.querySelectorAll('.product-row').forEach(row => row.classList.remove('selected')); document.getElementById(`row-prod-${productId}`).classList.add('selected');
-            const prod = globalProducts.find(p => p.id === productId);
-            if(prod) {
-                document.getElementById('ed-name').value = prod.name; document.getElementById('ed-desc').value = prod.desc || '';
-                document.getElementById('ed-category').value = prod.category || 'Geral'; document.getElementById('btn-delete').style.display = 'inline-block';
-                if(prod.image && prod.image !== 'https://via.placeholder.com/150') { editorImageBase64 = prod.image; document.getElementById('ed-img-preview').src = editorImageBase64; document.getElementById('ed-img-preview').style.display = 'block'; }
-                if (prod.variants && prod.variants.length > 0) { window.setPriceType('variantes'); editingVariants = [...prod.variants]; document.getElementById('ed-var-title').value = prod.variantTitle || ''; window.renderVariantList(); } 
-                else { window.setPriceType('simples'); document.getElementById('ed-price').value = prod.price; }
-                
-                document.getElementById('ed-status').value = prod.isActive !== false ? 'true' : 'false';
-                document.getElementById('ed-promo').value = prod.isPromo === true ? 'true' : 'false';
-                
-                document.getElementById('ed-unit').value = prod.unit || 'un';
-                if(prod.unit === 'kg') {
-                    document.getElementById('ed-price-kg').value = prod.priceKg || '';
-                    document.getElementById('ed-weight').value = prod.weight || '';
-                }
-                window.toggleWeightFields();
-                
-                document.getElementById('ed-has-stock').checked = prod.hasStockControl === true;
-                document.getElementById('ed-stock-qty').value = prod.stockQuantity !== undefined ? prod.stockQuantity : '';
-                window.toggleStockField();
-
-                editingModifiers = prod.modifiers ? JSON.parse(JSON.stringify(prod.modifiers)) : []; window.updateModBadge();
-            }
-        };
-
-        window.saveEditingProduct = async () => {
-            const name = document.getElementById('ed-name').value.trim(); const desc = document.getElementById('ed-desc').value.trim(); const category = document.getElementById('ed-category').value;
-            const isActive = document.getElementById('ed-status').value === 'true';
-            const isPromo = document.getElementById('ed-promo').value === 'true';
-            const unit = document.getElementById('ed-unit').value;
-            
-            const hasStockControl = document.getElementById('ed-has-stock').checked;
-            let stockQuantity = null;
-            if (hasStockControl) {
-                stockQuantity = parseInt(document.getElementById('ed-stock-qty').value);
-                if (isNaN(stockQuantity) || stockQuantity < 0) return alert("Informe uma quantidade válida para o estoque.");
-            }
-
-            let finalPrice = 0; let finalVariants = []; let varTitle = '';
-            let priceKg = null; let weight = null;
-
-            if (!name) return alert("O Nome do produto é obrigatório!");
-            if (currentPriceType === 'simples') {
-                finalPrice = parseFloat(document.getElementById('ed-price').value); if (isNaN(finalPrice)) return alert("Preço é obrigatório!");
-                if(unit === 'kg') {
-                    priceKg = parseFloat(document.getElementById('ed-price-kg').value) || 0; weight = parseFloat(document.getElementById('ed-weight').value) || 0;
-                    if(priceKg <= 0 || weight <= 0) return alert("Para produtos por Kg, preencha o valor do Kg e o peso da peça!");
-                }
-            } else {
-                finalVariants = editingVariants.filter(v => v.name.trim() !== '' && v.price !== '');
-                if (finalVariants.length === 0) return alert("Adicione pelo menos uma variante válida!");
-                finalPrice = parseFloat(finalVariants[0].price); varTitle = document.getElementById('ed-var-title').value.trim() || 'Escolha uma opção';
-            }
-            
-            const prodData = {
-                storeId: loggedStore.id, name, desc, price: finalPrice, category,
-                isActive, isPromo, unit, priceKg, weight,
-                hasStockControl, stockQuantity,
-                variants: finalVariants, variantTitle: varTitle, modifiers: editingModifiers
-            };
-            
-            if(unit !== 'kg') { delete prodData.priceKg; delete prodData.weight; }
-            if(editorImageBase64) prodData.image = editorImageBase64;
-
-            try {
-                if (currentEditingId) { 
-                    await updateDoc(doc(db, "products", currentEditingId), prodData); 
-                    alert("Produto atualizado!"); 
-                } else { 
-                    if(!editorImageBase64) prodData.image = 'https://via.placeholder.com/150'; 
-                    await addDoc(collection(db, "products"), prodData); 
-                    alert("Produto salvo com sucesso!"); 
-                }
-                window.clearEditor();
-            } catch(e) { 
-                alert("Erro ao salvar produto: " + e.message);
-            }
-        };
-
-        window.deleteEditingProduct = async () => {
-            if(!currentEditingId) return;
-            if(confirm("Apagar este produto permanentemente?")) {
-                try { await deleteDoc(doc(db, "products", currentEditingId)); window.clearEditor(); } catch(e) {}
-            }
-        };
-
-        window.updateModBadge = () => { document.getElementById('mod-count-badge').innerText = editingModifiers.length; document.getElementById('mod-header-count').innerText = editingModifiers.length; };
-        window.openModifiersModal = () => { document.getElementById('modifiers-modal').classList.add('active'); window.renderModifiersScreen(); };
-        window.closeModifiersModal = () => { document.getElementById('modifiers-modal').classList.remove('active'); window.updateModBadge(); };
-        window.addModCategory = () => { editingModifiers.push({ name: 'Opção', isRequired: true, isMultiple: false, options: [ { name: '', price: '' } ] }); window.renderModifiersScreen(); };
-        window.removeModCategory = (index) => { if(confirm("Excluir esta categoria de modificador?")) { editingModifiers.splice(index, 1); window.renderModifiersScreen(); } };
-        window.updateModCat = (index, field, value) => { editingModifiers[index][field] = value; };
-        window.addModOption = (catIndex) => { editingModifiers[catIndex].options.push({ name: '', price: '' }); window.renderModifiersScreen(); };
-        window.removeModOption = (catIndex, optIndex) => { editingModifiers[catIndex].options.splice(optIndex, 1); window.renderModifiersScreen(); };
-        window.updateModOpt = (catIndex, optIndex, field, value) => { editingModifiers[catIndex].options[optIndex][field] = value; };
-        
-        window.renderModifiersScreen = () => {
-            window.updateModBadge(); const container = document.getElementById('modifiers-list-render'); container.innerHTML = '';
-            if(editingModifiers.length === 0) { container.innerHTML = `<div style="text-align:center; padding: 40px; color:#999;">Nenhuma categoria de modificador criada. Clique em "+ Criar categoria".</div>`; return; }
-            editingModifiers.forEach((cat, cIndex) => {
-                let optionsHtml = '';
-                cat.options.forEach((opt, oIndex) => {
-                    optionsHtml += `
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; background:#fff; padding:10px; border-radius:8px; border:1px solid #eee;">
-                        <span style="color:#ccc; font-size:1.2rem; cursor:grab;">⋮⋮</span>
-                        <div style="flex:2;"><label style="font-size:0.7rem; color:#777; font-weight:bold;">Nome do modificador</label><input type="text" value="${opt.name}" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; outline:none;" placeholder="Ex: Queijo Cheddar" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'name', this.value)"></div>
-                        <div style="flex:1;"><label style="font-size:0.7rem; color:#777; font-weight:bold;">Preço</label><input type="number" step="0.01" value="${opt.price}" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; outline:none;" placeholder="R$ 0,00" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'price', this.value)"></div>
-                        <button style="background:none; border:none; font-size:1.2rem; color:#ea1d2c; cursor:pointer; margin-top:15px;" title="Remover Opção" onclick="window.removeModOption(${cIndex}, ${oIndex})">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                        </button>
-                    </div>`;
-                });
-                container.innerHTML += `
-                <div style="background:#fff; border:1px solid #e0e0e0; border-radius:12px; margin-bottom:15px; overflow:hidden;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-bottom:1px solid #eee;">
-                        <div style="position:relative; flex:1; max-width: 300px;"><label style="position:absolute; top:-8px; left:10px; background:#f9f9f9; font-size:0.7rem; color:#777; padding:0 4px; font-weight:bold;">Nome da Categoria</label><input type="text" value="${cat.name}" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-weight:bold; color:#111; outline:none;" oninput="window.updateModCat(${cIndex}, 'name', this.value)"></div>
-                        <button style="background:#fff0f0; color:#ea1d2c; border:1px solid #fbd5d5; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:0.8rem;" onclick="window.removeModCategory(${cIndex})">✕ Excluir</button>
-                    </div>
-                    <div style="padding:15px;">
-                        <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px; background:#f4f5f7; padding:15px; border-radius:8px;">
-                            <div style="flex:1; min-width:200px;"><span style="font-size:0.8rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">Selecionar condição</span>
-                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer; margin-bottom:6px;"><input type="radio" name="req_${cIndex}" ${cat.isRequired ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isRequired', true)"> Obrigatório</label>
-                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer;"><input type="radio" name="req_${cIndex}" ${!cat.isRequired ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isRequired', false)"> Opcional</label>
-                            </div>
-                            <div style="flex:1; min-width:200px;"><span style="font-size:0.8rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">Nessa categoria, você pode selecionar</span>
-                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer; margin-bottom:6px;"><input type="radio" name="mult_${cIndex}" ${!cat.isMultiple ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isMultiple', false)"> Apenas um modificador</label>
-                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer;"><input type="radio" name="mult_${cIndex}" ${cat.isMultiple ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isMultiple', true)"> Vários</label>
-                            </div>
-                        </div>
-                        <div style="background:#fff; border:1px dashed #ccc; padding:15px; border-radius:8px;">
-                            <h4 style="font-size:0.9rem; color:#333; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between;">Opções de Modificadores <span style="background:#eee; color:#555; padding:2px 8px; border-radius:12px; font-size:0.75rem;">${cat.options.length} opções</span></h4>
-                            ${optionsHtml}
-                            <button style="background:none; border:none; color:#0d6efd; font-weight:bold; cursor:pointer; font-size:0.9rem; margin-top:10px; display:flex; align-items:center; gap:4px;" onclick="window.addModOption(${cIndex})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Adicionar modificador</button>
-                        </div>
-                    </div>
-                </div>`;
-            });
-        };
 
         window.openChatModal = (orderId, customerName) => {
             currentChatOrderId = orderId;
