@@ -191,10 +191,8 @@
 
         .msg-bubble { max-width: 80%; padding: 10px 12px; border-radius: 12px; font-size: 0.95rem; position: relative; line-height: 1.3;}
         .msg-time { font-size: 0.65rem; opacity: 0.7; text-align: right; margin-top: 4px; display: block; }
-
         .msg-customer { background: #fff; color: #333; align-self: flex-start; border-top-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .msg-customer .msg-sender { font-size: 0.75rem; font-weight: bold; color: #ea1d2c; margin-bottom: 4px; display: block;}
-
         .msg-store { background: #dcf8c6; color: #111; align-self: flex-end; border-top-right-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
         .chat-input-area { background: #f0f0f0; padding: 10px 15px; display: flex; gap: 10px; align-items: center; }
@@ -417,6 +415,18 @@
                                     <option value="false">Não</option>
                                     <option value="true">Sim</option>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee; align-items: center;">
+                            <div class="form-group" style="margin: 0; display: flex; align-items: center;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #111; font-size: 0.9rem; margin: 0; text-transform: none;">
+                                    <input type="checkbox" id="ed-has-stock" style="width: 20px; height: 20px; accent-color: #ea1d2c; cursor: pointer;" onchange="window.toggleStockField()">
+                                    <strong>Ativar Controle de Estoque</strong>
+                                </label>
+                            </div>
+                            <div class="form-group" id="stock-field-container" style="flex: 1; margin: 0; display: none;">
+                                <input type="number" id="ed-stock-qty" class="form-input" placeholder="Quantidade disponível (Ex: 50)" min="0" style="padding: 10px;">
                             </div>
                         </div>
 
@@ -907,7 +917,6 @@
             }
         };
 
-        // 🟢 ESCUTAR A MENSALIDADE DA LOJA EM TEMPO REAL 🟢
         onSnapshot(doc(db, "stores", loggedStore.id), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
@@ -928,7 +937,6 @@
                 window.updateStatusBtn();
                 window.loadCategoriesAndProducts();
 
-                // CONTROLE DE VENCIMENTO / MENSALIDADE
                 if (data.dueDate) {
                     const daysLeft = Math.ceil((data.dueDate - Date.now()) / (1000 * 60 * 60 * 24));
                     const warningBanner = document.getElementById('payment-warning-banner');
@@ -1475,6 +1483,12 @@
             }
         });
 
+        // 🟢 CONTROLE DE ESTOQUE (LOGICA) 🟢
+        window.toggleStockField = () => {
+            const hasStock = document.getElementById('ed-has-stock').checked;
+            document.getElementById('stock-field-container').style.display = hasStock ? 'block' : 'none';
+        };
+
         window.toggleWeightFields = () => {
             const unit = document.getElementById('ed-unit').value;
             const kgFields = document.getElementById('kg-fields');
@@ -1601,10 +1615,18 @@
                         let inactiveBadge = p.isActive === false ? '<span style="background:#ea1d2c; color:#fff; font-size:0.6rem; padding:2px 6px; border-radius:4px; margin-left:5px;">Inativo</span>' : '';
                         let promoBadge = p.isPromo === true ? '<span style="background:#ea1d2c; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; letter-spacing:0.5px; text-transform:uppercase;">Promoção</span>' : '';
                         
+                        // Renderização da Badge de Estoque
+                        let stockBadge = '';
+                        if (p.hasStockControl) {
+                            let stockColor = p.stockQuantity > 0 ? '#00a14b' : '#ea1d2c';
+                            let stockText = p.stockQuantity > 0 ? `Estoque: ${p.stockQuantity}` : 'Esgotado';
+                            stockBadge = `<span style="background:${stockColor}15; color:${stockColor}; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; letter-spacing:0.5px;">${stockText}</span>`;
+                        }
+
                         blockHTML += `
                             <div class="product-row" id="row-prod-${p.id}" onclick="window.openEditorEdit('${p.id}')" style="${inactiveStyle}">
                                 <div class="drag-handle">⋮⋮</div><img src="${p.image}" class="row-img">
-                                <div class="row-info"><div class="row-name" style="display:flex; align-items:center; flex-wrap:wrap;">${p.name} ${inactiveBadge} ${promoBadge}</div><div class="row-sub">${subText}</div></div>
+                                <div class="row-info"><div class="row-name" style="display:flex; align-items:center; flex-wrap:wrap;">${p.name} ${inactiveBadge} ${promoBadge} ${stockBadge}</div><div class="row-sub">${subText}</div></div>
                             </div>`;
                     });
                 }
@@ -1620,6 +1642,9 @@
             document.getElementById('ed-status').value = 'true'; document.getElementById('ed-promo').value = 'false';
             document.getElementById('ed-unit').value = 'un'; document.getElementById('ed-price-kg').value = ''; document.getElementById('ed-weight').value = '';
             document.getElementById('kg-fields').style.display = 'none'; document.getElementById('ed-price').readOnly = false; document.getElementById('ed-price').style.backgroundColor = '#fff';
+            
+            document.getElementById('ed-has-stock').checked = false; document.getElementById('ed-stock-qty').value = ''; window.toggleStockField();
+
             editingVariants = []; editingModifiers = []; window.updateModBadge(); window.setPriceType('simples'); 
             document.querySelectorAll('.product-row').forEach(row => row.classList.remove('selected'));
         };
@@ -1646,6 +1671,11 @@
                     document.getElementById('ed-weight').value = prod.weight || '';
                 }
                 window.toggleWeightFields();
+                
+                document.getElementById('ed-has-stock').checked = prod.hasStockControl === true;
+                document.getElementById('ed-stock-qty').value = prod.stockQuantity !== undefined ? prod.stockQuantity : '';
+                window.toggleStockField();
+
                 editingModifiers = prod.modifiers ? JSON.parse(JSON.stringify(prod.modifiers)) : []; window.updateModBadge();
             }
         };
@@ -1656,6 +1686,13 @@
             const isPromo = document.getElementById('ed-promo').value === 'true';
             const unit = document.getElementById('ed-unit').value;
             
+            const hasStockControl = document.getElementById('ed-has-stock').checked;
+            let stockQuantity = null;
+            if (hasStockControl) {
+                stockQuantity = parseInt(document.getElementById('ed-stock-qty').value);
+                if (isNaN(stockQuantity) || stockQuantity < 0) return alert("Informe uma quantidade válida para o estoque.");
+            }
+
             let finalPrice = 0; let finalVariants = []; let varTitle = '';
             let priceKg = null; let weight = null;
 
@@ -1675,6 +1712,7 @@
             const prodData = {
                 storeId: loggedStore.id, name, desc, price: finalPrice, category,
                 isActive, isPromo, unit, priceKg, weight,
+                hasStockControl, stockQuantity,
                 variants: finalVariants, variantTitle: varTitle, modifiers: editingModifiers
             };
             
