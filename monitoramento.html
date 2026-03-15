@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UaiPede - Monitor Operacional</title>
+    <title>UaiPede - Monitor Operacional PRO</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ea1d2c">
@@ -16,12 +16,12 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* FUNDO DINÂMICO PARA DESTACAR O VIDRO */
+        /* FUNDO DINÂMICO LIQUID GLASS */
         body { 
             background-color: #f0f2f5; 
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(234, 29, 44, 0.08), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(234, 29, 44, 0.06), transparent 25%);
+                radial-gradient(circle at 10% 40%, rgba(234, 29, 44, 0.08), transparent 30%),
+                radial-gradient(circle at 90% 70%, rgba(234, 29, 44, 0.06), transparent 30%);
             background-attachment: fixed;
             color: #333; 
             overflow-x: hidden; 
@@ -31,12 +31,9 @@
         /* HEADER PADRÃO APP */
         header { 
             background: linear-gradient(135deg, rgba(234, 29, 44, 0.95) 0%, rgba(214, 24, 37, 0.95) 100%);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #fff; 
-            padding: 30px 20px 45px; 
-            border-bottom-left-radius: 30px; 
-            border-bottom-right-radius: 30px; 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            color: #fff; padding: 30px 20px 45px; 
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; 
             box-shadow: 0 10px 30px rgba(234, 29, 44, 0.25); 
             position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid rgba(255,255,255,0.2);
@@ -44,81 +41,54 @@
         .app-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; justify-content: center; }
         .app-logo-bg { background: rgba(255,255,255,0.9); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.15);}
         .app-logo-text { font-size: 1.8rem; font-weight: 900; font-style: italic; letter-spacing: -1px; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.1);}
-        .app-logo-text .admin-tag { font-size: 0.75rem; color: #fff; font-weight: 700; font-style: normal; margin-left: 5px; text-transform: uppercase; background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.3);}
+        .app-logo-text .admin-tag { font-size: 0.75rem; color: #fff; font-weight: 700; margin-left: 5px; text-transform: uppercase; background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.3);}
         
         .header-top { display: flex; justify-content: space-between; align-items: center; }
         .header-top h1 { font-size: 1.2rem; font-weight: 700; color: #fff; margin: 0; }
-        .live-badge { display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.4); color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);}
+        .live-badge { display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.4); color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;}
         .live-dot { width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; animation: blink 1.5s infinite; box-shadow: 0 0 10px #2ecc71;}
 
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
         /* SEÇÕES E GRID */
-        .section-title { padding: 0 20px; margin: 25px 0 12px; font-size: 1rem; font-weight: 800; color: #444; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .section-title { padding: 0 20px; margin: 30px 0 12px; font-size: 0.95rem; font-weight: 800; color: #444; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
         .dashboard-container { padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
         /* 💎 EFEITO LIQUID GLASS NOS QUADROS 💎 */
         .card { 
             background: rgba(255, 255, 255, 0.65); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px); 
-            border: 1px solid rgba(255, 255, 255, 1); 
-            border-radius: 24px; 
-            padding: 20px; 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 1); border-radius: 24px; padding: 18px; 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255,255,255,0.5); 
             display: flex; flex-direction: column; justify-content: space-between; position: relative; 
-            transition: transform 0.2s ease;
         }
         .card.full { grid-column: 1 / -1; }
-        
-        /* Quadros com Destaque em Vidro Escuro/Fosco */
-        .card.highlight { 
-            background: rgba(20, 20, 20, 0.75); 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            color: #fff; 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Quadros de Alerta (Vidro Vermelho) */
-        .card.alert-glass {
-            background: rgba(255, 240, 240, 0.7);
-            border: 1px solid rgba(234, 29, 44, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(234, 29, 44, 0.05);
-        }
+        .card.highlight { background: rgba(20, 20, 20, 0.8); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15); }
+        .card.alert-glass { background: rgba(255, 240, 240, 0.7); border: 1px solid rgba(234, 29, 44, 0.3); box-shadow: 0 8px 32px 0 rgba(234, 29, 44, 0.05); }
         
         .c-icon { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start;}
-        
-        /* CAIXA DE ÍCONE PADRÃO (SEMPRE VERMELHO) */
-        .icon-box { 
-            width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; 
-            background: rgba(255,255,255,0.8); box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,1);
-            color: #ea1d2c; /* Cor do ícone aplicada via currentColor */
-        }
-        .card.highlight .icon-box { 
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ea1d2c;
-        }
+        .icon-box { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.8); box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,1); color: #ea1d2c; }
+        .card.highlight .icon-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ea1d2c; }
 
-        .c-title { font-size: 0.75rem; color: #666; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; line-height: 1.2; letter-spacing: 0.5px;}
+        .c-title { font-size: 0.75rem; color: #666; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; line-height: 1.2;}
         .card.highlight .c-title { color: #ccc; }
-        
-        .c-val { font-size: 1.7rem; font-weight: 900; color: #111; letter-spacing: -0.5px; line-height: 1.1;}
+        .c-val { font-size: 1.6rem; font-weight: 900; color: #111; letter-spacing: -0.5px; line-height: 1.1;}
         .card.highlight .c-val { color: #fff; }
-        .c-val.large { font-size: 2.4rem; }
-        
+        .c-val.large { font-size: 2.2rem; }
         .c-sub { font-size: 0.75rem; color: #777; font-weight: 600; margin-top: 10px; line-height: 1.3;}
         .card.highlight .c-sub { color: #999; }
         .c-sub strong { color: #222; font-weight: 800; }
 
-        /* LISTAS RANKING */
+        /* LISTAS RANKING / CIDADES */
         .ranking-list { list-style: none; margin-top: 10px; font-size: 0.85rem;}
         .ranking-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-weight: 600; color: #555;}
         .ranking-list li:last-child { border-bottom: none; padding-bottom: 0;}
-        .ranking-list li strong { color: #111; font-weight: 800;}
         .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 8px; font-weight: 800; }
         .badge.red { background: rgba(234, 29, 44, 0.15); color: #ea1d2c; border: 1px solid rgba(234, 29, 44, 0.3);}
-
-        /* ALERTA CRÍTICO */
-        .critical-alert { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(234, 29, 44, 0.5); border-radius: 16px; padding: 15px; margin: 0 20px 15px; display: flex; align-items: center; gap: 12px; color: #ea1d2c; font-weight: 800; font-size: 0.85rem; box-shadow: 0 8px 25px rgba(234, 29, 44, 0.15);}
+        .badge.green { background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3);}
+        
+        /* ALERTAS HEADER */
+        .critical-alert { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(234, 29, 44, 0.5); border-radius: 16px; padding: 15px; margin: 0 20px 15px; display: flex; align-items: center; gap: 12px; color: #ea1d2c; font-weight: 800; font-size: 0.85rem; box-shadow: 0 8px 25px rgba(234, 29, 44, 0.15);}
     </style>
 </head>
 <body>
@@ -131,7 +101,7 @@
             <div class="app-logo-text">UaiPede <span class="admin-tag">Monitor</span></div>
         </div>
         <div class="header-top">
-            <h1>Visão Geral do Dia</h1>
+            <h1>Painel de Controle</h1>
             <div class="live-badge"><div class="live-dot"></div> Tempo Real</div>
         </div>
     </header>
@@ -150,70 +120,89 @@
         </div>
 
         <div class="card">
-            <div class="c-icon">
-                <div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
-            </div>
+            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div></div>
             <div class="c-title">Vendas (Bruto)</div>
             <div class="c-val" id="val-revenue">R$ 0,00</div>
             <div class="c-sub" style="color:#ea1d2c;">Descontos: <strong id="val-discounts" style="color:#ea1d2c;">R$ 0,00</strong></div>
         </div>
 
         <div class="card">
-            <div class="c-icon">
-                <div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></div></div>
+            <div class="c-title">Pagamentos</div>
+            <div class="c-sub" style="margin-top: 0; display:flex; flex-direction:column; gap:4px;">
+                <span>Pix: <strong id="pay-pix">0</strong></span>
+                <span>Cartão: <strong id="pay-card">0</strong></span>
+                <span>Dinheiro: <strong id="pay-cash">0</strong></span>
             </div>
-            <div class="c-title">Ticket Médio</div>
-            <div class="c-val" id="val-avg-ticket">R$ 0,00</div>
-            <div class="c-sub">Gasto por cliente</div>
         </div>
     </div>
 
-    <h2 class="section-title" style="margin-top: 35px;">Termómetro da Operação</h2>
+    <h2 class="section-title">Lojas e Operação</h2>
     <div class="dashboard-container">
-        
-        <div class="card full alert-glass">
-            <div class="c-title" style="color: #ea1d2c;">Gargalos (Lojas Lentas)</div>
-            <div class="c-sub" style="margin-top:0; margin-bottom:12px;">Lojas com pedidos travados na cozinha (> 30 min)</div>
-            <ul class="ranking-list" id="list-slow-stores">
-                <li>Nenhum atraso crítico detetado. 🎉</li>
-            </ul>
-        </div>
-
         <div class="card">
-            <div class="c-title">Pedidos Totais</div>
-            <div class="c-val" id="val-orders-total">0</div>
-            <div class="c-sub"><strong style="color:#ea1d2c;" id="val-orders-active">0</strong> em andamento</div>
+            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div></div>
+            <div class="c-title">Lojas Abertas</div>
+            <div class="c-val" style="color: #ea1d2c;" id="val-stores-open">0</div>
+            <div class="c-sub">de <strong id="val-stores-total">0</strong> cadastradas</div>
         </div>
 
         <div class="card alert-glass">
-            <div class="c-title" style="color:#ea1d2c;">Avaliações Más</div>
-            <div class="c-val" style="color:#ea1d2c;" id="val-bad-reviews">0</div>
-            <div class="c-sub">Notas 1 ou 2 estrelas</div>
+            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div></div>
+            <div class="c-title" style="color:#ea1d2c;">Estoque Baixo</div>
+            <div class="c-val" style="color:#ea1d2c;" id="val-low-stock">0</div>
+            <div class="c-sub">Produtos no limite</div>
+        </div>
+
+        <div class="card full alert-glass">
+            <div class="c-title" style="color: #ea1d2c;">Gargalos (Atrasos na Cozinha)</div>
+            <ul class="ranking-list" id="list-slow-stores"><li>Nenhum atraso crítico detetado. 🎉</li></ul>
         </div>
     </div>
 
-    <h2 class="section-title" style="margin-top: 35px;">Logística & Frota</h2>
-    <div class="dashboard-container" style="margin-bottom: 20px;">
+    <h2 class="section-title">Logística & Entregadores</h2>
+    <div class="dashboard-container">
         <div class="card full">
             <div class="c-icon" style="margin-bottom:8px;">
-                <div class="c-title">Top 3 Estafetas Hoje</div>
-                <div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                <div class="c-title">Entregadores Ativos</div>
+                <div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
             </div>
-            <ul class="ranking-list" id="list-top-drivers">
-                <li>Nenhuma entrega concluída ainda.</li>
+            <div style="display:flex; justify-content:space-between; margin-top: 5px;">
+                <div style="text-align:center;">
+                    <div class="c-val" id="val-drivers-online">0</div>
+                    <div class="c-sub" style="margin-top:0;">Total Online</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="c-val" style="color:#2ecc71;" id="val-drivers-free">0</div>
+                    <div class="c-sub" style="margin-top:0;">Livres</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="c-val" style="color:#f39c12;" id="val-drivers-busy">0</div>
+                    <div class="c-sub" style="margin-top:0;">Em Rota</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Mapa de Calor (Cidades)</h2>
+    <div class="dashboard-container" style="margin-bottom: 20px;">
+        <div class="card full">
+            <div class="c-title">Pedidos Ativos por Cidade</div>
+            <div class="c-sub" style="margin-top:0; margin-bottom:12px;">Onde o app está a girar agora:</div>
+            <ul class="ranking-list" id="list-cities">
+                <li>A carregar dados...</li>
             </ul>
         </div>
 
-        <div class="card">
-            <div class="c-title">Status da Frota</div>
-            <div class="c-val" style="color:#ea1d2c;" id="val-drivers-online">0</div>
-            <div class="c-sub">Estafetas Online</div>
+        <div class="card alert-glass">
+            <div class="c-title" style="color:#ea1d2c;">Cancelamentos</div>
+            <div class="c-val" style="color:#ea1d2c;" id="val-canceled-count">0</div>
+            <div class="c-sub">Total perdido: <strong style="color:#ea1d2c;" id="val-canceled-value">R$ 0,00</strong></div>
         </div>
 
-        <div class="card highlight">
-            <div class="c-title">Repasse a Pagar</div>
-            <div class="c-val" id="val-repasse">R$ 0</div>
-            <div class="c-sub" style="border:none; padding:0;">Faturação deles hoje</div>
+        <div class="card">
+            <div class="c-title">Avaliações Más</div>
+            <div class="c-val" id="val-bad-reviews">0</div>
+            <div class="c-sub">Notas 1 ou 2 estrelas hoje</div>
         </div>
     </div>
 
@@ -235,115 +224,156 @@
 
         const formatBRL = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+        // 1. MONITOR DE PEDIDOS (Calcula tudo dinâmico)
         onSnapshot(collection(db, "orders"), (snapshot) => {
             const startOfToday = new Date().setHours(0,0,0,0);
             const now = Date.now();
             
-            let revToday = 0, countTotalToday = 0, countActiveToday = 0, countDoneToday = 0;
-            let discountTotal = 0, repasseTotal = 0, netProfit = 0;
+            let revToday = 0, discountTotal = 0, netProfit = 0;
+            let payPix = 0, payCard = 0, payCash = 0;
+            let cancelCount = 0, cancelValue = 0;
             let badReviews = 0;
-            let driverStats = {}; 
+            let driversBusy = 0;
+            
             let slowStores = {};  
+            let activeCities = {};
 
             snapshot.forEach(doc => {
                 const o = doc.data();
                 if (o.timestamp >= startOfToday) {
-                    countTotalToday++;
 
-                    if (o.status !== 'Cancelado') {
-                        revToday += (o.total || 0);
-                        discountTotal += (o.discount || 0);
+                    // LÓGICA DE CANCELAMENTOS
+                    if (o.status === 'Cancelado') {
+                        cancelCount++;
+                        cancelValue += (o.total || 0);
+                        return; // Pula o resto se for cancelado
+                    }
 
-                        if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
-                            countDoneToday++;
-                            let appFee = (o.total || 0) * 0.10;
-                            netProfit += appFee;
-                            repasseTotal += (o.platformDriverFee || 5);
+                    // RECEITAS E PAGAMENTOS
+                    revToday += (o.total || 0);
+                    discountTotal += (o.discount || 0);
+                    
+                    const pm = (o.paymentMethod || '').toLowerCase();
+                    if (pm.includes('pix')) payPix++;
+                    else if (pm.includes('cartão') || pm.includes('cartao')) payCard++;
+                    else payCash++;
 
-                            if (o.driverName) {
-                                if (!driverStats[o.driverName]) driverStats[o.driverName] = 0;
-                                driverStats[o.driverName]++;
-                            }
+                    // CONCLUÍDOS (Lucro e Avaliações)
+                    if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
+                        netProfit += (o.total || 0) * 0.10; // 10% da plataforma
+                        if (o.rating && o.rating <= 2) badReviews++;
+                    }
 
-                            if (o.rating && o.rating <= 2) badReviews++;
-                        }
+                    // EM ANDAMENTO (Cidades, Entregadores Ocupados e Gargalos)
+                    if (['Pendente', 'Aceito', 'Em Preparo', 'Aguardando Entregador', 'Saiu para Entrega', 'Pronto para Retirada'].includes(o.status)) {
+                        
+                        // Cidades com pedidos ativos
+                        const city = o.customerCity || o.cityName || 'Doresópolis'; // Doresópolis como padrão fallback
+                        if (!activeCities[city]) activeCities[city] = 0;
+                        activeCities[city]++;
 
-                        if (['Pendente', 'Aceito', 'Em Preparo', 'Aguardando Entregador', 'Saiu para Entrega', 'Pronto para Retirada'].includes(o.status)) {
-                            countActiveToday++;
-                            
-                            if (['Aceito', 'Em Preparo'].includes(o.status)) {
-                                let minsElapsed = (now - o.timestamp) / 60000;
-                                if (minsElapsed > 30) {
-                                    if (!slowStores[o.storeName]) slowStores[o.storeName] = 0;
-                                    slowStores[o.storeName]++;
-                                }
+                        // Entregadores Ocupados (Em Rota)
+                        if (o.status === 'Saiu para Entrega') driversBusy++;
+                        
+                        // Lojas Lentas (> 30 min na cozinha)
+                        if (['Aceito', 'Em Preparo'].includes(o.status)) {
+                            let minsElapsed = (now - o.timestamp) / 60000;
+                            if (minsElapsed > 30) {
+                                if (!slowStores[o.storeName]) slowStores[o.storeName] = 0;
+                                slowStores[o.storeName]++;
                             }
                         }
                     }
                 }
             });
 
-            netProfit = netProfit - discountTotal;
-            if(netProfit < 0) netProfit = 0; 
+            netProfit = Math.max(0, netProfit - discountTotal); 
 
+            // ATUALIZA DOM FINANCEIRO
             document.getElementById('val-revenue').innerText = formatBRL(revToday);
             document.getElementById('val-discounts').innerText = formatBRL(discountTotal);
             document.getElementById('val-net-profit').innerText = formatBRL(netProfit);
-            
-            const avgTicket = (countTotalToday) > 0 ? revToday / countTotalToday : 0;
-            document.getElementById('val-avg-ticket').innerText = formatBRL(avgTicket);
+            document.getElementById('pay-pix').innerText = payPix;
+            document.getElementById('pay-card').innerText = payCard;
+            document.getElementById('pay-cash').innerText = payCash;
 
-            document.getElementById('val-orders-total').innerText = countTotalToday;
-            document.getElementById('val-orders-active').innerText = countActiveToday;
+            // ATUALIZA CANCELAMENTOS E AVALIAÇÕES
+            document.getElementById('val-canceled-count').innerText = cancelCount;
+            document.getElementById('val-canceled-value').innerText = formatBRL(cancelValue);
             document.getElementById('val-bad-reviews').innerText = badReviews;
-            document.getElementById('val-repasse').innerText = formatBRL(repasseTotal);
 
+            // ATUALIZA ENTREGADORES EM ROTA
+            window.currentBusyDrivers = driversBusy; // Salva global para cruzar com a frota total depois
+            if(window.updateDriverStats) window.updateDriverStats();
+
+            // ALERTA CRÍTICO DE AVALIAÇÃO
             const alertContainer = document.getElementById('alert-container');
             if (badReviews > 0) {
-                alertContainer.innerHTML = `
-                    <div class="critical-alert">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                        <div>Atenção: Tem ${badReviews} avaliação(ões) negativa(s) recente(s). Contacte o cliente!</div>
-                    </div>`;
-            } else {
-                alertContainer.innerHTML = '';
-            }
+                alertContainer.innerHTML = `<div class="critical-alert"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg><div>Atenção: Tem ${badReviews} avaliação(ões) negativa(s) hoje. Contacte o cliente!</div></div>`;
+            } else { alertContainer.innerHTML = ''; }
 
-            const slowStoresArray = Object.keys(slowStores).map(name => ({ name, count: slowStores[name] })).sort((a,b) => b.count - a.count);
+            // GARGALOS NAS LOJAS
             const listSlowStores = document.getElementById('list-slow-stores');
+            const slowStoresArray = Object.keys(slowStores).map(name => ({ name, count: slowStores[name] })).sort((a,b) => b.count - a.count);
             if (slowStoresArray.length === 0) {
-                listSlowStores.innerHTML = '<li style="color:#00a14b; justify-content:center;">Nenhum atraso crítico na cozinha. 🎉</li>';
+                listSlowStores.innerHTML = '<li style="color:#2ecc71; justify-content:center;">Sem atrasos na cozinha no momento. 🎉</li>';
             } else {
-                listSlowStores.innerHTML = slowStoresArray.map(s => `
-                    <li>
-                        <span>${s.name}</span>
-                        <span class="badge red">${s.count} ped. atrasados</span>
-                    </li>
-                `).join('');
+                listSlowStores.innerHTML = slowStoresArray.map(s => `<li><span>${s.name}</span><span class="badge red">${s.count} ped. atrasados</span></li>`).join('');
             }
 
-            const driversArray = Object.keys(driverStats).map(name => ({ name, count: driverStats[name] })).sort((a,b) => b.count - a.count).slice(0, 3);
-            const listTopDrivers = document.getElementById('list-top-drivers');
-            if (driversArray.length === 0) {
-                listTopDrivers.innerHTML = '<li style="justify-content:center; color:#999;">Nenhuma entrega concluída ainda.</li>';
+            // MAPA DE CALOR POR CIDADES
+            const listCities = document.getElementById('list-cities');
+            const citiesArray = Object.keys(activeCities).map(name => ({ name, count: activeCities[name] })).sort((a,b) => b.count - a.count);
+            if (citiesArray.length === 0) {
+                listCities.innerHTML = '<li style="color:#999; justify-content:center;">Nenhum pedido em andamento no momento.</li>';
             } else {
-                const medals = ['🥇', '🥈', '🥉'];
-                listTopDrivers.innerHTML = driversArray.map((d, i) => `
-                    <li>
-                        <span style="display:flex; align-items:center; gap:8px;"><span style="font-size:1.2rem;">${medals[i]}</span> ${d.name}</span>
-                        <strong>${d.count} entregas</strong>
-                    </li>
-                `).join('');
+                listCities.innerHTML = citiesArray.map(c => `<li><span style="font-weight:800; color:#111;">📍 ${c.name}</span><span class="badge green">${c.count} a rodar</span></li>`).join('');
             }
         });
 
+        // 2. MONITOR DE LOJAS (Abertas vs Total)
+        onSnapshot(collection(db, "stores"), (snapshot) => {
+            let total = 0, open = 0;
+            snapshot.forEach(doc => {
+                total++;
+                if (doc.data().status === 'Aberto') open++;
+            });
+            document.getElementById('val-stores-total').innerText = total;
+            document.getElementById('val-stores-open').innerText = open;
+        });
+
+        // 3. MONITOR DE ENTREGADORES ONLINE
+        window.totalOnlineDrivers = 0;
         onSnapshot(collection(db, "drivers"), (snapshot) => {
             let online = 0;
             snapshot.forEach(doc => {
                 const d = doc.data();
                 if(d.isActive !== false && (d.isOnline === true || d.isOnline === "true")) online++;
             });
+            window.totalOnlineDrivers = online;
+            if(window.updateDriverStats) window.updateDriverStats();
+        });
+
+        window.updateDriverStats = () => {
+            const online = window.totalOnlineDrivers || 0;
+            const busy = window.currentBusyDrivers || 0;
+            const free = Math.max(0, online - busy);
+            
             document.getElementById('val-drivers-online').innerText = online;
+            document.getElementById('val-drivers-busy').innerText = busy;
+            document.getElementById('val-drivers-free').innerText = free;
+        };
+
+        // 4. MONITOR DE ESTOQUE DE PRODUTOS
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            let lowStockCount = 0;
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                if (p.hasStockControl && p.stockQuantity <= (p.minStock || 0)) {
+                    lowStockCount++;
+                }
+            });
+            document.getElementById('val-low-stock').innerText = lowStockCount;
         });
 
     </script>
