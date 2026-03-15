@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Monitor PRO - UaiPede</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f4f5f7; color: #333; overflow-x: hidden; padding-bottom: 40px; }
+        
+        /* HEADER MOBILE */
+        header { background: #111; color: #fff; padding: 25px 20px 35px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;}
+        .app-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+        .app-logo-text { font-size: 1.6rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+        .app-logo-text .uai { color: #ea1d2c; }
+        .app-logo-text .pede { color: #fff; }
+        .app-logo-text .admin-tag { font-size: 0.8rem; color: #888; font-weight: 500; font-style: normal; margin-left: 5px; }
+        
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .header-top h1 { font-size: 1.3rem; font-weight: 900; color: #fff; margin: 0; letter-spacing: -0.5px;}
+        .live-badge { display: flex; align-items: center; gap: 6px; background: rgba(0, 161, 75, 0.2); border: 1px solid #00a14b; color: #00d262; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase;}
+        .live-dot { width: 8px; height: 8px; background: #00d262; border-radius: 50%; animation: blink 1.5s infinite; }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* SEÇÕES E GRID */
+        .section-title { padding: 0 20px; margin: 25px 0 10px; font-size: 1.1rem; font-weight: 900; color: #111; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: -0.5px;}
+        .dashboard-container { padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .card { background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; border: 1px solid #eee;}
+        .card.full { grid-column: 1 / -1; }
+        
+        /* BORDAS LATERAIS */
+        .card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; }
+        .card.red::before { background: #ea1d2c; }
+        .card.green::before { background: #00a14b; }
+        .card.blue::before { background: #0d6efd; }
+        .card.purple::before { background: #8e44ad; }
+        .card.orange::before { background: #f39c12; }
+        .card.dark::before { background: #333; }
+
+        .c-icon { margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .c-title { font-size: 0.75rem; color: #777; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;}
+        .c-val { font-size: 1.6rem; font-weight: 900; color: #111; letter-spacing: -1px; line-height: 1.1;}
+        .c-val.large { font-size: 2.2rem; }
+        .c-sub { font-size: 0.75rem; color: #888; font-weight: 600; margin-top: 8px; line-height: 1.3;}
+        .c-sub strong { color: #111; font-weight: 900; }
+
+        /* LISTAS (Top Lojas, etc) */
+        .mini-list { list-style: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee; font-size: 0.85rem;}
+        .mini-list li { display: flex; justify-content: space-between; margin-bottom: 6px; font-weight: 600; color: #555;}
+        .mini-list li strong { color: #111; }
+
+        /* DESTAQUES DE ALERTA */
+        .alert-text { color: #ea1d2c; font-weight: 900; background: rgba(234, 29, 44, 0.1); padding: 2px 6px; border-radius: 4px;}
+        .success-text { color: #00a14b; font-weight: 900; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="app-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
+            <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span> <span class="admin-tag">Monitor PRO</span></div>
+        </div>
+        <div class="header-top">
+            <h1>Visão Geral do Dia</h1>
+            <div class="live-badge"><div class="live-dot"></div> Ao Vivo</div>
+        </div>
+    </header>
+
+    <h2 class="section-title" style="margin-top: -15px; position: relative; z-index: 101;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a14b" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 
+        Financeiro & Vendas
+    </h2>
+    <div class="dashboard-container">
+        <div class="card full green">
+            <div class="c-title">Faturamento Bruto (Hoje)</div>
+            <div class="c-val large" style="color: #00a14b;" id="val-revenue">R$ 0,00</div>
+            <div class="c-sub" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <span style="background: rgba(0, 161, 75, 0.1); color: #00a14b; padding: 4px 8px; border-radius: 6px;">Sua Taxa (10%): <strong id="val-tax" style="color:#00a14b;">R$ 0,00</strong></span>
+                <span style="background: rgba(234, 29, 44, 0.1); color: #ea1d2c; padding: 4px 8px; border-radius: 6px;">Cupons Aplicados: <strong id="val-discounts" style="color:#ea1d2c;">R$ 0,00</strong></span>
+            </div>
+        </div>
+
+        <div class="card dark">
+            <div class="c-title">Ticket Médio</div>
+            <div class="c-val" id="val-avg-ticket">R$ 0,00</div>
+            <div class="c-sub">Gasto médio por pedido</div>
+        </div>
+
+        <div class="card blue">
+            <div class="c-title">Pagamentos</div>
+            <ul class="mini-list" style="margin-top: 5px; border: none; padding: 0;">
+                <li>Pix: <strong id="pay-pix">0</strong></li>
+                <li>Cartão: <strong id="pay-card">0</strong></li>
+                <li>Dinheiro: <strong id="pay-cash">0</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <h2 class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f39c12" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 
+        Operacional
+    </h2>
+    <div class="dashboard-container">
+        <div class="card full orange">
+            <div class="c-icon" style="margin: 0;">
+                <div class="c-title" style="margin: 0;">Pedidos do Dia</div>
+                <div class="c-val" id="val-orders-total">0</div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <div style="flex:1; background:#f9f9f9; padding:10px; border-radius:8px; text-align:center;">
+                    <strong style="color:#0d6efd; font-size:1.2rem;" id="val-orders-active">0</strong><br>
+                    <span style="font-size:0.7rem; color:#777;">Em Andamento</span>
+                </div>
+                <div style="flex:1; background:#f9f9f9; padding:10px; border-radius:8px; text-align:center;">
+                    <strong style="color:#00a14b; font-size:1.2rem;" id="val-orders-done">0</strong><br>
+                    <span style="font-size:0.7rem; color:#777;">Concluídos</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card red">
+            <div class="c-title">Gargalos e Alertas</div>
+            <div class="c-sub" style="margin-top: 0;">
+                Atrasados (>50m): <br><strong class="alert-text" style="font-size: 1.2rem;" id="val-delayed">0</strong>
+            </div>
+            <div class="c-sub" style="border-top: 1px dashed #eee; padding-top: 8px;">
+                Cancelados Hoje: <br><strong style="color:#ea1d2c;" id="val-canceled">0 (R$ 0,00)</strong>
+            </div>
+        </div>
+
+        <div class="card purple">
+            <div class="c-title">Tempo Médio</div>
+            <div class="c-val" id="val-avg-time">0 min</div>
+            <div class="c-sub">Do clique à entrega do prato</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12.01" y2="8"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> 
+        Logística da Frota
+    </h2>
+    <div class="dashboard-container">
+        <div class="card full blue">
+            <div class="c-title">Status da Frota</div>
+            <div class="c-sub" style="font-size: 0.85rem; margin-top: 5px;">
+                Motoboys Online: <strong style="color:#0d6efd; font-size:1.1rem;" id="val-drivers-online">0</strong> de <span id="val-drivers-total">0</span>
+            </div>
+            <ul class="mini-list">
+                <li>Aguardando Loja chamar: <strong id="fleet-waiting">0</strong></li>
+                <li>Em Rota (Com pedido): <strong id="fleet-enroute" style="color:#f39c12;">0</strong></li>
+            </ul>
+        </div>
+        <div class="card full dark">
+            <div class="c-title">Repasse de Entregas (Hoje)</div>
+            <div class="c-val" id="val-repasse">R$ 0,00</div>
+            <div class="c-sub">Valor acumulado para pagar motoboys hoje.</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg> 
+        Lojas e Estoque
+    </h2>
+    <div class="dashboard-container">
+        <div class="card orange">
+            <div class="c-title">Lojas Ativas</div>
+            <div class="c-val" id="val-stores-open" style="color: #f39c12;">0</div>
+            <div class="c-sub">Abertas agora</div>
+        </div>
+
+        <div class="card red">
+            <div class="c-title">Estoque Baixo</div>
+            <div class="c-val" id="val-low-stock" style="color: #ea1d2c;">0</div>
+            <div class="c-sub">Produtos acabando</div>
+        </div>
+
+        <div class="card full green">
+            <div class="c-title">Top 3 Lojas (Hoje)</div>
+            <ul class="mini-list" id="list-top-stores" style="border: none;">
+                <li>Nenhuma venda ainda.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2 class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8e44ad" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path></svg> 
+        Marketing e Clientes
+    </h2>
+    <div class="dashboard-container" style="margin-bottom: 30px;">
+        <div class="card purple">
+            <div class="c-title">Clientes Únicos</div>
+            <div class="c-val" id="val-unique-customers">0</div>
+            <div class="c-sub">Compraram hoje</div>
+        </div>
+        
+        <div class="card blue">
+            <div class="c-title">Cupons Globais</div>
+            <div class="c-val" id="val-sponsor-coupons">0</div>
+            <div class="c-sub">Usados hoje (Patrocinadores)</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
+            authDomain: "dores-delivery.firebaseapp.com",
+            projectId: "dores-delivery",
+            storageBucket: "dores-delivery.firebasestorage.app",
+            messagingSenderId: "1029498697239",
+            appId: "1:1029498697239:web:3ebc070bbd65048bd9ce52"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // FORMATADOR DE MOEDA
+        const formatBRL = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        // 1. MONITOR DE PEDIDOS (Lida com Financeiro, Operacional e Logística)
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const now = Date.now();
+            
+            // Variáveis Acumuladoras
+            let revToday = 0, countTotalToday = 0, countActiveToday = 0, countDoneToday = 0;
+            let delayedCount = 0, cancelCount = 0, cancelValue = 0;
+            let totalDeliveryMins = 0, deliveredMinsCount = 0;
+            let payPix = 0, payCard = 0, payCash = 0;
+            let discountTotal = 0, repasseTotal = 0;
+            let storeSales = {}; 
+            let uniqueCustomers = new Set();
+            let fleetEnRoute = 0, fleetWaiting = 0;
+
+            snapshot.forEach(doc => {
+                const o = doc.data();
+                
+                // Avalia apenas pedidos de HOJE
+                if (o.timestamp >= startOfToday) {
+                    countTotalToday++;
+
+                    if (o.status !== 'Cancelado') {
+                        revToday += (o.total || 0);
+                        discountTotal += (o.discount || 0);
+                        uniqueCustomers.add(o.customerName || 'Cliente');
+
+                        // Tipos de Pagamento
+                        const pm = (o.paymentMethod || '').toLowerCase();
+                        if (pm.includes('pix')) payPix++;
+                        else if (pm.includes('cartão') || pm.includes('cartao')) payCard++;
+                        else payCash++;
+
+                        // Lógica de Repasse e Tempo Médio (Pedidos Concluídos)
+                        if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
+                            countDoneToday++;
+                            // Considera frete grátis como custo loja (motoboy recebe 5 padrão)
+                            repasseTotal += (o.platformDriverFee || 5);
+                            
+                            if (o.deliveredAt && o.timestamp) {
+                                let mins = (o.deliveredAt - o.timestamp) / 60000;
+                                if(mins > 0 && mins < 300) { // Filtro de segurança
+                                    totalDeliveryMins += mins;
+                                    deliveredMinsCount++;
+                                }
+                            }
+                        }
+
+                        // Lógica de Status Ativo, Atrasos e Logística
+                        if (['Pendente', 'Aceito', 'Em Preparo', 'Aguardando Entregador', 'Saiu para Entrega', 'Pronto para Retirada'].includes(o.status)) {
+                            countActiveToday++;
+                            
+                            // Pedidos rolando há mais de 50 minutos
+                            if ((now - o.timestamp) / 60000 > 50) delayedCount++;
+
+                            // Status Logístico
+                            if (o.status === 'Aguardando Entregador') fleetWaiting++;
+                            if (o.status === 'Saiu para Entrega') fleetEnRoute++;
+                        }
+
+                        // Vendas por Loja (Para o Top 3)
+                        if (!storeSales[o.storeId]) storeSales[o.storeId] = { name: o.storeName, rev: 0 };
+                        storeSales[o.storeId].rev += (o.total || 0);
+
+                    } else {
+                        // Cancelados
+                        cancelCount++;
+                        cancelValue += (o.total || 0);
+                    }
+                }
+            });
+
+            // ATUALIZAÇÃO DO DOM - FINANCEIRO
+            document.getElementById('val-revenue').innerText = formatBRL(revToday);
+            document.getElementById('val-tax').innerText = formatBRL(revToday * 0.10);
+            document.getElementById('val-discounts').innerText = formatBRL(discountTotal);
+            
+            const avgTicket = (countTotalToday - cancelCount) > 0 ? revToday / (countTotalToday - cancelCount) : 0;
+            document.getElementById('val-avg-ticket').innerText = formatBRL(avgTicket);
+
+            document.getElementById('pay-pix').innerText = payPix;
+            document.getElementById('pay-card').innerText = payCard;
+            document.getElementById('pay-cash').innerText = payCash;
+
+            // ATUALIZAÇÃO DO DOM - OPERACIONAL
+            document.getElementById('val-orders-total').innerText = countTotalToday;
+            document.getElementById('val-orders-active').innerText = countActiveToday;
+            document.getElementById('val-orders-done').innerText = countDoneToday;
+            document.getElementById('val-delayed').innerText = delayedCount;
+            document.getElementById('val-canceled').innerText = `${cancelCount} (${formatBRL(cancelValue)})`;
+
+            const avgTime = deliveredMinsCount > 0 ? Math.round(totalDeliveryMins / deliveredMinsCount) : 0;
+            document.getElementById('val-avg-time').innerText = `${avgTime} min`;
+
+            // ATUALIZAÇÃO DO DOM - LOGÍSTICA
+            document.getElementById('fleet-waiting').innerText = fleetWaiting;
+            document.getElementById('fleet-enroute').innerText = fleetEnRoute;
+            document.getElementById('val-repasse').innerText = formatBRL(repasseTotal);
+
+            // ATUALIZAÇÃO DO DOM - MARKETING
+            document.getElementById('val-unique-customers').innerText = uniqueCustomers.size;
+
+            // ATUALIZAÇÃO DO DOM - TOP 3 LOJAS
+            const sortedStores = Object.values(storeSales).sort((a, b) => b.rev - a.rev).slice(0, 3);
+            const topStoresList = document.getElementById('list-top-stores');
+            if (sortedStores.length === 0) {
+                topStoresList.innerHTML = '<li>Nenhuma venda concluída hoje.</li>';
+            } else {
+                const medals = ['🥇', '🥈', '🥉'];
+                topStoresList.innerHTML = sortedStores.map((s, i) => `
+                    <li>
+                        <span>${medals[i]} ${s.name}</span>
+                        <strong style="color:#00a14b;">${formatBRL(s.rev)}</strong>
+                    </li>
+                `).join('');
+            }
+        });
+
+        // 2. MONITOR DE LOJAS
+        onSnapshot(collection(db, "stores"), (snapshot) => {
+            let open = 0;
+            snapshot.forEach(doc => { if (doc.data().status === 'Aberto') open++; });
+            document.getElementById('val-stores-open').innerText = open;
+        });
+
+        // 3. MONITOR DE ESTOQUE DE PRODUTOS
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            let lowStockCount = 0;
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                if (p.hasStockControl && p.stockQuantity <= (p.minStock || 0)) {
+                    lowStockCount++;
+                }
+            });
+            document.getElementById('val-low-stock').innerText = lowStockCount;
+        });
+
+        // 4. MONITOR DE ENTREGADORES
+        onSnapshot(collection(db, "drivers"), (snapshot) => {
+            let total = 0, online = 0;
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                if(d.isActive !== false) {
+                    total++;
+                    if (d.isOnline === true || d.isOnline === "true") online++;
+                }
+            });
+            document.getElementById('val-drivers-total').innerText = total;
+            document.getElementById('val-drivers-online').innerText = online;
+        });
+
+        // 5. MONITOR DE CUPONS GLOBAIS (MARKETING)
+        onSnapshot(collection(db, "coupons"), (snapshot) => {
+            let sponsorUsed = 0;
+            snapshot.forEach(doc => {
+                const c = doc.data();
+                if (c.storeId === 'GLOBAL') sponsorUsed += (c.usedCount || 0);
+            });
+            document.getElementById('val-sponsor-coupons').innerText = sponsorUsed;
+        });
+
+    </script>
+</body>
+</html>
