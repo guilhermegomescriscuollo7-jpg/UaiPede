@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Monitor PRO - UaiPede</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111111">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Monitor UaiPede">
+    <link rel="apple-touch-icon" href="icone-192.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -259,12 +268,11 @@
                         // Lógica de Repasse e Tempo Médio (Pedidos Concluídos)
                         if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
                             countDoneToday++;
-                            // Considera frete grátis como custo loja (motoboy recebe 5 padrão)
                             repasseTotal += (o.platformDriverFee || 5);
                             
                             if (o.deliveredAt && o.timestamp) {
                                 let mins = (o.deliveredAt - o.timestamp) / 60000;
-                                if(mins > 0 && mins < 300) { // Filtro de segurança
+                                if(mins > 0 && mins < 300) { 
                                     totalDeliveryMins += mins;
                                     deliveredMinsCount++;
                                 }
@@ -274,11 +282,7 @@
                         // Lógica de Status Ativo, Atrasos e Logística
                         if (['Pendente', 'Aceito', 'Em Preparo', 'Aguardando Entregador', 'Saiu para Entrega', 'Pronto para Retirada'].includes(o.status)) {
                             countActiveToday++;
-                            
-                            // Pedidos rolando há mais de 50 minutos
                             if ((now - o.timestamp) / 60000 > 50) delayedCount++;
-
-                            // Status Logístico
                             if (o.status === 'Aguardando Entregador') fleetWaiting++;
                             if (o.status === 'Saiu para Entrega') fleetEnRoute++;
                         }
@@ -288,7 +292,6 @@
                         storeSales[o.storeId].rev += (o.total || 0);
 
                     } else {
-                        // Cancelados
                         cancelCount++;
                         cancelValue += (o.total || 0);
                     }
