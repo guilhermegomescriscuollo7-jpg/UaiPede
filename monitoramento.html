@@ -72,7 +72,6 @@
         
         /* CARTÃO DE DESTAQUE ESCURO */
         .card.highlight { background: #111; border: 1px solid #222; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .card.alert-flat { background: #fffcfc; border: 1px solid #fbd5d5; }
         
         .c-icon { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start;}
         .icon-box { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #fff5f5; border: 1px solid #fbd5d5; color: #ea1d2c; }
@@ -176,7 +175,7 @@
         </div>
     </div>
 
-    <h2 class="section-title">Lojas & Desempenho</h2>
+    <h2 class="section-title">Lojas & Operação</h2>
     <div class="dashboard-container">
         <div class="card full">
             <div class="c-title" style="color: #111;">🏆 Top Lojas Hoje</div>
@@ -190,11 +189,12 @@
             <div class="c-val" style="color: #00a14b;" id="val-stores-open">0</div>
             <div class="c-sub">de <strong id="val-stores-total">0</strong> cadastradas</div>
         </div>
-        <div class="card alert-flat">
-            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div>
-            <div class="c-title" style="color:#ea1d2c;">Cancelamentos</div>
-            <div class="c-val" style="color:#ea1d2c;" id="val-canceled-count">0</div>
-            <div class="c-sub">Total perdido: <strong style="color:#ea1d2c;" id="val-canceled-value">R$ 0,00</strong></div>
+        
+        <div class="card">
+            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div></div>
+            <div class="c-title">Entregadores</div>
+            <div class="c-val" style="color: #ea1d2c;" id="val-drivers-active">0</div>
+            <div class="c-sub">Ativos agora</div>
         </div>
     </div>
 
@@ -224,63 +224,41 @@
 
         const formatBRL = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        // MONITOR 1: PEDIDOS PRO (Cria a maioria das médias)
+        // MONITOR 1: PEDIDOS PRO
         onSnapshot(collection(db, "orders"), (snapshot) => {
             const startOfToday = new Date().setHours(0,0,0,0);
             const now = Date.now();
             
-            // Variáveis de Faturamento
             let revToday = 0, discountTotal = 0, platformRevenueTotal = 0;
-            let cancelCount = 0, cancelValue = 0;
-            
-            // Variáveis Operacionais
             let badReviews = 0, sponsorCouponsUsed = 0;
-            let driverStatsBusy = 0;
             let activeCities = {};
-            
-            // Lógica de Ranking de Lojas
             let storeRevenueArray = {}; 
-            
-            // Lógica de Tempo Médio
             let totalAvgMins = 0, avgMinsCount = 0;
-            
-            // Lógica de Clientes Ativos
             let activeCustomersTodaySet = new Set();
 
             snapshot.forEach(doc => {
                 const o = doc.data();
                 if (o.timestamp >= startOfToday) {
 
-                    // 1. Cancelamentos
-                    if (o.status === 'Cancelado') {
-                        cancelCount++;
-                        cancelValue += (o.total || 0);
-                        return; // Pula cálculos se cancelado
-                    }
+                    if (o.status === 'Cancelado') return; // Pula cálculos se cancelado
 
-                    // 2. Faturamento Bruto e Descontos
                     revToday += (o.total || 0);
                     discountTotal += (o.discount || 0);
                     
                     if (o.customerName) activeCustomersTodaySet.add(o.customerName);
                     
-                    // Contagem de Cupons Sicoob
                     if (o.couponName && o.couponName.toLowerCase().includes('sicoob')) {
                         sponsorCouponsUsed++;
                     }
 
-                    // 3. CONCLUÍDOS (Conta faturamento real da plataforma, tempo médio e avaliações)
                     if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
-                        
                         platformRevenueTotal += (o.platformFee || ((o.total || 0) * 0.10));
 
-                        // Top 3 Lojas (Calcula faturamento bruto)
                         if (o.storeName) {
                             if (!storeRevenueArray[o.storeName]) storeRevenueArray[o.storeName] = 0;
                             storeRevenueArray[o.storeName] += (o.total || 0);
                         }
 
-                        // Tempo Médio: deliveredAt (conclusão) - timestamp (criação)
                         if (o.deliveredAt && o.timestamp) {
                             let mins = (o.deliveredAt - o.timestamp) / 60000;
                             if(mins > 0 && mins < 300) { 
@@ -292,7 +270,6 @@
                         if (o.rating && o.rating <= 2) badReviews++;
                     }
 
-                    // 4. EM ANDAMENTO (Cidades)
                     if (['Pendente', 'Aceito', 'Em Preparo', 'Aguardando Entregador', 'Saiu para Entrega'].includes(o.status)) {
                         const city = o.cityName || 'Doresópolis'; 
                         if (!activeCities[city]) activeCities[city] = 0;
@@ -301,9 +278,7 @@
                 }
             });
 
-            // --- ATUALIZAÇÃO DO DOM ---
-
-            // FINANCEIRO
+            // ATUALIZA DOM FINANCEIRO
             document.getElementById('val-revenue').innerText = formatBRL(revToday);
             document.getElementById('val-discounts').innerText = formatBRL(discountTotal);
             document.getElementById('val-platform-revenue').innerText = formatBRL(platformRevenueTotal);
@@ -311,15 +286,11 @@
             const avgTicket = (activeCustomersTodaySet.size > 0) ? revToday / activeCustomersTodaySet.size : 0;
             document.getElementById('val-avg-ticket').innerText = formatBRL(avgTicket);
 
-            // LOJAS & OPERAÇÃO
-            document.getElementById('val-canceled-count').innerText = cancelCount;
-            document.getElementById('val-canceled-value').innerText = formatBRL(cancelValue);
+            // OPERACIONAL
             document.getElementById('val-sponsor-coupons').innerText = sponsorCouponsUsed;
             
             const avgDeliveryTime = (avgMinsCount > 0) ? Math.round(totalAvgMins / avgMinsCount) : 0;
             document.getElementById('val-avg-delivery-time').innerText = `${avgDeliveryTime} min`;
-
-            // CLIENTES ATIVOS
             document.getElementById('val-customers-active').innerText = activeCustomersTodaySet.size;
 
             // RENDERIZAR RANKING TOP LOJAS
@@ -327,7 +298,7 @@
             const sortedStores = Object.keys(storeRevenueArray)
                 .map(name => ({ name, rev: storeRevenueArray[name] }))
                 .sort((a,b) => b.rev - a.rev)
-                .slice(0, 3); // Apenas top 3
+                .slice(0, 3);
 
             if (sortedStores.length === 0) {
                 listTopStores.innerHTML = '<li style="justify-content:center; color:#999;">Sem vendas concluídas hoje.</li>';
@@ -369,7 +340,7 @@
             } else { alertContainer.innerHTML = ''; }
         });
 
-        // MONITOR 2: LOJAS ABERTAS (Status inalterado)
+        // MONITOR 2: LOJAS ABERTAS
         onSnapshot(collection(db, "stores"), (snapshot) => {
             let total = 0, open = 0;
             snapshot.forEach(doc => { total++; if (doc.data().status === 'Aberto') open++; });
@@ -377,7 +348,19 @@
             document.getElementById('val-stores-open').innerText = open;
         });
 
-        // MONITOR 3: CLIENTES TOTAIS
+        // MONITOR 3: ENTREGADORES ATIVOS (SUBSTITUTO DOS CANCELAMENTOS)
+        onSnapshot(collection(db, "drivers"), (snapshot) => {
+            let online = 0;
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                // Conta como ativo se estiver isOnline = true
+                if(d.isActive !== false && (d.isOnline === true || d.isOnline === "true")) online++;
+            });
+            const driverBadge = document.getElementById('val-drivers-active');
+            if(driverBadge) driverBadge.innerText = online;
+        });
+
+        // MONITOR 4: CLIENTES TOTAIS
         onSnapshot(collection(db, "customers"), (snapshot) => {
             let total = 0;
             snapshot.forEach(() => total++);
