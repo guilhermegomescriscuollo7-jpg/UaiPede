@@ -13,6 +13,9 @@
     <meta name="apple-mobile-web-app-title" content="Monitor UaiPede">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
         
@@ -22,7 +25,7 @@
             color: #3e3e3e; 
             overflow-x: hidden; 
             padding-bottom: 50px; 
-            padding-top: 80px; /* Espaço para o header fixo */
+            padding-top: 80px; 
         }
         
         /* CABEÇALHO PADRÃO (BRANCO E FIXO) */
@@ -104,6 +107,9 @@
         /* ALERTAS HEADER */
         .critical-alert { background: #fff; border: 1px solid #fbd5d5; border-left: 4px solid #ea1d2c; border-radius: 8px; padding: 12px 15px; margin: 0 15px 15px; display: flex; align-items: center; gap: 12px; color: #111; font-weight: 600; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .critical-alert svg { color: #ea1d2c; }
+
+        /* CONTAINERS PARA GRÁFICOS */
+        .chart-wrapper { position: relative; height: 180px; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -199,10 +205,29 @@
     </div>
 
     <h2 class="section-title">Pedidos Ativos por Cidade</h2>
-    <div class="dashboard-container" style="margin-bottom: 30px;">
+    <div class="dashboard-container">
         <div class="card full">
             <ul class="ranking-list" id="list-cities"><li>A carregar cidades...</li></ul>
         </div>
+    </div>
+
+    <h2 class="section-title">Análise de Desempenho (Hoje)</h2>
+    <div class="dashboard-container" style="margin-bottom: 30px;">
+        
+        <div class="card full">
+            <div class="c-title" style="color: #00a14b;">Faturamento por Hora</div>
+            <div class="chart-wrapper">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card full">
+            <div class="c-title" style="color: #ea1d2c;">Volume de Pedidos por Hora</div>
+            <div class="chart-wrapper">
+                <canvas id="ordersChart"></canvas>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
@@ -224,6 +249,78 @@
 
         const formatBRL = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+        // --- INICIALIZAÇÃO DOS GRÁFICOS (CHART.JS) ---
+        let revenueChartInstance = null;
+        let ordersChartInstance = null;
+        
+        // Array de horas do dia para eixo X (Ex: "08h", "09h", ...)
+        const hoursLabels = Array.from({length: 24}, (_, i) => `${i.toString().padStart(2, '0')}h`);
+
+        function initCharts() {
+            // Configurações Globais do Chart.js para ficar limpo
+            Chart.defaults.font.family = "'Roboto', sans-serif";
+            Chart.defaults.color = '#999';
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(0,0,0,0.8)';
+            
+            const ctxRev = document.getElementById('revenueChart').getContext('2d');
+            revenueChartInstance = new Chart(ctxRev, {
+                type: 'line',
+                data: {
+                    labels: hoursLabels,
+                    datasets: [{
+                        label: 'Faturamento (R$)',
+                        data: Array(24).fill(0), // Dados vazios initially
+                        borderColor: '#00a14b', // Verde
+                        backgroundColor: 'rgba(0, 161, 75, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4, // Linhas curvos e suaves
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+                        y: { border: { display: false }, grid: { color: '#f0f0f0' }, beginAtZero: true }
+                    }
+                }
+            });
+
+            const ctxOrd = document.getElementById('ordersChart').getContext('2d');
+            ordersChartInstance = new Chart(ctxOrd, {
+                type: 'line',
+                data: {
+                    labels: hoursLabels,
+                    datasets: [{
+                        label: 'Pedidos Feitos',
+                        data: Array(24).fill(0), 
+                        borderColor: '#ea1d2c', // Vermelho UaiPede
+                        backgroundColor: 'rgba(234, 29, 44, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4, 
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+                        y: { border: { display: false }, grid: { color: '#f0f0f0' }, beginAtZero: true, ticks: { precision: 0 } }
+                    }
+                }
+            });
+        }
+        
+        // Inicia os gráficos vazios na tela
+        initCharts();
+
+
         // MONITOR 1: PEDIDOS PRO
         onSnapshot(collection(db, "orders"), (snapshot) => {
             const startOfToday = new Date().setHours(0,0,0,0);
@@ -236,20 +333,29 @@
             let totalAvgMins = 0, avgMinsCount = 0;
             let activeCustomersTodaySet = new Set();
 
+            // Arrays para os Gráficos
+            let revenueByHour = Array(24).fill(0);
+            let ordersByHour = Array(24).fill(0);
+
             snapshot.forEach(doc => {
                 const o = doc.data();
+                
+                // Processa apenas pedidos criados a partir da meia-noite de hoje
                 if (o.timestamp >= startOfToday) {
 
-                    if (o.status === 'Cancelado') return; // Pula cálculos se cancelado
+                    if (o.status === 'Cancelado') return; // Ignora cancelados
 
                     revToday += (o.total || 0);
                     discountTotal += (o.discount || 0);
                     
                     if (o.customerName) activeCustomersTodaySet.add(o.customerName);
-                    
-                    if (o.couponName && o.couponName.toLowerCase().includes('sicoob')) {
-                        sponsorCouponsUsed++;
-                    }
+                    if (o.couponName && o.couponName.toLowerCase().includes('sicoob')) sponsorCouponsUsed++;
+
+                    // COLETA DE DADOS POR HORA PARA OS GRÁFICOS
+                    const orderDate = new Date(o.timestamp);
+                    const orderHour = orderDate.getHours(); // Retorna 0 a 23
+                    revenueByHour[orderHour] += (o.total || 0);
+                    ordersByHour[orderHour] += 1;
 
                     if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
                         platformRevenueTotal += (o.platformFee || ((o.total || 0) * 0.10));
@@ -292,6 +398,15 @@
             const avgDeliveryTime = (avgMinsCount > 0) ? Math.round(totalAvgMins / avgMinsCount) : 0;
             document.getElementById('val-avg-delivery-time').innerText = `${avgDeliveryTime} min`;
             document.getElementById('val-customers-active').innerText = activeCustomersTodaySet.size;
+
+            // ATUALIZAR GRÁFICOS (Tempo Real)
+            if (revenueChartInstance && ordersChartInstance) {
+                revenueChartInstance.data.datasets[0].data = revenueByHour;
+                revenueChartInstance.update();
+
+                ordersChartInstance.data.datasets[0].data = ordersByHour;
+                ordersChartInstance.update();
+            }
 
             // RENDERIZAR RANKING TOP LOJAS
             const listTopStores = document.getElementById('list-top-stores');
@@ -348,12 +463,11 @@
             document.getElementById('val-stores-open').innerText = open;
         });
 
-        // MONITOR 3: ENTREGADORES ATIVOS (SUBSTITUTO DOS CANCELAMENTOS)
+        // MONITOR 3: ENTREGADORES ATIVOS
         onSnapshot(collection(db, "drivers"), (snapshot) => {
             let online = 0;
             snapshot.forEach(doc => {
                 const d = doc.data();
-                // Conta como ativo se estiver isOnline = true
                 if(d.isActive !== false && (d.isOnline === true || d.isOnline === "true")) online++;
             });
             const driverBadge = document.getElementById('val-drivers-active');
