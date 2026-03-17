@@ -1152,7 +1152,7 @@
             globalAlerts.sort((a,b) => b.timestamp - a.timestamp); renderAlerts();
         });
 
-        // NOVA FUNÇÃO SAVE_ALERT COM INTEGRAÇÃO ONESIGNAL PUSH
+        // NOVA FUNÇÃO SAVE_ALERT COM INTEGRAÇÃO ONESIGNAL PUSH E SOM
         window.saveAlert = async () => {
             const text = document.getElementById('alert-text').value.trim(); 
             const type = document.getElementById('alert-type').value;
@@ -1178,7 +1178,12 @@
                         app_id: ONESIGNAL_APP_ID,
                         included_segments: ["All"],
                         contents: { "en": text, "pt": text },
-                        headings: { "en": "UaiPede", "pt": "UaiPede" }
+                        headings: { "en": "UaiPede", "pt": "UaiPede" },
+                        
+                        // CONFIGURAÇÕES DE MARKETING E SOM
+                        android_sound: "uaipede", 
+                        large_icon: "https://link-da-sua-logo-256x256.png", // Substitua pelo link real da sua logo circular colorida
+                        big_picture: "https://link-da-foto-promocional.jpg" // Substitua pelo link real da imagem grande promocional
                     })
                 });
 
