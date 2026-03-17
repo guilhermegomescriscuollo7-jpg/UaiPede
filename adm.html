@@ -660,7 +660,7 @@
                         <strong style="font-size: 1.15rem; color: #111;">${c.name} - ${c.state}</strong>
                     </div>
                     <button class="btn-del" onclick="window.deleteCity('${c.id}')" style="background: transparent; border: none; padding: 5px;">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                     </button>
                 </div>
             `).join('');
@@ -1145,59 +1145,20 @@
         }
 
         // ==========================================
-        // AVISOS GLOBAIS E NOTIFICAÇÃO PUSH
+        // AVISOS GLOBAIS
         // ==========================================
         onSnapshot(collection(db, "global_alerts"), (snapshot) => {
             globalAlerts = []; snapshot.forEach(doc => globalAlerts.push({ id: doc.id, ...doc.data() }));
             globalAlerts.sort((a,b) => b.timestamp - a.timestamp); renderAlerts();
         });
 
-        // NOVA FUNÇÃO SAVE_ALERT COM INTEGRAÇÃO ONESIGNAL PUSH E SOM
         window.saveAlert = async () => {
-            const text = document.getElementById('alert-text').value.trim(); 
-            const type = document.getElementById('alert-type').value;
-            
+            const text = document.getElementById('alert-text').value.trim(); const type = document.getElementById('alert-type').value;
             if(!text) return alert("Digite o texto do aviso.");
-
-            // CHAVES DO SEU ONESIGNAL
-            const ONESIGNAL_APP_ID = "772ef5c2-71f5-466f-97c1-1566801ec10c";
-            const ONESIGNAL_REST_KEY = "os_v2_app_o4xplqtr6vdg7f6bcvtiahwbbqq3yawqs5lunf4tykefsjkvczlxhgx4woam6lt7dkgpgeqto6gnuxcd6rdmq2bhkxz5k3xjls3wkoq";
-
             try {
-                // 1. Salva no Firebase para o banner interno do App
                 await addDoc(collection(db, "global_alerts"), { text, type, timestamp: Date.now(), active: true });
-
-                // 2. Dispara a Notificação Push Real
-                const response = await fetch("https://onesignal.com/api/v1/notifications", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json; charset=utf-8",
-                        "Authorization": `Basic ${ONESIGNAL_REST_KEY}`
-                    },
-                    body: JSON.stringify({
-                        app_id: ONESIGNAL_APP_ID,
-                        included_segments: ["All"],
-                        contents: { "en": text, "pt": text },
-                        headings: { "en": "UaiPede", "pt": "UaiPede" },
-                        
-                        // CONFIGURAÇÕES DE MARKETING E SOM
-                        android_sound: "uaipede", 
-                        large_icon: "https://link-da-sua-logo-256x256.png", // Substitua pelo link real da sua logo circular colorida
-                        big_picture: "https://link-da-foto-promocional.jpg" // Substitua pelo link real da imagem grande promocional
-                    })
-                });
-
-                if(response.ok) {
-                    document.getElementById('alert-text').value = ''; 
-                    alert("Aviso salvo e Notificação Push enviada com sucesso para os clientes!");
-                } else {
-                    alert("Aviso salvo no app, mas houve um erro ao enviar a Notificação Push. Verifique suas configurações no OneSignal.");
-                }
-
-            } catch(e) { 
-                console.error(e);
-                alert("Erro ao processar aviso."); 
-            }
+                document.getElementById('alert-text').value = ''; alert("Aviso disparado!");
+            } catch(e) { alert("Erro ao disparar aviso."); }
         }
         
         window.deleteAlert = async (id) => { if(confirm("Apagar e remover este aviso do app dos clientes?")) { await deleteDoc(doc(db, "global_alerts", id)); } }
