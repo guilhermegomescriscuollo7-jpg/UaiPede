@@ -481,7 +481,7 @@
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 Banners do Aplicativo
             </h2>
-            <p style="font-size:1rem; color:#666; margin-bottom:25px;">Estes banners aparecem girando na tela inicial dos clientes. Você pode definir para qual cidade o banner será exibido.</p>
+            <p style="font-size:1rem; color:#666; margin-bottom:25px;">Estes banners aparecem girando na tela inicial dos clientes. Você pode definir para qual cidade o banner será exibido e, opcionalmente, linkar a uma loja.</p>
             
             <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px;">
                 <div class="form-group" style="flex: 1; margin-bottom:0;"><label>Imagem do Banner</label><input type="file" id="b-image" accept="image/*" style="padding: 10px;"></div>
@@ -489,6 +489,12 @@
                     <label>Cidade de Exibição</label>
                     <select id="b-city">
                         <option value="all">Todas as Cidades (Global)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom:0;">
+                    <label>Loja Vinculada (Ao clicar)</label>
+                    <select id="b-store">
+                        <option value="">Nenhuma (Apenas visual)</option>
                     </select>
                 </div>
                 <button class="btn" onclick="window.saveBanner()">Adicionar ao Carrossel</button>
@@ -690,8 +696,6 @@
             fillSelect('filter-city-fat', '<option value="all">Todas as Cidades</option>');
             fillSelect('filter-user-city', '<option value="all">Todas as Cidades</option>');
             fillSelect('admin-sponsor-city', '<option value="">Selecione a cidade...</option>');
-            
-            // NOVO: Select do Filtro da aba Lojas
             fillSelect('filter-store-city', '<option value="all">Todas as Cidades</option>');
         }
 
@@ -860,7 +864,17 @@
         });
         
         onSnapshot(collection(db, "stores"), (snapshot) => { 
-            allStores = []; snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); renderStoreList(); window.onCityFatChange(); 
+            allStores = []; snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
+            renderStoreList(); 
+            window.onCityFatChange(); 
+            
+            // PREENCHER DROPDOWN DE LOJAS PARA O BANNER
+            const bStoreEl = document.getElementById('b-store');
+            if(bStoreEl) {
+                const currentVal = bStoreEl.value;
+                bStoreEl.innerHTML = '<option value="">Nenhuma (Apenas visual)</option>' + allStores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+                if(currentVal) bStoreEl.value = currentVal;
+            }
         });
         
         window.saveStore = async () => { 
@@ -922,7 +936,6 @@
             }
         };
 
-        // 🟢 ATUALIZADO COM OS BADGES MELHORADOS E BOTÃO RENOVAR 🟢
         window.renderStoreList = () => { 
             const container = document.getElementById('store-list-container'); 
             const cityFilter = document.getElementById('filter-store-city') ? document.getElementById('filter-store-city').value : 'all';
@@ -1050,7 +1063,7 @@
         }
 
         // ==========================================
-        // 🟢 MÓDULO BANNERS DO APP 🟢
+        // 🟢 MÓDULO BANNERS DO APP COM LOJA VINCULADA 🟢
         // ==========================================
         document.getElementById('b-image').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -1065,10 +1078,17 @@
 
         window.saveBanner = async () => {
             const city = document.getElementById('b-city').value;
+            const storeId = document.getElementById('b-store').value;
             if (!bannerImgBase64) return alert("Por favor, selecione uma imagem para o banner.");
             try {
-                await addDoc(collection(db, "banners"), { image: bannerImgBase64, city: city, timestamp: Date.now() });
+                await addDoc(collection(db, "banners"), { 
+                    image: bannerImgBase64, 
+                    city: city, 
+                    storeId: storeId, 
+                    timestamp: Date.now() 
+                });
                 bannerImgBase64 = ''; document.getElementById('b-image').value = '';
+                document.getElementById('b-store').value = '';
                 alert("Banner adicionado com sucesso!");
             } catch(e) { alert("Erro ao salvar banner."); }
         };
@@ -1082,15 +1102,24 @@
         function renderBanners() {
             const container = document.getElementById('banner-list-container');
             if(globalBanners.length === 0) { container.innerHTML = '<p style="color:#999; padding: 20px;">Nenhum banner cadastrado.</p>'; return; }
-            container.innerHTML = globalBanners.map(b => `
+            container.innerHTML = globalBanners.map(b => {
+                let storeName = "Nenhuma";
+                if(b.storeId) {
+                    const st = allStores.find(s => s.id === b.storeId);
+                    if(st) storeName = st.name;
+                }
+                return `
                 <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
                     <img src="${b.image}" style="width:100%; height:130px; object-fit:cover; border-radius:12px; margin-bottom:15px; border: 1px solid #eee;">
                     <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                        <span class="badge-city" style="margin: 0;">📍 ${b.city === 'all' ? 'Todas as Cidades' : b.city}</span>
+                        <div style="display:flex; flex-direction:column; gap:4px;">
+                            <span class="badge-city" style="margin: 0;">📍 ${b.city === 'all' ? 'Todas as Cidades' : b.city}</span>
+                            <span style="font-size:0.8rem; color:#555;">🔗 Loja: <b>${storeName}</b></span>
+                        </div>
                         <button class="btn-del" onclick="window.deleteBanner('${b.id}')">Apagar Banner</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // ==========================================
@@ -1183,7 +1212,7 @@
                     <div>
                         <strong style="color: ${badgeColor}; text-transform:uppercase; font-size:0.75rem; background: ${badgeColor}15; padding: 4px 8px; border-radius: 6px;">${typeName}</strong>
                         <div style="color:#111; font-size:1.05rem; font-weight:bold; margin-top:8px;">${a.text}</div>
-                        <div style="color:#999; font-size:0.75rem; margin-top: 4px;">Disparado em: ${new Date(a.timestamp).toLocaleString('pt-BR')}</div>
+                        <div style="color:#999; font-size:0.75rem; margin-top: 4px;\">Disparado em: ${new Date(a.timestamp).toLocaleString('pt-BR')}</div>
                     </div>
                     <button onclick="window.deleteAlert('${a.id}')" style="background:#fef0f0; border:1px solid #fbd5d5; padding: 10px; border-radius: 8px; color:#ea1d2c; cursor:pointer; font-weight:bold;">🗑️ Apagar</button>
                 </div>
