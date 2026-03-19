@@ -10,106 +10,109 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Monitor UaiPede">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* FUNDO PADRÃO APP (INDEX) */
         body { 
-            background-color: #f8f8f8; 
-            color: #3e3e3e; 
+            background-color: #f0f2f5; 
+            color: #333; 
             overflow-x: hidden; 
             padding-bottom: 50px; 
             padding-top: 80px; 
         }
         
-        /* CABEÇALHO PADRÃO (BRANCO E FIXO) */
+        /* CABEÇALHO PADRÃO */
         .brand-header { 
             background: #fff; 
-            padding: 0 15px; 
+            padding: 0 20px; 
             height: 70px; 
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
-            border-bottom: 1px solid #f2f2f2; 
+            border-bottom: 1px solid #e5e7eb; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             z-index: 1000; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
         
-        .brand-logo-container { display: flex; align-items: center; gap: 6px; }
+        .brand-logo-container { display: flex; align-items: center; gap: 8px; }
         .brand-logo-container svg { width: 32px; height: auto; transform: rotate(-10deg); }
         .brand-logo-container span { font-size: 1.4rem; font-weight: 900; color: #ea1d2c; letter-spacing: -0.5px; }
+        .admin-tag { font-size: 0.7rem; color: #fff; font-weight: 700; text-transform: uppercase; background: #111; padding: 4px 10px; border-radius: 12px; margin-left: 8px;}
         
-        /* TAG DE ADMIN NO HEADER */
-        .admin-tag { font-size: 0.7rem; color: #ea1d2c; font-weight: 700; text-transform: uppercase; background: #fff5f5; padding: 3px 8px; border-radius: 12px; border: 1px solid #fbd5d5; margin-left: 5px;}
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .filter-select { padding: 8px 15px; border-radius: 20px; border: 1px solid #ddd; background: #f9f9f9; font-weight: 700; color: #333; outline: none; cursor: pointer; transition: 0.2s;}
+        .filter-select:focus { border-color: #ea1d2c; background: #fff;}
         
-        /* BADGE TEMPO REAL */
-        .live-badge { display: flex; align-items: center; gap: 6px; background: #fff5f5; border: 1px solid #fbd5d5; color: #ea1d2c; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;}
+        .live-badge { display: flex; align-items: center; gap: 6px; background: #fff5f5; border: 1px solid #fbd5d5; color: #ea1d2c; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;}
         .live-dot { width: 8px; height: 8px; background: #ea1d2c; border-radius: 50%; animation: blink 1.5s infinite; box-shadow: 0 0 8px rgba(234, 29, 44, 0.4);}
-
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* SEÇÕES E GRID */
-        .section-title { padding: 15px 15px 10px; font-size: 1.1rem; font-weight: 700; color: #333; }
-        .dashboard-container { padding: 0 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        /* GRID PRINCIPAL */
+        .dashboard-container { padding: 0 20px; max-width: 1400px; margin: 0 auto; }
+        .grid-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .grid-charts { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .grid-lists { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px; }
         
-        /* CARTÕES CLEAN (ESTILO INDEX) */
+        @media (max-width: 900px) {
+            .grid-charts { grid-template-columns: 1fr; }
+        }
+
+        /* CARTÕES */
         .card { 
             background: #fff; 
-            border-radius: 12px; 
-            padding: 15px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04); 
-            border: 1px solid #f2f2f2; 
-            display: flex; flex-direction: column; justify-content: space-between; position: relative; 
+            border-radius: 16px; 
+            padding: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02); 
+            border: 1px solid #e5e7eb; 
+            display: flex; flex-direction: column; position: relative; transition: 0.2s;
         }
-        .card.full { grid-column: 1 / -1; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
+        .card.highlight-green { border-bottom: 4px solid #10b981; }
+        .card.highlight-red { border-bottom: 4px solid #ea1d2c; }
+        .card.highlight-dark { background: #111; color: #fff; border: none; border-bottom: 4px solid #3b82f6;}
         
-        /* CARTÃO DE DESTAQUE ESCURO */
-        .card.highlight { background: #111; border: 1px solid #222; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        .c-icon { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start;}
-        .icon-box { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #fff5f5; border: 1px solid #fbd5d5; color: #ea1d2c; }
-        .card.highlight .icon-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;}
+        .c-icon-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;}
+        .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;}
+        .icon-red { background: #fff5f5; color: #ea1d2c; }
+        .icon-green { background: #ecfdf5; color: #10b981; }
+        .icon-blue { background: #eff6ff; color: #3b82f6; }
+        .icon-dark { background: rgba(255,255,255,0.1); color: #fff; }
 
-        .c-title { font-size: 0.75rem; color: #717171; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; line-height: 1.2;}
-        .card.highlight .c-title { color: #aaa; }
+        .c-title { font-size: 0.8rem; color: #6b7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
+        .card.highlight-dark .c-title { color: #9ca3af; }
         
-        .c-val { font-size: 1.5rem; font-weight: 900; color: #111; letter-spacing: -0.5px; line-height: 1.1;}
-        .card.highlight .c-val { color: #fff; }
-        .c-val.large { font-size: 2rem; }
+        .c-val { font-size: 1.8rem; font-weight: 900; color: #111; margin-top: 5px;}
+        .card.highlight-dark .c-val { color: #fff; }
         
-        .c-sub { font-size: 0.75rem; color: #717171; font-weight: 500; margin-top: 8px; line-height: 1.3;}
-        .card.highlight .c-sub { color: #888; }
-        .c-sub strong { color: #111; font-weight: 700; }
-        .card.highlight .c-sub strong { color: #fff; }
+        .c-sub { font-size: 0.8rem; color: #6b7280; font-weight: 500; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .card.highlight-dark .c-sub { color: #9ca3af; }
+        .c-sub strong { color: #111; font-weight: 800; }
+        .card.highlight-dark .c-sub strong { color: #fff; }
 
-        /* LISTAS RANKING / CIDADES */
-        .ranking-list { list-style: none; margin-top: 10px; font-size: 0.85rem;}
-        .ranking-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f2f2f2; font-weight: 600; color: #3e3e3e;}
-        .card.highlight .ranking-list li { border-bottom: 1px solid rgba(255,255,255,0.1); color: #ccc;}
+        /* LISTAS */
+        .card-title { font-size: 1.1rem; font-weight: 800; color: #111; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;}
+        .ranking-list { list-style: none; font-size: 0.9rem;}
+        .ranking-list li { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #e5e7eb; font-weight: 600; color: #374151;}
         .ranking-list li:last-child { border-bottom: none; padding-bottom: 0;}
-        .ranking-list li strong { color: #ea1d2c; font-weight: 800;}
-        .card.highlight .ranking-list li strong { color: #fff;}
-        
-        .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 8px; font-weight: 800; }
-        .badge.red { background: #fff5f5; color: #ea1d2c; border: 1px solid #fbd5d5;}
-        .badge.green { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;}
-        
-        /* ALERTAS HEADER */
-        .critical-alert { background: #fff; border: 1px solid #fbd5d5; border-left: 4px solid #ea1d2c; border-radius: 8px; padding: 12px 15px; margin: 0 15px 15px; display: flex; align-items: center; gap: 12px; color: #111; font-weight: 600; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .critical-alert svg { color: #ea1d2c; }
+        .badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 800; }
+        .badge.green { background: #ecfdf5; color: #10b981; }
+        .badge.red { background: #fff5f5; color: #ea1d2c; }
+        .badge.blue { background: #eff6ff; color: #3b82f6; }
+        .badge.gray { background: #f3f4f6; color: #4b5563; }
 
-        /* CONTAINERS PARA GRÁFICOS */
-        .chart-wrapper { position: relative; height: 180px; width: 100%; margin-top: 10px; }
+        /* ALERTAS */
+        .critical-alert { background: #fff; border: 1px solid #fbd5d5; border-left: 4px solid #ea1d2c; border-radius: 12px; padding: 15px 20px; margin: 0 auto 20px; max-width: 1400px; display: flex; align-items: center; gap: 15px; color: #111; font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.08);}
+        
+        .chart-wrapper { position: relative; height: 250px; width: 100%; margin-top: 10px; }
+        .chart-wrapper-small { position: relative; height: 200px; width: 100%; margin-top: 10px; display: flex; justify-content: center;}
     </style>
 </head>
 <body>
@@ -120,111 +123,114 @@
                 <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="10" stroke-linecap="round"/>
             </svg>
             <span>UaiPede</span>
-            <span class="admin-tag">Monitor</span>
+            <span class="admin-tag">Monitor PRO</span>
         </div>
         
-        <div class="live-badge">
-            <div class="live-dot"></div> Ao Vivo
+        <div class="header-actions">
+            <select id="time-filter" class="filter-select" onchange="window.renderDashboard()">
+                <option value="hoje">Hoje</option>
+                <option value="7dias">Últimos 7 Dias</option>
+                <option value="mes">Este Mês</option>
+            </select>
+            <div class="live-badge">
+                <div class="live-dot"></div> Ao Vivo
+            </div>
         </div>
     </header>
 
-    <div id="alert-container"></div>
+    <div id="alert-container" style="padding: 0 20px;"></div>
 
-    <h2 class="section-title">Monitor de Clientes</h2>
     <div class="dashboard-container">
         
-        <div class="card full">
-            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div></div>
-            <div class="c-title">Total Cadastrados</div>
-            <div class="c-val large" id="val-customers-total">0</div>
-            <div class="c-sub">Fizeram pedido hoje: <strong style="color: #ea1d2c;" id="val-customers-active">0</strong> únicos</div>
-        </div>
+        <div class="grid-kpis">
+            <div class="card highlight-green">
+                <div class="c-icon-row">
+                    <div class="c-title">Faturamento Bruto</div>
+                    <div class="icon-box icon-green">💰</div>
+                </div>
+                <div class="c-val" id="val-revenue">R$ 0,00</div>
+                <div class="c-sub"><span>Descontos / Cupons</span><strong style="color: #ea1d2c;" id="val-discounts">R$ 0,00</strong></div>
+            </div>
 
-        <div class="card highlight">
-            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></div></div>
-            <div class="c-title">Patrocinadores Sicoob</div>
-            <div class="c-val" id="val-sponsor-coupons">0</div>
-            <div class="c-sub">Cupons globais usados hoje</div>
-        </div>
+            <div class="card highlight-dark">
+                <div class="c-icon-row">
+                    <div class="c-title">Taxa UaiPede (10%)</div>
+                    <div class="icon-box icon-dark">📊</div>
+                </div>
+                <div class="c-val" style="color: #60a5fa;" id="val-platform-revenue">R$ 0,00</div>
+                <div class="c-sub"><span>Patrocinadores (Sicoob)</span><strong style="color: #34d399;" id="val-sponsor-coupons">0 usos</strong></div>
+            </div>
 
-        <div class="card">
-            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 1 1h3.9a1 1 0 0 0 1-1l-2.8-3.4a1 1 0 0 0-1.4 0z"></path><path d="M2 10h20"></path><path d="M2 14h20"></path><path d="M5 22h14c1.1 0 2-.9 2-2V10a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2z"></path></svg></div></div>
-            <div class="c-title">Tempo Médio Entrega</div>
-            <div class="c-val" id="val-avg-delivery-time">0 min</div>
-            <div class="c-sub">Pedido aceito -> entregue</div>
-        </div>
-    </div>
+            <div class="card">
+                <div class="c-icon-row">
+                    <div class="c-title">Total de Pedidos</div>
+                    <div class="icon-box icon-blue">📦</div>
+                </div>
+                <div class="c-val" id="val-orders-total">0</div>
+                <div class="c-sub"><span>Cancelados / Recusados</span><strong style="color: #ea1d2c;" id="val-orders-canceled">0</strong></div>
+            </div>
 
-    <h2 class="section-title">Resultados Financeiros</h2>
-    <div class="dashboard-container">
-        
-        <div class="card full highlight">
-            <div class="c-title">Faturamento Plataforma</div>
-            <div class="c-val large" style="color: #4ade80;" id="val-platform-revenue">R$ 0,00</div>
-            <div class="c-sub" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                Soma de todas as suas taxas hoje
+            <div class="card">
+                <div class="c-icon-row">
+                    <div class="c-title">Operação & Logística</div>
+                    <div class="icon-box icon-red">⏱️</div>
+                </div>
+                <div class="c-val" id="val-avg-delivery-time" style="font-size: 1.4rem;">0 min</div>
+                <div class="c-sub"><span>Delivery vs Retirada</span><strong id="val-delivery-type">0% / 0%</strong></div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div></div>
-            <div class="c-title">Vendas (Bruto)</div>
-            <div class="c-val" id="val-revenue">R$ 0,00</div>
-            <div class="c-sub">Descontos/Cupons: <strong style="color:#ea1d2c;" id="val-discounts">R$ 0,00</strong></div>
-        </div>
-
-        <div class="card">
-            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 12h2a2 2 0 1 0 0-4h-3c0-6 8-6 8 0h-2a2 2 0 1 1-2 2h2c1.33 0 2 .67 2 2s-.67 2-2 2h-2a2 2 0 1 1-2-2"></path><path d="M12 7h2"></path><path d="M12 17h2"></path></svg></div></div>
-            <div class="c-title">Ticket Médio</div>
-            <div class="c-val" id="val-avg-ticket">R$ 0,00</div>
-            <div class="c-sub">Gasto médio por cliente</div>
-        </div>
-    </div>
-
-    <h2 class="section-title">Lojas & Operação</h2>
-    <div class="dashboard-container">
-        <div class="card full">
-            <div class="c-title" style="color: #111;">🏆 Top Lojas Hoje</div>
-            <ul class="ranking-list" id="list-top-stores">
-                <li>A carregar ranking...</li>
-            </ul>
-        </div>
-        <div class="card">
-            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div></div>
-            <div class="c-title">Lojas Abertas</div>
-            <div class="c-val" style="color: #00a14b;" id="val-stores-open">0</div>
-            <div class="c-sub">de <strong id="val-stores-total">0</strong> cadastradas</div>
-        </div>
-        
-        <div class="card">
-            <div class="c-icon"><div class="icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div></div>
-            <div class="c-title">Entregadores</div>
-            <div class="c-val" style="color: #ea1d2c;" id="val-drivers-active">0</div>
-            <div class="c-sub">Ativos agora</div>
-        </div>
-    </div>
-
-    <h2 class="section-title">Pedidos Ativos por Cidade</h2>
-    <div class="dashboard-container">
-        <div class="card full">
-            <ul class="ranking-list" id="list-cities"><li>A carregar cidades...</li></ul>
-        </div>
-    </div>
-
-    <h2 class="section-title">Análise de Desempenho (Hoje)</h2>
-    <div class="dashboard-container" style="margin-bottom: 30px;">
-        
-        <div class="card full">
-            <div class="c-title" style="color: #00a14b;">Faturamento por Hora</div>
-            <div class="chart-wrapper">
-                <canvas id="revenueChart"></canvas>
+        <div class="grid-charts">
+            <div class="card">
+                <div class="card-title">📈 Faturamento vs Pedidos</div>
+                <div class="chart-wrapper">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">💳 Formas de Pagamento</div>
+                <div class="chart-wrapper-small">
+                    <canvas id="paymentChart"></canvas>
+                </div>
             </div>
         </div>
 
-        <div class="card full">
-            <div class="c-title" style="color: #ea1d2c;">Volume de Pedidos por Hora</div>
-            <div class="chart-wrapper">
-                <canvas id="ordersChart"></canvas>
+        <div class="grid-lists">
+            <div class="card">
+                <div class="card-title">🏆 Top Lojas (Faturamento)</div>
+                <ul class="ranking-list" id="list-top-stores">
+                    <li>A carregar ranking...</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📍 Mapa de Calor (Cidades)</div>
+                <ul class="ranking-list" id="list-cities">
+                    <li>A carregar cidades...</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🛵 Status da Frota e Lojas</div>
+                <ul class="ranking-list">
+                    <li>
+                        <span style="display:flex; align-items:center; gap:8px;">🏪 Lojas Abertas</span>
+                        <span class="badge green" id="val-stores-open">0 de 0</span>
+                    </li>
+                    <li>
+                        <span style="display:flex; align-items:center; gap:8px;">🛵 Entregadores Online</span>
+                        <span class="badge red" id="val-drivers-active">0 ativos</span>
+                    </li>
+                    <li>
+                        <span style="display:flex; align-items:center; gap:8px;">👥 Clientes Cadastrados</span>
+                        <span class="badge gray" id="val-customers-total">0</span>
+                    </li>
+                    <li>
+                        <span style="display:flex; align-items:center; gap:8px;">🛒 Ticket Médio</span>
+                        <span class="badge blue" id="val-avg-ticket">R$ 0,00</span>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -234,7 +240,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Cole aqui suas configurações oficiais do UaiPede
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -249,113 +254,144 @@
 
         const formatBRL = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        // --- INICIALIZAÇÃO DOS GRÁFICOS (CHART.JS) ---
-        let revenueChartInstance = null;
-        let ordersChartInstance = null;
+        // --- VARIÁVEIS GLOBAIS DE DADOS ---
+        let globalOrders = [];
         
-        // Array de horas do dia para eixo X (Ex: "08h", "09h", ...)
+        // --- INICIALIZAÇÃO DOS GRÁFICOS (CHART.JS) ---
+        let mainChartInstance = null;
+        let paymentChartInstance = null;
+        
         const hoursLabels = Array.from({length: 24}, (_, i) => `${i.toString().padStart(2, '0')}h`);
 
         function initCharts() {
-            // Configurações Globais do Chart.js para ficar limpo
             Chart.defaults.font.family = "'Roboto', sans-serif";
-            Chart.defaults.color = '#999';
-            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(0,0,0,0.8)';
+            Chart.defaults.color = '#6b7280';
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(17, 17, 17, 0.9)';
+            Chart.defaults.plugins.tooltip.padding = 10;
+            Chart.defaults.plugins.tooltip.cornerRadius = 8;
             
-            const ctxRev = document.getElementById('revenueChart').getContext('2d');
-            revenueChartInstance = new Chart(ctxRev, {
+            const ctxMain = document.getElementById('mainChart').getContext('2d');
+            mainChartInstance = new Chart(ctxMain, {
                 type: 'line',
                 data: {
                     labels: hoursLabels,
-                    datasets: [{
-                        label: 'Faturamento (R$)',
-                        data: Array(24).fill(0), // Dados vazios initially
-                        borderColor: '#00a14b', // Verde
-                        backgroundColor: 'rgba(0, 161, 75, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4, // Linhas curvos e suaves
-                        pointRadius: 2
-                    }]
+                    datasets: [
+                        {
+                            label: 'Faturamento (R$)',
+                            data: Array(24).fill(0),
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Pedidos',
+                            data: Array(24).fill(0),
+                            borderColor: '#ea1d2c',
+                            backgroundColor: 'rgba(234, 29, 44, 0.0)',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
-                        y: { border: { display: false }, grid: { color: '#f0f0f0' }, beginAtZero: true }
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 12 } },
+                        y: { type: 'linear', display: true, position: 'left', grid: { color: '#f3f4f6' }, beginAtZero: true },
+                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, beginAtZero: true, ticks: { precision: 0 } }
                     }
                 }
             });
 
-            const ctxOrd = document.getElementById('ordersChart').getContext('2d');
-            ordersChartInstance = new Chart(ctxOrd, {
-                type: 'line',
+            const ctxPay = document.getElementById('paymentChart').getContext('2d');
+            paymentChartInstance = new Chart(ctxPay, {
+                type: 'doughnut',
                 data: {
-                    labels: hoursLabels,
+                    labels: ['Pix', 'Cartão', 'Dinheiro'],
                     datasets: [{
-                        label: 'Pedidos Feitos',
-                        data: Array(24).fill(0), 
-                        borderColor: '#ea1d2c', // Vermelho UaiPede
-                        backgroundColor: 'rgba(234, 29, 44, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4, 
-                        pointRadius: 2
+                        data: [0, 0, 0],
+                        backgroundColor: ['#10b981', '#3b82f6', '#ea1d2c'],
+                        borderWidth: 0,
+                        hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
-                        y: { border: { display: false }, grid: { color: '#f0f0f0' }, beginAtZero: true, ticks: { precision: 0 } }
+                    cutout: '70%',
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 15 } } 
                     }
                 }
             });
         }
         
-        // Inicia os gráficos vazios na tela
         initCharts();
 
-
-        // MONITOR 1: PEDIDOS PRO
-        onSnapshot(collection(db, "orders"), (snapshot) => {
-            const startOfToday = new Date().setHours(0,0,0,0);
+        // --- LÓGICA PRINCIPAL DO DASHBOARD ---
+        window.renderDashboard = () => {
+            const filterVal = document.getElementById('time-filter').value;
             const now = Date.now();
-            
-            let revToday = 0, discountTotal = 0, platformRevenueTotal = 0;
+            let startTime = 0;
+
+            if (filterVal === 'hoje') startTime = new Date().setHours(0,0,0,0);
+            else if (filterVal === '7dias') startTime = now - (7 * 24 * 60 * 60 * 1000);
+            else if (filterVal === 'mes') startTime = now - (30 * 24 * 60 * 60 * 1000);
+
+            let revTotal = 0, discountTotal = 0, platformRevenueTotal = 0;
+            let ordersTotal = 0, ordersCanceled = 0;
+            let deliveryCount = 0, pickupCount = 0;
             let badReviews = 0, sponsorCouponsUsed = 0;
             let activeCities = {};
             let storeRevenueArray = {}; 
             let totalAvgMins = 0, avgMinsCount = 0;
-            let activeCustomersTodaySet = new Set();
+            let activeCustomersSet = new Set();
+            
+            // Dados Gráficos
+            let revenueByTime = Array(24).fill(0);
+            let ordersByTime = Array(24).fill(0);
+            let payPix = 0, payCard = 0, payCash = 0;
 
-            // Arrays para os Gráficos
-            let revenueByHour = Array(24).fill(0);
-            let ordersByHour = Array(24).fill(0);
+            globalOrders.forEach(o => {
+                if (o.timestamp >= startTime) {
+                    
+                    ordersTotal++;
 
-            snapshot.forEach(doc => {
-                const o = doc.data();
-                
-                // Processa apenas pedidos criados a partir da meia-noite de hoje
-                if (o.timestamp >= startOfToday) {
+                    if (o.status === 'Cancelado') {
+                        ordersCanceled++;
+                        return; // Ignora faturamento de cancelados
+                    }
 
-                    if (o.status === 'Cancelado') return; // Ignora cancelados
-
-                    revToday += (o.total || 0);
+                    revTotal += (o.total || 0);
                     discountTotal += (o.discount || 0);
                     
-                    if (o.customerName) activeCustomersTodaySet.add(o.customerName);
-                    if (o.couponName && o.couponName.toLowerCase().includes('sicoob')) sponsorCouponsUsed++;
+                    if (o.customerName) activeCustomersSet.add(o.customerName);
+                    if (o.isSponsored) sponsorCouponsUsed++;
 
-                    // COLETA DE DADOS POR HORA PARA OS GRÁFICOS
-                    const orderDate = new Date(o.timestamp);
-                    const orderHour = orderDate.getHours(); // Retorna 0 a 23
-                    revenueByHour[orderHour] += (o.total || 0);
-                    ordersByHour[orderHour] += 1;
+                    // DISTRIBUIÇÃO ENTREGA VS RETIRADA
+                    const isPickup = o.orderType === 'retirada' || (o.customer && o.customer.address && o.customer.address.includes('RETIRADA'));
+                    if (isPickup) pickupCount++; else deliveryCount++;
+
+                    // PAGAMENTOS
+                    const pm = (o.paymentMethod || '').toLowerCase();
+                    if (pm.includes('pix')) payPix++; 
+                    else if (pm.includes('cartão') || pm.includes('cartao')) payCard++; 
+                    else payCash++;
+
+                    // GRÁFICO LINHA (Agrupa por hora se for "Hoje", senão agrupa por dia ou simplifica)
+                    // Para simplificar e manter o design visual, continuaremos agrupando pela Hora do Dia (pico de horários) 
+                    // independentemente do filtro (mostra as horas mais quentes do período).
+                    const orderHour = new Date(o.timestamp).getHours();
+                    revenueByTime[orderHour] += (o.total || 0);
+                    ordersByTime[orderHour] += 1;
 
                     if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
                         platformRevenueTotal += (o.platformFee || ((o.total || 0) * 0.10));
@@ -367,16 +403,12 @@
 
                         if (o.deliveredAt && o.timestamp) {
                             let mins = (o.deliveredAt - o.timestamp) / 60000;
-                            if(mins > 0 && mins < 300) { 
-                                totalAvgMins += mins;
-                                avgMinsCount++;
-                            }
+                            if(mins > 0 && mins < 300) { totalAvgMins += mins; avgMinsCount++; }
                         }
-
                         if (o.rating && o.rating <= 2) badReviews++;
                     }
 
-                    if (['Pendente', 'Aceito', 'Em Preparo', 'Aguardando Entregador', 'Saiu para Entrega'].includes(o.status)) {
+                    if (!['Cancelado', 'Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
                         const city = o.cityName || 'Doresópolis'; 
                         if (!activeCities[city]) activeCities[city] = 0;
                         activeCities[city]++;
@@ -384,97 +416,99 @@
                 }
             });
 
-            // ATUALIZA DOM FINANCEIRO
-            document.getElementById('val-revenue').innerText = formatBRL(revToday);
+            // ATUALIZA DOM
+            document.getElementById('val-revenue').innerText = formatBRL(revTotal);
             document.getElementById('val-discounts').innerText = formatBRL(discountTotal);
             document.getElementById('val-platform-revenue').innerText = formatBRL(platformRevenueTotal);
+            document.getElementById('val-orders-total').innerText = ordersTotal;
+            document.getElementById('val-orders-canceled').innerText = ordersCanceled;
+            document.getElementById('val-sponsor-coupons').innerText = `${sponsorCouponsUsed} usos`;
             
-            const avgTicket = (activeCustomersTodaySet.size > 0) ? revToday / activeCustomersTodaySet.size : 0;
+            const avgTicket = (ordersTotal - ordersCanceled > 0) ? revTotal / (ordersTotal - ordersCanceled) : 0;
             document.getElementById('val-avg-ticket').innerText = formatBRL(avgTicket);
 
-            // OPERACIONAL
-            document.getElementById('val-sponsor-coupons').innerText = sponsorCouponsUsed;
-            
+            const validOrders = ordersTotal - ordersCanceled;
+            const delPct = validOrders > 0 ? Math.round((deliveryCount / validOrders) * 100) : 0;
+            const pickPct = validOrders > 0 ? Math.round((pickupCount / validOrders) * 100) : 0;
+            document.getElementById('val-delivery-type').innerText = `${delPct}% / ${pickPct}%`;
+
             const avgDeliveryTime = (avgMinsCount > 0) ? Math.round(totalAvgMins / avgMinsCount) : 0;
             document.getElementById('val-avg-delivery-time').innerText = `${avgDeliveryTime} min`;
-            document.getElementById('val-customers-active').innerText = activeCustomersTodaySet.size;
 
-            // ATUALIZAR GRÁFICOS (Tempo Real)
-            if (revenueChartInstance && ordersChartInstance) {
-                revenueChartInstance.data.datasets[0].data = revenueByHour;
-                revenueChartInstance.update();
-
-                ordersChartInstance.data.datasets[0].data = ordersByHour;
-                ordersChartInstance.update();
+            // ATUALIZAR GRÁFICOS
+            if (mainChartInstance) {
+                mainChartInstance.data.datasets[0].data = revenueByTime;
+                mainChartInstance.data.datasets[1].data = ordersByTime;
+                mainChartInstance.update();
+            }
+            if (paymentChartInstance) {
+                paymentChartInstance.data.datasets[0].data = [payPix, payCard, payCash];
+                paymentChartInstance.update();
             }
 
-            // RENDERIZAR RANKING TOP LOJAS
+            // TOP LOJAS
             const listTopStores = document.getElementById('list-top-stores');
-            const sortedStores = Object.keys(storeRevenueArray)
-                .map(name => ({ name, rev: storeRevenueArray[name] }))
-                .sort((a,b) => b.rev - a.rev)
-                .slice(0, 3);
-
+            const sortedStores = Object.keys(storeRevenueArray).map(name => ({ name, rev: storeRevenueArray[name] })).sort((a,b) => b.rev - a.rev).slice(0, 5);
             if (sortedStores.length === 0) {
-                listTopStores.innerHTML = '<li style="justify-content:center; color:#999;">Sem vendas concluídas hoje.</li>';
+                listTopStores.innerHTML = '<li style="justify-content:center; color:#9ca3af;">Nenhuma venda no período.</li>';
             } else {
-                const medals = ['🥇', '🥈', '🥉'];
+                const medals = ['🥇', '🥈', '🥉', '4º', '5º'];
                 listTopStores.innerHTML = sortedStores.map((s, i) => `
                     <li>
-                        <span><span style="font-size:1.2rem; margin-right:5px;">${medals[i]}</span> ${s.name}</span>
+                        <span style="display:flex; align-items:center; gap:8px;"><span style="font-size:1.1rem; width:25px; text-align:center;">${medals[i]}</span> ${s.name}</span>
                         <span class="badge green">${formatBRL(s.rev)}</span>
                     </li>
                 `).join('');
             }
 
-            // MAPA DE CALOR POR CIDADES
+            // CIDADES
             const listCities = document.getElementById('list-cities');
-            const citiesArray = Object.keys(activeCities)
-                .map(name => ({ name, count: activeCities[name] }))
-                .sort((a,b) => b.count - a.count);
-
+            const citiesArray = Object.keys(activeCities).map(name => ({ name, count: activeCities[name] })).sort((a,b) => b.count - a.count);
             if (citiesArray.length === 0) {
-                listCities.innerHTML = '<li style="color:#999; justify-content:center;">Sem pedidos no momento.</li>';
+                listCities.innerHTML = '<li style="color:#9ca3af; justify-content:center;">Sem pedidos pendentes no momento.</li>';
             } else {
                 listCities.innerHTML = citiesArray.map(c => `
                     <li>
                         <span style="font-weight:700; color:#111;">📍 ${c.name}</span>
-                        <span class="badge red">${c.count} em andamento</span>
+                        <span class="badge blue">${c.count} ativos agora</span>
                     </li>
                 `).join('');
             }
             
-            // ALERTA DE AVALIAÇÕES RUINS
+            // ALERTAS
             const alertContainer = document.getElementById('alert-container');
             if (badReviews > 0) {
                 alertContainer.innerHTML = `
                 <div class="critical-alert">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    <div>Atenção: Tem ${badReviews} avaliação(ões) negativa(s) hoje. Contacte o cliente!</div>
+                    <div>Atenção Crítica: Existem ${badReviews} avaliações negativas no período selecionado. Verifique o suporte!</div>
                 </div>`;
             } else { alertContainer.innerHTML = ''; }
+        };
+
+        // --- LISTENERS FIREBASE ---
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            globalOrders = [];
+            snapshot.forEach(doc => globalOrders.push({ id: doc.id, ...doc.data() }));
+            window.renderDashboard();
         });
 
-        // MONITOR 2: LOJAS ABERTAS
         onSnapshot(collection(db, "stores"), (snapshot) => {
             let total = 0, open = 0;
             snapshot.forEach(doc => { total++; if (doc.data().status === 'Aberto') open++; });
             document.getElementById('val-stores-total').innerText = total;
-            document.getElementById('val-stores-open').innerText = open;
+            document.getElementById('val-stores-open').innerText = `${open} de ${total}`;
         });
 
-        // MONITOR 3: ENTREGADORES ATIVOS
         onSnapshot(collection(db, "drivers"), (snapshot) => {
             let online = 0;
             snapshot.forEach(doc => {
                 const d = doc.data();
                 if(d.isActive !== false && (d.isOnline === true || d.isOnline === "true")) online++;
             });
-            const driverBadge = document.getElementById('val-drivers-active');
-            if(driverBadge) driverBadge.innerText = online;
+            document.getElementById('val-drivers-active').innerText = `${online} ativos`;
         });
 
-        // MONITOR 4: CLIENTES TOTAIS
         onSnapshot(collection(db, "customers"), (snapshot) => {
             let total = 0;
             snapshot.forEach(() => total++);
