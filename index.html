@@ -86,7 +86,7 @@
         .city-item-btn svg { color: #ccc; transition: color 0.2s;}
         .city-item-btn:active svg { color: #ea1d2c; }
 
-        /* BANNERS E CATEGORIAS */
+        /* BANNERS */
         .banner-carousel-wrapper { background: #f8f8f8; padding: 15px 15px 0; display: none; }
         .banner-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 12px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         .banner-track::-webkit-scrollbar { display: none; }
@@ -96,31 +96,39 @@
         .button-scroll-container { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; padding: 15px; background: #f8f8f8; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
         .button-scroll-container::-webkit-scrollbar { display: none; }
         .button-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; padding: 12px 5px; border-radius: 16px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; flex: 0 0 auto; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .button-item:active { transform: scale(0.95); }
         .filter-icon { width: 32px; height: 32px; margin-bottom: 8px; color: #ea1d2c; transition: color 0.3s ease; }
         .button-item span { font-size: 0.75rem; color: #717171; font-weight: 600; line-height: 1.1; transition: color 0.3s ease; white-space: nowrap;}
         .button-item.active { background-color: #ea1d2c; border-color: #ea1d2c; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.25); }
-        .button-item.active span { color: #fff; }
-        .button-item.active .filter-icon { color: #fff; } 
+        .button-item.active span, .button-item.active .filter-icon { color: #fff; } 
         
         /* 🟢 CHIPS INTELIGENTES DE FILTROS RÁPIDOS 🟢 */
         .quick-filters-container { display: flex; gap: 10px; overflow-x: auto; padding: 0 15px 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .quick-filters-container::-webkit-scrollbar { display: none; }
-        .chip-btn { background: #fff; border: 1px solid #ddd; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: #555; white-space: nowrap; flex-shrink: 0; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
-        .chip-btn.active { background: #fff5f5; border-color: #ea1d2c; color: #ea1d2c; }
+        .chip-btn { background: #fff; border: 1px solid #ddd; padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: #555; white-space: nowrap; flex-shrink: 0; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .chip-btn svg { color: #ea1d2c; }
+        .chip-btn.active { background: #ea1d2c; border-color: #ea1d2c; color: #fff; }
+        .chip-btn.active svg { color: #fff; fill: #fff; }
+        
+        /* Ícone Fav Chip */
+        .chip-fav-icon { fill: none; stroke: currentColor; }
+        .chip-btn.active .chip-fav-icon { fill: #fff; stroke: #fff; }
 
-        /* 🟢 LOJAS EM DESTAQUE (CARROSSEL HORIZONTAL) 🟢 */
-        .featured-section { display: none; padding: 0 0 15px 0; }
+        /* 🟢 LOJAS EM DESTAQUE (CARROSSEL PREMIUM) 🟢 */
+        .featured-section { display: none; padding: 0 0 20px 0; }
         .featured-track { display: flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 0 15px 10px; -webkit-overflow-scrolling: touch; }
         .featured-track::-webkit-scrollbar { display: none; }
-        .featured-card { flex: 0 0 130px; background: #fff; border: 1px solid #f2f2f2; border-radius: 12px; padding: 12px; text-align: center; scroll-snap-align: start; box-shadow: 0 2px 6px rgba(0,0,0,0.04); text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; position: relative;}
-        .featured-logo { width: 65px; height: 65px; border-radius: 50%; border: 2px solid #ea1d2c; object-fit: cover; margin-bottom: 8px; }
-        .featured-name { font-size: 0.85rem; font-weight: 800; color: #111; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;}
-        .featured-badge { font-size: 0.65rem; color: #00a14b; font-weight: bold; background: #e6f4ea; padding: 2px 6px; border-radius: 10px; }
-        .featured-card.closed .featured-logo { filter: grayscale(100%); border-color: #ccc;}
-        .featured-card.closed .featured-badge { color: #777; background: #f4f4f4; }
+        .featured-card { flex: 0 0 150px; background: #fff; border: 1px solid #f2f2f2; border-radius: 16px; text-align: center; scroll-snap-align: start; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; padding-bottom: 12px;}
+        
+        .featured-card-header { width: 100%; height: 45px; background: linear-gradient(135deg, #ea1d2c, #ff4b58); margin-bottom: 25px; }
+        .featured-logo { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; position: absolute; top: 15px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .featured-name { font-size: 0.9rem; font-weight: 800; color: #111; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; padding: 0 5px;}
+        .featured-badge { font-size: 0.65rem; color: #fff; font-weight: bold; background: #00a14b; padding: 3px 8px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        .featured-card.closed .featured-card-header { background: #e0e0e0; }
+        .featured-card.closed .featured-logo { filter: grayscale(100%); border-color: #f8f8f8;}
+        .featured-card.closed .featured-badge { color: #555; background: #eee; }
 
-        .section-title { padding: 5px 15px 10px; font-size: 1.1rem; font-weight: 800; color: #111; display: flex; align-items: center; gap: 6px;}
+        .section-title { padding: 5px 15px 15px; font-size: 1.15rem; font-weight: 900; color: #111; display: flex; align-items: center; gap: 8px;}
 
         /* LISTA DE LOJAS GERAL */
         .store-list { padding: 0 15px; }
@@ -136,7 +144,7 @@
         .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-weight: 500;}
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
-        /* 🟢 BOTÃO CORAÇÃO (FAVORITOS) 🟢 */
+        /* 🟢 BOTÃO CORAÇÃO (FAVORITOS) NO CARD 🟢 */
         .heart-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 1.2rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: 0.2s; }
         .heart-btn svg { width: 22px; height: 22px; stroke: #ccc; fill: none; transition: 0.2s; stroke-width: 2;}
         .heart-btn.favorited svg { stroke: #ea1d2c; fill: #ea1d2c; }
@@ -145,7 +153,7 @@
         .store-delivery-info { font-size: 0.8rem; color: #333; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
         .coupon-badge-btn { display: inline-flex; align-items: center; background: #fff; color: #00a14b; border: 1.5px solid #00a14b; border-radius: 20px; padding: 3px 8px; font-size: 0.65rem; font-weight: 800; text-decoration: none; }
 
-        /* 🟢 MODAL DE BUSCA (PESQUISA RÁPIDA) 🟢 */
+        /* 🟢 MODAL DE BUSCA RÁPIDA 🟢 */
         .search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8f8f8; z-index: 999999; display: none; flex-direction: column; animation: slideUpSearch 0.3s ease;}
         @keyframes slideUpSearch { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
@@ -158,7 +166,7 @@
         
         .sm-body { flex: 1; overflow-y: auto; padding: 15px; }
 
-        /* MENU INFERIOR (AGORA COM 4 BOTÕES) */
+        /* MENU INFERIOR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
         .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; background: none; border: none; cursor: pointer; width: 25%;}
         .nav-icon-img { width: 24px; height: 24px; filter: invert(40%); }
@@ -227,14 +235,29 @@
         </section>
 
         <div class="quick-filters-container">
-            <button class="chip-btn" onclick="window.toggleQuickFilter('freeShipping', this)">🛵 Entrega Grátis</button>
-            <button class="chip-btn" onclick="window.toggleQuickFilter('hasCoupon', this)">🏷️ Com Cupom</button>
-            <button class="chip-btn" onclick="window.toggleQuickFilter('openNow', this)">🟢 Abertos Agora</button>
-            <button class="chip-btn" onclick="window.toggleQuickFilter('favorites', this)">❤️ Favoritas</button>
+            <button class="chip-btn" onclick="window.toggleQuickFilter('freeShipping', this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.09a2 2 0 0 0 1.51.67l2.88 3.33a2 2 0 0 0 1.51.67H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><circle cx="8.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                Entrega Grátis
+            </button>
+            <button class="chip-btn" onclick="window.toggleQuickFilter('hasCoupon', this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                Com Cupom
+            </button>
+            <button class="chip-btn" onclick="window.toggleQuickFilter('openNow', this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Abertos Agora
+            </button>
+            <button class="chip-btn" onclick="window.toggleQuickFilter('favorites', this)">
+                <svg class="chip-fav-icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                Favoritas
+            </button>
         </div>
 
         <section class="featured-section" id="featured-section">
-            <h2 class="section-title">⭐ Lojas em Destaque</h2>
+            <h2 class="section-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#ea1d2c" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Famosos no App
+            </h2>
             <div class="featured-track" id="featured-track-container"></div>
         </section>
 
@@ -574,7 +597,7 @@
             }
         };
 
-        // 🟢 CÓDIGO DA SECÇÃO DE DESTAQUES (CARROSSEL) 🟢
+        // 🟢 CÓDIGO DA SECÇÃO DE DESTAQUES (CARROSSEL COM DESIGN PREMIUM E SVG) 🟢
         window.renderFeaturedStores = () => {
             const featuredSection = document.getElementById('featured-section');
             const track = document.getElementById('featured-track-container');
@@ -612,6 +635,7 @@
 
                 return `
                 <a href="loja.html?id=${s.id}" class="${cardClass}">
+                    <div class="featured-card-header"></div>
                     <img src="${s.logo || 'https://via.placeholder.com/80'}" class="featured-logo" alt="Logo">
                     <div class="featured-name">${s.name}</div>
                     <div class="featured-badge">${badgeText}</div>
@@ -619,7 +643,7 @@
             }).join('');
         };
 
-        // 🟢 CÓDIGO DE LOJAS COM FAVORITOS E CHIPS 🟢
+        // 🟢 CÓDIGO ATUALIZADO DE LOJAS (COM FAVORITOS E CHIPS) 🟢
         window.renderStores = () => {
             const container = document.getElementById('store-list-container');
             if(!userCity) return;
@@ -631,7 +655,7 @@
                 filteredStores = filteredStores.filter(s => s.cat && s.cat.toLowerCase().includes(currentCategoryFilter.toLowerCase()));
             }
 
-            // Calculo do Status
+            // Calculo do Status (Necessário fazer antes do filtro "Aberto Agora")
             const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
             const currentDayStr = daysMap[now.getDay()]; const currentMins = now.getHours() * 60 + now.getMinutes();
 
@@ -705,6 +729,7 @@
                             ${c.code}: ${discountText}
                         </span>`;
                     }).join('');
+                    
                     couponHtml = `<div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">${couponsTags}</div>`;
                 }
 
@@ -746,7 +771,7 @@
         };
 
         window.toggleFavorite = (storeId, event) => {
-            event.preventDefault(); 
+            event.preventDefault(); // Impede de abrir a loja ao clicar no coração
             event.stopPropagation();
             
             if (userFavorites.includes(storeId)) {
@@ -755,7 +780,7 @@
                 userFavorites.push(storeId);
             }
             localStorage.setItem('userFavorites', JSON.stringify(userFavorites));
-            window.renderStores(); 
+            window.renderStores(); // Re-renderiza para atualizar o ícone e os filtros
         };
 
         window.filterCategory = (categoryName, element) => {
