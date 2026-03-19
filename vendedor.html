@@ -1122,16 +1122,18 @@
             }
         };
 
-        // 🟢 FUNÇÃO PARA APROVAR O RECEBIMENTO DO PIX 🟢
-        window.approvePix = async (btnElement, orderId) => {
-            if(confirm("Confirmar que o valor do PIX já caiu na sua conta?\n(O pedido continuará no fluxo normal)")) {
+        // 🟢 FUNÇÃO ATUALIZADA PARA APROVAR/REJEITAR O PIX 🟢
+        window.approvePix = async (btnElement, orderId, isApproved) => {
+            const actionText = isApproved ? "Confirmar que o valor do PIX já caiu na sua conta?" : "Avisar o cliente que o PIX NÃO foi recebido/aprovado?";
+            
+            if(confirm(actionText)) {
                 const prevText = btnElement.innerHTML;
                 btnElement.innerHTML = 'Aguarde...';
                 btnElement.disabled = true;
                 try { 
-                    await updateDoc(doc(db, "orders", orderId), { pixApproved: true }); 
+                    await updateDoc(doc(db, "orders", orderId), { pixApproved: isApproved }); 
                 } catch(e) { 
-                    alert("Erro ao aprovar PIX.");
+                    alert("Erro ao processar o PIX.");
                     btnElement.innerHTML = prevText;
                     btnElement.disabled = false;
                 }
@@ -1262,13 +1264,19 @@
 
             let actionBtn = ''; let sellerBadge = '';
 
-            // 🟢 LÓGICA DO BOTÃO DE CONFIRMAÇÃO DO PIX 🟢
+            // 🟢 LÓGICA ATUALIZADA DOS BOTÕES DE PIX 🟢
             let pixApprovalHtml = '';
             if (payMethodText.toLowerCase().includes('pix')) {
-                if (order.pixApproved) {
+                if (order.pixApproved === true) {
                     pixApprovalHtml = `<div style="background:#e6f4ea; color:#0f5132; padding:6px; border-radius:6px; text-align:center; font-size:0.85rem; font-weight:bold; margin-bottom:8px; border: 1px solid #badbcc;">✅ PIX Confirmado</div>`;
-                } else {
-                    pixApprovalHtml = `<button class="btn-action" style="background:#f39c12; margin-bottom:8px;" onclick="window.approvePix(this, '${order.id}')">💰 Confirmar Recebimento PIX</button>`;
+                } else if (order.pixApproved === false) {
+                    pixApprovalHtml = `<div style="background:#fef0f0; color:#ea1d2c; padding:6px; border-radius:6px; text-align:center; font-size:0.85rem; font-weight:bold; margin-bottom:8px; border: 1px solid #fbd5d5;">❌ PIX Não Aprovado</div>`;
+                } else if (order.status !== 'Cancelado') {
+                    pixApprovalHtml = `
+                    <div style="display:flex; gap:6px; margin-bottom:8px;">
+                        <button class="btn-action" style="background:#f39c12; flex:1; font-size:0.75rem; padding:8px;" onclick="window.approvePix(this, '${order.id}', true)">✅ Recebido</button>
+                        <button class="btn-action" style="background:#ea1d2c; flex:1; font-size:0.75rem; padding:8px;" onclick="window.approvePix(this, '${order.id}', false)">❌ Não Caiu</button>
+                    </div>`;
                 }
             }
 
