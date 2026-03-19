@@ -239,7 +239,7 @@
         let allBanners = [];
         let globalCities = [];
         let allActiveSponsors = [];
-        let allCoupons = []; // <--- VARIÁVEL GLOBAL PARA CUPONS
+        let allCoupons = []; 
         
         let currentCategoryFilter = null; 
         let bannerInterval; 
@@ -319,11 +319,10 @@
             allActiveSponsors.sort((a,b) => a.timestamp - b.timestamp);
         });
 
-        // 🟢 BUSCANDO CUPONS EM TEMPO REAL 🟢
         onSnapshot(collection(db, "coupons"), (snapshot) => {
             allCoupons = [];
             snapshot.forEach(doc => allCoupons.push({ id: doc.id, ...doc.data() }));
-            if(userCity) window.renderStores(); // Re-renderiza as lojas para atualizar as tags de cupão
+            if(userCity) window.renderStores(); 
         });
 
         // INICIALIZAÇÃO DA TELA 
@@ -453,6 +452,7 @@
             window.renderStores();
         }
 
+        // 🟢 CÓDIGO DOS BANNERS COM CLIQUE PARA LOJA VINCULADA 🟢
         window.renderBanners = () => {
             const bannerContainer = document.getElementById('banner-wrapper');
             const track = document.getElementById('banner-track');
@@ -461,7 +461,9 @@
             let bannersHtml = '';
             allBanners.forEach(b => {
                 if (!b.city || b.city === 'all' || b.city === userCity) {
-                    bannersHtml += `<img src="${b.image}" class="banner-slide">`;
+                    // ADICIONADA A LÓGICA DE CLIQUE
+                    let clickAction = b.storeId ? `onclick="window.location.href='loja.html?id=${b.storeId}'" style="cursor:pointer;"` : '';
+                    bannersHtml += `<img src="${b.image}" class="banner-slide" ${clickAction}>`;
                 }
             });
             
@@ -531,20 +533,17 @@
                 return getWeight(a) - getWeight(b);
             });
 
-            // 🟢 AQUI ESTÁ O LAÇO QUE RENDERIZA TODAS AS LOJAS DA LISTA 🟢
             container.innerHTML = filteredStores.map(s => {
                 const isClosed = s.dynamicStatus === 'Fechado';
                 const cardClass = isClosed ? 'store-card closed' : 'store-card';
                 let statusText = s.dynamicStatus; let statusColor = isClosed ? '#717171' : '#00a14b'; 
                 
-                // Lógica de tempo e taxa de entrega formatados COM "R$" E FALLBACK ("--")
                 let deliveryTimeText = s.deliveryTime ? s.deliveryTime : '--';
                 let deliveryTimeHtml = `<div>Delivery: ${deliveryTimeText}</div>`;
                 
                 let deliveryFeeValue = s.deliveryFee !== undefined && s.deliveryFee !== '' ? parseFloat(s.deliveryFee) : 0;
                 let deliveryFeeHtml = deliveryFeeValue > 0 ? `<div>Entrega: R$ ${deliveryFeeValue.toFixed(2).replace('.', ',')}</div>` : '<div>Entrega: Grátis</div>';
                 
-                // Validação para exibir os cupões REAIS da loja atual no laço (s.id)
                 let storeCoupons = allCoupons.filter(c => c.storeId === s.id && c.active === true);
                 let couponHtml = '';
                 
