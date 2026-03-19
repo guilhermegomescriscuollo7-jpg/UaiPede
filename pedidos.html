@@ -312,6 +312,16 @@
 
                     const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
 
+                    // 🟢 AQUI ENTRA A LÓGICA DO BADGE DO PIX 🟢
+                    let pixBadgeHtml = '';
+                    if ((order.paymentMethod || '').toLowerCase().includes('pix')) {
+                        if (order.pixApproved) {
+                            pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #e6f4ea; color: #00a14b; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #badbcc;">✅ PIX Confirmado pela Loja</div>`;
+                        } else if (order.status !== 'Cancelado') {
+                            pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #fff3cd; color: #856404; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #ffeeba;">⏳ Aguardando loja confirmar o PIX</div>`;
+                        }
+                    }
+
                     return `
                     <div class="order-card" style="${order.status === 'Cancelado' ? 'opacity: 0.6;' : ''}">
                         <div class="store-name">${order.storeName}</div>
@@ -336,6 +346,8 @@
                                 ${orderTimePart}
                             </div>
                         </div>
+
+                        ${pixBadgeHtml}
 
                         <div class="progress-wrapper" style="${stepIndex === -1 ? 'display:none;' : ''}">
                             <div class="progress-lines">
@@ -468,9 +480,15 @@
             document.getElementById('md-discount').innerText = discount > 0 ? `- R$ ${discount.toFixed(2)}` : 'Sem cupom';
             document.getElementById('md-total').innerText = `R$ ${(order.total || 0).toFixed(2)}`;
 
+            // 🟢 AQUI ENTRA A LÓGICA DO BADGE DO PIX NO MODAL 🟢
+            let pixStatusText = '';
+            if ((order.paymentMethod || '').toLowerCase().includes('pix')) {
+                pixStatusText = order.pixApproved ? ' <span style="color:#00a14b; font-weight:bold;">(✅ Confirmado)</span>' : ' <span style="color:#856404; font-weight:bold;">(⏳ Aguardando Loja Confirmar)</span>';
+            }
+
             let footerHtml = `
                 <strong>Data do pedido:</strong> ${order.date ? order.date.split(' ')[0] : ''}<br>
-                <strong>Forma de pagamento:</strong> ${order.paymentMethod}<br><br>
+                <strong>Forma de pagamento:</strong> ${order.paymentMethod}${pixStatusText}<br><br>
                 <strong>Pedido realizado:</strong> ${order.date ? order.date.split(' ')[1] : ''}<br><br>
                 <strong>Endereço de entrega:</strong> ${order.customer.address || 'Retirada na loja'}<br>
             `;
