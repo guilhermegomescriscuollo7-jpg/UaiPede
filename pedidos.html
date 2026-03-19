@@ -315,8 +315,10 @@
                     // 🟢 AQUI ENTRA A LÓGICA DO BADGE DO PIX 🟢
                     let pixBadgeHtml = '';
                     if ((order.paymentMethod || '').toLowerCase().includes('pix')) {
-                        if (order.pixApproved) {
+                        if (order.pixApproved === true) {
                             pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #e6f4ea; color: #00a14b; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #badbcc;">✅ PIX Confirmado pela Loja</div>`;
+                        } else if (order.pixApproved === false) {
+                            pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #fef0f0; color: #ea1d2c; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #fbd5d5;">❌ PIX Não Aprovado / Não Recebido</div>`;
                         } else if (order.status !== 'Cancelado') {
                             pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #fff3cd; color: #856404; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #ffeeba;">⏳ Aguardando loja confirmar o PIX</div>`;
                         }
@@ -483,7 +485,13 @@
             // 🟢 AQUI ENTRA A LÓGICA DO BADGE DO PIX NO MODAL 🟢
             let pixStatusText = '';
             if ((order.paymentMethod || '').toLowerCase().includes('pix')) {
-                pixStatusText = order.pixApproved ? ' <span style="color:#00a14b; font-weight:bold;">(✅ Confirmado)</span>' : ' <span style="color:#856404; font-weight:bold;">(⏳ Aguardando Loja Confirmar)</span>';
+                if (order.pixApproved === true) {
+                    pixStatusText = ' <span style="color:#00a14b; font-weight:bold;">(✅ Confirmado)</span>';
+                } else if (order.pixApproved === false) {
+                    pixStatusText = ' <span style="color:#ea1d2c; font-weight:bold;">(❌ Não Aprovado / Não Recebido)</span>';
+                } else {
+                    pixStatusText = ' <span style="color:#856404; font-weight:bold;">(⏳ Aguardando Loja)</span>';
+                }
             }
 
             let footerHtml = `
