@@ -190,37 +190,103 @@
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 Regiões de Atendimento
             </h2>
+            <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Cadastre as cidades onde o UaiPede funciona.</p>
+            
             <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 35px;">
-                <div class="form-group" style="flex: 2; margin-bottom: 0;"><label>Nome da Cidade</label><input type="text" id="c-name" placeholder="Ex: Doresópolis"></div>
-                <div class="form-group" style="flex: 1; margin-bottom: 0;"><label>Estado (UF)</label><input type="text" id="c-state" placeholder="Ex: MG" maxlength="2" style="text-transform: uppercase;"></div>
+                <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                    <label>Nome da Cidade</label>
+                    <input type="text" id="c-name" placeholder="Ex: Doresópolis">
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                    <label>Estado (UF)</label>
+                    <input type="text" id="c-state" placeholder="Ex: MG" maxlength="2" style="text-transform: uppercase;">
+                </div>
                 <button class="btn" onclick="window.saveCity()">Cadastrar</button>
             </div>
+
+            <h3 style="font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Cidades Ativas</h3>
             <div class="item-list" id="city-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
         </section>
 
-        <section id="usuarios" class="section"><h2 style="display:none;">Usuarios</h2><div id="users-container" class="users-grid"></div></section>
-        
-        <section id="patrocinadores-cupons" class="section"><h2 style="display:none;">Cupons</h2><div id="sponsor-coupons-list-container" class="item-list"></div></section>
-        
+        <section id="usuarios" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Gestão de Clientes
+            </h2>
+            <p style="font-size:1rem; color:#666; margin-bottom:25px;">Gerencie os usuários do aplicativo.</p>
+
+            <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                <div style="background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #f0f0f0; flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <div style="font-size: 2.2rem; font-weight: 900; color: #ea1d2c;" id="total-users">0</div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: #888; text-transform: uppercase;">Total de Clientes</div>
+                </div>
+                <div style="background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #f0f0f0; flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <div style="font-size: 2.2rem; font-weight: 900; color: #00a14b;" id="total-sicoob">0</div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: #888; text-transform: uppercase;">Associados Ativos</div>
+                </div>
+            </div>
+
+            <div class="controls-area">
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                    <label>Filtrar por Cidade</label>
+                    <select id="filter-user-city" onchange="window.filterUsers()">
+                        <option value="all">Todas as Cidades</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 2; min-width: 200px;">
+                    <label>Pesquisar por Nome ou E-mail</label>
+                    <input type="text" id="filter-user-search" placeholder="Digite para buscar..." oninput="window.filterUsers()">
+                </div>
+            </div>
+
+            <div class="users-grid" id="users-container"></div>
+        </section>
+
+        <section id="patrocinadores-cupons" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                Cupons de Patrocinadores (Global)
+            </h2>
+            <div style="background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #f0f0f0; max-width: 650px; margin-bottom: 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div class="form-group"><label>Nome do Patrocinador (Ex: Sicoob Cred Plus)</label><input type="text" id="admin-sponsor-name" placeholder="Nome da instituição"></div>
+                <div class="form-group"><label>Código do Cupom</label><input type="text" id="admin-sponsor-code" placeholder="Ex: SICOOB20" style="text-transform: uppercase; font-weight: bold; color: #ea1d2c;"></div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>Tipo de Desconto</label><select id="admin-sponsor-type" onchange="window.toggleSponsorValueInput()"><option value="fixed">Fixo em Dinheiro (R$)</option><option value="percentage">Porcentagem (%)</option><option value="free_shipping">Frete Grátis</option></select></div>
+                    <div class="form-group" style="flex: 1;"><label>Valor do Desconto</label><input type="number" id="admin-sponsor-value" step="0.01" placeholder="Ex: 20 ou 10"></div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;"><label>Pedido Mínimo (R$)</label><input type="number" id="admin-sponsor-min" step="0.01" placeholder="Opcional"></div>
+                    <div class="form-group" style="flex: 1;"><label>Limite de Usos</label><input type="number" id="admin-sponsor-limit" placeholder="Opcional"></div>
+                    <div class="form-group" style="flex: 1;"><label>Cidade</label><select id="admin-sponsor-city"><option value="">Carregando...</option></select></div>
+                </div>
+                <button class="btn" onclick="window.createSponsorCoupon()" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #00a14b, #28d078);">Gerar Cupom</button>
+            </div>
+            <h3 style="font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Cupons Globais Ativos</h3>
+            <div class="item-list" id="sponsor-coupons-list-container" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));"></div>
+        </section>
+
         <section id="lojas" class="section active">
             <h2 id="form-store-title">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 Cadastrar Nova Loja
             </h2>
+            
             <div style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 2;"><label>Nome da Loja</label><input type="text" id="s-name" placeholder="Ex: Hakuna Batata"></div>
                 <div class="form-group" style="flex: 1;"><label>CNPJ ou CPF</label><input type="text" id="s-doc" placeholder="000.000.000-00"></div>
             </div>
+            
             <div style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 1;"><label>CEP</label><input type="text" id="s-cep" placeholder="00000-000"></div>
                 <div class="form-group" style="flex: 3;"><label>Endereço Completo</label><input type="text" id="s-street" placeholder="Rua Exemplo, 123"></div>
             </div>
+
             <div style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 1;"><label>Cidade da Loja</label><select id="s-city"><option value="">Cadastre uma cidade...</option></select></div>
                 <div class="form-group" style="flex: 1;"><label>Categoria principal</label><select id="s-cat"><option>Restaurantes</option><option>Lanches</option><option>Pizzaria</option><option>Bares</option><option>Sorveterias</option><option>Mercados</option><option>Farmácias</option><option>Loja de Roupas</option><option>Açougue</option><option>Utilidades</option></select></div>
                 <div class="form-group" style="flex: 1;"><label>Vencimento (Mensalidade)</label><input type="date" id="s-due-date"></div>
             </div>
-            
+
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding: 15px; background: #fff5f5; border: 1px dashed #fbd5d5; border-radius: 12px;">
                 <input type="checkbox" id="s-featured" style="width: 20px; height: 20px; accent-color: #ea1d2c; cursor: pointer;">
                 <label style="margin: 0; cursor: pointer; color: #ea1d2c; font-weight: 800; font-size: 0.95rem;" for="s-featured">⭐ Loja em Destaque (Aparece no carrossel superior do app)</label>
@@ -228,13 +294,15 @@
 
             <div style="display: flex; gap: 15px; border-top: 2px dashed #f0f0f0; padding-top: 20px; margin-top: 10px;">
                 <div class="form-group" style="flex: 1;"><label>E-mail (Login)</label><input type="email" id="s-email" placeholder="loja@email.com"></div>
-                <div class="form-group" style="flex: 1;"><label>Senha</label><input type="text" id="s-pass" placeholder="Senha do app"></div>
+                <div class="form-group" style="flex: 1;"><label>Senha</label><input type="text" id="s-pass" placeholder="Senha"></div>
                 <div class="form-group" style="flex: 1;"><label>Logo da Loja</label><input type="file" id="s-logo" accept="image/*" style="padding: 10px;"></div>
             </div>
+            
             <div style="margin-top: 15px; display: flex; gap: 15px;">
                 <button class="btn" id="btn-save-store" onclick="window.saveStore()">Registrar Loja</button>
                 <button class="btn-secondary" id="btn-cancel-edit" onclick="window.cancelEdit()">Cancelar Edição</button>
             </div>
+            
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 45px; margin-bottom: 15px;">
                 <h3 style="font-size: 1.2rem; color: #111; margin: 0;">Lojas Cadastradas</h3>
                 <select id="filter-store-city" onchange="window.renderStoreList()" style="padding: 8px; border-radius: 8px; outline: none;"><option value="all">Todas as Cidades</option></select>
@@ -242,50 +310,105 @@
             <div class="item-list" id="store-list-container"></div>
         </section>
 
-        <section id="faturamento" class="section"><h2 style="display:none;">Faturamento</h2></section>
-        <section id="repasse" class="section"><h2 style="display:none;">Repasse</h2></section>
-        <section id="entregadores" class="section"><h2 style="display:none;">Entregadores</h2><div id="driver-list-container"></div></section>
+        <section id="faturamento" class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                <h2 style="border: none; padding: 0; margin: 0;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    Faturamento das Lojas
+                </h2>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <select id="filter-city-fat" onchange="window.onCityFatChange()" style="padding: 8px; border-radius: 8px;"><option value="all">Todas as Cidades</option></select>
+                    <select id="filter-store-fat" onchange="window.renderFaturamento()" style="color: #ea1d2c; font-weight: bold; border-color: rgba(234, 29, 44, 0.3); padding: 8px; border-radius: 8px;"><option value="all">Ver Todas as Lojas</option></select>
+                    <select id="filter-faturamento" onchange="window.renderFaturamento()" style="font-weight: bold; padding: 8px; border-radius: 8px;">
+                        <option value="hoje" selected>Hoje</option>
+                        <option value="7dias">Últimos 7 Dias</option>
+                        <option value="mes">Último Mês</option>
+                        <option value="todos">Todo o Histórico</option>
+                    </select>
+                </div>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card green"><div class="m-title">Vendas Totais</div><div class="m-value green" id="fat-total-vendas">R$ 0,00</div></div>
+                <div class="metric-card purple"><div class="m-title"><span>Sua Taxa (10%)</span></div><div class="m-value purple" id="fat-taxa-app">R$ 0,00</div></div>
+                <div class="metric-card blue"><div class="m-title">Pedidos Concluídos</div><div class="m-value" style="color: #0d6efd;" id="fat-pedidos">0</div></div>
+            </div>
+            <h3 style="font-size: 1.4rem; font-weight: 900; color: #111; margin-bottom: 20px; margin-top: 30px;">🏆 Detalhamento de Lojas</h3>
+            <ul class="ranking-list" id="ranking-list-render"></ul>
+        </section>
+
+        <section id="repasse" class="section">
+            <h2>Repasse Entregadores</h2>
+            <p>Esta tela será usada para os relatórios do motoboy futuramente.</p>
+        </section>
+
+        <section id="entregadores" class="section">
+            <h2 id="form-driver-title">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+                Cadastrar Entregador
+            </h2>
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 2;"><label>Nome Completo</label><input type="text" id="d-name" placeholder="Ex: Carlos Silva"></div>
+                <div class="form-group" style="flex: 1;"><label>WhatsApp</label><input type="tel" id="d-phone" placeholder="Ex: (37) 99999-9999"></div>
+                <div class="form-group" style="flex: 1;"><label>Cidade</label><select id="d-city"><option value="">Selecione...</option></select></div>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;"><label>E-mail</label><input type="email" id="d-email" placeholder="entregador@email.com"></div>
+                <div class="form-group" style="flex: 1;"><label>Senha</label><input type="text" id="d-pass" placeholder="Senha"></div>
+            </div>
+            <div style="margin-top: 10px; display: flex; gap: 15px;">
+                <button class="btn" id="btn-save-driver" onclick="window.saveDriver()">Registrar Entregador</button>
+                <button class="btn-secondary" id="btn-cancel-driver-edit" onclick="window.cancelEditDriver()">Cancelar Edição</button>
+            </div>
+            <h3 style="margin-top: 45px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Entregadores Cadastrados</h3>
+            <div class="item-list" id="driver-list-container"></div>
+        </section>
 
         <section id="banners" class="section">
             <h2>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 Banners do Aplicativo
             </h2>
-            <p style="font-size:1rem; color:#666; margin-bottom:25px;">Estes banners aparecem girando na tela inicial dos clientes. Defina para qual cidade o banner será exibido e, opcionalmente, linke a uma Loja ou a um Link Externo.</p>
-            
             <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px; flex-wrap: wrap;">
-                <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;">
-                    <label>Imagem do Banner</label>
-                    <input type="file" id="b-image" accept="image/*" style="padding: 10px;">
-                </div>
-                <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;">
-                    <label>Cidade de Exibição</label>
-                    <select id="b-city">
-                        <option value="all">Todas as Cidades (Global)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;">
-                    <label>Vincular a uma Loja</label>
-                    <select id="b-store">
-                        <option value="">Nenhuma (Apenas visual)</option>
-                    </select>
-                </div>
-
-                <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;">
-                    <label>Ou Link Externo (URL)</label>
-                    <input type="url" id="b-link" placeholder="https://exemplo.com">
-                </div>
-
+                <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;"><label>Imagem do Banner</label><input type="file" id="b-image" accept="image/*" style="padding: 10px;"></div>
+                <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;"><label>Cidade de Exibição</label><select id="b-city"><option value="all">Todas as Cidades (Global)</option></select></div>
+                <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;"><label>Vincular a uma Loja</label><select id="b-store"><option value="">Nenhuma</option></select></div>
+                <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;"><label>Ou Link Externo (URL)</label><input type="url" id="b-link" placeholder="https://exemplo.com"></div>
                 <button class="btn" onclick="window.saveBanner()" style="margin-bottom:0;">Adicionar</button>
             </div>
-            
-            <h3 style="margin-top: 20px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Banners Ativos</h3>
+            <h3 style="margin-top: 20px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Banners Ativos</h3>
             <div class="item-list" id="banner-list-container" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));"></div>
         </section>
 
-        <section id="patrocinadores" class="section"><h2 style="display:none;">Patrocinadores</h2><div id="sponsor-list-container"></div></section>
-        <section id="avisos" class="section"><h2 style="display:none;">Avisos</h2><div id="alerts-list-container"></div></section>
+        <section id="patrocinadores" class="section">
+            <h2>Patrocinadores da Abertura</h2>
+            <div style="background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #f0f0f0;">
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex:1;"><label>Imagem (Vertical)</label><input type="file" id="sp-image" accept="image/*" style="padding: 10px;"></div>
+                    <div class="form-group" style="flex:1;"><label>Cidade de Exibição</label><select id="sp-city"><option value="all">Todas as Cidades</option></select></div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-top: 10px;">
+                    <div class="form-group" style="flex:1; background:#f9f9f9; padding:20px; border-radius:12px; border:1px solid #eee;">
+                        <label style="display:flex; justify-content:space-between; margin-bottom:15px; font-size: 0.9rem;">Tempo de Exibição: <span id="dur-val" style="color:#ea1d2c; font-weight:900;">2 Segundos</span></label>
+                        <input type="range" id="sp-duration" min="1" max="10" value="2" step="1" style="width:100%; accent-color:#ea1d2c;" oninput="document.getElementById('dur-val').innerText = this.value + ' Segundos'">
+                    </div>
+                    <div class="form-group" style="flex:1;"><label>Efeito de Transição</label><select id="sp-transition"><option value="fade">Esmaecer</option><option value="zoom">Aproximar</option><option value="slide">Deslizar de Baixo</option></select></div>
+                </div>
+                <button class="btn" id="btn-save-sponsor" onclick="window.saveSponsor()" style="width:100%; padding:16px; justify-content:center;">Gravar Patrocinador</button>
+            </div>
+            <h3 style="margin-top: 45px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Patrocinadores Ativos</h3>
+            <div class="item-list" id="sponsor-list-container" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));"></div>
+        </section>
+
+        <section id="avisos" class="section">
+            <h2>Disparo de Avisos Globais</h2>
+            <div style="background:#fff; padding:30px; border-radius:16px; border:1px solid #eee; max-width:600px;">
+                <div class="form-group"><label>Mensagem</label><input type="text" id="alert-text" placeholder="Ex: Hoje é dia de Frete Grátis!"></div>
+                <div class="form-group"><label>Tipo</label><select id="alert-type"><option value="promo">🎉 Promoção</option><option value="success">✅ Informação</option><option value="info">📢 Comunicado</option></select></div>
+                <button class="btn" onclick="window.saveAlert()" style="width:100%; justify-content:center;">Disparar Aviso Agora</button>
+            </div>
+            <h3 style="margin-top:40px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Avisos Ativos</h3>
+            <div id="alerts-list-container" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;"></div>
+        </section>
 
     </main>
 
@@ -311,6 +434,8 @@
         let storeImgBase64 = ''; let bannerImgBase64 = ''; let sponsorImgBase64 = '';
         let editingStoreId = null; let editingDriverId = null;
         let allOrders = [];
+
+        const formatBRL = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
         window.switchTab = (tabId, el) => {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -339,7 +464,7 @@
         }
 
         // ==========================================
-        // CIDADES
+        // 1. CIDADES
         // ==========================================
         onSnapshot(collection(db, "cities"), (snapshot) => {
             globalCities = [];
@@ -349,9 +474,42 @@
             populateCityDropdowns();
         });
 
-        window.saveCity = async () => { /* ... Lógica existente ... */ };
-        window.deleteCity = async (id) => { /* ... Lógica existente ... */ };
-        function renderCitiesList() { /* ... Lógica existente ... */ }
+        window.saveCity = async () => {
+            const name = document.getElementById('c-name').value.trim();
+            const state = document.getElementById('c-state').value.trim().toUpperCase();
+            if(!name || !state) return alert("Preencha o nome da cidade e a sigla do estado.");
+            const exists = globalCities.find(c => c.name.toLowerCase() === name.toLowerCase() && c.state === state);
+            if(exists) return alert("Esta cidade já está cadastrada!");
+            try {
+                await addDoc(collection(db, "cities"), { name, state });
+                document.getElementById('c-name').value = '';
+                document.getElementById('c-state').value = '';
+            } catch(e) { alert("Erro ao cadastrar cidade."); }
+        };
+
+        window.deleteCity = async (id) => {
+            if(confirm("Tem certeza que deseja apagar esta cidade?")) {
+                await deleteDoc(doc(db, "cities", id));
+            }
+        };
+
+        function renderCitiesList() {
+            const container = document.getElementById('city-list-container');
+            if(globalCities.length === 0) {
+                container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade cadastrada ainda.</p>`; return;
+            }
+            container.innerHTML = globalCities.map(c => `
+                <div class="card-item" style="justify-content: space-between;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <strong style="font-size: 1.15rem; color: #111;">${c.name} - ${c.state}</strong>
+                    </div>
+                    <button class="btn-del" onclick="window.deleteCity('${c.id}')" style="background: transparent; border: none; padding: 5px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                </div>
+            `).join('');
+        }
 
         function populateCityDropdowns() {
             const cityOptions = globalCities.map(c => `<option value="${c.name} - ${c.state}">${c.name} - ${c.state}</option>`).join('');
@@ -363,11 +521,155 @@
             fillSelect('d-city', '<option value="">Selecione a cidade...</option>');
             fillSelect('b-city', '<option value="all">Todas as Cidades (Global)</option>');
             fillSelect('sp-city', '<option value="all">Todas as Cidades (Global)</option>');
+            fillSelect('filter-city-fat', '<option value="all">Todas as Cidades</option>');
+            fillSelect('filter-user-city', '<option value="all">Todas as Cidades</option>');
+            fillSelect('admin-sponsor-city', '<option value="">Selecione a cidade...</option>');
             fillSelect('filter-store-city', '<option value="all">Todas as Cidades</option>');
         }
 
         // ==========================================
-        // 🟢 LOJAS (CORREÇÃO E CHECKBOX DESTAQUE) 🟢
+        // 2. GESTÃO DE USUÁRIOS
+        // ==========================================
+        onSnapshot(collection(db, "customers"), (snapshot) => {
+            globalUsers = []; let sicoobCount = 0;
+            snapshot.forEach(doc => {
+                const user = { id: doc.id, ...doc.data() };
+                globalUsers.push(user);
+                if (user.isSicoob) sicoobCount++;
+            });
+            document.getElementById('total-users').innerText = globalUsers.length;
+            document.getElementById('total-sicoob').innerText = sicoobCount;
+            window.filterUsers();
+        });
+
+        window.filterUsers = () => {
+            const cityFilter = document.getElementById('filter-user-city').value;
+            const searchFilter = document.getElementById('filter-user-search').value.toLowerCase().trim();
+            const container = document.getElementById('users-container');
+
+            let filtered = globalUsers;
+            if (cityFilter !== 'all') filtered = filtered.filter(u => u.city === cityFilter);
+            if (searchFilter !== '') {
+                filtered = filtered.filter(u => 
+                    (u.name && u.name.toLowerCase().includes(searchFilter)) || 
+                    (u.email && u.email.toLowerCase().includes(searchFilter))
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">Nenhum usuário encontrado.</div>`; return;
+            }
+
+            filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+            container.innerHTML = filtered.map(u => {
+                const initial = u.name ? u.name.charAt(0).toUpperCase() : '?';
+                const cityBadge = u.city ? u.city : 'Sem cidade';
+                const isSicoob = u.isSicoob ? true : false;
+                const safeName = u.name ? u.name.replace(/'/g, "\\'") : 'Cliente';
+
+                return `
+                <div class="user-card">
+                    <div class="u-header">
+                        <div class="u-avatar">${initial}</div>
+                        <div class="u-info">
+                            <div class="u-name">${u.name || 'Cliente'}</div>
+                            <div class="u-email">${u.email || ''}</div>
+                        </div>
+                    </div>
+                    <div class="badge-city" style="margin-bottom: 18px; width: fit-content;">📍 ${cityBadge}</div>
+                    <div class="u-data-row"><strong>Telefone:</strong> <span>${u.phone || 'N/A'}</span></div>
+                    <div class="u-data-row" style="margin-bottom: 20px;"><strong>Cadastrado em:</strong> <span>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '--'}</span></div>
+                    <div class="sicoob-area">
+                        <div class="sicoob-logo-text">Associado Patrocinador</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${isSicoob ? 'checked' : ''} onchange="window.toggleSicoobStatus('${u.id}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <button class="btn-delete" style="color: #ea1d2c; border: 1px solid #fbd5d5; background: #fef0f0; padding: 12px; border-radius: 10px; cursor: pointer; width:100%; text-align:center; margin-top: auto;" onclick="window.deleteUser('${u.id}', '${safeName}')">Excluir Usuário</button>
+                </div>`;
+            }).join('');
+        };
+
+        window.toggleSicoobStatus = async (userId, isNowSicoob) => {
+            try { await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob }); } catch(e) { alert("Erro ao salvar."); window.filterUsers(); }
+        };
+
+        window.deleteUser = async (userId, userName) => {
+            if (confirm(`Tem certeza que deseja excluir ${userName}?`)) {
+                try { await deleteDoc(doc(db, "customers", userId)); } catch(e) {}
+            }
+        };
+
+        // ==========================================
+        // 3. CUPONS PATROCINADOS
+        // ==========================================
+        window.toggleSponsorValueInput = () => {
+            const type = document.getElementById('admin-sponsor-type').value;
+            const valInput = document.getElementById('admin-sponsor-value');
+            if(type === 'free_shipping') { valInput.value = ''; valInput.disabled = true; valInput.placeholder = "Não se aplica"; } 
+            else { valInput.disabled = false; valInput.placeholder = "Ex: 20"; }
+        };
+
+        onSnapshot(collection(db, "coupons"), (snapshot) => {
+            globalCoupons = []; snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() })); renderAdminSponsorCoupons();
+        });
+
+        window.createSponsorCoupon = async () => {
+            const sponsorName = document.getElementById('admin-sponsor-name').value.trim();
+            const code = document.getElementById('admin-sponsor-code').value.trim().toUpperCase();
+            const type = document.getElementById('admin-sponsor-type').value;
+            let value = parseFloat(document.getElementById('admin-sponsor-value').value);
+            if (type === 'free_shipping') value = 0;
+            const minOrder = parseFloat(document.getElementById('admin-sponsor-min').value) || 0;
+            const limitStr = document.getElementById('admin-sponsor-limit').value.trim();
+            const usageLimit = limitStr ? parseInt(limitStr) : null;
+            const targetCity = document.getElementById('admin-sponsor-city').value;
+
+            if (!sponsorName || !code || !targetCity || (type !== 'free_shipping' && (isNaN(value) || value <= 0))) {
+                return alert("Preencha todos os campos obrigatórios.");
+            }
+
+            try {
+                await addDoc(collection(db, "coupons"), {
+                    code, type, value, minOrder, usageLimit, storeId: "GLOBAL", targetCity, sponsorName, active: true, usedCount: 0, createdAt: Date.now()
+                });
+                alert(`Sucesso! Cupom gerado.`);
+                document.getElementById('admin-sponsor-code').value = ''; document.getElementById('admin-sponsor-value').value = '';
+            } catch (error) {}
+        };
+
+        function renderAdminSponsorCoupons() {
+            const container = document.getElementById('sponsor-coupons-list-container');
+            const sponsorCoupons = globalCoupons.filter(c => c.storeId === 'GLOBAL');
+            if (sponsorCoupons.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum cupom ativo.</p>'; return; }
+
+            container.innerHTML = sponsorCoupons.map(c => {
+                const toggleBtn = c.active ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>` : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
+                let discountText = c.type === 'percentage' ? `${c.value}%` : (c.type === 'free_shipping' ? `FRETE GRÁTIS` : `R$ ${c.value.toFixed(2)}`);
+                let limitText = c.usageLimit ? `${c.usedCount || 0} / ${c.usageLimit}` : 'Ilimitado';
+                return `
+                <div class="card-item" style="flex-direction: column; align-items: flex-start; ${!c.active ? 'opacity: 0.6;' : ''}">
+                    <strong style="font-size:1.3rem;">${c.code}</strong>
+                    <div style="font-size:0.9rem; color:#555; width:100%;">
+                        <strong>Patrocinador:</strong> ${c.sponsorName}<br>
+                        <strong>Cidade Alvo:</strong> ${c.targetCity}<br>
+                        <strong>Desconto:</strong> ${discountText}<br>
+                        <strong>Mínimo:</strong> R$ ${c.minOrder.toFixed(2)} | <strong>Usos:</strong> ${limitText}
+                    </div>
+                    <div class="actions-col" style="margin-top: 10px; width: 100%;">
+                        ${toggleBtn} <button class="btn-del" onclick="window.deleteAdminCoupon('${c.id}')">Excluir</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.toggleAdminCoupon = async (id, isActive) => { await updateDoc(doc(db, "coupons", id), { active: isActive }); };
+        window.deleteAdminCoupon = async (id) => { if(confirm("Apagar este cupom?")) await deleteDoc(doc(db, "coupons", id)); };
+
+        // ==========================================
+        // 4. LOJAS
         // ==========================================
         document.getElementById('s-logo').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -378,9 +680,8 @@
             allStores = []; 
             snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
             
-            // Tratamento de erro para evitar travar painel se as funções ainda não estiverem disponíveis
-            if (typeof window.renderStoreList === 'function') window.renderStoreList(); 
-            if (typeof window.onCityFatChange === 'function') window.onCityFatChange(); 
+            window.renderStoreList(); 
+            window.onCityFatChange(); 
             
             const bStoreEl = document.getElementById('b-store');
             if(bStoreEl) {
@@ -444,64 +745,225 @@
 
         window.toggleSubscription = async (id) => { const store = allStores.find(s => s.id === id); if (store) { await updateDoc(doc(db, "stores", id), { isActive: !store.isActive }); } };
         window.deleteStore = async (id) => { if(confirm("Apagar loja permanentemente?")) { await deleteDoc(doc(db, "stores", id)); } };
-        window.renewSubscription = async (storeId, currentDue) => { /* ... Lógica existente ... */ };
+
+        window.renewSubscription = async (storeId, currentDue) => {
+            if(confirm("Renovar por 1 mês e ativar loja?")) {
+                const date = new Date(currentDue); date.setMonth(date.getMonth() + 1);
+                await updateDoc(doc(db, "stores", storeId), { dueDate: date.getTime(), isActive: true });
+            }
+        };
 
         window.renderStoreList = () => { 
             const container = document.getElementById('store-list-container'); 
-            const cityFilter = document.getElementById('filter-store-city') ? document.getElementById('filter-store-city').value : 'all';
+            const cityFilter = document.getElementById('filter-store-city').value;
             
             let filteredStores = allStores;
-            if (cityFilter !== 'all') {
-                filteredStores = filteredStores.filter(s => s.city === cityFilter);
-            }
+            if (cityFilter !== 'all') filteredStores = filteredStores.filter(s => s.city === cityFilter);
 
-            if(filteredStores.length === 0) { 
-                container.innerHTML = `<p style="color:#999; padding:20px; text-align: center; font-weight: 500;">Nenhuma loja encontrada.</p>`; return; 
-            } 
+            if(filteredStores.length === 0) { container.innerHTML = `<p style="color:#999; padding:20px;">Nenhuma loja encontrada.</p>`; return; } 
             
             container.innerHTML = filteredStores.map(s => { 
                 const isActive = s.isActive !== false; 
                 let dueBadge = ''; let payButton = '';
-                
-                let featuredIcon = s.isFeatured ? '<span title="Loja em Destaque" style="color:#ea1d2c; font-size:1.1rem; margin-left:8px;">⭐</span>' : '';
+                let featuredIcon = s.isFeatured ? '<span title="Loja em Destaque" style="color:#ea1d2c;">⭐</span>' : '';
 
                 if (s.dueDate) {
                     const daysLeft = Math.ceil((s.dueDate - Date.now()) / (1000 * 60 * 60 * 24));
-                    if (daysLeft < 0) { dueBadge = `<span style="background: #fef0f0; color: #ea1d2c; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; border: 1px solid #fbd5d5;">⚠️ Vencida há ${Math.abs(daysLeft)} dias</span>`; } 
-                    else if (daysLeft <= 3) { dueBadge = `<span style="background: #fff8e1; color: #d39e00; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; border: 1px solid #ffecb5;">⏳ Vence em ${daysLeft} dias</span>`; } 
-                    else { dueBadge = `<span style="background: #e6f4ea; color: #00a14b; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; border: 1px solid #badbcc;">✅ Vence: ${new Date(s.dueDate).toLocaleDateString('pt-BR')}</span>`; }
-                } else {
-                    dueBadge = `<span style="background: #f4f5f7; color: #777; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; border: 1px solid #ddd;">⚪ Sem Vencimento</span>`;
+                    if (daysLeft < 0) dueBadge = `<span style="background: #fef0f0; color: #ea1d2c; padding: 4px; border-radius: 8px; font-size: 0.75rem;">Vencida</span>`; 
+                    else if (daysLeft <= 3) dueBadge = `<span style="background: #fff8e1; color: #d39e00; padding: 4px; border-radius: 8px; font-size: 0.75rem;">Vence em ${daysLeft}d</span>`; 
+                    else dueBadge = `<span style="background: #e6f4ea; color: #00a14b; padding: 4px; border-radius: 8px; font-size: 0.75rem;">Ativo</span>`;
+                    payButton = `<button class="btn-reactivate" onclick="window.renewSubscription('${s.id}', ${s.dueDate})">Renovar +1 Mês</button>`;
                 }
 
                 return ` 
                 <div class="card-item ${isActive ? '' : 'suspended'}" style="position: relative;"> 
                     <img src="${s.logo}" class="card-img" style="width: 75px; height: 75px; border-radius: 16px;"> 
                     <div style="flex-grow: 1; line-height: 1.6;"> 
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap;">
-                            <strong style="font-size: 1.25rem; font-weight: 900; color: #111;">${s.name} ${featuredIcon}</strong>
-                            ${dueBadge}
-                        </div>
-                        <span style="font-size:0.85rem; color:#888; font-weight: 500;">CNPJ/CPF: ${s.doc || 'N/A'} <span class="badge-city" style="margin:0 0 0 5px;">📍 ${s.city || 'S/ Cidade'}</span></span><br>
-                        <span style="font-size:0.85rem; color:#555; font-weight: 600; display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> ${s.email}
-                            <span style="color:#ccc;">|</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> ${s.password}
-                        </span>
+                        <strong style="font-size: 1.2rem; color: #111;">${s.name} ${featuredIcon}</strong> ${dueBadge}<br>
+                        <span style="font-size:0.85rem; color:#888;">${s.email} | ${s.password}</span><br>
+                        <span class="badge-city">📍 ${s.city || 'S/ Cidade'}</span>
                     </div> 
                     <div class="actions-col" style="flex-direction: column; align-items: flex-end; gap: 8px;"> 
-                        <div style="display:flex; gap: 8px; margin-top: 5px;">
+                        ${payButton}
+                        <div style="display:flex; gap: 8px;">
                             <button class="btn-edit" onclick="window.editStore('${s.id}')">Editar</button> 
                             <button class="${isActive ? 'btn-suspend' : 'btn-reactivate'}" onclick="window.toggleSubscription('${s.id}')">${isActive ? 'Bloquear' : 'Ativar'}</button> 
+                            <button class="btn-del" onclick="window.deleteStore('${s.id}')">Apagar</button> 
                         </div>
-                        <button class="btn-del" style="margin-top: 2px;" onclick="window.deleteStore('${s.id}')">Apagar</button> 
                     </div> 
                 </div>`; 
             }).join(''); 
         }
 
         // ==========================================
-        // 🟢 BANNERS DO APP COM LINK EXTERNO E VÍNCULO 🟢
+        // 5. FATURAMENTO (Aba Restaurada)
+        // ==========================================
+        window.onCityFatChange = () => {
+            const cityFilter = document.getElementById('filter-city-fat').value;
+            const storeSelect = document.getElementById('filter-store-fat');
+            const currentStore = storeSelect.value;
+
+            let filteredStores = allStores;
+            if(cityFilter !== 'all') {
+                filteredStores = filteredStores.filter(s => s.city === cityFilter);
+            }
+            
+            storeSelect.innerHTML = '<option value="all">Ver Todas as Lojas</option>' + 
+                filteredStores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            
+            if(filteredStores.find(s => s.id === currentStore)) storeSelect.value = currentStore;
+            else storeSelect.value = 'all';
+
+            window.renderFaturamento();
+        };
+
+        window.renderFaturamento = () => {
+            const timeFilter = document.getElementById('filter-faturamento').value;
+            const cityFilter = document.getElementById('filter-city-fat').value;
+            const storeFilter = document.getElementById('filter-store-fat').value;
+            
+            const now = Date.now();
+            let startTime = 0;
+            if (timeFilter === 'hoje') startTime = new Date().setHours(0,0,0,0);
+            else if (timeFilter === '7dias') startTime = now - (7 * 24 * 60 * 60 * 1000);
+            else if (timeFilter === 'mes') startTime = now - (30 * 24 * 60 * 60 * 1000);
+
+            let totalVendas = 0;
+            let totalTaxa = 0;
+            let totalPedidos = 0;
+            let storeRanking = {};
+
+            allOrders.forEach(o => {
+                if (o.timestamp >= startTime && ['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
+                    
+                    // FILTRO DE CIDADE
+                    if(cityFilter !== 'all') {
+                        const st = allStores.find(s => s.id === o.storeId);
+                        if(!st || st.city !== cityFilter) return;
+                    }
+                    
+                    // FILTRO DE LOJA
+                    if(storeFilter !== 'all' && o.storeId !== storeFilter) return;
+
+                    const val = o.total || 0;
+                    totalVendas += val;
+                    const taxa = o.platformFee || (val * 0.10); // Taxa padrao 10%
+                    totalTaxa += taxa;
+                    totalPedidos++;
+
+                    if(o.storeName) {
+                        if(!storeRanking[o.storeName]) {
+                            storeRanking[o.storeName] = { rev: 0, orders: 0, tax: 0, logo: 'https://via.placeholder.com/80' };
+                            const s = allStores.find(st => st.id === o.storeId);
+                            if(s && s.logo) storeRanking[o.storeName].logo = s.logo;
+                        }
+                        storeRanking[o.storeName].rev += val;
+                        storeRanking[o.storeName].orders += 1;
+                        storeRanking[o.storeName].tax += taxa;
+                    }
+                }
+            });
+
+            document.getElementById('fat-total-vendas').innerText = formatBRL(totalVendas);
+            document.getElementById('fat-taxa-app').innerText = formatBRL(totalTaxa);
+            document.getElementById('fat-pedidos').innerText = totalPedidos;
+
+            const rankContainer = document.getElementById('ranking-list-render');
+            const sorted = Object.keys(storeRanking).map(k => ({name: k, ...storeRanking[k]})).sort((a,b) => b.rev - a.rev);
+            
+            if(sorted.length === 0) {
+                rankContainer.innerHTML = '<li style="justify-content:center; color:#999; padding:20px;">Nenhuma venda encontrada para o filtro.</li>';
+            } else {
+                const medals = ['🥇','🥈','🥉','4º','5º','6º','7º','8º','9º','10º'];
+                rankContainer.innerHTML = sorted.map((s, i) => `
+                    <li class="ranking-item">
+                        <div class="r-medal">${medals[i] || (i+1)+'º'}</div>
+                        <img src="${s.logo}" class="r-logo">
+                        <div class="r-info">
+                            <div class="r-name">${s.name}</div>
+                            <div class="r-orders">${s.orders} Pedidos Concluídos</div>
+                        </div>
+                        <div class="r-revenue">
+                            <div class="r-revenue-val">${formatBRL(s.rev)}</div>
+                            <div class="r-revenue-tax">Taxa UaiPede: ${formatBRL(s.tax)}</div>
+                        </div>
+                    </li>
+                `).join('');
+            }
+        };
+
+        // ==========================================
+        // 6. REPASSE
+        // ==========================================
+        window.renderRepasse = () => {
+            // Será implementado futuramente para visualização de taxas dos motoboys
+        };
+
+        // ==========================================
+        // 7. ENTREGADORES
+        // ==========================================
+        onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
+        
+        window.saveDriver = async () => { 
+            const name = document.getElementById('d-name').value.trim(); const phone = document.getElementById('d-phone').value.trim(); 
+            const email = document.getElementById('d-email').value.trim(); const pass = document.getElementById('d-pass').value.trim(); 
+            const city = document.getElementById('d-city').value;
+
+            if(!name || !email || !pass || !phone || !city) return alert("Preencha todos os dados."); 
+            if (editingDriverId) { 
+                await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass, city }); alert("Entregador atualizado!"); 
+            } else { 
+                await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); alert("Entregador cadastrado!"); 
+            } 
+            window.cancelEditDriver(); 
+        };
+
+        window.editDriver = (id) => { 
+            editingDriverId = id; const driver = allDrivers.find(d => d.id === id); if(!driver) return; 
+            document.getElementById('d-name').value = driver.name; document.getElementById('d-phone').value = driver.phone; 
+            document.getElementById('d-email').value = driver.email; document.getElementById('d-pass').value = driver.password; 
+            document.getElementById('d-city').value = driver.city || '';
+            document.getElementById('btn-save-driver').innerHTML = `Salvar Alterações`; 
+            document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; 
+        };
+
+        window.cancelEditDriver = () => { 
+            editingDriverId = null; 
+            document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; 
+            document.getElementById('d-email').value = ''; document.getElementById('d-pass').value = ''; 
+            document.getElementById('d-city').value = '';
+            document.getElementById('btn-save-driver').innerHTML = `Registrar Entregador`; 
+            document.getElementById('btn-cancel-driver-edit').style.display = "none"; 
+        };
+
+        window.toggleDriverStatus = async (id) => { const driver = allDrivers.find(d => d.id === id); if (driver) { await updateDoc(doc(db, "drivers", id), { isActive: !driver.isActive }); } };
+        window.deleteDriver = async (id) => { if(confirm("Apagar entregador?")) { await deleteDoc(doc(db, "drivers", id)); } };
+        
+        function renderDriverList() { 
+            const container = document.getElementById('driver-list-container'); 
+            if(allDrivers.length === 0) { container.innerHTML = `<p style="color:#999; padding:20px;">Nenhum entregador cadastrado.</p>`; return; } 
+            container.innerHTML = allDrivers.map(d => { 
+                const isActive = d.isActive !== false; 
+                return ` 
+                <div class="card-item ${isActive ? '' : 'suspended'}"> 
+                    <div style="flex-grow: 1; line-height: 1.5;"> 
+                        <strong style="font-size: 1.2rem; color: #111;">${d.name}</strong><br> 
+                        <span style="font-size:0.85rem; color:#888;">📞 ${d.phone} | 📍 ${d.city || 'S/ Cidade'}</span><br>
+                        <span style="font-size:0.85rem; color:#555;">✉️ ${d.email} | 🔑 ${d.password}</span><br> 
+                    </div> 
+                    <div class="actions-col" style="flex-direction: column; align-items: flex-end; gap: 8px;"> 
+                        <div style="display:flex; gap: 8px;">
+                            <button class="btn-edit" onclick="window.editDriver('${d.id}')">Editar</button> 
+                            <button class="${isActive ? 'btn-suspend' : 'btn-reactivate'}" onclick="window.toggleDriverStatus('${d.id}')">${isActive ? 'Bloquear' : 'Ativar'}</button> 
+                            <button class="btn-del" onclick="window.deleteDriver('${d.id}')">Apagar</button> 
+                        </div>
+                    </div> 
+                </div> `; 
+            }).join(''); 
+        }
+
+        // ==========================================
+        // 8. BANNERS DO APP COM LINK EXTERNO
         // ==========================================
         document.getElementById('b-image').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -555,7 +1017,7 @@
                     if(st) storeName = st.name;
                 }
                 
-                let linkInfo = b.link ? `<span style="font-size:0.8rem; color:#0d6efd; display:block; margin-top:2px; word-break:break-all;">🔗 Link Externo: <b>${b.link}</b></span>` : '';
+                let linkInfo = b.link ? `<span style="font-size:0.8rem; color:#0d6efd; display:block; margin-top:2px;">🔗 Externo: <b>${b.link}</b></span>` : '';
                 let storeInfo = b.storeId ? `<span style="font-size:0.8rem; color:#555; display:block; margin-top:2px;">🏪 Loja: <b>${storeName}</b></span>` : '';
 
                 return `
@@ -563,7 +1025,7 @@
                     <img src="${b.image}" style="width:100%; height:130px; object-fit:cover; border-radius:12px; margin-bottom:15px; border: 1px solid #eee;">
                     <div style="width:100%; display:flex; justify-content:space-between; align-items:flex-start;">
                         <div style="display:flex; flex-direction:column; gap:2px; max-width:70%;">
-                            <span class="badge-city" style="margin: 0; width: fit-content;">📍 ${b.city === 'all' ? 'Todas as Cidades' : b.city}</span>
+                            <span class="badge-city" style="margin: 0; width: fit-content;">📍 ${b.city === 'all' ? 'Global' : b.city}</span>
                             ${storeInfo}
                             ${linkInfo}
                         </div>
@@ -574,12 +1036,102 @@
         }
 
         // ==========================================
-        // DEMAIS FUNÇÕES 
+        // 9. PATROCINADORES
         // ==========================================
-        window.saveSponsor = async () => { /* ... Lógica existente ... */ };
-        window.deleteSponsor = async (id) => { /* ... Lógica existente ... */ };
-        window.saveAlert = async () => { /* ... Lógica existente ... */ }
-        window.deleteAlert = async (id) => { /* ... Lógica existente ... */ }
+        document.getElementById('sp-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) { resizeAndCompressImage(file, (base64) => { sponsorImgBase64 = base64; }); }
+        });
+
+        onSnapshot(collection(db, "sponsors"), (snapshot) => {
+            globalSponsors = [];
+            snapshot.forEach(doc => globalSponsors.push({ id: doc.id, ...doc.data() }));
+            renderSponsors();
+        });
+
+        window.saveSponsor = async () => {
+            const city = document.getElementById('sp-city').value;
+            const duration = document.getElementById('sp-duration').value;
+            const transition = document.getElementById('sp-transition').value;
+
+            if (!sponsorImgBase64) return alert("Por favor, selecione a imagem do patrocinador.");
+            
+            try {
+                await addDoc(collection(db, "sponsors"), { 
+                    image: sponsorImgBase64, city: city, 
+                    duration: parseInt(duration), transition: transition, timestamp: Date.now() 
+                });
+                sponsorImgBase64 = ''; document.getElementById('sp-image').value = '';
+                alert("Patrocinador registrado com sucesso!");
+            } catch(e) { alert("Erro ao salvar patrocinador."); }
+        };
+
+        window.deleteSponsor = async (id) => { if(confirm("Remover este patrocinador?")) await deleteDoc(doc(db, "sponsors", id)); };
+
+        function renderSponsors() {
+            const container = document.getElementById('sponsor-list-container');
+            if(globalSponsors.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum patrocinador cadastrado.</p>'; return; }
+            container.innerHTML = globalSponsors.map(s => {
+                return `
+                <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
+                    <img src="${s.image}" style="width:100%; height:200px; object-fit:contain; background:#111; border-radius:12px; margin-bottom:15px;">
+                    <div style="width:100%; font-size:0.85rem; color:#555; margin-bottom:15px;">
+                        <strong style="color:#111;">Tempo:</strong> ${s.duration} Segs<br>
+                    </div>
+                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                        <span class="badge-city" style="margin: 0;">📍 ${s.city === 'all' ? 'Global' : s.city}</span>
+                        <button class="btn-del" onclick="window.deleteSponsor('${s.id}')">Apagar</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // 10. AVISOS GLOBAIS
+        // ==========================================
+        onSnapshot(collection(db, "global_alerts"), (snapshot) => {
+            globalAlerts = []; snapshot.forEach(doc => globalAlerts.push({ id: doc.id, ...doc.data() }));
+            globalAlerts.sort((a,b) => b.timestamp - a.timestamp); renderAlerts();
+        });
+
+        window.saveAlert = async () => {
+            const text = document.getElementById('alert-text').value.trim(); const type = document.getElementById('alert-type').value;
+            if(!text) return alert("Digite o texto do aviso.");
+            try {
+                await addDoc(collection(db, "global_alerts"), { text, type, timestamp: Date.now(), active: true });
+                document.getElementById('alert-text').value = ''; alert("Aviso disparado!");
+            } catch(e) { alert("Erro ao disparar aviso."); }
+        }
+        
+        window.deleteAlert = async (id) => { if(confirm("Apagar e remover este aviso?")) await deleteDoc(doc(db, "global_alerts", id)); }
+
+        function renderAlerts() {
+            const container = document.getElementById('alerts-list-container');
+            if(globalAlerts.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum aviso ativo no momento.</p>'; return; }
+            container.innerHTML = globalAlerts.map(a => {
+                let badgeColor = '#0d6efd'; let typeName = 'Comunicado';
+                if(a.type === 'promo') { badgeColor = '#ea1d2c'; typeName = 'Promoção'; }
+                if(a.type === 'success') { badgeColor = '#00a14b'; typeName = 'Sucesso'; }
+                
+                return `
+                <div style="background:#fff; padding:15px; border-radius:12px; border:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong style="color: ${badgeColor}; font-size:0.75rem; background: ${badgeColor}15; padding: 4px 8px; border-radius: 6px;">${typeName}</strong>
+                        <div style="color:#111; font-size:1.05rem; font-weight:bold; margin-top:8px;">${a.text}</div>
+                    </div>
+                    <button onclick="window.deleteAlert('${a.id}')" style="background:#fef0f0; border:1px solid #fbd5d5; padding: 10px; border-radius: 8px; color:#ea1d2c; cursor:pointer;">🗑️</button>
+                </div>
+            `}).join('');
+        }
+
+        // ==========================================
+        // CARREGAMENTO FINAL DE PEDIDOS (START DA ABA FATURAMENTO)
+        // ==========================================
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            allOrders = []; snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
+            if (typeof window.renderFaturamento === 'function') window.renderFaturamento(); 
+        });
 
     </script>
 </body>
