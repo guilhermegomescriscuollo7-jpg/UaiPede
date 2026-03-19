@@ -119,8 +119,8 @@
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
         /* NOVAS ESTILIZAÇÕES DE DELIVERY E CUPONS */
-        .store-delivery-info { font-size: 0.85rem; color: #111; margin-top: 4px; display: flex; flex-direction: column; gap: 4px; }
-        .coupon-badge-btn { display: inline-block; background: #fff; color: #00a14b; border: 1.5px solid #00a14b; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 700; margin-top: 6px; align-self: flex-start; text-decoration: none; transition: 0.2s;}
+        .store-delivery-info { font-size: 0.85rem; color: #333; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
+        .coupon-badge-btn { display: inline-flex; align-items: center; background: #fff; color: #00a14b; border: 1.5px solid #00a14b; border-radius: 20px; padding: 4px 10px; font-size: 0.7rem; font-weight: 700; text-decoration: none; }
 
         /* MENU INFERIOR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
@@ -322,7 +322,7 @@
         onSnapshot(collection(db, "coupons"), (snapshot) => {
             allCoupons = [];
             snapshot.forEach(doc => allCoupons.push({ id: doc.id, ...doc.data() }));
-            if(userCity) window.renderStores(); // Re-renderiza as lojas para atualizar a tag de cupom
+            if(userCity) window.renderStores(); // Re-renderiza as lojas para atualizar as tags de cupom
         });
 
         // INICIALIZAÇÃO DA TELA 
@@ -535,14 +535,28 @@
                 const cardClass = isClosed ? 'store-card closed' : 'store-card';
                 let statusText = s.dynamicStatus; let statusColor = isClosed ? '#717171' : '#00a14b'; 
                 
-                // Lógica de tempo e taxa de entrega formatados
+                // Lógica de tempo e taxa de entrega formatados COM "R$"
                 let deliveryTimeHtml = s.deliveryTime ? `<div>Delivery: ${s.deliveryTime}</div>` : '';
                 let deliveryFeeValue = s.deliveryFee !== undefined && s.deliveryFee !== '' ? parseFloat(s.deliveryFee) : 0;
-                let deliveryFeeHtml = deliveryFeeValue > 0 ? `<div>Entrega: ${deliveryFeeValue.toFixed(2).replace('.', ',')}</div>` : '<div>Entrega: Grátis</div>';
+                let deliveryFeeHtml = deliveryFeeValue > 0 ? `<div>Entrega: R$ ${deliveryFeeValue.toFixed(2).replace('.', ',')}</div>` : '<div>Entrega: Grátis</div>';
                 
-                // Validação para exibir badge de cupons
+                // Validação para exibir os cupons REAIS da loja
                 let storeCoupons = allCoupons.filter(c => c.storeId === s.id && c.active === true);
-                let couponHtml = storeCoupons.length > 0 ? `<div class="coupon-badge-btn">Mostrar cupons ativos aqui</div>` : '';
+                let couponHtml = '';
+                
+                if (storeCoupons.length > 0) {
+                    let couponsTags = storeCoupons.map(c => {
+                        let discountText = c.type === 'percentage' ? `${c.value}% OFF` : `R$ ${c.value.toFixed(2).replace('.', ',')} OFF`;
+                        return `<span class="coupon-badge-btn">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+                            </svg>
+                            ${c.code}: ${discountText}
+                        </span>`;
+                    }).join('');
+                    
+                    couponHtml = `<div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">${couponsTags}</div>`;
+                }
 
                 return `
                 <a href="loja.html?id=${s.id}" class="${cardClass}">
