@@ -1110,7 +1110,7 @@
             if (newStatus === 'Aceito') updateObj.acceptedAt = Date.now();
             if (newStatus === 'Em Preparo') updateObj.prepStartedAt = Date.now();
             if (newStatus === 'Saiu para Entrega' || newStatus === 'Pronto para Retirada') updateObj.dispatchedAt = Date.now();
-            if (newStatus === 'Concluído' || newStatus === 'Entregue') updateObj.deliveredAt = Date.now();
+            if (newStatus === 'Concluído' || newStatus === 'Entregue' || newStatus === 'Cancelado') updateObj.deliveredAt = Date.now();
 
             try { 
                 await updateDoc(doc(db, "orders", orderId), updateObj); 
@@ -1122,16 +1122,22 @@
             }
         };
 
-        // 🟢 FUNÇÃO ATUALIZADA PARA APROVAR/REJEITAR O PIX 🟢
+        // 🟢 FUNÇÃO ATUALIZADA PARA APROVAR/REJEITAR O PIX (COM CANCELAMENTO AUTOMÁTICO) 🟢
         window.approvePix = async (btnElement, orderId, isApproved) => {
-            const actionText = isApproved ? "Confirmar que o valor do PIX já caiu na sua conta?" : "Avisar o cliente que o PIX NÃO foi recebido/aprovado?";
+            const actionText = isApproved 
+                ? "Confirmar que o valor do PIX já caiu na sua conta?" 
+                : "Avisar o cliente que o PIX NÃO foi recebido/aprovado e RECUSAR este pedido?";
             
             if(confirm(actionText)) {
                 const prevText = btnElement.innerHTML;
                 btnElement.innerHTML = 'Aguarde...';
                 btnElement.disabled = true;
                 try { 
-                    await updateDoc(doc(db, "orders", orderId), { pixApproved: isApproved }); 
+                    let updateData = { pixApproved: isApproved };
+                    if (!isApproved) {
+                        updateData.status = 'Cancelado'; // Recusa o pedido se o PIX não cair
+                    }
+                    await updateDoc(doc(db, "orders", orderId), updateData); 
                 } catch(e) { 
                     alert("Erro ao processar o PIX.");
                     btnElement.innerHTML = prevText;
@@ -1280,9 +1286,18 @@
                 }
             }
 
+            // 🟢 BOTÃO DE RECUSAR ADICIONADO AQUI 🟢
             if (order.status === 'Pendente') { 
                 sellerBadge = `<span style="color:#ea1d2c; font-size:0.75rem; font-weight:bold;">Novo Pedido</span>`;
-                actionBtn = `<button class="btn-action btn-accept" onclick="window.updateOrderStatus(this, '${order.id}', 'Aceito')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Aceitar Pedido</button>`; 
+                actionBtn = `
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-action btn-accept" style="flex:1;" onclick="window.updateOrderStatus(this, '${order.id}', 'Aceito')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Aceitar
+                    </button>
+                    <button class="btn-action" style="flex:1; background:#ea1d2c; color:#fff;" onclick="if(confirm('Tem certeza que deseja RECUSAR este pedido?')) window.updateOrderStatus(this, '${order.id}', 'Cancelado')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Recusar
+                    </button>
+                </div>`; 
             } 
             else if (order.status === 'Aceito') { 
                 sellerBadge = `<span style="color:#f39c12; font-size:0.75rem; font-weight:bold;">Aguardando Cozinha</span>`;
