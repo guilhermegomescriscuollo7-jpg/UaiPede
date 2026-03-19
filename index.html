@@ -119,7 +119,7 @@
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
         /* NOVAS ESTILIZAÇÕES DE DELIVERY E CUPONS */
-        .store-delivery-info { font-size: 0.85rem; color: #333; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
+        .store-delivery-info { font-size: 0.85rem; color: #111; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; font-weight: 400;}
         .coupon-badge-btn { display: inline-flex; align-items: center; background: #fff; color: #00a14b; border: 1.5px solid #00a14b; border-radius: 20px; padding: 4px 10px; font-size: 0.7rem; font-weight: 700; text-decoration: none; }
 
         /* MENU INFERIOR */
@@ -179,6 +179,7 @@
             <div class="button-item active" onclick="window.filterCategory('Todos', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg><span>Todos</span></div>
             <div class="button-item" onclick="window.filterCategory('Restaurantes', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg><span>Restaurantes</span></div>
             <div class="button-item" onclick="window.filterCategory('Lanches', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21.99 10.93c-.15-2.92-2.31-5.38-5.18-5.83C15.22 4.41 13.68 4 12 4s-3.22.41-4.81 1.1c-2.87.45-5.03 2.91-5.18 5.83H2v2h2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4h2v-2h-.01zM18 17H6v-4h12v4z"/></svg><span>Lanches</span></div>
+            <div class="button-item" onclick="window.filterCategory('Pizzaria', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M12 2C8.43 2 5.23 3.54 3.01 6L12 22l8.99-16C18.77 3.54 15.57 2 12 2zM7 7c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm5 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg><span>Pizzaria</span></div>
             <div class="button-item" onclick="window.filterCategory('Bares', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg><span>Bares</span></div>
             <div class="button-item" onclick="window.filterCategory('Sorveterias', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M12 2C8.69 2 6 4.69 6 8c0 3.08 2.31 5.64 5.25 5.95V22h1.5v-8.05C15.69 13.64 18 11.08 18 8c0-3.31-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg><span>Sorveterias</span></div>
             <div class="button-item" onclick="window.filterCategory('Mercados', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Mercados</span></div>
@@ -238,7 +239,7 @@
         let allBanners = [];
         let globalCities = [];
         let allActiveSponsors = [];
-        let allCoupons = []; // <--- NOVA VARIÁVEL GLOBAL PARA CUPONS
+        let allCoupons = []; // <--- VARIÁVEL GLOBAL PARA CUPONS
         
         let currentCategoryFilter = null; 
         let bannerInterval; 
@@ -322,7 +323,7 @@
         onSnapshot(collection(db, "coupons"), (snapshot) => {
             allCoupons = [];
             snapshot.forEach(doc => allCoupons.push({ id: doc.id, ...doc.data() }));
-            if(userCity) window.renderStores(); // Re-renderiza as lojas para atualizar as tags de cupom
+            if(userCity) window.renderStores(); // Re-renderiza as lojas para atualizar as tags de cupão
         });
 
         // INICIALIZAÇÃO DA TELA 
@@ -493,7 +494,7 @@
                     <div class="empty-state">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                         <h3>Poxa, ainda não chegamos aí!</h3>
-                        <p>Nenhuma loja ativa cadastrada em ${userCity.split(' - ')[0]} no momento.</p>
+                        <p>Nenhuma loja ativa registada em ${userCity.split(' - ')[0]} no momento.</p>
                     </div>`;
                 return;
             }
@@ -536,12 +537,14 @@
                 const cardClass = isClosed ? 'store-card closed' : 'store-card';
                 let statusText = s.dynamicStatus; let statusColor = isClosed ? '#717171' : '#00a14b'; 
                 
-                // Lógica de tempo e taxa de entrega formatados COM "R$"
-                let deliveryTimeHtml = s.deliveryTime ? `<div>Delivery: ${s.deliveryTime}</div>` : '';
+                // Lógica de tempo e taxa de entrega formatados COM "R$" E FALLBACK ("--")
+                let deliveryTimeText = s.deliveryTime ? s.deliveryTime : '--';
+                let deliveryTimeHtml = `<div>Delivery: ${deliveryTimeText}</div>`;
+                
                 let deliveryFeeValue = s.deliveryFee !== undefined && s.deliveryFee !== '' ? parseFloat(s.deliveryFee) : 0;
                 let deliveryFeeHtml = deliveryFeeValue > 0 ? `<div>Entrega: R$ ${deliveryFeeValue.toFixed(2).replace('.', ',')}</div>` : '<div>Entrega: Grátis</div>';
                 
-                // Validação para exibir os cupons REAIS da loja atual no laço (s.id)
+                // Validação para exibir os cupões REAIS da loja atual no laço (s.id)
                 let storeCoupons = allCoupons.filter(c => c.storeId === s.id && c.active === true);
                 let couponHtml = '';
                 
