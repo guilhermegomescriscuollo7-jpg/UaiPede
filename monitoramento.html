@@ -143,7 +143,7 @@
                 <path d="M5 15 Q 50 55 95 15" stroke="#1C1C1E" stroke-width="10" stroke-linecap="round"/>
             </svg>
             <span>UaiPede</span>
-            <span class="admin-tag">Monitor</span>
+            <span class="admin-tag">Monitor PRO</span>
         </div>
         
         <div class="header-actions">
@@ -225,6 +225,7 @@
         </div>
 
         <div class="grid-lists">
+            
             <div class="card">
                 <div class="card-title">Top Lojas</div>
                 <ul class="ranking-list" id="list-top-stores">
@@ -243,7 +244,7 @@
                 <div class="card-title">Ecossistema</div>
                 <ul class="ranking-list">
                     <li>
-                        <span style="display:flex; align-items:center; gap:10px;">🏪 Lojas Abertas</span>
+                        <span style="display:flex; align-items:center; gap:10px;">🏪 Lojas Abertas no App</span>
                         <span class="badge green" id="val-stores-open">0 de 0</span>
                     </li>
                     <li>
@@ -260,6 +261,14 @@
                     </li>
                 </ul>
             </div>
+
+            <div class="card">
+                <div class="card-title">Lojas Online Agora</div>
+                <ul class="ranking-list" id="list-active-stores" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                    <li>A carregar lojas...</li>
+                </ul>
+            </div>
+
         </div>
 
     </div>
@@ -522,11 +531,38 @@
             window.renderDashboard();
         });
 
+        // 🟢 CÓDIGO CORRIGIDO DAS LOJAS E DA NOVA LISTA 🟢
         onSnapshot(collection(db, "stores"), (snapshot) => {
             let total = 0, open = 0;
-            snapshot.forEach(doc => { total++; if (doc.data().status === 'Aberto') open++; });
-            document.getElementById('val-stores-total').innerText = total;
-            document.getElementById('val-stores-open').innerText = `${open} de ${total}`;
+            let activeStoresList = [];
+            
+            snapshot.forEach(doc => { 
+                total++; 
+                const data = doc.data();
+                if (data.status === 'Aberto') {
+                    open++; 
+                    activeStoresList.push(data.name);
+                }
+            });
+            
+            // Corrige o erro e atualiza a badge do Ecossistema
+            const openBadge = document.getElementById('val-stores-open');
+            if(openBadge) openBadge.innerText = `${open} de ${total}`;
+
+            // Preenche a nova lista de Lojas Ativas
+            const listActiveContainer = document.getElementById('list-active-stores');
+            if (listActiveContainer) {
+                if (activeStoresList.length === 0) {
+                    listActiveContainer.innerHTML = '<li style="color:#8E8E93; justify-content:center;">Nenhuma loja online agora.</li>';
+                } else {
+                    listActiveContainer.innerHTML = activeStoresList.sort().map(name => `
+                        <li>
+                            <span style="font-weight:600; color:var(--text-main);">🏪 ${name}</span>
+                            <span class="badge green">Online</span>
+                        </li>
+                    `).join('');
+                }
+            }
         });
 
         onSnapshot(collection(db, "drivers"), (snapshot) => {
