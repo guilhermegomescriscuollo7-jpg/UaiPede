@@ -530,6 +530,7 @@
                 return getWeight(a) - getWeight(b);
             });
 
+            // 🟢 AQUI ESTÁ O LAÇO QUE RENDERIZA TODAS AS LOJAS DA LISTA 🟢
             container.innerHTML = filteredStores.map(s => {
                 const isClosed = s.dynamicStatus === 'Fechado';
                 const cardClass = isClosed ? 'store-card closed' : 'store-card';
@@ -540,7 +541,7 @@
                 let deliveryFeeValue = s.deliveryFee !== undefined && s.deliveryFee !== '' ? parseFloat(s.deliveryFee) : 0;
                 let deliveryFeeHtml = deliveryFeeValue > 0 ? `<div>Entrega: R$ ${deliveryFeeValue.toFixed(2).replace('.', ',')}</div>` : '<div>Entrega: Grátis</div>';
                 
-                // Validação para exibir os cupons REAIS da loja
+                // Validação para exibir os cupons REAIS da loja atual no laço (s.id)
                 let storeCoupons = allCoupons.filter(c => c.storeId === s.id && c.active === true);
                 let couponHtml = '';
                 
