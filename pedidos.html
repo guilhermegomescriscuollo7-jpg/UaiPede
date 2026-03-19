@@ -33,7 +33,7 @@
         .btn-primary:active { transform: scale(0.98); }
 
         /* CARD DE PEDIDO */
-        .order-card { background: #fff; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 20px 15px; border: 1px solid #f2f2f2; }
+        .order-card { background: #fff; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); padding: 20px 15px; border: 1px solid #f2f2f2; transition: 0.2s;}
         
         .store-name { color: #ea1d2c; font-size: 1.25rem; font-weight: 900; text-align: center; margin-bottom: 15px; }
         
@@ -307,7 +307,7 @@
                         badgeText = 'Pedido finalizado'; 
                         stepIndex = 4; progressWidth = '100%';
                     } else if (order.status === 'Cancelado') {
-                        badgeClass = 'oc-badge outline'; stepIndex = -1; progressWidth = '0%';
+                        badgeClass = 'oc-badge outline'; badgeText = 'Cancelado'; stepIndex = -1; progressWidth = '0%';
                     }
 
                     const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
@@ -318,7 +318,7 @@
                         if (order.pixApproved === true) {
                             pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #e6f4ea; color: #00a14b; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #badbcc;">✅ PIX Confirmado pela Loja</div>`;
                         } else if (order.pixApproved === false) {
-                            pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #fef0f0; color: #ea1d2c; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #fbd5d5;">❌ PIX Não Aprovado / Não Recebido</div>`;
+                            pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #fef0f0; color: #ea1d2c; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #fbd5d5;">❌ PIX Não Aprovado - Pedido Cancelado</div>`;
                         } else if (order.status !== 'Cancelado') {
                             pixBadgeHtml = `<div style="margin-top: 10px; text-align: center; background: #fff3cd; color: #856404; padding: 6px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; border: 1px solid #ffeeba;">⏳ Aguardando loja confirmar o PIX</div>`;
                         }
@@ -455,7 +455,7 @@
             document.getElementById('md-store-name').innerText = order.storeName;
             
             let badgeClass = 'oc-badge'; let badgeText = order.status;
-            if(order.status === 'Cancelado') { badgeClass += ' outline'; }
+            if(order.status === 'Cancelado') { badgeClass += ' outline'; badgeText = 'Cancelado'; }
             else if(order.status === 'Entregue' || order.status === 'Concluído') { badgeText = 'Pedido finalizado'; }
             document.getElementById('md-badge').className = badgeClass;
             document.getElementById('md-badge').innerText = badgeText;
@@ -488,7 +488,7 @@
                 if (order.pixApproved === true) {
                     pixStatusText = ' <span style="color:#00a14b; font-weight:bold;">(✅ Confirmado)</span>';
                 } else if (order.pixApproved === false) {
-                    pixStatusText = ' <span style="color:#ea1d2c; font-weight:bold;">(❌ Não Aprovado / Não Recebido)</span>';
+                    pixStatusText = ' <span style="color:#ea1d2c; font-weight:bold;">(❌ Não Aprovado / Pedido Cancelado)</span>';
                 } else {
                     pixStatusText = ' <span style="color:#856404; font-weight:bold;">(⏳ Aguardando Loja)</span>';
                 }
