@@ -143,7 +143,7 @@
                 <path d="M5 15 Q 50 55 95 15" stroke="#1C1C1E" stroke-width="10" stroke-linecap="round"/>
             </svg>
             <span>UaiPede</span>
-            <span class="admin-tag">Monitor PRO</span>
+            <span class="admin-tag">Monitor</span>
         </div>
         
         <div class="header-actions">
@@ -225,7 +225,6 @@
         </div>
 
         <div class="grid-lists">
-            
             <div class="card">
                 <div class="card-title">Top Lojas</div>
                 <ul class="ranking-list" id="list-top-stores">
@@ -263,7 +262,12 @@
             </div>
 
             <div class="card">
-                <div class="card-title">Lojas Online Agora</div>
+                <div class="card-title" style="justify-content: space-between;">
+                    <div style="display:flex; align-items:center; gap:8px;">Lojas Online Agora</div>
+                    <select id="filter-active-city" class="filter-select" style="font-size: 0.75rem; padding: 4px 10px;" onchange="window.renderActiveStores()">
+                        <option value="all">Todas as Cidades</option>
+                    </select>
+                </div>
                 <ul class="ranking-list" id="list-active-stores" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
                     <li>A carregar lojas...</li>
                 </ul>
@@ -293,6 +297,7 @@
 
         // --- VARIÁVEIS GLOBAIS DE DADOS ---
         let globalOrders = [];
+        let globalActiveStores = [];
         
         // --- INICIALIZAÇÃO DOS GRÁFICOS (CHART.JS) ---
         let mainChartInstance = null;
@@ -524,6 +529,35 @@
             } else { alertContainer.innerHTML = ''; }
         };
 
+        // --- FUNÇÃO PARA RENDERIZAR AS LOJAS ONLINE (COM FILTRO DE CIDADE) ---
+        window.renderActiveStores = () => {
+            const cityFilter = document.getElementById('filter-active-city').value;
+            const listActiveContainer = document.getElementById('list-active-stores');
+            
+            if (!listActiveContainer) return;
+
+            let filtered = globalActiveStores;
+            if (cityFilter !== 'all') {
+                filtered = filtered.filter(s => s.city === cityFilter);
+            }
+
+            if (filtered.length === 0) {
+                listActiveContainer.innerHTML = '<li style="color:#8E8E93; justify-content:center;">Nenhuma loja online nesta cidade.</li>';
+            } else {
+                // Ordena alfabeticamente
+                filtered.sort((a,b) => a.name.localeCompare(b.name));
+                listActiveContainer.innerHTML = filtered.map(s => `
+                    <li>
+                        <div style="display:flex; flex-direction:column; gap: 4px;">
+                            <span style="font-weight:600; color:var(--text-main);">🏪 ${s.name}</span>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;">📍 ${s.city || 'Sem cidade'}</span>
+                        </div>
+                        <span class="badge green">Online</span>
+                    </li>
+                `).join('');
+            }
+        };
+
         // --- LISTENERS FIREBASE ---
         onSnapshot(collection(db, "orders"), (snapshot) => {
             globalOrders = [];
@@ -531,38 +565,46 @@
             window.renderDashboard();
         });
 
-        // 🟢 CÓDIGO CORRIGIDO DAS LOJAS E DA NOVA LISTA 🟢
+        // Listener das Lojas e Extração das Cidades para o Dropdown
         onSnapshot(collection(db, "stores"), (snapshot) => {
             let total = 0, open = 0;
-            let activeStoresList = [];
+            globalActiveStores = [];
+            let uniqueCities = new Set();
             
             snapshot.forEach(doc => { 
                 total++; 
                 const data = doc.data();
                 if (data.status === 'Aberto') {
                     open++; 
-                    activeStoresList.push(data.name);
+                    const cityStr = data.city || 'Desconhecida';
+                    globalActiveStores.push({ name: data.name, city: cityStr });
+                    if (cityStr !== 'Desconhecida') uniqueCities.add(cityStr);
                 }
             });
             
-            // Corrige o erro e atualiza a badge do Ecossistema
             const openBadge = document.getElementById('val-stores-open');
             if(openBadge) openBadge.innerText = `${open} de ${total}`;
 
-            // Preenche a nova lista de Lojas Ativas
-            const listActiveContainer = document.getElementById('list-active-stores');
-            if (listActiveContainer) {
-                if (activeStoresList.length === 0) {
-                    listActiveContainer.innerHTML = '<li style="color:#8E8E93; justify-content:center;">Nenhuma loja online agora.</li>';
-                } else {
-                    listActiveContainer.innerHTML = activeStoresList.sort().map(name => `
-                        <li>
-                            <span style="font-weight:600; color:var(--text-main);">🏪 ${name}</span>
-                            <span class="badge green">Online</span>
-                        </li>
-                    `).join('');
+            // Preencher o seletor de cidades
+            const citySelect = document.getElementById('filter-active-city');
+            if (citySelect) {
+                const currentVal = citySelect.value;
+                let optionsHtml = '<option value="all">Todas as Cidades</option>';
+                
+                Array.from(uniqueCities).sort().forEach(c => {
+                    optionsHtml += `<option value="${c}">${c}</option>`;
+                });
+                
+                citySelect.innerHTML = optionsHtml;
+                
+                // Restaura a seleção anterior, caso a cidade ainda tenha lojas online
+                if (uniqueCities.has(currentVal)) {
+                    citySelect.value = currentVal;
                 }
             }
+
+            // Atualiza a lista filtrada
+            window.renderActiveStores();
         });
 
         onSnapshot(collection(db, "drivers"), (snapshot) => {
