@@ -110,10 +110,12 @@
         .chip-btn svg { color: #ea1d2c; }
         .chip-btn.active { background: #ea1d2c; border-color: #ea1d2c; color: #fff; }
         .chip-btn.active svg { color: #fff; fill: #fff; }
+        
+        /* Ícone Fav Chip */
         .chip-fav-icon { fill: none; stroke: currentColor; }
         .chip-btn.active .chip-fav-icon { fill: #fff; stroke: #fff; }
 
-        /* 🟢 LOJAS EM DESTAQUE (NOVO DESIGN PREMIUM) 🟢 */
+        /* 🟢 LOJAS EM DESTAQUE (CARROSSEL PREMIUM) 🟢 */
         .featured-section { display: none; padding: 0 0 20px 0; }
         .featured-track { display: flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 0 15px 10px; -webkit-overflow-scrolling: touch; }
         .featured-track::-webkit-scrollbar { display: none; }
@@ -165,6 +167,7 @@
             margin-bottom: 6px; 
             padding: 0 5px;
         }
+        /* Tag de "Aberto" atualizada de "Famoso" com ícone de visto SVG */
         .featured-badge { 
             font-size: 0.65rem; 
             color: #ea1d2c; 
@@ -195,7 +198,7 @@
         .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-weight: 500;}
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
-        /* BOTÃO CORAÇÃO (FAVORITOS) */
+        /* 🟢 BOTÃO CORAÇÃO (FAVORITOS) NO CARD 🟢 */
         .heart-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 1.2rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: 0.2s; }
         .heart-btn svg { width: 22px; height: 22px; stroke: #ccc; fill: none; transition: 0.2s; stroke-width: 2;}
         .heart-btn.favorited svg { stroke: #ea1d2c; fill: #ea1d2c; }
@@ -204,7 +207,7 @@
         .store-delivery-info { font-size: 0.8rem; color: #333; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
         .coupon-badge-btn { display: inline-flex; align-items: center; background: #fff; color: #00a14b; border: 1.5px solid #00a14b; border-radius: 20px; padding: 3px 8px; font-size: 0.65rem; font-weight: 800; text-decoration: none; }
 
-        /* MODAL DE BUSCA RÁPIDA */
+        /* 🟢 MODAL DE BUSCA RÁPIDA 🟢 */
         .search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8f8f8; z-index: 999999; display: none; flex-direction: column; animation: slideUpSearch 0.3s ease;}
         @keyframes slideUpSearch { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
@@ -307,7 +310,7 @@
         <section class="featured-section" id="featured-section">
             <h2 class="section-title">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="#ea1d2c" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                Famosos no App
+                Lojas em Destaque
             </h2>
             <div class="featured-track" id="featured-track-container"></div>
         </section>
@@ -648,7 +651,7 @@
             }
         };
 
-        // 🟢 CÓDIGO DA SECÇÃO DE DESTAQUES (APENAS ABERTOS APARECEM) 🟢
+        // 🟢 SECÇÃO DE DESTAQUES (SÓ ABERTOS APARECEM - COM ÍCONE CHECK PARA 'ABERTO') 🟢
         window.renderFeaturedStores = () => {
             const featuredSection = document.getElementById('featured-section');
             const track = document.getElementById('featured-track-container');
@@ -674,10 +677,10 @@
                         if (!isOpen) dynamicStatus = 'Fechado';
                     }
                 }
-                return dynamicStatus === 'Aberto'; // Retorna true só se estiver aberta
+                return dynamicStatus === 'Aberto'; 
             });
 
-            // Se não sobrar nenhuma loja aberta, esconde o carrossel de Famosos
+            // Se não sobrar nenhuma loja aberta, esconde o carrossel de Destaques
             if (featured.length === 0) {
                 featuredSection.style.display = 'none';
                 return;
@@ -692,7 +695,7 @@
                     <img src="${s.logo || 'https://via.placeholder.com/80'}" class="featured-logo" alt="Logo">
                     <div class="featured-name">${s.name}</div>
                     <div class="featured-badge">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Famoso
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Aberto
                     </div>
                 </a>`;
             }).join('');
