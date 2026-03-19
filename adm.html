@@ -268,7 +268,7 @@
                 <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;">
                     <label>Vincular a uma Loja</label>
                     <select id="b-store">
-                        <option value="">Nenhuma</option>
+                        <option value="">Nenhuma (Apenas visual)</option>
                     </select>
                 </div>
 
@@ -293,6 +293,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // Cole aqui suas credenciais oficiais do Firebase do Dores Delivery
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -366,7 +367,7 @@
         }
 
         // ==========================================
-        // LOJAS (ATUALIZADO COM CHECKBOX DESTAQUE)
+        // 🟢 LOJAS (CORREÇÃO E CHECKBOX DESTAQUE) 🟢
         // ==========================================
         document.getElementById('s-logo').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -377,6 +378,7 @@
             allStores = []; 
             snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
             
+            // Tratamento de erro para evitar travar painel se as funções ainda não estiverem disponíveis
             if (typeof window.renderStoreList === 'function') window.renderStoreList(); 
             if (typeof window.onCityFatChange === 'function') window.onCityFatChange(); 
             
@@ -396,12 +398,12 @@
             const email = document.getElementById('s-email').value.trim(); const pass = document.getElementById('s-pass').value.trim(); 
             const cat = document.getElementById('s-cat').value; const cityDropdownVal = document.getElementById('s-city').value;
             const dueDateVal = document.getElementById('s-due-date').value;
-            const isFeatured = document.getElementById('s-featured').checked; // 🟢 NOVO: PEGA O VALOR DO CHECKBOX
+            const isFeatured = document.getElementById('s-featured').checked;
 
             if(!name || !email || !pass || !cityDropdownVal) return alert("Preencha dados da loja, incluindo a cidade."); 
             const dueDateTimestamp = dueDateVal ? new Date(dueDateVal + 'T12:00:00').getTime() : null;
 
-            const storeData = { name, email, password: pass, cat, doc: docId, cep, street, city: cityDropdownVal, dueDate: dueDateTimestamp, isFeatured: isFeatured }; // 🟢 SALVA NO BANCO
+            const storeData = { name, email, password: pass, cat, doc: docId, cep, street, city: cityDropdownVal, dueDate: dueDateTimestamp, isFeatured: isFeatured };
 
             if (editingStoreId) { 
                 if(allStores.find(s => s.email === email && s.id !== editingStoreId)) return alert("Já existe loja com este e-mail."); 
@@ -421,7 +423,7 @@
             document.getElementById('s-cep').value = store.cep || ''; document.getElementById('s-street').value = store.street || ''; 
             document.getElementById('s-city').value = store.city || ''; document.getElementById('s-email').value = store.email; 
             document.getElementById('s-pass').value = store.password; document.getElementById('s-cat').value = store.cat || 'Restaurantes'; 
-            document.getElementById('s-featured').checked = store.isFeatured || false; // 🟢 PREENCHE O CHECKBOX SE FOR EDIÇÃO
+            document.getElementById('s-featured').checked = store.isFeatured || false;
             if (store.dueDate) { document.getElementById('s-due-date').value = new Date(store.dueDate).toISOString().split('T')[0]; } else { document.getElementById('s-due-date').value = ''; }
             document.getElementById('s-logo').value = ''; storeImgBase64 = ''; 
             document.getElementById('btn-save-store').innerHTML = `Salvar Alterações`; 
@@ -434,7 +436,7 @@
             document.getElementById('s-name').value = ''; document.getElementById('s-doc').value = ''; document.getElementById('s-cep').value = ''; 
             document.getElementById('s-street').value = ''; document.getElementById('s-city').value = ''; document.getElementById('s-email').value = ''; 
             document.getElementById('s-pass').value = ''; document.getElementById('s-logo').value = ''; document.getElementById('s-due-date').value = ''; 
-            document.getElementById('s-featured').checked = false; // 🟢 LIMPA O CHECKBOX
+            document.getElementById('s-featured').checked = false;
             storeImgBase64 = ''; 
             document.getElementById('btn-save-store').innerHTML = `Registrar Loja`; 
             document.getElementById('btn-cancel-edit').style.display = "none"; 
@@ -461,7 +463,6 @@
                 const isActive = s.isActive !== false; 
                 let dueBadge = ''; let payButton = '';
                 
-                // 🟢 EXIBE ESTRELA SE FOR DESTAQUE 🟢
                 let featuredIcon = s.isFeatured ? '<span title="Loja em Destaque" style="color:#ea1d2c; font-size:1.1rem; margin-left:8px;">⭐</span>' : '';
 
                 if (s.dueDate) {
@@ -489,7 +490,6 @@
                         </span>
                     </div> 
                     <div class="actions-col" style="flex-direction: column; align-items: flex-end; gap: 8px;"> 
-                        ${payButton}
                         <div style="display:flex; gap: 8px; margin-top: 5px;">
                             <button class="btn-edit" onclick="window.editStore('${s.id}')">Editar</button> 
                             <button class="${isActive ? 'btn-suspend' : 'btn-reactivate'}" onclick="window.toggleSubscription('${s.id}')">${isActive ? 'Bloquear' : 'Ativar'}</button> 
@@ -501,7 +501,7 @@
         }
 
         // ==========================================
-        // BANNERS DO APP
+        // 🟢 BANNERS DO APP COM LINK EXTERNO E VÍNCULO 🟢
         // ==========================================
         document.getElementById('b-image').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -573,7 +573,9 @@
             `}).join('');
         }
 
-        // Outros módulos mantidos...
+        // ==========================================
+        // DEMAIS FUNÇÕES 
+        // ==========================================
         window.saveSponsor = async () => { /* ... Lógica existente ... */ };
         window.deleteSponsor = async (id) => { /* ... Lógica existente ... */ };
         window.saveAlert = async () => { /* ... Lógica existente ... */ }
