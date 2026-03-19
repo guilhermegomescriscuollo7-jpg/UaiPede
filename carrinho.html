@@ -84,6 +84,11 @@
         
         #change-container { display: none; margin-top: 15px; padding: 15px; background: #fef0f0; border: 1px dashed #fbd5d5; border-radius: 12px; }
         #change-container label { font-size: 0.85rem; color: #ea1d2c; font-weight: bold; display: block; margin-bottom: 8px; }
+        
+        /* NOVA ÁREA PIX */
+        #pix-container { display: none; margin-top: 15px; padding: 15px; background: #fdf5e6; border: 1px dashed #f9e1b5; border-radius: 12px; }
+        #pix-container label { font-size: 0.85rem; color: #997404; font-weight: bold; display: block; margin-bottom: 8px; }
+
         .login-alert { background: #fff3cd; color: #856404; padding: 15px; border-radius: 12px; border: 1px solid #ffeeba; text-align: center; margin-bottom: 15px; font-size: 0.95rem; font-weight: 500;}
 
         /* BOTÃO FINALIZAR FIXO */
@@ -220,18 +225,31 @@
                         Forma de Pagamento
                     </h3>
                     <p style="font-size: 0.85rem; color: #777; margin-bottom: 15px;">Você paga diretamente ao entregador ou no balcão.</p>
+                    
                     <div class="payment-options">
                         <label class="pay-label"><input type="radio" name="pay-method" value="Pix" checked onchange="window.toggleChange()"><span>Pix</span></label>
                         <label class="pay-label"><input type="radio" name="pay-method" value="Cartão de Crédito ou Débito" onchange="window.toggleChange()"><span>Cartão de Crédito ou Débito</span></label>
                         <label class="pay-label"><input type="radio" name="pay-method" value="Dinheiro" onchange="window.toggleChange()"><span>Dinheiro Vivo</span></label>
                     </div>
+                    
                     <div id="change-container">
                         <label>Vai precisar de troco para qual nota?</label>
                         <input type="number" id="change-amount" class="form-input" placeholder="Ex: 50 (Deixe em branco se tiver o valor exato)">
                     </div>
+
+                    <div id="pix-container">
+                        <label>Chave PIX da Loja:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <div id="store-pix-key" style="flex: 1; padding: 12px; background: #fff; border: 1px solid #f9e1b5; border-radius: 8px; font-weight: 900; color: #333; word-break: break-all; display: flex; align-items: center;">Carregando...</div>
+                            <button onclick="window.copyPixKey()" style="background: #997404; color: #fff; border: none; border-radius: 8px; padding: 0 15px; font-weight: bold; cursor: pointer; transition: 0.2s;">Copiar</button>
+                        </div>
+                        <div style="font-size: 0.75rem; color: #777; margin-top: 10px; line-height: 1.4;">Faça a transferência para esta chave e apresente o comprovante ao receber o seu pedido. A loja também confirmará no painel dela.</div>
+                    </div>
+
                 </div>
 
-                <div style="height: 60px;"></div> </div>
+                <div style="height: 60px;"></div> 
+            </div>
         </div>
 
         <div class="bottom-bar" id="bottom-bar-checkout" style="display: none;">
@@ -346,6 +364,13 @@
                     storeDataCache = storeSnap.data();
                     originalDeliveryFee = storeDataCache.deliveryFee || 0;
                     currentDeliveryFee = originalDeliveryFee;
+
+                    // 🟢 EXIBIR A CHAVE PIX CADASTRADA PELA LOJA 🟢
+                    if (storeDataCache.pixKey) {
+                        document.getElementById('store-pix-key').innerText = storeDataCache.pixKey;
+                    } else {
+                        document.getElementById('store-pix-key').innerText = "Loja sem chave cadastrada";
+                    }
                 }
             } catch (e) { console.error("Erro ao buscar loja:", e); }
 
@@ -355,13 +380,39 @@
             }
 
             window.renderCart();
+            window.toggleChange(); // Garante que os campos PIX/Troco abrem corretos
         };
 
+        // 🟢 ATIVAR CAIXA PIX OU TROCO 🟢
         window.toggleChange = () => {
             const method = document.querySelector('input[name="pay-method"]:checked').value;
             const changeBox = document.getElementById('change-container');
-            if (method === 'Dinheiro') { changeBox.style.display = 'block'; } 
-            else { changeBox.style.display = 'none'; document.getElementById('change-amount').value = ''; }
+            const pixBox = document.getElementById('pix-container');
+
+            if (method === 'Dinheiro') { 
+                changeBox.style.display = 'block'; 
+                pixBox.style.display = 'none';
+            } else if (method === 'Pix') {
+                changeBox.style.display = 'none'; 
+                document.getElementById('change-amount').value = '';
+                pixBox.style.display = 'block';
+            } else { 
+                changeBox.style.display = 'none'; 
+                document.getElementById('change-amount').value = '';
+                pixBox.style.display = 'none';
+            }
+        };
+
+        // 🟢 FUNÇÃO DE COPIAR A CHAVE PIX 🟢
+        window.copyPixKey = () => {
+            const keyText = document.getElementById('store-pix-key').innerText;
+            if (keyText && keyText !== "Loja sem chave cadastrada") {
+                navigator.clipboard.writeText(keyText).then(() => {
+                    alert("Chave PIX copiada para a área de transferência!");
+                }).catch(() => {
+                    alert("Erro ao copiar chave.");
+                });
+            }
         };
 
         window.setDeliveryMethod = (method) => {
