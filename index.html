@@ -24,7 +24,7 @@
         #install-banner { display: none; background: #111; color: #fff; padding: 12px 20px; justify-content: space-between; align-items: center; font-size: 0.9rem; }
         .btn-install { background: #ea1d2c; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         
-        /* AVISOS GLOBAIS (NOVO) */
+        /* AVISOS GLOBAIS */
         #global-alerts-container { padding: 0 15px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 10;}
         .global-alert-card { background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden; border: 1px solid #eee; animation: slideDown 0.3s ease;}
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -92,6 +92,7 @@
         .banner-track::-webkit-scrollbar { display: none; }
         .banner-slide { flex: 0 0 100%; height: 150px; border-radius: 12px; object-fit: cover; scroll-snap-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 
+        /* CATEGORIAS */
         .button-scroll-container { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 12px; padding: 15px; background: #f8f8f8; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
         .button-scroll-container::-webkit-scrollbar { display: none; }
         .button-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; padding: 12px 5px; border-radius: 16px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; flex: 0 0 auto; width: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
@@ -102,31 +103,67 @@
         .button-item.active span { color: #fff; }
         .button-item.active .filter-icon { color: #fff; } 
         
-        .section-title { padding: 5px 15px 10px; font-size: 1.1rem; font-weight: 700; color: #333; }
+        /* 🟢 CHIPS INTELIGENTES DE FILTROS RÁPIDOS 🟢 */
+        .quick-filters-container { display: flex; gap: 10px; overflow-x: auto; padding: 0 15px 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .quick-filters-container::-webkit-scrollbar { display: none; }
+        .chip-btn { background: #fff; border: 1px solid #ddd; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: #555; white-space: nowrap; flex-shrink: 0; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .chip-btn.active { background: #fff5f5; border-color: #ea1d2c; color: #ea1d2c; }
 
-        /* LISTA DE LOJAS */
+        /* 🟢 LOJAS EM DESTAQUE (CARROSSEL HORIZONTAL) 🟢 */
+        .featured-section { display: none; padding: 0 0 15px 0; }
+        .featured-track { display: flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 0 15px 10px; -webkit-overflow-scrolling: touch; }
+        .featured-track::-webkit-scrollbar { display: none; }
+        .featured-card { flex: 0 0 130px; background: #fff; border: 1px solid #f2f2f2; border-radius: 12px; padding: 12px; text-align: center; scroll-snap-align: start; box-shadow: 0 2px 6px rgba(0,0,0,0.04); text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; position: relative;}
+        .featured-logo { width: 65px; height: 65px; border-radius: 50%; border: 2px solid #ea1d2c; object-fit: cover; margin-bottom: 8px; }
+        .featured-name { font-size: 0.85rem; font-weight: 800; color: #111; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;}
+        .featured-badge { font-size: 0.65rem; color: #00a14b; font-weight: bold; background: #e6f4ea; padding: 2px 6px; border-radius: 10px; }
+        .featured-card.closed .featured-logo { filter: grayscale(100%); border-color: #ccc;}
+        .featured-card.closed .featured-badge { color: #777; background: #f4f4f4; }
+
+        .section-title { padding: 5px 15px 10px; font-size: 1.1rem; font-weight: 800; color: #111; display: flex; align-items: center; gap: 6px;}
+
+        /* LISTA DE LOJAS GERAL */
         .store-list { padding: 0 15px; }
-        .store-card { display: flex; align-items: center; padding: 15px; margin-bottom: 12px; border-radius: 12px; cursor: pointer; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #f2f2f2; transition: 0.2s; text-decoration: none; }
+        .store-card { display: flex; align-items: center; padding: 15px; margin-bottom: 12px; border-radius: 12px; cursor: pointer; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #f2f2f2; transition: 0.2s; text-decoration: none; position: relative;}
         .store-card:active { transform: scale(0.98); background-color: #f9f9f9; }
         .store-card.closed { opacity: 0.55; filter: grayscale(100%); }
         .store-card.closed:active { transform: none; background-color: #fff; }
         .store-logo { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 1px solid #eee; object-fit: cover; flex-shrink: 0;}
-        .store-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden;}
+        .store-info { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden; padding-right: 25px;}
         
-        .store-name { font-size: 1.1rem; font-weight: 800; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
+        .store-name { font-size: 1.1rem; font-weight: 900; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;}
         
-        .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+        .store-details { font-size: 0.8rem; color: #717171; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-weight: 500;}
         .store-details .dot { color: #ccc; font-size: 0.6rem; }
 
-        /* NOVAS ESTILIZAÇÕES DE DELIVERY E CUPONS */
-        .store-delivery-info { font-size: 0.85rem; color: #111; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; font-weight: 400;}
-        .coupon-badge-btn { display: inline-flex; align-items: center; background: #fff; color: #00a14b; border: 1.5px solid #00a14b; border-radius: 20px; padding: 4px 10px; font-size: 0.7rem; font-weight: 700; text-decoration: none; }
+        /* 🟢 BOTÃO CORAÇÃO (FAVORITOS) 🟢 */
+        .heart-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 1.2rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; transition: 0.2s; }
+        .heart-btn svg { width: 22px; height: 22px; stroke: #ccc; fill: none; transition: 0.2s; stroke-width: 2;}
+        .heart-btn.favorited svg { stroke: #ea1d2c; fill: #ea1d2c; }
+        .heart-btn:active { transform: scale(0.8); }
 
-        /* MENU INFERIOR */
+        .store-delivery-info { font-size: 0.8rem; color: #333; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
+        .coupon-badge-btn { display: inline-flex; align-items: center; background: #fff; color: #00a14b; border: 1.5px solid #00a14b; border-radius: 20px; padding: 3px 8px; font-size: 0.65rem; font-weight: 800; text-decoration: none; }
+
+        /* 🟢 MODAL DE BUSCA (PESQUISA RÁPIDA) 🟢 */
+        .search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8f8f8; z-index: 999999; display: none; flex-direction: column; animation: slideUpSearch 0.3s ease;}
+        @keyframes slideUpSearch { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .sm-header { background: #fff; padding: 15px 15px 15px 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee; padding-top: calc(15px + env(safe-area-inset-top)); box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+        .sm-back { background: none; border: none; color: #ea1d2c; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center;}
+        .sm-input-box { flex: 1; position: relative; }
+        .sm-input-box svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
+        .sm-input-box input { width: 100%; padding: 12px 12px 12px 38px; border: none; background: #f0f0f0; border-radius: 8px; font-size: 0.95rem; outline: none; font-weight: 500;}
+        .sm-input-box input:focus { background: #e8e8e8; }
+        
+        .sm-body { flex: 1; overflow-y: auto; padding: 15px; }
+
+        /* MENU INFERIOR (AGORA COM 4 BOTÕES) */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 9000; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
-        .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; }
-        .nav-icon-img { width: 24px; height: 24px; filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
+        .nav-link { text-align: center; color: #717171; font-size: 0.7rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; background: none; border: none; cursor: pointer; width: 25%;}
+        .nav-icon-img { width: 24px; height: 24px; filter: invert(40%); }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
+        .nav-link.active .nav-icon-img { filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
 
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -189,12 +226,53 @@
             <div class="button-item" onclick="window.filterCategory('Utilidades', this)"><svg viewBox="0 0 24 24" fill="currentColor" class="filter-icon"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg><span>Utilidades</span></div>
         </section>
 
-        <h2 class="section-title" id="list-title">Lojas</h2>
-        <div class="store-list" id="store-list-container"></div>
+        <div class="quick-filters-container">
+            <button class="chip-btn" onclick="window.toggleQuickFilter('freeShipping', this)">🛵 Entrega Grátis</button>
+            <button class="chip-btn" onclick="window.toggleQuickFilter('hasCoupon', this)">🏷️ Com Cupom</button>
+            <button class="chip-btn" onclick="window.toggleQuickFilter('openNow', this)">🟢 Abertos Agora</button>
+            <button class="chip-btn" onclick="window.toggleQuickFilter('favorites', this)">❤️ Favoritas</button>
+        </div>
+
+        <section class="featured-section" id="featured-section">
+            <h2 class="section-title">⭐ Lojas em Destaque</h2>
+            <div class="featured-track" id="featured-track-container"></div>
+        </section>
+
+        <h2 class="section-title" id="list-title">Lojas Disponíveis</h2>
+        <div class="store-list" id="store-list-container">
+            <div style="text-align:center; padding:30px; color:#aaa; font-weight:bold;">A procurar lojas perto de si...</div>
+        </div>
     </main>
+
+    <div id="search-modal" class="search-modal">
+        <div class="sm-header">
+            <button class="sm-back" onclick="window.closeSearchModal()">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <div class="sm-input-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="sm-search-input" placeholder="Buscar loja ou categoria..." oninput="window.filterSearchModal()">
+            </div>
+        </div>
+        <div class="sm-body">
+            <h3 style="font-size:1rem; font-weight:800; color:#111; margin-bottom:15px; display:none;" id="sm-results-title">Resultados</h3>
+            <div id="sm-results-container" class="store-list" style="padding:0;">
+                <div style="text-align:center; padding:50px 20px; color:#999;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2" style="margin-bottom:10px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <p style="font-size:0.9rem;">Encontre o que deseja num piscar de olhos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <nav class="bottom-nav">
         <a href="index.html" class="nav-link active"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img" alt="Início"><span>Início</span></a>
+        
+        <button class="nav-link" onclick="window.openSearchModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="nav-icon-img" style="filter: none; stroke: #717171; margin-bottom: 2px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Busca</span>
+        </button>
+
         <a href="pedidos.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1150/1150592.png" class="nav-icon-img" alt="Pedidos"><span>Pedidos</span></a>
         <a href="perfil.html" class="nav-link"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" class="nav-icon-img" alt="Perfil"><span>Perfil</span></a>
     </nav>
@@ -245,7 +323,11 @@
         let bannerInterval; 
         let userCity = localStorage.getItem('userCity');
         
-        // 🟢 LÓGICA DE AVISOS GLOBAIS 🟢
+        // 🟢 NOVAS VARIÁVEIS DE ESTADO 🟢
+        let userFavorites = JSON.parse(localStorage.getItem('userFavorites')) || [];
+        let quickFilters = { freeShipping: false, hasCoupon: false, openNow: false, favorites: false };
+
+        // LÓGICA DE AVISOS GLOBAIS
         let dismissedAlerts = JSON.parse(localStorage.getItem('dismissedAlerts')) || [];
 
         onSnapshot(collection(db, "global_alerts"), (snapshot) => {
@@ -304,7 +386,10 @@
         onSnapshot(collection(db, "stores"), (snapshot) => {
             allStores = [];
             snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() }));
-            if(userCity) window.renderStores();
+            if(userCity) {
+                window.renderStores();
+                window.renderFeaturedStores();
+            }
         });
 
         onSnapshot(collection(db, "banners"), (snapshot) => {
@@ -450,9 +535,10 @@
             document.getElementById('main-content').style.display = 'block';
             window.renderBanners();
             window.renderStores();
+            window.renderFeaturedStores();
         }
 
-        // 🟢 CÓDIGO DOS BANNERS COM CLIQUE PARA LOJA VINCULADA 🟢
+        // BANNERS COM CLIQUE PARA LOJA VINCULADA OU LINK EXTERNO
         window.renderBanners = () => {
             const bannerContainer = document.getElementById('banner-wrapper');
             const track = document.getElementById('banner-track');
@@ -461,8 +547,12 @@
             let bannersHtml = '';
             allBanners.forEach(b => {
                 if (!b.city || b.city === 'all' || b.city === userCity) {
-                    // ADICIONADA A LÓGICA DE CLIQUE
-                    let clickAction = b.storeId ? `onclick="window.location.href='loja.html?id=${b.storeId}'" style="cursor:pointer;"` : '';
+                    let clickAction = '';
+                    if (b.link) {
+                        clickAction = `onclick="window.open('${b.link}', '_blank')" style="cursor:pointer;"`;
+                    } else if (b.storeId) {
+                        clickAction = `onclick="window.location.href='loja.html?id=${b.storeId}'" style="cursor:pointer;"`;
+                    }
                     bannersHtml += `<img src="${b.image}" class="banner-slide" ${clickAction}>`;
                 }
             });
@@ -484,31 +574,64 @@
             }
         };
 
+        // 🟢 CÓDIGO DA SECÇÃO DE DESTAQUES (CARROSSEL) 🟢
+        window.renderFeaturedStores = () => {
+            const featuredSection = document.getElementById('featured-section');
+            const track = document.getElementById('featured-track-container');
+            if (!userCity) return;
+
+            let featured = allStores.filter(s => s.city === userCity && s.isActive !== false && s.isFeatured === true);
+            
+            if (featured.length === 0) {
+                featuredSection.style.display = 'none';
+                return;
+            }
+
+            featuredSection.style.display = 'block';
+            
+            const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+            const currentDayStr = daysMap[now.getDay()]; const currentMins = now.getHours() * 60 + now.getMinutes();
+
+            track.innerHTML = featured.slice(0, 5).map(s => {
+                let dynamicStatus = s.status || 'Aberto';
+                if (dynamicStatus === 'Aberto' && s.schedule) {
+                    const todaySch = s.schedule[currentDayStr];
+                    if (!todaySch || !todaySch.active) { dynamicStatus = 'Fechado'; } 
+                    else {
+                        const [oH, oM] = (todaySch.open || '00:00').split(':').map(Number);
+                        const [cH, cM] = (todaySch.close || '23:59').split(':').map(Number);
+                        const openMins = (oH || 0) * 60 + (oM || 0); const closeMins = (cH || 0) * 60 + (cM || 0);
+                        let isOpen = (closeMins >= openMins) ? (currentMins >= openMins && currentMins <= closeMins) : (currentMins >= openMins || currentMins <= closeMins);
+                        if (!isOpen) dynamicStatus = 'Fechado';
+                    }
+                }
+                
+                const isClosed = dynamicStatus === 'Fechado';
+                const cardClass = isClosed ? 'featured-card closed' : 'featured-card';
+                const badgeText = isClosed ? 'Fechado' : 'Aberto';
+
+                return `
+                <a href="loja.html?id=${s.id}" class="${cardClass}">
+                    <img src="${s.logo || 'https://via.placeholder.com/80'}" class="featured-logo" alt="Logo">
+                    <div class="featured-name">${s.name}</div>
+                    <div class="featured-badge">${badgeText}</div>
+                </a>`;
+            }).join('');
+        };
+
+        // 🟢 CÓDIGO DE LOJAS COM FAVORITOS E CHIPS 🟢
         window.renderStores = () => {
             const container = document.getElementById('store-list-container');
             if(!userCity) return;
 
-            let filteredStores = allStores.filter(s => s.city === userCity);
-            filteredStores = filteredStores.filter(s => s.isActive !== false);
+            let filteredStores = allStores.filter(s => s.city === userCity && s.isActive !== false);
 
-            if (filteredStores.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                        <h3>Poxa, ainda não chegamos aí!</h3>
-                        <p>Nenhuma loja ativa registada em ${userCity.split(' - ')[0]} no momento.</p>
-                    </div>`;
-                return;
-            }
-
+            // Filtro Principal (Categorias)
             if (currentCategoryFilter && currentCategoryFilter !== 'Todos') {
                 filteredStores = filteredStores.filter(s => s.cat && s.cat.toLowerCase().includes(currentCategoryFilter.toLowerCase()));
-                if(filteredStores.length === 0) {
-                    container.innerHTML = `<p style="padding: 30px 0; color: #999; text-align: center;">Nenhuma loja encontrada nesta categoria.</p>`; 
-                    return;
-                }
             }
 
+            // Calculo do Status
             const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
             const currentDayStr = daysMap[now.getDay()]; const currentMins = now.getHours() * 60 + now.getMinutes();
 
@@ -528,6 +651,31 @@
                 return { ...s, dynamicStatus };
             });
 
+            // Filtros Rápidos (Chips)
+            if (quickFilters.freeShipping) {
+                filteredStores = filteredStores.filter(s => !s.deliveryFee || parseFloat(s.deliveryFee) === 0);
+            }
+            if (quickFilters.hasCoupon) {
+                filteredStores = filteredStores.filter(s => allCoupons.some(c => c.storeId === s.id && c.active === true));
+            }
+            if (quickFilters.openNow) {
+                filteredStores = filteredStores.filter(s => s.dynamicStatus === 'Aberto');
+            }
+            if (quickFilters.favorites) {
+                filteredStores = filteredStores.filter(s => userFavorites.includes(s.id));
+            }
+
+            if (filteredStores.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        <h3>Nenhuma loja encontrada</h3>
+                        <p>Tente alterar os filtros selecionados.</p>
+                    </div>`;
+                return;
+            }
+
+            // Ordenação (Abertos primeiro)
             filteredStores.sort((a, b) => {
                 const getWeight = (store) => { if (store.dynamicStatus === 'Fechado') return 1; return 0; };
                 return getWeight(a) - getWeight(b);
@@ -557,12 +705,20 @@
                             ${c.code}: ${discountText}
                         </span>`;
                     }).join('');
-                    
                     couponHtml = `<div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">${couponsTags}</div>`;
                 }
 
+                // Lógica do Coraçãozinho (Favoritos)
+                let isFav = userFavorites.includes(s.id);
+                let favClass = isFav ? 'heart-btn favorited' : 'heart-btn';
+
                 return `
                 <a href="loja.html?id=${s.id}" class="${cardClass}">
+                    
+                    <button class="${favClass}" onclick="window.toggleFavorite('${s.id}', event)">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+
                     <img src="${s.logo || 'https://via.placeholder.com/80'}" class="store-logo" alt="Logo">
                     <div class="store-info">
                         <div class="store-name">${s.name}</div>
@@ -573,20 +729,101 @@
                             ${deliveryFeeHtml}
                         </div>
                         ${couponHtml}
-                        
                     </div>
                 </a>`;
             }).join('');
         };
 
+        // 🟢 FUNÇÕES DOS NOVOS FILTROS E FAVORITOS 🟢
+        window.toggleQuickFilter = (type, btnElement) => {
+            quickFilters[type] = !quickFilters[type];
+            if (quickFilters[type]) {
+                btnElement.classList.add('active');
+            } else {
+                btnElement.classList.remove('active');
+            }
+            window.renderStores();
+        };
+
+        window.toggleFavorite = (storeId, event) => {
+            event.preventDefault(); 
+            event.stopPropagation();
+            
+            if (userFavorites.includes(storeId)) {
+                userFavorites = userFavorites.filter(id => id !== storeId);
+            } else {
+                userFavorites.push(storeId);
+            }
+            localStorage.setItem('userFavorites', JSON.stringify(userFavorites));
+            window.renderStores(); 
+        };
+
         window.filterCategory = (categoryName, element) => {
             document.querySelectorAll('#category-filters .button-item').forEach(btn => btn.classList.remove('active'));
             if (categoryName === 'Todos' || currentCategoryFilter === categoryName) {
-                currentCategoryFilter = null; document.querySelector('#category-filters .button-item').classList.add('active'); document.getElementById('list-title').innerText = "Lojas";
+                currentCategoryFilter = null; 
+                document.querySelector('#category-filters .button-item').classList.add('active'); 
+                document.getElementById('list-title').innerText = "Lojas Disponíveis";
             } else {
-                element.classList.add('active'); currentCategoryFilter = categoryName; document.getElementById('list-title').innerText = "Lojas - " + element.querySelector('span').innerText;
+                element.classList.add('active'); 
+                currentCategoryFilter = categoryName; 
+                document.getElementById('list-title').innerText = "Lojas - " + element.querySelector('span').innerText;
             }
             window.renderStores();
+        };
+
+        // 🟢 MÓDULO DA BARRA DE BUSCA (MODAL) 🟢
+        window.openSearchModal = (e) => {
+            if(e) { e.preventDefault(); }
+            document.getElementById('search-modal').style.display = 'flex';
+            document.getElementById('sm-search-input').focus();
+            window.filterSearchModal();
+        };
+
+        window.closeSearchModal = () => {
+            document.getElementById('search-modal').style.display = 'none';
+            document.getElementById('sm-search-input').value = '';
+        };
+
+        window.filterSearchModal = () => {
+            const query = document.getElementById('sm-search-input').value.toLowerCase().trim();
+            const container = document.getElementById('sm-results-container');
+            const title = document.getElementById('sm-results-title');
+
+            if (!query) {
+                title.style.display = 'none';
+                container.innerHTML = `
+                    <div style="text-align:center; padding:50px 20px; color:#999;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2" style="margin-bottom:10px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <p style="font-size:0.9rem;">Encontre o que deseja num piscar de olhos.</p>
+                    </div>`;
+                return;
+            }
+
+            title.style.display = 'block';
+            let results = allStores.filter(s => s.city === userCity && s.isActive !== false && 
+                (s.name.toLowerCase().includes(query) || (s.cat && s.cat.toLowerCase().includes(query)))
+            );
+
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:40px 20px; color:#777;">
+                        <p>Nenhuma loja ou categoria encontrada para <b>"${query}"</b>.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = results.map(s => {
+                let statusColor = s.status === 'Fechado' ? '#717171' : '#00a14b'; 
+                return `
+                <a href="loja.html?id=${s.id}" class="store-card" style="box-shadow:none; border-bottom:1px solid #eee; border-radius:0; margin:0;">
+                    <img src="${s.logo || 'https://via.placeholder.com/80'}" class="store-logo" style="width:50px; height:50px;">
+                    <div class="store-info">
+                        <div class="store-name" style="font-size:1rem;">${s.name}</div>
+                        <div class="store-details"><span>${s.cat || 'Geral'}</span></div>
+                    </div>
+                </a>`;
+            }).join('');
         };
 
     </script>
