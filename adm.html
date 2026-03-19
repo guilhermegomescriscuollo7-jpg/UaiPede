@@ -863,16 +863,30 @@
             if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); }
         });
         
+        // 🟢 CARREGAMENTO DAS LOJAS 🟢
         onSnapshot(collection(db, "stores"), (snapshot) => { 
-            allStores = []; snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
-            renderStoreList(); 
-            window.onCityFatChange(); 
+            allStores = []; 
+            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
             
-            // PREENCHER DROPDOWN DE LOJAS PARA O BANNER
+            // Tratamento de erro para evitar que o painel trave
+            if (typeof window.renderStoreList === 'function') {
+                window.renderStoreList(); 
+            }
+            if (typeof window.onCityFatChange === 'function') {
+                window.onCityFatChange(); 
+            }
+            
+            // PREENCHER O DROPDOWN DE LOJAS (BANNERS)
             const bStoreEl = document.getElementById('b-store');
             if(bStoreEl) {
                 const currentVal = bStoreEl.value;
-                bStoreEl.innerHTML = '<option value="">Nenhuma (Apenas visual)</option>' + allStores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+                // Ordena alfabeticamente para ficar fácil de achar
+                const sortedStores = [...allStores].sort((a,b) => a.name.localeCompare(b.name));
+                
+                bStoreEl.innerHTML = '<option value="">Nenhuma (Apenas visual)</option>' + 
+                    sortedStores.map(s => `<option value="${s.id}">🏪 ${s.name} (${s.city || 'Sem cidade'})</option>`).join('');
+                
+                // Mantém a loja selecionada caso o painel atualize
                 if(currentVal) bStoreEl.value = currentVal;
             }
         });
@@ -1224,11 +1238,8 @@
         // ==========================================
         onSnapshot(collection(db, "orders"), (snapshot) => {
             allOrders = []; snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
-            window.renderFaturamento(); window.renderRepasse();
+            if (typeof window.renderFaturamento === 'function') window.renderFaturamento(); 
         });
-
-        window.renderFaturamento = () => { /* Lógica mantida da versão original */ };
-        window.renderRepasse = () => { /* Lógica mantida da versão original */ };
 
     </script>
 </body>
