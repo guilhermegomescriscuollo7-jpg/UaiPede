@@ -17,11 +17,19 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 90px; overflow-x: hidden; padding-top: 70px; }
 
+        /* 🟢 CORREÇÃO DO BUG DO FLASH (Esconde a interface até o Splash acabar) 🟢 */
+        html:not(.skip-splash) .brand-header,
+        html:not(.skip-splash) .bottom-nav,
+        html:not(.skip-splash) #main-content,
+        html:not(.skip-splash) #install-banner {
+            display: none !important;
+        }
+
         .skip-splash #splash-screen, 
         .skip-splash #sponsor-wrapper { display: none !important; }
 
         /* BANNER APP */
-        #install-banner { display: none; background: #111; color: #fff; padding: 12px 20px; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+        #install-banner { background: #111; color: #fff; padding: 12px 20px; justify-content: space-between; align-items: center; font-size: 0.9rem; }
         .btn-install { background: #ea1d2c; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         
         /* AVISOS GLOBAIS */
@@ -111,7 +119,6 @@
         .chip-btn.active { background: #ea1d2c; border-color: #ea1d2c; color: #fff; }
         .chip-btn.active svg { color: #fff; fill: #fff; }
         
-        /* Ícone Fav Chip */
         .chip-fav-icon { fill: none; stroke: currentColor; }
         .chip-btn.active .chip-fav-icon { fill: #fff; stroke: #fff; }
 
@@ -167,7 +174,6 @@
             margin-bottom: 6px; 
             padding: 0 5px;
         }
-        /* Tag de "Aberto" atualizada de "Famoso" com ícone de visto SVG */
         .featured-badge { 
             font-size: 0.65rem; 
             color: #ea1d2c; 
@@ -248,7 +254,7 @@
 
     <div id="sponsor-wrapper"><div id="sponsor-content"></div></div>
 
-    <div id="install-banner">
+    <div id="install-banner" style="display:none;">
         <div><strong>UaiPede</strong><br><span style="color:#aaa; font-size:0.8rem;">Instale o app para pedir mais rápido!</span></div>
         <button class="btn-install" id="btn-install-app">Instalar</button>
     </div>
@@ -342,7 +348,7 @@
         </div>
     </div>
 
-    <nav class="bottom-nav">
+    <nav class="bottom-nav" id="main-nav">
         <a href="index.html" class="nav-link active"><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="nav-icon-img" alt="Início"><span>Início</span></a>
         
         <button class="nav-link" onclick="window.openSearchModal()">
@@ -487,7 +493,7 @@
             if(userCity) window.renderStores(); 
         });
 
-        // INICIALIZAÇÃO DA TELA 
+        // 🟢 INICIALIZAÇÃO DA TELA (CORREÇÃO DO BUG VISUAL) 🟢
         window.addEventListener('load', () => {
             const splash = document.getElementById('splash-screen');
             const sponsorWrapper = document.getElementById('sponsor-wrapper');
@@ -509,34 +515,57 @@
             sessionStorage.setItem('splashShown', 'true');
             
             setTimeout(() => {
+                let citySponsors = [];
+                if (userCity) {
+                    citySponsors = allActiveSponsors.filter(s => !s.city || s.city === 'all' || s.city === userCity);
+                }
+
+                // 1. Mostrar o wrapper do patrocinador ANTES de esconder o splash (para ficar por baixo)
+                if (userCity && citySponsors.length > 0 && sponsorWrapper) {
+                    sponsorWrapper.style.display = 'flex';
+                    const spAtual = citySponsors[0];
+                    sponsorContent.className = `effect-${spAtual.transition || 'fade'}`; 
+                    sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador" style="width:100%; height:100%; object-fit:cover;">`;
+                    sponsorContent.classList.add('active'); 
+                }
+
+                // 2. Desaparecer com o Splash suavemente
                 if (splash) splash.classList.add('hidden'); 
                 
+                // 3. Após o Splash sumir (500ms da animação), começa a rodar o patrocinador
                 setTimeout(() => { 
                     if (splash) splash.style.display = 'none'; 
                     
                     if (!userCity) {
+                        document.documentElement.classList.add('skip-splash');
                         window.openCityModal(false);
                     } else {
                         document.getElementById('header-city-name').innerText = userCity.split(' - ')[0];
                         
-                        const citySponsors = allActiveSponsors.filter(s => !s.city || s.city === 'all' || s.city === userCity);
                         if(citySponsors.length > 0 && sponsorWrapper) {
-                            sponsorWrapper.style.display = 'flex';
                             let indexAtual = 0;
                             function mostrarProximoPatrocinador() {
                                 if (indexAtual >= citySponsors.length) {
                                     sponsorWrapper.style.transition = "opacity 0.5s ease"; 
                                     sponsorWrapper.style.opacity = "0";
-                                    setTimeout(() => { sponsorWrapper.style.display = 'none'; window.loadCityContent(); }, 500); 
+                                    setTimeout(() => { 
+                                        sponsorWrapper.style.display = 'none'; 
+                                        document.documentElement.classList.add('skip-splash'); // Revela a UI do app
+                                        window.loadCityContent(); 
+                                    }, 500); 
                                     return;
                                 }
+                                
                                 const spAtual = citySponsors[indexAtual];
-                                const classEfeito = `effect-${spAtual.transition || 'fade'}`;
                                 const tempoMs = (spAtual.duration || 2) * 1000;
-                                sponsorContent.className = classEfeito; 
-                                sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador" style="width:100%; height:100%; object-fit:cover;">`;
-                                void sponsorContent.offsetWidth; 
-                                sponsorContent.classList.add('active'); 
+                                
+                                if (indexAtual > 0) {
+                                    sponsorContent.className = `effect-${spAtual.transition || 'fade'}`; 
+                                    sponsorContent.innerHTML = `<img src="${spAtual.image}" alt="Patrocinador" style="width:100%; height:100%; object-fit:cover;">`;
+                                    void sponsorContent.offsetWidth; 
+                                    sponsorContent.classList.add('active'); 
+                                }
+
                                 setTimeout(() => {
                                     sponsorContent.classList.remove('active'); 
                                     setTimeout(() => { indexAtual++; mostrarProximoPatrocinador(); }, 600); 
@@ -545,6 +574,7 @@
                             mostrarProximoPatrocinador(); 
                         } else {
                             if (sponsorWrapper) sponsorWrapper.style.display = 'none'; 
+                            document.documentElement.classList.add('skip-splash'); // Revela a UI do app
                             window.loadCityContent();
                         }
                     }
@@ -604,6 +634,7 @@
             localStorage.setItem('userCity', cityString);
             document.getElementById('header-city-name').innerText = cityString.split(' - ')[0];
             closeCityModal();
+            document.documentElement.classList.add('skip-splash'); // Garante que a UI é revelada após escolha
             window.loadCityContent();
         };
 
@@ -651,7 +682,7 @@
             }
         };
 
-        // 🟢 SECÇÃO DE DESTAQUES (SÓ ABERTOS APARECEM - COM ÍCONE CHECK PARA 'ABERTO') 🟢
+        // 🟢 SECÇÃO DE DESTAQUES (SÓ ABERTOS APARECEM) 🟢
         window.renderFeaturedStores = () => {
             const featuredSection = document.getElementById('featured-section');
             const track = document.getElementById('featured-track-container');
@@ -660,10 +691,8 @@
             const now = new Date(); const daysMap = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
             const currentDayStr = daysMap[now.getDay()]; const currentMins = now.getHours() * 60 + now.getMinutes();
 
-            // Puxa as lojas da cidade que são destaque
             let featured = allStores.filter(s => s.city === userCity && s.isActive !== false && s.isFeatured === true);
             
-            // Filtra e mantém APENAS as lojas que estão ABERTAS neste momento
             featured = featured.filter(s => {
                 let dynamicStatus = s.status || 'Aberto';
                 if (dynamicStatus === 'Aberto' && s.schedule) {
@@ -680,7 +709,6 @@
                 return dynamicStatus === 'Aberto'; 
             });
 
-            // Se não sobrar nenhuma loja aberta, esconde o carrossel de Destaques
             if (featured.length === 0) {
                 featuredSection.style.display = 'none';
                 return;
