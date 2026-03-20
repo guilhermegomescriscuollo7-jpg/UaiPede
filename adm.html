@@ -391,7 +391,16 @@
                         <label style="display:flex; justify-content:space-between; margin-bottom:15px; font-size: 0.9rem;">Tempo de Exibição: <span id="dur-val" style="color:#ea1d2c; font-weight:900;">2 Segundos</span></label>
                         <input type="range" id="sp-duration" min="1" max="10" value="2" step="1" style="width:100%; accent-color:#ea1d2c;" oninput="document.getElementById('dur-val').innerText = this.value + ' Segundos'">
                     </div>
-                    <div class="form-group" style="flex:1;"><label>Efeito de Transição</label><select id="sp-transition"><option value="fade">Esmaecer</option><option value="zoom">Aproximar</option><option value="slide">Deslizar de Baixo</option></select></div>
+                    
+                    <div class="form-group" style="flex:1;">
+                        <label>Efeito de Transição</label>
+                        <select id="sp-transition">
+                            <option value="fade">Esmaecer (Fade)</option>
+                            <option value="zoom">Aproximar (Zoom In)</option>
+                            <option value="slide">Deslizar de Baixo</option>
+                            <option value="slide-left">Deslizar p/ Esquerda</option> 
+                        </select>
+                    </div>
                 </div>
                 <button class="btn" id="btn-save-sponsor" onclick="window.saveSponsor()" style="width:100%; padding:16px; justify-content:center;">Gravar Patrocinador</button>
             </div>
@@ -1036,7 +1045,7 @@
         }
 
         // ==========================================
-        // 9. PATROCINADORES
+        // 9. PATROCINADORES (COM EFEITO DESLIZAR P/ ESQUERDA)
         // ==========================================
         document.getElementById('sp-image').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -1072,11 +1081,17 @@
             const container = document.getElementById('sponsor-list-container');
             if(globalSponsors.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum patrocinador cadastrado.</p>'; return; }
             container.innerHTML = globalSponsors.map(s => {
+                let transName = 'Esmaecer';
+                if (s.transition === 'zoom') transName = 'Aproximar';
+                else if (s.transition === 'slide') transName = 'Deslizar Baixo';
+                else if (s.transition === 'slide-left') transName = 'Deslizar Esquerda'; // NOVO EFEITO AQUI
+
                 return `
                 <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
                     <img src="${s.image}" style="width:100%; height:200px; object-fit:contain; background:#111; border-radius:12px; margin-bottom:15px;">
                     <div style="width:100%; font-size:0.85rem; color:#555; margin-bottom:15px;">
                         <strong style="color:#111;">Tempo:</strong> ${s.duration} Segs<br>
+                        <strong style="color:#111;">Efeito:</strong> ${transName}<br>
                     </div>
                     <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
                         <span class="badge-city" style="margin: 0;">📍 ${s.city === 'all' ? 'Global' : s.city}</span>
