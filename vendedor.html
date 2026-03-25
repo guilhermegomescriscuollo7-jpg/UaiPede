@@ -816,6 +816,29 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // 🟢 LÓGICA DO ÁUDIO CUSTOMIZADO (ADICIONADA) 🟢
+        let customAlertSound = null;
+
+        // Fica escutando as mudanças de áudio no painel do administrador em tempo real
+        onSnapshot(doc(db, "global_settings", "notification_audio"), (docSnap) => {
+            if (docSnap.exists() && docSnap.data().audioData) {
+                customAlertSound = new Audio(docSnap.data().audioData);
+            } else {
+                // Se não houver nada no painel admin, usa a caixa registradora como fallback
+                customAlertSound = new Audio('https://www.myinstants.com/media/sounds/cash-register-purchase.mp3');
+            }
+        });
+
+        // Funções auxiliares para o chat (evitando erros no console)
+        window.playMsgSound = () => { try { new Audio('https://www.myinstants.com/media/sounds/message-tone.mp3').play().catch(()=>{}); } catch(e){} };
+        window.showMsgToast = (name, text, orderId) => {
+            const toast = document.getElementById('new-order-toast');
+            document.getElementById('toast-store-name').innerText = `💬 Nova mensagem de ${name}`;
+            document.getElementById('toast-msg-text').innerText = text.length > 30 ? text.substring(0, 30) + '...' : text;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 5000);
+        };
+
         // 🟢 VARIÁVEIS GLOBAIS 🟢
         let globalOrders = []; 
         let previousOrderCount = -1;
@@ -934,10 +957,14 @@
 
         window.closeToast = () => { document.getElementById('new-order-toast').classList.remove('show'); };
 
+        // 🟢 NOVA FUNÇÃO ATUALIZADA PARA TOCAR O MP3 DO ADMIN 🟢
         function playAlertSound() {
             try {
-                const toqueCaixa = new Audio('https://www.myinstants.com/media/sounds/cash-register-purchase.mp3'); 
-                toqueCaixa.play().catch(e => console.log("Áudio bloqueado pelo navegador"));
+                if (customAlertSound) {
+                    customAlertSound.play().catch(e => console.log("Áudio bloqueado pelo navegador"));
+                } else {
+                    new Audio('https://www.myinstants.com/media/sounds/cash-register-purchase.mp3').play().catch(e=>{});
+                }
 
                 setTimeout(() => {
                     if ('speechSynthesis' in window) {
@@ -947,7 +974,7 @@
                         msg.pitch = 1.3;  
                         window.speechSynthesis.speak(msg);
                     }
-                }, 800); 
+                }, 1000); 
                 
             } catch (e) {}
         }
@@ -955,6 +982,8 @@
         function triggerNewOrderAlert() {
             playAlertSound();
             const toast = document.getElementById('new-order-toast');
+            document.getElementById('toast-store-name').innerText = `Novo Pedido!`;
+            document.getElementById('toast-msg-text').innerText = `Verifique a sua lista de pendentes.`;
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 10000); 
             if ("Notification" in window && Notification.permission === "granted") {
@@ -1241,7 +1270,6 @@
             document.getElementById('count-rota').innerText = cRota; 
             document.getElementById('count-concluido').innerText = cConc;
 
-            // 🟢 LÓGICA PARA ATUALIZAR AS MENSAGENS NÃO LIDAS NO CHAT 🟢
             activeOrders.forEach(order => {
                 if (!chatListeners[order.id]) {
                     initialLoadMsg[order.id] = true;
@@ -1250,7 +1278,6 @@
                     chatListeners[order.id] = onSnapshot(qMsg, (msgSnapshot) => {
                         let unread = 0;
                         
-                        // Conta as mensagens enviadas pelo cliente que ainda não foram lidas
                         msgSnapshot.forEach(d => {
                             const m = d.data();
                             if (m.sender === 'customer' && !m.read) {
@@ -1260,7 +1287,6 @@
 
                         window.unreadCounts[order.id] = unread;
                         
-                        // Atualiza o DOM (o botão de chat) se o pedido estiver na tela
                         const badge = document.getElementById(`badge-${order.id}`);
                         if (badge) {
                             if (unread > 0) {
@@ -1276,16 +1302,13 @@
                             return; 
                         }
                         
-                        // Sistema de Pop-up (Toast) e leitura automática caso o chat já esteja aberto
                         msgSnapshot.docChanges().forEach((change) => {
                             if (change.type === "added") {
                                 const msg = change.doc.data();
                                 if (msg.sender === 'customer') {
                                     if (currentChatOrderId === order.id) {
-                                        // Se o lojista está com o chat aberto, já marca como lida
                                         updateDoc(doc(db, "orders", order.id, "messages", change.doc.id), { read: true });
                                     } else {
-                                        // Se não, solta o alerta visual e sonoro
                                         window.showMsgToast(order.customerName || 'Cliente', msg.text, order.id);
                                         window.playMsgSound();
                                     }
@@ -1405,7 +1428,6 @@
 
             const safeCustomerName = order.customerName ? order.customerName.replace(/'/g, "\\'") : 'Cliente';
             
-            // 🟢 LÓGICA DO BALÃO DE MENSAGENS NÃO LIDAS 🟢
             const unreadCount = window.unreadCounts && window.unreadCounts[order.id] ? window.unreadCounts[order.id] : 0;
             const badgeStyle = unreadCount > 0 ? 'display:inline-flex;' : 'display:none;';
 
@@ -1559,7 +1581,7 @@
             } else {
                 kgFields.style.display = 'none';
                 priceInput.readOnly = false;
-                priceInput.style.backgroundColor = '#fff';
+                priceInput.style.backgroundColor = '#fdfdfd';
             }
         };
 
@@ -1597,8 +1619,8 @@
                         <span class="drag-handle" style="font-size: 1rem; margin:0;">⋮⋮</span>
                         <input type="text" placeholder="Ex: Pequeno" value="${v.name}" oninput="window.updateVarData(${index}, 'name', this.value)">
                         <input type="number" class="var-price" placeholder="R$ 0,00" value="${v.price}" step="0.01" oninput="window.updateVarData(${index}, 'price', this.value)">
-                        <button class="btn-rem-var" onclick="window.removeVariantRow(${index})" style="background:none; border:none; color:#ea1d2c; cursor:pointer;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <button class="btn-rem-var" onclick="window.removeVariantRow(${index})" style="background:none; border:none; color:#ea1d2c; cursor:pointer;" title="Remover Variante">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
                     </div>`;
             });
@@ -1620,7 +1642,7 @@
         };
 
         window.deleteCategory = async (catName) => {
-            if(confirm(`Tem certeza que deseja excluir a categoria "${catName}"?\nOs produtos serão movidos para "Geral".`)) {
+            if(confirm(`Tem certeza que deseja excluir a categoria "${catName}"?\nOs produtos serão movidos para a categoria "Geral".`)) {
                 myCategories = myCategories.filter(c => c !== catName); 
                 try { await updateDoc(doc(db, "stores", loggedStore.id), { categories: myCategories }); } catch(e) {}
                 globalProducts.forEach(async (p) => {
@@ -1649,40 +1671,33 @@
             allUniqueCategories.forEach(catName => {
                 catSelect.innerHTML += `<option value="${catName}">${catName}</option>`;
                 const prodsInCat = globalProducts.filter(p => (p.category || 'Geral') === catName);
-                const deleteBtnHTML = (catName !== 'Geral' && catName !== 'Destaques') ? `<button class="btn-del-cat" title="Excluir" onclick="window.deleteCategory('${catName}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>` : '';
+                const deleteBtnHTML = (catName !== 'Geral' && catName !== 'Destaques') ? `<button class="btn-del-cat" title="Excluir Categoria" onclick="window.deleteCategory('${catName}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>` : '';
                 
                 let blockHTML = `
                     <div class="category-block">
                         <div class="category-header">
-                            <div><span style="font-weight: normal; font-size:0.75rem;">Nome da categoria</span><br><span style="color:#111; font-size:1rem;">${catName}</span></div>
-                            <div class="cat-actions"><button class="btn-add-prod-cat" onclick="window.openEditorNew('${catName}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Produto</button>${deleteBtnHTML}</div>
+                            <div><span style="font-weight: 700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px;">Nome da categoria</span><br><span style="color:#111; font-size:1.15rem; font-weight:900;">${catName}</span></div>
+                            <div class="cat-actions"><button class="btn-add-prod-cat" onclick="window.openEditorNew('${catName}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Novo Produto</button>${deleteBtnHTML}</div>
                         </div>`;
                 
                 if (prodsInCat.length === 0) { 
-                    blockHTML += `<div style="padding: 15px; font-size:0.85rem; color:#999; text-align:center;">Nenhum produto nesta categoria.</div>`; 
+                    blockHTML += `<div style="padding: 20px; font-size:0.9rem; color:#999; text-align:center; font-weight: 500;">Nenhum produto cadastrado nesta categoria.</div>`; 
                 } else {
                     prodsInCat.forEach(p => {
                         let subText = '';
-                        if (p.variants && p.variants.length > 0) { subText = `${p.variants.length} Variantes`; } 
+                        if (p.variants && p.variants.length > 0) { subText = `${p.variants.length} Variantes de Preço`; } 
                         else {
                             if(p.unit === 'kg' && p.weight) { subText = `R$ ${(p.price || 0).toFixed(2)} (${p.weight}kg)`; } 
                             else { subText = `R$ ${(p.price || 0).toFixed(2)}`; }
                         }
                         let inactiveStyle = p.isActive === false ? 'opacity: 0.5; background: #fafafa;' : '';
-                        let inactiveBadge = p.isActive === false ? '<span style="background:#ea1d2c; color:#fff; font-size:0.6rem; padding:2px 6px; border-radius:4px; margin-left:5px;">Inativo</span>' : '';
-                        let promoBadge = p.isPromo === true ? '<span style="background:#ea1d2c; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; letter-spacing:0.5px; text-transform:uppercase;">Promoção</span>' : '';
+                        let inactiveBadge = p.isActive === false ? '<span style="background:#ea1d2c; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:8px; margin-left:8px;">Inativo</span>' : '';
+                        let promoBadge = p.isPromo === true ? '<span style="background:#00a14b; color:#fff; font-size:0.65rem; font-weight:900; padding:2px 8px; border-radius:8px; margin-left:8px; letter-spacing:0.5px; text-transform:uppercase;">Promoção</span>' : '';
                         
-                        let stockBadge = '';
-                        if (p.hasStockControl) {
-                            let stockColor = p.stockQuantity > 0 ? '#00a14b' : '#ea1d2c';
-                            let stockText = p.stockQuantity > 0 ? `Estoque: ${p.stockQuantity}` : 'Esgotado';
-                            stockBadge = `<span style="background:${stockColor}15; color:${stockColor}; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; letter-spacing:0.5px;">${stockText}</span>`;
-                        }
-
                         blockHTML += `
                             <div class="product-row" id="row-prod-${p.id}" onclick="window.openEditorEdit('${p.id}')" style="${inactiveStyle}">
                                 <div class="drag-handle">⋮⋮</div><img src="${p.image}" class="row-img">
-                                <div class="row-info"><div class="row-name" style="display:flex; align-items:center; flex-wrap:wrap;">${p.name} ${inactiveBadge} ${promoBadge} ${stockBadge}</div><div class="row-sub">${subText}</div></div>
+                                <div class="row-info"><div class="row-name" style="display:flex; align-items:center; flex-wrap:wrap;">${p.name} ${inactiveBadge} ${promoBadge}</div><div class="row-sub">${subText}</div></div>
                             </div>`;
                     });
                 }
@@ -1697,7 +1712,7 @@
             editorImageBase64 = ''; document.getElementById('ed-price').value = ''; document.getElementById('ed-var-title').value = '';
             document.getElementById('ed-status').value = 'true'; document.getElementById('ed-promo').value = 'false';
             document.getElementById('ed-unit').value = 'un'; document.getElementById('ed-price-kg').value = ''; document.getElementById('ed-weight').value = '';
-            document.getElementById('kg-fields').style.display = 'none'; document.getElementById('ed-price').readOnly = false; document.getElementById('ed-price').style.backgroundColor = '#fff';
+            document.getElementById('kg-fields').style.display = 'none'; document.getElementById('ed-price').readOnly = false; document.getElementById('ed-price').style.backgroundColor = '#fdfdfd';
             
             document.getElementById('ed-has-stock').checked = false; 
             document.getElementById('ed-stock-qty').value = ''; 
@@ -2017,35 +2032,6 @@
             else peakContainer.innerHTML = sortedHours.map(h => `<li><span>🕒 ${h.range}</span> <strong style="color:#0d6efd;">${h.count} pedidos</strong></li>`).join('');
         };
 
-        const qCoupons = query(collection(db, "coupons"), where("storeId", "==", loggedStore.id));
-        onSnapshot(qCoupons, (snapshot) => {
-            globalCoupons = []; snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() })); window.renderCoupons();
-        });
-
-        window.createCoupon = async () => {
-            const code = document.getElementById('cp-code').value.trim().toUpperCase(); const type = document.getElementById('cp-type').value; const value = parseFloat(document.getElementById('cp-value').value);
-            const minOrder = parseFloat(document.getElementById('cp-min').value) || 0; const usageLimit = parseInt(document.getElementById('cp-limit').value) || null;
-            if (!code || isNaN(value) || value <= 0) return alert("Preencha o código do cupom e um valor.");
-            if (globalCoupons.find(c => c.code === code)) return alert("Já existe um cupom com este código.");
-            try { await addDoc(collection(db, "coupons"), { storeId: loggedStore.id, code, type, value, minOrder, usageLimit, usedCount: 0, active: true, createdAt: Date.now() }); alert("Cupom criado!"); document.getElementById('cp-code').value = ''; document.getElementById('cp-value').value = ''; } catch (e) {}
-        };
-
-        window.renderCoupons = () => {
-            const container = document.getElementById('coupon-list-render'); container.innerHTML = '';
-            if (globalCoupons.length === 0) { container.innerHTML = '<p style="color: #999; text-align:center; padding: 20px;">Nenhum cupom criado.</p>'; return; }
-            globalCoupons.sort((a, b) => b.createdAt - a.createdAt).forEach(coupon => {
-                let valText = coupon.type === 'percentage' ? `${coupon.value}%` : `R$ ${coupon.value.toFixed(2)}`;
-                let minText = coupon.minOrder > 0 ? `Mínimo: R$ ${coupon.minOrder.toFixed(2)}` : 'Sem mínimo';
-                let limitHtml = coupon.usageLimit ? `<div class="t-info" style="margin-top: 5px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; display: inline-block;">Usos: ${coupon.usedCount || 0} / ${coupon.usageLimit} ${coupon.usedCount >= coupon.usageLimit ? '(Esgotado)' : ''}</div>` : `<div class="t-info" style="margin-top: 5px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; display: inline-block;">Uso Ilimitado</div>`;
-                let toggleBtn = coupon.active ? `<button class="t-btn-toggle active" onclick="window.toggleCoupon('${coupon.id}', false)">Ativo</button>` : `<button class="t-btn-toggle inactive" onclick="window.toggleCoupon('${coupon.id}', true)">Inativo</button>`;
-                container.innerHTML += `<div class="ticket-coupon" style="${!coupon.active ? 'opacity:0.6; filter: grayscale(50%);' : ''}"><div class="ticket-left"><div class="t-title">CUPOM DE DESCONTO</div><div class="t-value">${valText}</div><div class="t-code">${coupon.code}</div><div class="t-info">${minText}</div>${limitHtml}</div><div class="ticket-right">${toggleBtn}<button class="t-btn-del" title="Apagar" onclick="window.deleteCoupon('${coupon.id}')">🗑️</button></div></div>`;
-            });
-        };
-
-        window.toggleCoupon = async (id, makeActive) => { try { await updateDoc(doc(db, "coupons", id), { active: makeActive }); } catch(e) {} };
-        window.deleteCoupon = async (id) => { if(confirm("Apagar permanentemente?")) try { await deleteDoc(doc(db, "coupons", id)); } catch(e) {} };
-
-        // 🟢 FUNÇÃO QUE MARCA TODAS AS MENSAGENS COMO LIDAS AO ABRIR O CHAT 🟢
         window.markMessagesAsRead = async (orderId) => {
             try {
                 const q = collection(db, "orders", orderId, "messages");
@@ -2066,7 +2052,6 @@
             document.getElementById('chat-order-id').innerText = '#' + shortId;
             document.getElementById('chat-modal').classList.add('active');
             
-            // Marca as msgs como lidas ao abrir
             window.markMessagesAsRead(orderId);
 
             const qMsg = query(collection(db, "orders", currentChatOrderId, "messages"), orderBy("timestamp", "asc"));
