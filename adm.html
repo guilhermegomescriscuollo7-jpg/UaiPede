@@ -176,6 +176,10 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                 Avisos Globais (Push)
             </li>
+            <li class="nav-item" onclick="window.switchTab('audio-alerta', this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                Som de Notificação
+            </li>
             <li class="nav-item" onclick="window.open('monitoramento.html', '_blank')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                 Monitoramento PRO
@@ -418,12 +422,32 @@
             <h3 style="margin-top:40px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Avisos Ativos</h3>
             <div id="alerts-list-container" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;"></div>
         </section>
+        
+        <section id="audio-alerta" class="section">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                Som de Notificação (Lojas)
+            </h2>
+            <div style="background:#fff; padding:30px; border-radius:16px; border:1px solid #eee; max-width:600px;">
+                <p style="color:#777; font-size:0.95rem; margin-bottom: 20px;">Faça o upload de um arquivo de áudio (MP3 ou WAV) para ser o toque oficial de "Novo Pedido" no painel de todas as lojas. Recomendamos áudios de até 5 segundos. (Tamanho máximo: 800KB)</p>
+                <div class="form-group">
+                    <label>Selecione o Arquivo de Áudio</label>
+                    <input type="file" id="audio-file" accept="audio/*" style="padding: 10px; border: 2px dashed #ddd; background: #f9f9f9; cursor: pointer;">
+                </div>
+                <button class="btn" onclick="window.saveAudioAlert()" style="width:100%; justify-content:center;">Salvar Áudio Customizado</button>
+
+                <h3 style="margin-top:40px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; font-size: 1.1rem; color: #111;">Áudio Atual</h3>
+                <div id="current-audio-container" style="margin-top: 15px;">
+                    <p style="color:#999; font-size:0.9rem;">Carregando...</p>
+                </div>
+            </div>
+        </section>
 
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Cole aqui suas credenciais oficiais do Firebase do Dores Delivery
         const firebaseConfig = {
@@ -471,6 +495,68 @@
             };
             reader.readAsDataURL(file);
         }
+
+        // ==========================================
+        // 11. ÁUDIO DE NOTIFICAÇÃO (NOVO)
+        // ==========================================
+        let alertAudioBase64 = '';
+
+        document.getElementById('audio-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 800000) { 
+                    alert("O arquivo é muito grande! Escolha um áudio menor que 800KB para não pesar o carregamento das lojas.");
+                    this.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    alertAudioBase64 = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        window.saveAudioAlert = async () => {
+            if (!alertAudioBase64) return alert("Por favor, selecione um arquivo de áudio primeiro.");
+            try {
+                await setDoc(doc(db, "global_settings", "notification_audio"), {
+                    audioData: alertAudioBase64,
+                    updatedAt: Date.now()
+                });
+                alert("Áudio de notificação salvo com sucesso! A partir de agora, todas as lojas ouvirão este som.");
+                document.getElementById('audio-file').value = '';
+                alertAudioBase64 = '';
+            } catch (e) {
+                alert("Erro ao salvar áudio: " + e.message);
+            }
+        };
+
+        window.deleteAudioAlert = async () => {
+            if(confirm("Deseja remover o áudio customizado e voltar para o som padrão (caixa registradora)?")) {
+                try {
+                    await deleteDoc(doc(db, "global_settings", "notification_audio"));
+                    alert("Áudio restaurado para o padrão!");
+                } catch(e) {}
+            }
+        };
+
+        // Carregar o áudio atual no painel para o Admin ouvir
+        onSnapshot(doc(db, "global_settings", "notification_audio"), (docSnap) => {
+            const container = document.getElementById('current-audio-container');
+            if (docSnap.exists() && docSnap.data().audioData) {
+                container.innerHTML = `
+                    <audio controls style="width: 100%; border-radius: 8px; margin-bottom: 15px; outline: none; background: #f9f9f9;">
+                        <source src="${docSnap.data().audioData}">
+                        Seu navegador não suporta áudio.
+                    </audio>
+                    <button class="btn-del" onclick="window.deleteAudioAlert()" style="width: 100%; justify-content: center;">Restaurar Som Padrão</button>
+                `;
+            } else {
+                container.innerHTML = '<p style="color:#999; font-size:0.9rem;">Nenhum áudio customizado no momento. O som padrão (caixa registradora) está ativo nas lojas.</p>';
+            }
+        });
+
 
         // ==========================================
         // 1. CIDADES
@@ -1084,7 +1170,7 @@
                 let transName = 'Esmaecer';
                 if (s.transition === 'zoom') transName = 'Aproximar';
                 else if (s.transition === 'slide') transName = 'Deslizar Baixo';
-                else if (s.transition === 'slide-left') transName = 'Deslizar Esquerda'; // NOVO EFEITO AQUI
+                else if (s.transition === 'slide-left') transName = 'Deslizar Esquerda'; 
 
                 return `
                 <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
