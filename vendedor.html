@@ -345,7 +345,7 @@
                 <h2 style="margin:0;">Painel de Pedidos</h2>
                 <button onclick="window.requestNotificationPermission()" style="background:#fff5f5; color:#ea1d2c; border:1px solid #fbd5d5; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:6px;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                    Ativar Alerta com Voz (IA)
+                    Ativar Alertas de Áudio
                 </button>
             </div>
             
@@ -816,7 +816,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 🟢 LÓGICA DO ÁUDIO CUSTOMIZADO (ADICIONADA) 🟢
+        // 🟢 LÓGICA DO ÁUDIO CUSTOMIZADO 🟢
         let customAlertSound = null;
 
         // Fica escutando as mudanças de áudio no painel do administrador em tempo real
@@ -945,11 +945,6 @@
                 const ctx = new AudioContext();
                 ctx.resume();
                 
-                if ('speechSynthesis' in window) {
-                    let msg = new SpeechSynthesisUtterance("");
-                    window.speechSynthesis.speak(msg);
-                }
-                
                 alert("Áudio e Alertas ativados com sucesso! O som tocará perfeitamente agora.");
             } catch(e) {}
             if ("Notification" in window) Notification.requestPermission();
@@ -957,7 +952,7 @@
 
         window.closeToast = () => { document.getElementById('new-order-toast').classList.remove('show'); };
 
-        // 🟢 NOVA FUNÇÃO ATUALIZADA PARA TOCAR O MP3 DO ADMIN 🟢
+        // 🟢 FUNÇÃO ATUALIZADA PARA TOCAR SOMENTE O MP3 🟢
         function playAlertSound() {
             try {
                 if (customAlertSound) {
@@ -965,17 +960,6 @@
                 } else {
                     new Audio('https://www.myinstants.com/media/sounds/cash-register-purchase.mp3').play().catch(e=>{});
                 }
-
-                setTimeout(() => {
-                    if ('speechSynthesis' in window) {
-                        const msg = new SpeechSynthesisUtterance("Uai Pede! Você tem um novo pedido!");
-                        msg.lang = 'pt-BR';
-                        msg.rate = 1.15;  
-                        msg.pitch = 1.3;  
-                        window.speechSynthesis.speak(msg);
-                    }
-                }, 1000); 
-                
             } catch (e) {}
         }
 
@@ -1694,10 +1678,17 @@
                         let inactiveBadge = p.isActive === false ? '<span style="background:#ea1d2c; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:8px; margin-left:8px;">Inativo</span>' : '';
                         let promoBadge = p.isPromo === true ? '<span style="background:#00a14b; color:#fff; font-size:0.65rem; font-weight:900; padding:2px 8px; border-radius:8px; margin-left:8px; letter-spacing:0.5px; text-transform:uppercase;">Promoção</span>' : '';
                         
+                        let stockBadge = '';
+                        if (p.hasStockControl) {
+                            let stockColor = p.stockQuantity > 0 ? '#00a14b' : '#ea1d2c';
+                            let stockText = p.stockQuantity > 0 ? `Estoque: ${p.stockQuantity}` : 'Esgotado';
+                            stockBadge = `<span style="background:${stockColor}15; color:${stockColor}; font-size:0.65rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; letter-spacing:0.5px;">${stockText}</span>`;
+                        }
+
                         blockHTML += `
                             <div class="product-row" id="row-prod-${p.id}" onclick="window.openEditorEdit('${p.id}')" style="${inactiveStyle}">
                                 <div class="drag-handle">⋮⋮</div><img src="${p.image}" class="row-img">
-                                <div class="row-info"><div class="row-name" style="display:flex; align-items:center; flex-wrap:wrap;">${p.name} ${inactiveBadge} ${promoBadge}</div><div class="row-sub">${subText}</div></div>
+                                <div class="row-info"><div class="row-name" style="display:flex; align-items:center; flex-wrap:wrap;">${p.name} ${inactiveBadge} ${promoBadge} ${stockBadge}</div><div class="row-sub">${subText}</div></div>
                             </div>`;
                     });
                 }
@@ -1800,7 +1791,7 @@
             try {
                 if (currentEditingId) { 
                     await updateDoc(doc(db, "products", currentEditingId), prodData); 
-                    alert("Produto atualizado!"); 
+                    alert("Produto atualizado com sucesso!"); 
                 } else { 
                     if(!editorImageBase64) prodData.image = 'https://via.placeholder.com/150'; 
                     await addDoc(collection(db, "products"), prodData); 
@@ -1809,12 +1800,13 @@
                 window.clearEditor();
             } catch(e) { 
                 alert("Erro ao salvar produto: " + e.message);
+                console.error("Firebase Error:", e);
             }
         };
 
         window.deleteEditingProduct = async () => {
             if(!currentEditingId) return;
-            if(confirm("Apagar este produto permanentemente?")) {
+            if(confirm("Deseja apagar este produto permanentemente do seu cardápio?")) {
                 try { await deleteDoc(doc(db, "products", currentEditingId)); window.clearEditor(); } catch(e) {}
             }
         };
@@ -1822,8 +1814,8 @@
         window.updateModBadge = () => { document.getElementById('mod-count-badge').innerText = editingModifiers.length; document.getElementById('mod-header-count').innerText = editingModifiers.length; };
         window.openModifiersModal = () => { document.getElementById('modifiers-modal').classList.add('active'); window.renderModifiersScreen(); };
         window.closeModifiersModal = () => { document.getElementById('modifiers-modal').classList.remove('active'); window.updateModBadge(); };
-        window.addModCategory = () => { editingModifiers.push({ name: 'Opção', isRequired: true, isMultiple: false, options: [ { name: '', price: '' } ] }); window.renderModifiersScreen(); };
-        window.removeModCategory = (index) => { if(confirm("Excluir esta categoria de modificador?")) { editingModifiers.splice(index, 1); window.renderModifiersScreen(); } };
+        window.addModCategory = () => { editingModifiers.push({ name: 'Nova Opção', isRequired: true, isMultiple: false, options: [ { name: '', price: '' } ] }); window.renderModifiersScreen(); };
+        window.removeModCategory = (index) => { if(confirm("Excluir esta categoria de modificador inteira?")) { editingModifiers.splice(index, 1); window.renderModifiersScreen(); } };
         window.updateModCat = (index, field, value) => { editingModifiers[index][field] = value; };
         window.addModOption = (catIndex) => { editingModifiers[catIndex].options.push({ name: '', price: '' }); window.renderModifiersScreen(); };
         window.removeModOption = (catIndex, optIndex) => { editingModifiers[catIndex].options.splice(optIndex, 1); window.renderModifiersScreen(); };
@@ -1831,294 +1823,46 @@
         
         window.renderModifiersScreen = () => {
             window.updateModBadge(); const container = document.getElementById('modifiers-list-render'); container.innerHTML = '';
-            if(editingModifiers.length === 0) { container.innerHTML = `<div style="text-align:center; padding: 40px; color:#999;">Nenhuma categoria de modificador criada. Clique em "+ Criar categoria".</div>`; return; }
+            if(editingModifiers.length === 0) { container.innerHTML = `<div style="text-align:center; padding: 40px; color:#999; font-weight: 500; border: 1px dashed #ccc; border-radius: 12px; margin: 20px;">Nenhuma categoria de modificador criada.<br>Clique em "+ Adicionar Categoria" acima.</div>`; return; }
             editingModifiers.forEach((cat, cIndex) => {
                 let optionsHtml = '';
                 cat.options.forEach((opt, oIndex) => {
                     optionsHtml += `
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; background:#fff; padding:10px; border-radius:8px; border:1px solid #eee;">
-                        <span style="color:#ccc; font-size:1.2rem; cursor:grab;">⋮⋮</span>
-                        <div style="flex:2;"><label style="font-size:0.7rem; color:#777; font-weight:bold;">Nome do modificador</label><input type="text" value="${opt.name}" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; outline:none;" placeholder="Ex: Queijo Cheddar" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'name', this.value)"></div>
-                        <div style="flex:1;"><label style="font-size:0.7rem; color:#777; font-weight:bold;">Preço</label><input type="number" step="0.01" value="${opt.price}" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; outline:none;" placeholder="R$ 0,00" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'price', this.value)"></div>
-                        <button style="background:none; border:none; font-size:1.2rem; color:#ea1d2c; cursor:pointer; margin-top:15px;" title="Remover Opção" onclick="window.removeModOption(${cIndex}, ${oIndex})">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; background:#fff; padding:15px; border-radius:10px; border:1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                        <span style="color:#ccc; font-size:1.4rem; cursor:grab;">⋮⋮</span>
+                        <div style="flex:2;"><label style="font-size:0.75rem; color:#777; font-weight:800; text-transform:uppercase;">Nome do modificador</label><input type="text" value="${opt.name}" style="width:100%; padding:10px 14px; border:1px solid #ddd; border-radius:8px; outline:none; font-weight:bold; color:#111;" placeholder="Ex: Queijo Cheddar" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'name', this.value)"></div>
+                        <div style="flex:1;"><label style="font-size:0.75rem; color:#777; font-weight:800; text-transform:uppercase;">Preço</label><input type="number" step="0.01" value="${opt.price}" style="width:100%; padding:10px 14px; border:1px solid #ddd; border-radius:8px; outline:none; font-weight:bold; color:#111;" placeholder="R$ 0,00" oninput="window.updateModOpt(${cIndex}, ${oIndex}, 'price', this.value)"></div>
+                        <button style="background:rgba(234,29,44,0.1); border:none; padding:10px; border-radius:8px; color:#ea1d2c; cursor:pointer; margin-top:20px; transition:0.2s;" title="Remover Opção" onclick="window.removeModOption(${cIndex}, ${oIndex})">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
                     </div>`;
                 });
                 container.innerHTML += `
-                <div style="background:#fff; border:1px solid #e0e0e0; border-radius:12px; margin-bottom:15px; overflow:hidden;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f9f9f9; padding:15px; border-bottom:1px solid #eee;">
-                        <div style="position:relative; flex:1; max-width: 300px;"><label style="position:absolute; top:-8px; left:10px; background:#f9f9f9; font-size:0.7rem; color:#777; padding:0 4px; font-weight:bold;">Nome da Categoria</label><input type="text" value="${cat.name}" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-weight:bold; color:#111; outline:none;" oninput="window.updateModCat(${cIndex}, 'name', this.value)"></div>
-                        <button style="background:#fff0f0; color:#ea1d2c; border:1px solid #fbd5d5; padding:8px 15px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:0.8rem;" onclick="window.removeModCategory(${cIndex})">✕ Excluir</button>
+                <div style="background:#fff; border:1px solid #f0f0f0; border-radius:16px; margin-bottom:25px; overflow:hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#fdfdfd; padding:20px 25px; border-bottom:1px solid #eee;">
+                        <div style="position:relative; flex:1; max-width: 350px;"><label style="position:absolute; top:-8px; left:12px; background:#fdfdfd; font-size:0.75rem; color:#ea1d2c; padding:0 6px; font-weight:900; text-transform:uppercase;">Título da Categoria</label><input type="text" value="${cat.name}" style="width:100%; padding:12px 16px; border:2px solid #ea1d2c; border-radius:10px; font-weight:900; font-size: 1.05rem; color:#111; outline:none;" oninput="window.updateModCat(${cIndex}, 'name', this.value)"></div>
+                        <button style="background:#fff0f0; color:#ea1d2c; border:1px solid #fbd5d5; padding:10px 16px; border-radius:10px; font-weight:800; cursor:pointer; font-size:0.85rem; transition:0.2s;" onclick="window.removeModCategory(${cIndex})">✕ Excluir Categoria</button>
                     </div>
-                    <div style="padding:15px;">
-                        <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px; background:#f4f5f7; padding:15px; border-radius:8px;">
-                            <div style="flex:1; min-width:200px;"><span style="font-size:0.8rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">Selecionar condição</span>
-                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer; margin-bottom:6px;"><input type="radio" name="req_${cIndex}" ${cat.isRequired ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isRequired', true)"> Obrigatório</label>
-                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer;"><input type="radio" name="req_${cIndex}" ${!cat.isRequired ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isRequired', false)"> Opcional</label>
+                    <div style="padding:25px;">
+                        <div style="display:flex; gap:25px; flex-wrap:wrap; margin-bottom:25px; background:#f4f5f7; padding:20px; border-radius:12px;">
+                            <div style="flex:1; min-width:200px;"><span style="font-size:0.85rem; font-weight:900; color:#111; display:block; margin-bottom:10px; text-transform:uppercase;">Condição do Cliente</span>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.95rem; color:#333; font-weight:600; cursor:pointer; margin-bottom:8px;"><input type="radio" name="req_${cIndex}" ${cat.isRequired ? 'checked' : ''} style="transform:scale(1.3); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isRequired', true)"> Escolha Obrigatória</label>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.95rem; color:#333; font-weight:600; cursor:pointer;"><input type="radio" name="req_${cIndex}" ${!cat.isRequired ? 'checked' : ''} style="transform:scale(1.3); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isRequired', false)"> Escolha Opcional</label>
                             </div>
-                            <div style="flex:1; min-width:200px;"><span style="font-size:0.8rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">Nessa categoria, você pode selecionar</span>
-                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer; margin-bottom:6px;"><input type="radio" name="mult_${cIndex}" ${!cat.isMultiple ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isMultiple', false)"> Apenas um modificador</label>
-                                <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#111; cursor:pointer;"><input type="radio" name="mult_${cIndex}" ${cat.isMultiple ? 'checked' : ''} style="transform:scale(1.2); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isMultiple', true)"> Vários</label>
+                            <div style="flex:1; min-width:200px;"><span style="font-size:0.85rem; font-weight:900; color:#111; display:block; margin-bottom:10px; text-transform:uppercase;">Limite de Escolha</span>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.95rem; color:#333; font-weight:600; cursor:pointer; margin-bottom:8px;"><input type="radio" name="mult_${cIndex}" ${!cat.isMultiple ? 'checked' : ''} style="transform:scale(1.3); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isMultiple', false)"> Apenas 1 modificador</label>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.95rem; color:#333; font-weight:600; cursor:pointer;"><input type="radio" name="mult_${cIndex}" ${cat.isMultiple ? 'checked' : ''} style="transform:scale(1.3); accent-color:#ea1d2c;" onchange="window.updateModCat(${cIndex}, 'isMultiple', true)"> Vários modificadores</label>
                             </div>
                         </div>
-                        <div style="background:#fff; border:1px dashed #ccc; padding:15px; border-radius:8px;">
-                            <h4 style="font-size:0.9rem; color:#333; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between;">Opções de Modificadores <span style="background:#eee; color:#555; padding:2px 8px; border-radius:12px; font-size:0.75rem;">${cat.options.length} opções</span></h4>
+                        <div style="background:#fdfdfd; border:1px dashed #ccc; padding:20px; border-radius:12px;">
+                            <h4 style="font-size:1rem; font-weight:900; color:#111; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">Opções de Adicionais <span style="background:#eee; color:#555; padding:4px 10px; border-radius:12px; font-size:0.8rem;">${cat.options.length} opções</span></h4>
                             ${optionsHtml}
-                            <button style="background:none; border:none; color:#0d6efd; font-weight:bold; cursor:pointer; font-size:0.9rem; margin-top:10px; display:flex; align-items:center; gap:4px;" onclick="window.addModOption(${cIndex})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Adicionar modificador</button>
+                            <button style="background:rgba(13, 110, 253, 0.1); border:none; color:#0d6efd; font-weight:900; cursor:pointer; font-size:0.95rem; margin-top:15px; padding: 12px 20px; border-radius:10px; display:flex; align-items:center; gap:6px; transition:0.2s;" onclick="window.addModOption(${cIndex})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Nova Opção</button>
                         </div>
                     </div>
                 </div>`;
             });
         };
-
-        window.clearDateFilter = () => {
-            document.getElementById('filter-reports-date').value = '';
-            window.renderReports();
-        };
-
-        window.forceDateFilter = () => {
-            if(document.getElementById('filter-reports-date').value !== '') {
-                document.getElementById('filter-reports').value = 'data';
-            }
-            window.renderReports();
-        };
-
-        window.renderReports = () => {
-            if(!globalOrders) return; 
-
-            const filterPreset = document.getElementById('filter-reports').value;
-            const filterDateVal = document.getElementById('filter-reports-date').value;
-
-            const nowTime = Date.now();
-            const startOfToday = new Date().setHours(0,0,0,0);
-            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
-            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
-            const startOfSemester = nowTime - (180 * 24 * 60 * 60 * 1000);
-
-            const globalCustomerCounts = {};
-            globalOrders.forEach(o => {
-                if (o.status === 'Cancelado') return;
-                const cName = o.customerName || 'Desconhecido';
-                globalCustomerCounts[cName] = (globalCustomerCounts[cName] || 0) + 1;
-            });
-
-            let totalRevenue = 0; let orderCount = 0;
-            let payPix = 0; let payCard = 0; let payCash = 0;
-            let deliveryCount = 0; let pickupCount = 0;
-            let totalPrepTimeMins = 0; let prepTimeCount = 0;
-            let newCustomerOrders = 0; let loyalCustomerOrders = 0;
-
-            const productSales = {}; const customerSales = {}; const peakHours = {}; const daySales = {}; const neighborhoodSales = {};
-
-            globalOrders.forEach(order => {
-                if (order.status === 'Cancelado') return; 
-
-                let showOrder = true;
-                if (filterPreset === 'hoje') showOrder = order.timestamp >= startOfToday;
-                else if (filterPreset === '7dias') showOrder = order.timestamp >= startOf7Days;
-                else if (filterPreset === 'mes') showOrder = order.timestamp >= startOfMonth;
-                else if (filterPreset === 'semestre') showOrder = order.timestamp >= startOfSemester;
-                else if (filterPreset === 'data' && filterDateVal) {
-                    const startOfSpecific = new Date(filterDateVal + 'T00:00:00').getTime();
-                    const endOfSpecific = startOfSpecific + 86400000;
-                    showOrder = order.timestamp >= startOfSpecific && order.timestamp < endOfSpecific;
-                }
-
-                if (!showOrder) return; 
-
-                orderCount++;
-                totalRevenue += (order.total || 0);
-
-                const isPickup = order.orderType === 'retirada' || (order.customer && order.customer.address && order.customer.address.includes('RETIRADA'));
-                if(isPickup) pickupCount++; else deliveryCount++;
-
-                const cName = order.customerName || 'Desconhecido';
-                if (globalCustomerCounts[cName] > 1) loyalCustomerOrders++;
-                else newCustomerOrders++;
-
-                if (order.dispatchedAt && order.timestamp) {
-                    let mins = (order.dispatchedAt - order.timestamp) / 60000;
-                    if (mins > 0 && mins < 300) { 
-                        totalPrepTimeMins += mins;
-                        prepTimeCount++;
-                    }
-                }
-
-                const dateObj = new Date(order.timestamp);
-                const dayName = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'][dateObj.getDay()];
-                daySales[dayName] = (daySales[dayName] || 0) + (order.total || 0);
-
-                let bairro = 'Não informado';
-                if (!isPickup && order.customer && order.customer.address) {
-                    const addr = order.customer.address;
-                    const parts = addr.split(' - ');
-                    if (parts.length > 1) {
-                        const subParts = parts[1].split(',');
-                        bairro = subParts[0].trim();
-                    }
-                }
-                if (!isPickup && bairro !== 'Não informado') {
-                    neighborhoodSales[bairro] = (neighborhoodSales[bairro] || 0) + 1;
-                }
-
-                let h = dateObj.getHours();
-                let range = `${h}h às ${h+1}h`;
-                peakHours[range] = (peakHours[range] || 0) + 1;
-
-                if(!customerSales[cName]) customerSales[cName] = { count: 0, total: 0 };
-                customerSales[cName].count++;
-                customerSales[cName].total += (order.total || 0);
-
-                const pm = (order.paymentMethod || '').toLowerCase();
-                if (pm.includes('pix')) payPix++; 
-                else if (pm.includes('cartão') || pm.includes('cartao')) payCard++; 
-                else if (pm.includes('dinheiro')) payCash++;
-
-                if(order.items && Array.isArray(order.items)) {
-                    order.items.forEach(item => {
-                        if(!productSales[item.name]) { productSales[item.name] = { qty: 0, revenue: 0 }; }
-                        productSales[item.name].qty += item.qty;
-                        productSales[item.name].revenue += item.price; 
-                    });
-                }
-            });
-
-            const avgTicket = orderCount > 0 ? (totalRevenue / orderCount) : 0;
-            const deliveryPct = orderCount > 0 ? Math.round((deliveryCount / orderCount) * 100) : 0;
-            const pickupPct = orderCount > 0 ? Math.round((pickupCount / orderCount) * 100) : 0;
-            const avgPrep = prepTimeCount > 0 ? Math.round(totalPrepTimeMins / prepTimeCount) : 0;
-            
-            const totalRetentionOrders = newCustomerOrders + loyalCustomerOrders;
-            const newPct = totalRetentionOrders > 0 ? Math.round((newCustomerOrders / totalRetentionOrders) * 100) : 0;
-            const loyalPct = totalRetentionOrders > 0 ? Math.round((loyalCustomerOrders / totalRetentionOrders) * 100) : 0;
-
-            document.getElementById('rep-revenue').innerText = `R$ ${totalRevenue.toFixed(2)}`;
-            document.getElementById('rep-count').innerText = orderCount;
-            document.getElementById('rep-avg').innerText = `R$ ${avgTicket.toFixed(2)}`;
-            document.getElementById('rep-retention').innerText = `✨ ${newPct}% / 💖 ${loyalPct}%`;
-            document.getElementById('rep-delivery-vs-pickup').innerText = `🛵 ${deliveryPct}% / 🚶 ${pickupPct}%`;
-            document.getElementById('rep-prep-time').innerText = `⏱️ ${avgPrep} min`;
-
-            document.getElementById('rep-payments').innerHTML = `
-                <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#997404" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line><polyline points="22 8.5 12 15.5 2 8.5"></polyline><polyline points="2 15.5 12 8.5 22 15.5"></polyline><line x1="12" y1="2" x2="12" y2="8.5"></line></svg> Pix</span> <strong>${payPix}</strong></li>
-                <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#084298" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Cartão</span> <strong>${payCard}</strong></li>
-                <li><span style="display:flex; align-items:center; gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f5132" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle></svg> Dinheiro</span> <strong>${payCash}</strong></li>
-            `;
-
-            const sortedDays = Object.keys(daySales).map(d => ({ day: d, val: daySales[d] })).sort((a, b) => b.val - a.val);
-            const daysContainer = document.getElementById('rep-best-days');
-            if(sortedDays.length === 0 || sortedDays[0].val === 0) daysContainer.innerHTML = '<li style="justify-content:center; color:#999;">Sem vendas registradas.</li>';
-            else daysContainer.innerHTML = sortedDays.filter(d => d.val > 0).map(d => `<li><span>📅 ${d.day}</span> <strong style="color:#00a14b;">R$ ${d.val.toFixed(2)}</strong></li>`).join('');
-
-            const sortedBairros = Object.keys(neighborhoodSales).map(b => ({ name: b, count: neighborhoodSales[b] })).sort((a, b) => b.count - a.count).slice(0, 5);
-            const bairrosContainer = document.getElementById('rep-top-neighborhoods');
-            if(sortedBairros.length === 0) bairrosContainer.innerHTML = '<li style="justify-content:center; color:#999;">Sem dados de entrega.</li>';
-            else bairrosContainer.innerHTML = sortedBairros.map((b, i) => `<li><span><b>${i+1}º</b> ${b.name}</span> <strong style="color:#ea1d2c;">${b.count} pedidos</strong></li>`).join('');
-
-            const sortedProducts = Object.keys(productSales).map(n => ({ name: n, qty: productSales[n].qty, rev: productSales[n].revenue })).sort((a, b) => b.qty - a.qty).slice(0, 5); 
-            const topProdContainer = document.getElementById('rep-top-products');
-            if(sortedProducts.length === 0) topProdContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem vendas.</li>`;
-            else topProdContainer.innerHTML = sortedProducts.map((p, i) => `<li><span><b>${i+1}º</b> ${p.name}</span> <div style="text-align:right;">${p.qty}x<br><strong style="font-size:0.8rem; color:#ea1d2c;">R$ ${p.rev.toFixed(2)}</strong></div></li>`).join('');
-
-            const sortedCustomers = Object.keys(customerSales).map(n => ({ name: n, count: customerSales[n].count, total: customerSales[n].total })).sort((a, b) => b.total - a.total).slice(0, 5);
-            const topCustContainer = document.getElementById('rep-top-customers');
-            if(sortedCustomers.length === 0) topCustContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem dados.</li>`;
-            else topCustContainer.innerHTML = sortedCustomers.map((c, i) => `<li><span><b>${i+1}º</b> ${c.name}</span> <div style="text-align:right;">${c.count} pedidos<br><strong style="font-size:0.8rem; color:#00a14b;">R$ ${c.total.toFixed(2)}</strong></div></li>`).join('');
-
-            const sortedHours = Object.keys(peakHours).map(h => ({ range: h, count: peakHours[h] })).sort((a, b) => b.count - a.count).slice(0, 5);
-            const peakContainer = document.getElementById('rep-peak-hours');
-            if(sortedHours.length === 0) peakContainer.innerHTML = `<li style="justify-content:center; color:#999;">Sem dados.</li>`;
-            else peakContainer.innerHTML = sortedHours.map(h => `<li><span>🕒 ${h.range}</span> <strong style="color:#0d6efd;">${h.count} pedidos</strong></li>`).join('');
-        };
-
-        window.markMessagesAsRead = async (orderId) => {
-            try {
-                const q = collection(db, "orders", orderId, "messages");
-                const snap = await getDocs(q);
-                snap.forEach(d => {
-                    const data = d.data();
-                    if (data.sender === 'customer' && !data.read) {
-                        updateDoc(doc(db, "orders", orderId, "messages", d.id), { read: true });
-                    }
-                });
-            } catch(e) { console.log(e); }
-        };
-
-        window.openChatModal = (orderId, customerName) => {
-            currentChatOrderId = orderId;
-            const shortId = orderId.substring(0, 6).toUpperCase();
-            document.getElementById('chat-customer-name').innerText = customerName;
-            document.getElementById('chat-order-id').innerText = '#' + shortId;
-            document.getElementById('chat-modal').classList.add('active');
-            
-            window.markMessagesAsRead(orderId);
-
-            const qMsg = query(collection(db, "orders", currentChatOrderId, "messages"), orderBy("timestamp", "asc"));
-            chatUnsubscribe = onSnapshot(qMsg, (snapshot) => {
-                const container = document.getElementById('chat-messages-container');
-                let msgsHtml = `<div class="chat-sys-msg">Início da conversa. Seja cordial!</div>`;
-                snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    if(msg.sender === 'store') {
-                        msgsHtml += `<div class="msg-bubble msg-store">${msg.text}<span class="msg-time">${msg.timeString} ✔</span></div>`;
-                    } else {
-                        msgsHtml += `<div class="msg-bubble msg-customer"><span class="msg-sender">${customerName}</span>${msg.text}<span class="msg-time">${msg.timeString}</span></div>`;
-                    }
-                });
-                container.innerHTML = msgsHtml;
-                container.scrollTop = container.scrollHeight; 
-            });
-        };
-
-        window.openChatDirectly = (orderId) => {
-            const order = globalOrders.find(o => o.id === orderId);
-            if(!order) return;
-            
-            currentChatOrderId = order.id;
-            const shortId = order.id.substring(0, 6).toUpperCase();
-            
-            document.getElementById('chat-customer-name').innerText = order.customerName || 'Cliente';
-            document.getElementById('chat-order-id').innerText = '#' + shortId;
-            document.getElementById('chat-modal').classList.add('active');
-
-            window.markMessagesAsRead(orderId);
-
-            const qMsg = query(collection(db, "orders", currentChatOrderId, "messages"), orderBy("timestamp", "asc"));
-            chatUnsubscribe = onSnapshot(qMsg, (snapshot) => {
-                const container = document.getElementById('chat-messages-container');
-                let msgsHtml = `<div class="chat-sys-msg">Início da conversa. Seja cordial!</div>`;
-                snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    if(msg.sender === 'store') {
-                        msgsHtml += `<div class="msg-bubble msg-store">${msg.text}<span class="msg-time">${msg.timeString} ✔</span></div>`;
-                    } else {
-                        msgsHtml += `<div class="msg-bubble msg-customer"><span class="msg-sender">${order.customerName || 'Cliente'}</span>${msg.text}<span class="msg-time">${msg.timeString}</span></div>`;
-                    }
-                });
-                container.innerHTML = msgsHtml;
-                container.scrollTop = container.scrollHeight; 
-            });
-        };
-
-        window.closeChatModal = () => {
-            document.getElementById('chat-modal').classList.remove('active');
-            if(chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
-            currentChatOrderId = null;
-        };
-
-        document.getElementById('chat-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if(!text || !currentChatOrderId) return;
-            input.value = ''; 
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-            try {
-                await addDoc(collection(db, "orders", currentChatOrderId, "messages"), { text: text, sender: 'store', timestamp: Date.now(), timeString: timeString, read: false });
-            } catch(error) { alert("Falha ao enviar mensagem."); }
-        });
     </script>
 </body>
 </html>
