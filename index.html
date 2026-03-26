@@ -55,7 +55,7 @@
         #sponsor-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         #sponsor-content img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* 🟢 EFEITOS DE TRANSIÇÃO DOS PATROCINADORES 🟢 */
+        /* EFEITOS DE TRANSIÇÃO DOS PATROCINADORES */
         .effect-fade { opacity: 0; transition: opacity 0.6s ease; }
         .effect-fade.active { opacity: 1; }
         
@@ -125,7 +125,7 @@
         .chip-fav-icon { fill: none; stroke: currentColor; }
         .chip-btn.active .chip-fav-icon { fill: #fff; stroke: #fff; }
 
-        /* LOJAS EM DESTAQUE (CARROSSEL PREMIUM) */
+        /* LOJAS EM DESTAQUE */
         .featured-section { display: none; padding: 0 0 20px 0; }
         .featured-track { display: flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 0 15px 10px; -webkit-overflow-scrolling: touch; }
         .featured-track::-webkit-scrollbar { display: none; }
@@ -214,7 +214,7 @@
         .heart-btn:active { transform: scale(0.8); }
 
         .store-delivery-info { font-size: 0.8rem; color: #333; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
-        .coupon-badge-btn { display: inline-flex; align-items: center; background: #fff; color: #00a14b; border: 1.5px solid #00a14b; border-radius: 20px; padding: 3px 8px; font-size: 0.65rem; font-weight: 800; text-decoration: none; }
+        .coupon-badge-btn { display: inline-flex; align-items: center; background: #fff; border: 1.5px solid; border-radius: 20px; padding: 3px 8px; font-size: 0.65rem; font-weight: 800; text-decoration: none; margin-bottom: 2px;}
 
         /* MODAL DE BUSCA RÁPIDA */
         .search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8f8f8; z-index: 999999; display: none; flex-direction: column; animation: slideUpSearch 0.3s ease;}
@@ -235,9 +235,6 @@
         .nav-icon-img { width: 24px; height: 24px; filter: invert(40%); }
         .nav-link.active { color: #ea1d2c; font-weight: bold; }
         .nav-link.active .nav-icon-img { filter: invert(20%) sepia(91%) saturate(5437%) hue-rotate(352deg) brightness(94%) contrast(98%); }
-
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .empty-state { text-align: center; padding: 40px 20px; color: #777; }
         .empty-state svg { color: #ccc; margin-bottom: 15px; }
@@ -326,7 +323,7 @@
 
         <h2 class="section-title" id="list-title">Lojas Disponíveis</h2>
         <div class="store-list" id="store-list-container">
-            <div style="text-align:center; padding:30px; color:#aaa; font-weight:bold;">A procurar lojas perto de si...</div>
+            <div style="text-align:center; padding:30px; color:#aaa; font-weight:bold;">A buscar lojas perto de você...</div>
         </div>
     </main>
 
@@ -413,6 +410,21 @@
         let userFavorites = JSON.parse(localStorage.getItem('userFavorites')) || [];
         let quickFilters = { freeShipping: false, hasCoupon: false, openNow: false, favorites: false };
 
+        // 🟢 BUSCAR STATUS DO USUÁRIO LOGADO (Para validação de cupons Sicoob)
+        let isSponsorAssociated = false;
+        const loggedCustomer = JSON.parse(localStorage.getItem('loggedCustomer'));
+        const userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
+
+        if (userEmail) {
+            const userQ = query(collection(db, "customers"), where("email", "==", userEmail));
+            getDocs(userQ).then(userSnap => {
+                if (!userSnap.empty) {
+                    isSponsorAssociated = userSnap.docs[0].data().isSicoob === true;
+                    if(userCity) window.renderStores(); // Re-renderiza as lojas quando souber o status
+                }
+            });
+        }
+
         // LÓGICA DE AVISOS GLOBAIS
         let dismissedAlerts = JSON.parse(localStorage.getItem('dismissedAlerts')) || [];
 
@@ -496,7 +508,7 @@
             if(userCity) window.renderStores(); 
         });
 
-        // INICIALIZAÇÃO DA TELA COM ANIMAÇÃO CORRIGIDA
+        // INICIALIZAÇÃO DA TELA
         window.addEventListener('load', () => {
             const splash = document.getElementById('splash-screen');
             const sponsorWrapper = document.getElementById('sponsor-wrapper');
@@ -729,7 +741,7 @@
             }).join('');
         };
 
-        // CÓDIGO ATUALIZADO DE LOJAS (COM FAVORITOS E CHIPS)
+        // CÓDIGO ATUALIZADO DE LOJAS (COM CUPONS GLOBAIS E CHIPS)
         window.renderStores = () => {
             const container = document.getElementById('store-list-container');
             if(!userCity) return;
@@ -759,12 +771,27 @@
                 return { ...s, dynamicStatus };
             });
 
-            // Filtros Rápidos (Chips)
+            // Lógica do Filtro "Com Cupom" Atualizada para incluir os Globais
+            if (quickFilters.hasCoupon) {
+                filteredStores = filteredStores.filter(s => {
+                    return allCoupons.some(c => {
+                        if (c.active !== true) return false;
+                        if (c.usageLimit && (c.usedCount || 0) >= c.usageLimit) return false;
+                        
+                        if (c.storeId === s.id) return true;
+                        if (c.storeId === 'GLOBAL' && c.targetCity === s.city) {
+                            const isSicoobCoupon = (c.exclusiveFor === 'sicoob') || (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
+                            if (isSicoobCoupon && !isSponsorAssociated) return false;
+                            return true;
+                        }
+                        return false;
+                    });
+                });
+            }
+
+            // Outros Filtros Rápidos
             if (quickFilters.freeShipping) {
                 filteredStores = filteredStores.filter(s => !s.deliveryFee || parseFloat(s.deliveryFee) === 0);
-            }
-            if (quickFilters.hasCoupon) {
-                filteredStores = filteredStores.filter(s => allCoupons.some(c => c.storeId === s.id && c.active === true));
             }
             if (quickFilters.openNow) {
                 filteredStores = filteredStores.filter(s => s.dynamicStatus === 'Aberto');
@@ -800,13 +827,38 @@
                 let deliveryFeeValue = s.deliveryFee !== undefined && s.deliveryFee !== '' ? parseFloat(s.deliveryFee) : 0;
                 let deliveryFeeHtml = deliveryFeeValue > 0 ? `<div>Entrega: R$ ${deliveryFeeValue.toFixed(2).replace('.', ',')}</div>` : '<div>Entrega: Grátis</div>';
                 
-                let storeCoupons = allCoupons.filter(c => c.storeId === s.id && c.active === true);
+                // 🟢 LÓGICA DE EXIBIÇÃO DOS CUPONS DA LOJA + GLOBAIS 🟢
+                let storeCoupons = allCoupons.filter(c => {
+                    if (c.active !== true) return false;
+                    if (c.usageLimit && (c.usedCount || 0) >= c.usageLimit) return false;
+
+                    if (c.storeId === s.id) return true;
+                    if (c.storeId === 'GLOBAL' && c.targetCity === s.city) {
+                        const isSicoobCoupon = (c.exclusiveFor === 'sicoob') || (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
+                        if (isSicoobCoupon && !isSponsorAssociated) return false;
+                        return true;
+                    }
+                    return false;
+                });
+
                 let couponHtml = '';
                 
                 if (storeCoupons.length > 0) {
                     let couponsTags = storeCoupons.map(c => {
-                        let discountText = c.type === 'percentage' ? `${c.value}% OFF` : `R$ ${c.value.toFixed(2).replace('.', ',')} OFF`;
-                        return `<span class="coupon-badge-btn">
+                        const isGlobal = c.storeId === 'GLOBAL';
+                        const isSicoob = isGlobal && ((c.exclusiveFor === 'sicoob') || (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob')));
+                        
+                        let color = '#ea1d2c'; 
+                        if (isGlobal) {
+                            color = isSicoob ? '#00a14b' : '#0d6efd'; 
+                        }
+
+                        let discountText = '';
+                        if (c.type === 'percentage') discountText = `${c.value}% OFF`;
+                        else if (c.type === 'free_shipping') discountText = `ENTREGA GRÁTIS`;
+                        else discountText = `R$ ${c.value.toFixed(2).replace('.', ',')} OFF`;
+
+                        return `<span class="coupon-badge-btn" style="color: ${color}; border-color: ${color};">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
                                 <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
                             </svg>
