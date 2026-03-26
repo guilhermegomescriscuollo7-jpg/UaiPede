@@ -6,17 +6,17 @@
     <meta name="theme-color" content="#f8f8f8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="UaiPede Loja">
+    <meta name="apple-mobile-web-app-title" content="Dores Delivery">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <title>Cardápio - UaiPede</title>
+    <title>Cardápio - Dores Delivery</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f8f8f8; color: #3e3e3e; padding-bottom: 40px; }
 
         /* ==========================================
-           TELA DE CARREGAMENTO PROFISSIONAL
+           ECRÃ DE CARREGAMENTO PROFISSIONAL
            ========================================== */
         .loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; text-align: center; padding: 20px; animation: fadeInBg 0.3s forwards; }
         .pulse-logo { width: 90px; height: 90px; background: #ea1d2c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(234, 29, 44, 0.4); animation: pulseLoad 1.5s infinite ease-in-out; position: relative; border: 4px solid #fff; }
@@ -72,7 +72,7 @@
         .search-input:focus { background: #fff; border-color: #ea1d2c; box-shadow: 0 0 0 3px rgba(234,29,44,0.1); }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; color: #ea1d2c; }
 
-        /* CUPONS NA LOJA */
+        /* CUPÕES NA LOJA */
         .store-coupons-container { display: flex; overflow-x: auto; gap: 12px; padding: 10px 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .store-coupons-container::-webkit-scrollbar { display: none; }
         
@@ -189,7 +189,7 @@
                 <img id="loader-store-logo" src="" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
             </div>
             <h2 class="loading-title" id="loader-text">Preparando o cardápio...</h2>
-            <p class="loading-subtitle">Buscando os melhores produtos para você</p>
+            <p class="loading-subtitle">Buscando os melhores produtos para si</p>
             <div class="dots-loader">
                 <span></span><span></span><span></span>
             </div>
@@ -236,6 +236,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // As credenciais oficiais do Firebase do Dores Delivery
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -311,6 +312,7 @@
                     }
                 }
 
+                // 1. Vai buscar os Cupões Específicos desta Loja
                 const qCoupons = query(collection(db, "coupons"), where("storeId", "==", storeIdParam), where("active", "==", true));
                 const snapCoupons = await getDocs(qCoupons);
                 snapCoupons.forEach(docC => {
@@ -318,22 +320,22 @@
                     if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { storeCoupons.push(c); }
                 });
 
-                // 🟢 LÓGICA DE CUPONS GLOBAIS CORRIGIDA AQUI 🟢
+                // 2. Vai buscar os Cupões Globais da Cidade e valida o Público-Alvo
                 if (s.city) {
                     const qGlobalCoupons = query(collection(db, "coupons"), where("storeId", "==", "GLOBAL"), where("targetCity", "==", s.city), where("active", "==", true));
                     const snapGlobalCoupons = await getDocs(qGlobalCoupons);
                     snapGlobalCoupons.forEach(docC => {
                         const c = docC.data();
                         
-                        // Verifica se o cupom é exclusivo do Sicoob (Pelo nome)
-                        const isSicoobCoupon = (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
+                        // 🟢 MELHORIA NA LÓGICA: Lê diretamente a configuração "exclusiveFor" da BD
+                        const isSicoobCoupon = (c.exclusiveFor === 'sicoob') || (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
                         
-                        // Se for do Sicoob e o usuário NÃO for sócio, ele nem entra na lista
+                        // Se o cupão for exclusivo Sicoob mas o cliente não for associado, aborta!
                         if (isSicoobCoupon && !isSponsorAssociated) {
                             return; 
                         }
 
-                        // Se passou pelas regras, adiciona o cupom!
+                        // Se passou na verificação, adiciona o cupão (verificando o limite de uso)
                         if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { 
                             storeCoupons.push(c); 
                         }
@@ -387,7 +389,7 @@
             const availableProducts = currentStoreProducts.filter(p => p.isActive !== false);
 
             if (availableProducts.length === 0) { 
-                productsHTML = `<div style="background: #fff; padding: 40px 20px; text-align: center; color: #717171; height: 100vh;">O cardápio está vazio no momento.</div>`; 
+                productsHTML = `<div style="background: #fff; padding: 40px 20px; text-align: center; color: #717171; height: 100vh;">O cardápio está vazio neste momento.</div>`; 
             } else {
                 let categories = [...new Set(availableProducts.map(p => p.category || 'Geral'))];
                 categories.sort((a, b) => { if (a === 'Destaques') return -1; if (b === 'Destaques') return 1; return a.localeCompare(b); });
@@ -432,9 +434,10 @@
                 <div class="store-coupons-container">
                     ${storeCoupons.map(c => {
                         const isGlobal = c.storeId === 'GLOBAL';
-                        const isSicoob = c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob');
+                        
+                        // 🟢 VERIFICAÇÃO ATUALIZADA PARA AS CORES DOS CUPÕES 🟢
+                        const isSicoob = (c.exclusiveFor === 'sicoob') || (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
 
-                        // 🟢 SEPARAÇÃO DE CORES DOS CUPONS 🟢
                         let bgStyle = 'background: linear-gradient(135deg, #ea1d2c, #ff5e6a); box-shadow: 0 4px 12px rgba(234, 29, 44, 0.3);'; 
                         let btnColor = '#ea1d2c';
 
@@ -450,7 +453,7 @@
                         
                         const sponsorTitle = isGlobal 
                             ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> ' + (c.sponsorName || 'Patrocinador')
-                            : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> CUPOM DA LOJA';
+                            : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> CUPÃO DA LOJA';
 
                         const cVal = c.value || 0; const cMin = c.minOrder || 0;
                         
@@ -459,7 +462,7 @@
                         if (c.type === 'percentage') {
                             valText = `${cVal}% OFF`;
                         } else if (c.type === 'free_shipping') {
-                            valText = `FRETE GRÁTIS`;
+                            valText = `ENTREGA GRÁTIS`;
                             valSize = '1.1rem'; 
                         } else {
                             valText = `R$ ${cVal.toFixed(2)} OFF`;
@@ -489,7 +492,7 @@
             
             const paymentMethods = storeData.paymentMethods || 'Dinheiro, Pix e Cartões de Crédito/Débito';
             const deliveryFeeText = storeData.deliveryFee && storeData.deliveryFee > 0 ? `R$ ${parseFloat(storeData.deliveryFee).toFixed(2)}` : 'Grátis';
-            const aboutStore = storeData.moreInfo || 'Bem-vindo ao nosso estabelecimento! Preparamos tudo com muito carinho para você.';
+            const aboutStore = storeData.moreInfo || 'Bem-vindo ao nosso estabelecimento! Preparamos tudo com muito carinho para si.';
 
             const daysMapFull = [
                 { id: 'dom', name: 'Domingo' }, { id: 'seg', name: 'Segunda-feira' },
@@ -517,9 +520,9 @@
                 pagamento: `
                     <div style="text-align:center; padding: 20px 0;">
                         <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                        <h4 style="font-size:1.2rem; color:#111; margin-bottom:10px; font-weight:800;">Formas de Pagamento</h4>
+                        <h4 style="font-size:1.2rem; color:#111; margin-bottom:10px; font-weight:800;">Métodos de Pagamento</h4>
                         <p style="color:#333; font-size:1rem; line-height: 1.5;">${paymentMethods}</p>
-                        <p style="font-size:0.85rem; color:#888; margin-top:20px; background: #f9f9f9; padding: 10px; border-radius: 8px;">O pagamento é feito diretamente ao entregador na hora da entrega.</p>
+                        <p style="font-size:0.85rem; color:#888; margin-top:20px; background: #f9f9f9; padding: 10px; border-radius: 8px;">O pagamento é feito diretamente ao entregador no momento da entrega.</p>
                     </div>`,
                 
                 taxa: `
@@ -554,7 +557,7 @@
                         <path d="M14 10Q15.5 7 17 10" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                         <path d="M6 13A6 6 0 0 0 18 13Z" fill="white"/>
                     </svg>
-                    Uhul, estabelecimento aberto!
+                    Boa, estabelecimento aberto!
                    </div>`
                 : `<div class="status-banner closed">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
@@ -562,7 +565,7 @@
                         <path d="M14 10Q15.5 12 17 10" />
                         <path d="M8 17Q12 14 16 17" />
                     </svg>
-                    Poxa, estamos fechados agora.
+                    Pedimos desculpa, estamos fechados agora.
                    </div>`;
 
             document.getElementById('store-page-content').innerHTML = `
@@ -601,10 +604,10 @@
                     </div>
 
                     <div class="store-actions-row">
-                        <button class="action-btn" onclick="window.openBottomSheet('Formas de Pagamento', window.currentStoreModalContent.pagamento)">
+                        <button class="action-btn" onclick="window.openBottomSheet('Métodos de Pagamento', window.currentStoreModalContent.pagamento)">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 
                             <div style="display: flex; flex-direction: column; text-align: left; align-items: flex-start; line-height: 1.2;">
-                                <span>Formas de</span>
+                                <span>Métodos de</span>
                                 <span>pagamento</span>
                             </div>
                         </button>
@@ -630,7 +633,7 @@
                         <span class="search-icon">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                         </span>
-                        <input type="text" class="search-input" placeholder="Buscar por produto ou ingrediente" oninput="window.filterProducts(this.value)">
+                        <input type="text" class="search-input" placeholder="Procurar por produto ou ingrediente" oninput="window.filterProducts(this.value)">
                     </div>
 
                 </div>
@@ -643,7 +646,7 @@
         window.filterStoreMenu = (categoryName, element) => { document.querySelectorAll('.store-cat-btn').forEach(btn => btn.classList.remove('active')); element.classList.add('active'); document.querySelectorAll('.store-category-group').forEach(group => { if (categoryName === 'Todas' || group.dataset.category === categoryName) { group.style.display = 'block'; } else { group.style.display = 'none'; } }); };
         
         window.copyCoupon = (code) => {
-            navigator.clipboard.writeText(code).then(() => { alert(`Cupom ${code} copiado! Cole no Carrinho para aplicar o desconto.`); }).catch(err => { alert(`Código do cupom: ${code}`); });
+            navigator.clipboard.writeText(code).then(() => { alert(`Cupão ${code} copiado! Cole no Carrinho para aplicar o desconto.`); }).catch(err => { alert(`Código do cupão: ${code}`); });
         };
 
         window.openProductModal = (productId) => {
@@ -690,7 +693,7 @@
         };
 
         window.confirmAddToCart = () => {
-            if(activeStore.status === 'Fechado') return alert("Esta loja está fechada no momento.");
+            if(activeStore.status === 'Fechado') return alert("Esta loja encontra-se fechada no momento.");
             if (activeProduct.modifiers && activeProduct.modifiers.length > 0) {
                 for (let i = 0; i < activeProduct.modifiers.length; i++) {
                     const modCat = activeProduct.modifiers[i];
@@ -706,7 +709,7 @@
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             
             if (cart.length > 0 && cart[0].storeId !== activeStore.id) {
-                if (confirm("Você já tem itens de outra loja no carrinho. Deseja limpar e adicionar este?")) {
+                if (confirm("Já tem itens de outra loja no carrinho. Deseja limpar o carrinho e adicionar este item?")) {
                     cart = [];
                 } else {
                     return;
