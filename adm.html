@@ -6,22 +6,22 @@
     <meta name="theme-color" content="#111111">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Admin UaiPede">
+    <meta name="apple-mobile-web-app-title" content="Admin Dores">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <title>Painel Admin - UaiPede</title>
+    <title>Painel Admin - Dores Delivery</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f4f5f7; color: #333; overflow: hidden; margin: 0; padding: 0; }
         
         /* ==========================================
-           TELA DE LOGIN E LOGO CSS
+           ECRÃ DE LOGIN E LOGO CSS
            ========================================== */
         .logo-text { font-weight: 900; font-style: italic; letter-spacing: -1px; display: inline-flex; align-items: center; }
-        .logo-text .uai { color: #ea1d2c; }
-        .logo-text .pede-light { color: #fff; }
-        .logo-text .pede-dark { color: #111; }
+        .logo-text .dores { color: #ea1d2c; }
+        .logo-text .delivery-light { color: #fff; }
+        .logo-text .delivery-dark { color: #111; }
         .admin-badge { background:#ea1d2c; color:#fff; padding: 3px 8px; border-radius:6px; font-size:0.75rem; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; margin-left: 8px;}
 
         #login-screen { 
@@ -157,7 +157,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #aaa; }
 
         /* ==========================================
-           RESPONSIVIDADE MOBILE (CELULAR) - COM FIX DE ROLAGEM
+           RESPONSIVIDADE MOBILE (TELEMÓVEL) - COM FIX DE SCROLL
            ========================================== */
         .mobile-header { display: none; background: #111; color: #fff; padding: 15px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .mobile-btn { background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;}
@@ -166,7 +166,7 @@
         .sidebar-overlay.active { display: block; animation: fadeInBg 0.3s; }
 
         @media screen and (max-width: 850px) {
-            /* 🟢 CORREÇÃO DO SCROLL NO MOBILE: Libera a rolagem 🟢 */
+            /* 🟢 CORREÇÃO DO SCROLL NO MOBILE: Liberta a rolagem 🟢 */
             body, html { overflow-y: auto !important; height: auto !important; }
             #app-screen { flex-direction: column; overflow-y: auto !important; height: auto !important; min-height: 100vh; display: none; } 
             
@@ -179,22 +179,18 @@
             
             h2 { font-size: 1.4rem; flex-wrap: wrap; }
             
-            /* Ajusta formulários em linha para ficarem um embaixo do outro no celular */
             .section > div[style*="display: flex"] { flex-direction: column !important; gap: 15px !important; align-items: stretch !important;}
             .section > div[style*="display: flex"] > .form-group, 
             .section > div[style*="display: flex"] > .btn { width: 100% !important; margin-bottom: 0 !important; }
             
-            /* Ajustes de botões */
             .btn { width: 100%; justify-content: center; }
             .btn-secondary { width: 100%; justify-content: center; margin-left: 0; }
             .actions-col { margin-left: 0; width: 100%; flex-wrap: wrap; justify-content: space-between; margin-top: 15px; }
             .actions-col > button { flex: 1; min-width: 100px; justify-content: center;}
 
-            /* Cards de Listagem */
             .card-item { flex-direction: column; align-items: flex-start; text-align: left; }
             .card-img { width: 100%; height: 180px; }
             
-            /* Faturamento e Relatórios */
             .controls-area { flex-direction: column; }
             .ranking-item { flex-direction: column; align-items: center; text-align: center; gap: 10px; }
             .r-logo { margin: 0; width: 80px; height: 80px; }
@@ -209,17 +205,17 @@
         <div class="login-box">
             <h2 style="display: flex; flex-direction: column; align-items: center; gap: 5px; border: none; margin-bottom: 25px;">
                 <div style="font-size: 2.8rem; font-weight: 900; font-style: italic; letter-spacing: -1px;">
-                    <span style="color: #ea1d2c;">Uai</span><span style="color: #111;">Pede</span>
+                    <span style="color: #ea1d2c;">Dores</span><span style="color: #111;">Delivery</span>
                 </div>
                 <span style="font-size: 1.1rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">Painel Admin</span>
             </h2>
             <div class="form-group">
-                <label>Usuário Administrativo</label>
-                <input type="text" id="adm-user" class="form-input" placeholder="Digite o usuário">
+                <label>Utilizador Administrativo</label>
+                <input type="text" id="adm-user" class="form-input" placeholder="Digite o utilizador">
             </div>
             <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="adm-pass" class="form-input" placeholder="Digite a senha">
+                <label>Palavra-passe</label>
+                <input type="password" id="adm-pass" class="form-input" placeholder="Digite a palavra-passe">
             </div>
             <button class="btn" style="width:100%; justify-content:center; font-size: 1.1rem; padding: 16px; margin-top: 10px;" onclick="window.loginAdmin()">Acessar Painel</button>
         </div>
@@ -230,7 +226,7 @@
         <div class="mobile-header">
             <div style="display:flex; align-items:center; gap:8px;">
                 <div style="font-size: 1.4rem; font-weight: 900; font-style: italic; letter-spacing: -1px;">
-                    <span style="color: #ea1d2c;">Uai</span><span style="color: #fff;">Pede</span>
+                    <span style="color: #ea1d2c;">Dores</span><span style="color: #fff;">Delivery</span>
                 </div>
                 <span class="admin-badge">Admin</span>
             </div>
@@ -243,7 +239,7 @@
             <div class="sidebar-header">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M5 15 Q 50 55 95 15"></path></svg>
                 <div style="font-size: 1.6rem; font-weight: 900; font-style: italic; letter-spacing: -1px;">
-                    <span style="color: #ea1d2c;">Uai</span><span style="color: #fff;">Pede</span>
+                    <span style="color: #ea1d2c;">Dores</span><span style="color: #fff;">Delivery</span>
                 </div>
                 <span class="admin-badge" style="margin-left: 8px;">Admin</span>
             </div>
@@ -270,7 +266,7 @@
                 </li>
                 <li class="nav-item" onclick="window.switchTab('entregadores', this)">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
-                    Gerenciar Entregadores
+                    Gerir Entregadores
                 </li>
                 <li class="nav-item" onclick="window.switchTab('banners', this)">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
@@ -312,7 +308,7 @@
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                     Regiões de Atendimento
                 </h2>
-                <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Cadastre as cidades onde o UaiPede funciona.</p>
+                <p style="font-size: 1rem; color: #666; margin-bottom: 25px;">Registe as cidades onde a plataforma funciona.</p>
                 
                 <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 35px;">
                     <div class="form-group" style="flex: 2; margin-bottom: 0;">
@@ -323,7 +319,7 @@
                         <label>Estado (UF)</label>
                         <input type="text" id="c-state" placeholder="Ex: MG" maxlength="2" style="text-transform: uppercase;">
                     </div>
-                    <button class="btn" onclick="window.saveCity()">Cadastrar</button>
+                    <button class="btn" onclick="window.saveCity()">Registar</button>
                 </div>
 
                 <h3 style="font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Cidades Ativas</h3>
@@ -335,7 +331,7 @@
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     Gestão de Clientes
                 </h2>
-                <p style="font-size:1rem; color:#666; margin-bottom:25px;">Gerencie os usuários do aplicativo.</p>
+                <p style="font-size:1rem; color:#666; margin-bottom:25px;">Faça a gestão dos utilizadores da aplicação.</p>
 
                 <div style="display: flex; gap: 20px; margin-bottom: 25px;">
                     <div style="background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #f0f0f0; flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
@@ -357,7 +353,7 @@
                     </div>
                     <div class="form-group" style="margin-bottom: 0; flex: 2; min-width: 200px;">
                         <label>Pesquisar por Nome ou E-mail</label>
-                        <input type="text" id="filter-user-search" placeholder="Digite para buscar..." oninput="window.filterUsers()">
+                        <input type="text" id="filter-user-search" placeholder="Digite para procurar..." oninput="window.filterUsers()">
                     </div>
                 </div>
 
@@ -371,17 +367,27 @@
                 </h2>
                 <div style="background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #f0f0f0; max-width: 650px; margin-bottom: 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                     <div class="form-group"><label>Nome do Patrocinador (Ex: Sicoob Cred Plus)</label><input type="text" id="admin-sponsor-name" placeholder="Nome da instituição"></div>
-                    <div class="form-group"><label>Código do Cupom</label><input type="text" id="admin-sponsor-code" placeholder="Ex: SICOOB20" style="text-transform: uppercase; font-weight: bold; color: #ea1d2c;"></div>
+                    <div class="form-group"><label>Código do Cupão</label><input type="text" id="admin-sponsor-code" placeholder="Ex: SICOOB20" style="text-transform: uppercase; font-weight: bold; color: #ea1d2c;"></div>
+                    
+                    <div class="form-group" style="background:#f9f9f9; padding:15px; border-radius:10px; border:1px solid #eee;">
+                        <label style="color:#111; font-weight:900;">Público-Alvo do Cupão</label>
+                        <select id="admin-sponsor-audience" style="font-weight:bold; color:#0d6efd;">
+                            <option value="all">Disponível para Todos os Clientes</option>
+                            <option value="sicoob">Exclusivo para Associados SicoobCredPlus</option>
+                        </select>
+                        <span style="font-size:0.75rem; color:#777; margin-top:6px; display:block;">Se for exclusivo, apenas quem foi validado como associado verá e poderá utilizar.</span>
+                    </div>
+
                     <div style="display: flex; gap: 15px;">
-                        <div class="form-group" style="flex: 1;"><label>Tipo de Desconto</label><select id="admin-sponsor-type" onchange="window.toggleSponsorValueInput()"><option value="fixed">Fixo em Dinheiro (R$)</option><option value="percentage">Porcentagem (%)</option><option value="free_shipping">Frete Grátis</option></select></div>
+                        <div class="form-group" style="flex: 1;"><label>Tipo de Desconto</label><select id="admin-sponsor-type" onchange="window.toggleSponsorValueInput()"><option value="fixed">Fixo em Dinheiro (R$)</option><option value="percentage">Percentagem (%)</option><option value="free_shipping">Entrega Grátis</option></select></div>
                         <div class="form-group" style="flex: 1;"><label>Valor do Desconto</label><input type="number" id="admin-sponsor-value" step="0.01" placeholder="Ex: 20 ou 10"></div>
                     </div>
                     <div style="display: flex; gap: 15px;">
                         <div class="form-group" style="flex: 1;"><label>Pedido Mínimo (R$)</label><input type="number" id="admin-sponsor-min" step="0.01" placeholder="Opcional"></div>
-                        <div class="form-group" style="flex: 1;"><label>Limite de Usos</label><input type="number" id="admin-sponsor-limit" placeholder="Opcional"></div>
-                        <div class="form-group" style="flex: 1;"><label>Cidade</label><select id="admin-sponsor-city"><option value="">Carregando...</option></select></div>
+                        <div class="form-group" style="flex: 1;"><label>Limite de Utilizações</label><input type="number" id="admin-sponsor-limit" placeholder="Opcional"></div>
+                        <div class="form-group" style="flex: 1;"><label>Cidade</label><select id="admin-sponsor-city"><option value="">A carregar...</option></select></div>
                     </div>
-                    <button class="btn" onclick="window.createSponsorCoupon()" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #00a14b, #28d078);">Gerar Cupom</button>
+                    <button class="btn" onclick="window.createSponsorCoupon()" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #00a14b, #28d078);">Criar Cupão</button>
                 </div>
                 <h3 style="font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; color: #111;">Cupons Globais Ativos</h3>
                 <div class="item-list" id="sponsor-coupons-list-container" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));"></div>
@@ -390,7 +396,7 @@
             <section id="lojas" class="section active">
                 <h2 id="form-store-title">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    Cadastrar Nova Loja
+                    Registar Nova Loja
                 </h2>
                 
                 <div style="display: flex; gap: 15px;">
@@ -399,12 +405,12 @@
                 </div>
                 
                 <div style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;"><label>CEP</label><input type="text" id="s-cep" placeholder="00000-000"></div>
-                    <div class="form-group" style="flex: 3;"><label>Endereço Completo</label><input type="text" id="s-street" placeholder="Rua Exemplo, 123"></div>
+                    <div class="form-group" style="flex: 1;"><label>Cód. Postal</label><input type="text" id="s-cep" placeholder="00000-000"></div>
+                    <div class="form-group" style="flex: 3;"><label>Morada Completa</label><input type="text" id="s-street" placeholder="Rua Exemplo, 123"></div>
                 </div>
 
                 <div style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;"><label>Cidade da Loja</label><select id="s-city"><option value="">Cadastre uma cidade...</option></select></div>
+                    <div class="form-group" style="flex: 1;"><label>Cidade da Loja</label><select id="s-city"><option value="">Registe uma cidade...</option></select></div>
                     <div class="form-group" style="flex: 1;"><label>Categoria principal</label><select id="s-cat"><option>Restaurantes</option><option>Lanches</option><option>Pizzaria</option><option>Bares</option><option>Sorveterias</option><option>Mercados</option><option>Farmácias</option><option>Loja de Roupas</option><option>Açougue</option><option>Utilidades</option></select></div>
                     <div class="form-group" style="flex: 1;"><label>Vencimento (Mensalidade)</label><input type="date" id="s-due-date"></div>
                 </div>
@@ -416,17 +422,17 @@
 
                 <div style="display: flex; gap: 15px; border-top: 2px dashed #f0f0f0; padding-top: 20px; margin-top: 10px;">
                     <div class="form-group" style="flex: 1;"><label>E-mail (Login)</label><input type="email" id="s-email" placeholder="loja@email.com"></div>
-                    <div class="form-group" style="flex: 1;"><label>Senha</label><input type="text" id="s-pass" placeholder="Senha"></div>
-                    <div class="form-group" style="flex: 1;"><label>Logo da Loja</label><input type="file" id="s-logo" accept="image/*" style="padding: 10px;"></div>
+                    <div class="form-group" style="flex: 1;"><label>Palavra-passe</label><input type="text" id="s-pass" placeholder="Palavra-passe"></div>
+                    <div class="form-group" style="flex: 1;"><label>Logótipo da Loja</label><input type="file" id="s-logo" accept="image/*" style="padding: 10px;"></div>
                 </div>
                 
                 <div style="margin-top: 15px; display: flex; gap: 15px;">
-                    <button class="btn" id="btn-save-store" onclick="window.saveStore()">Registrar Loja</button>
+                    <button class="btn" id="btn-save-store" onclick="window.saveStore()">Registar Loja</button>
                     <button class="btn-secondary" id="btn-cancel-edit" onclick="window.cancelEdit()">Cancelar Edição</button>
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 45px; margin-bottom: 15px;">
-                    <h3 style="font-size: 1.2rem; color: #111; margin: 0;">Lojas Cadastradas</h3>
+                    <h3 style="font-size: 1.2rem; color: #111; margin: 0;">Lojas Registadas</h3>
                     <select id="filter-store-city" onchange="window.renderStoreList()" style="padding: 8px; border-radius: 8px; outline: none;"><option value="all">Todas as Cidades</option></select>
                 </div>
                 <div class="item-list" id="store-list-container"></div>
@@ -460,13 +466,13 @@
 
             <section id="repasse" class="section">
                 <h2>Repasse Entregadores</h2>
-                <p>Esta tela será usada para os relatórios do motoboy futuramente.</p>
+                <p>Este ecrã será usado para os relatórios do estafeta futuramente.</p>
             </section>
 
             <section id="entregadores" class="section">
                 <h2 id="form-driver-title">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
-                    Cadastrar Entregador
+                    Registar Entregador
                 </h2>
                 <div style="display: flex; gap: 15px;">
                     <div class="form-group" style="flex: 2;"><label>Nome Completo</label><input type="text" id="d-name" placeholder="Ex: Carlos Silva"></div>
@@ -475,20 +481,20 @@
                 </div>
                 <div style="display: flex; gap: 15px;">
                     <div class="form-group" style="flex: 1;"><label>E-mail</label><input type="email" id="d-email" placeholder="entregador@email.com"></div>
-                    <div class="form-group" style="flex: 1;"><label>Senha</label><input type="text" id="d-pass" placeholder="Senha"></div>
+                    <div class="form-group" style="flex: 1;"><label>Palavra-passe</label><input type="text" id="d-pass" placeholder="Palavra-passe"></div>
                 </div>
                 <div style="margin-top: 10px; display: flex; gap: 15px;">
-                    <button class="btn" id="btn-save-driver" onclick="window.saveDriver()">Registrar Entregador</button>
+                    <button class="btn" id="btn-save-driver" onclick="window.saveDriver()">Registar Entregador</button>
                     <button class="btn-secondary" id="btn-cancel-driver-edit" onclick="window.cancelEditDriver()">Cancelar Edição</button>
                 </div>
-                <h3 style="margin-top: 45px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Entregadores Cadastrados</h3>
+                <h3 style="margin-top: 45px; font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Entregadores Registados</h3>
                 <div class="item-list" id="driver-list-container"></div>
             </section>
 
             <section id="banners" class="section">
                 <h2>
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                    Banners do Aplicativo
+                    Banners da Aplicação
                 </h2>
                 <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 30px; flex-wrap: wrap;">
                     <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom:0;"><label>Imagem do Banner</label><input type="file" id="b-image" accept="image/*" style="padding: 10px;"></div>
@@ -502,7 +508,7 @@
             </section>
 
             <section id="patrocinadores" class="section">
-                <h2>Patrocinadores da Abertura</h2>
+                <h2>Patrocinadores de Abertura</h2>
                 <div style="background: #fff; padding: 30px; border-radius: 16px; border: 1px solid #f0f0f0;">
                     <div style="display: flex; gap: 15px;">
                         <div class="form-group" style="flex:1;"><label>Imagem (Vertical)</label><input type="file" id="sp-image" accept="image/*" style="padding: 10px;"></div>
@@ -533,7 +539,7 @@
             <section id="avisos" class="section">
                 <h2>Disparo de Avisos Globais</h2>
                 <div style="background:#fff; padding:30px; border-radius:16px; border:1px solid #eee; max-width:600px;">
-                    <div class="form-group"><label>Mensagem</label><input type="text" id="alert-text" placeholder="Ex: Hoje é dia de Frete Grátis!"></div>
+                    <div class="form-group"><label>Mensagem</label><input type="text" id="alert-text" placeholder="Ex: Hoje é dia de Entrega Grátis!"></div>
                     <div class="form-group"><label>Tipo</label><select id="alert-type"><option value="promo">🎉 Promoção</option><option value="success">✅ Informação</option><option value="info">📢 Comunicado</option></select></div>
                     <button class="btn" onclick="window.saveAlert()" style="width:100%; justify-content:center;">Disparar Aviso Agora</button>
                 </div>
@@ -547,16 +553,16 @@
                     Som de Notificação (Lojas)
                 </h2>
                 <div style="background:#fff; padding:30px; border-radius:16px; border:1px solid #eee; max-width:600px;">
-                    <p style="color:#777; font-size:0.95rem; margin-bottom: 20px;">Faça o upload de um arquivo de áudio (MP3 ou WAV) para ser o toque oficial de "Novo Pedido" no painel de todas as lojas. Recomendamos áudios de até 5 segundos. (Tamanho máximo: 800KB)</p>
+                    <p style="color:#777; font-size:0.95rem; margin-bottom: 20px;">Faça o carregamento de um ficheiro de áudio (MP3 ou WAV) para ser o toque oficial de "Novo Pedido" no painel de todas as lojas. Recomendamos áudios de até 5 segundos. (Tamanho máximo: 800KB)</p>
                     <div class="form-group">
-                        <label>Selecione o Arquivo de Áudio</label>
+                        <label>Selecione o Ficheiro de Áudio</label>
                         <input type="file" id="audio-file" accept="audio/*" style="padding: 10px; border: 2px dashed #ddd; background: #f9f9f9; cursor: pointer;">
                     </div>
-                    <button class="btn" onclick="window.saveAudioAlert()" style="width:100%; justify-content:center;">Salvar Áudio Customizado</button>
+                    <button class="btn" onclick="window.saveAudioAlert()" style="width:100%; justify-content:center;">Guardar Áudio Personalizado</button>
 
                     <h3 style="margin-top:40px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; font-size: 1.1rem; color: #111;">Áudio Atual</h3>
                     <div id="current-audio-container" style="margin-top: 15px;">
-                        <p style="color:#999; font-size:0.9rem;">Carregando...</p>
+                        <p style="color:#999; font-size:0.9rem;">A carregar...</p>
                     </div>
                 </div>
             </section>
@@ -568,7 +574,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Cole aqui suas credenciais oficiais do Firebase do Dores Delivery
+        // As suas credenciais do Firebase do Dores Delivery
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -606,7 +612,7 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'flex';
             } else {
-                alert('Usuário ou Senha incorretos!');
+                alert('Utilizador ou Palavra-passe incorretos!');
             }
         };
 
@@ -617,7 +623,7 @@
             }
         };
 
-        // 🟢 CONTROLE MENU MOBILE 🟢
+        // 🟢 CONTROLO DE MENU MOBILE 🟢
         window.toggleSidebar = () => {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebar-overlay').classList.toggle('active');
@@ -629,7 +635,6 @@
             document.getElementById(tabId).classList.add('active');
             el.classList.add('active');
             
-            // Fecha a barra lateral no mobile após clicar
             if (window.innerWidth <= 850) {
                 window.toggleSidebar();
             }
@@ -663,7 +668,7 @@
             const file = e.target.files[0];
             if (file) {
                 if (file.size > 800000) { 
-                    alert("O arquivo é muito grande! Escolha um áudio menor que 800KB para não pesar o carregamento das lojas.");
+                    alert("O ficheiro é muito grande! Escolha um áudio menor que 800KB para não pesar o carregamento das lojas.");
                     this.value = '';
                     return;
                 }
@@ -676,22 +681,22 @@
         });
 
         window.saveAudioAlert = async () => {
-            if (!alertAudioBase64) return alert("Por favor, selecione um arquivo de áudio primeiro.");
+            if (!alertAudioBase64) return alert("Por favor, selecione um ficheiro de áudio primeiro.");
             try {
                 await setDoc(doc(db, "global_settings", "notification_audio"), {
                     audioData: alertAudioBase64,
                     updatedAt: Date.now()
                 });
-                alert("Áudio de notificação salvo com sucesso! A partir de agora, todas as lojas ouvirão este som.");
+                alert("Áudio de notificação guardado com sucesso! A partir de agora, todas as lojas ouvirão este som.");
                 document.getElementById('audio-file').value = '';
                 alertAudioBase64 = '';
             } catch (e) {
-                alert("Erro ao salvar áudio: " + e.message);
+                alert("Erro ao guardar áudio: " + e.message);
             }
         };
 
         window.deleteAudioAlert = async () => {
-            if(confirm("Deseja remover o áudio customizado e voltar para o som padrão (caixa registradora)?")) {
+            if(confirm("Deseja remover o áudio personalizado e voltar para o som padrão (caixa registadora)?")) {
                 try {
                     await deleteDoc(doc(db, "global_settings", "notification_audio"));
                     alert("Áudio restaurado para o padrão!");
@@ -699,19 +704,18 @@
             }
         };
 
-        // Carregar o áudio atual no painel para o Admin ouvir
         onSnapshot(doc(db, "global_settings", "notification_audio"), (docSnap) => {
             const container = document.getElementById('current-audio-container');
             if (docSnap.exists() && docSnap.data().audioData) {
                 container.innerHTML = `
                     <audio controls style="width: 100%; border-radius: 8px; margin-bottom: 15px; outline: none; background: #f9f9f9;">
                         <source src="${docSnap.data().audioData}">
-                        Seu navegador não suporta áudio.
+                        O seu navegador não suporta áudio.
                     </audio>
                     <button class="btn-del" onclick="window.deleteAudioAlert()" style="width: 100%; justify-content: center;">Restaurar Som Padrão</button>
                 `;
             } else {
-                container.innerHTML = '<p style="color:#999; font-size:0.9rem;">Nenhum áudio customizado no momento. O som padrão (caixa registradora) está ativo nas lojas.</p>';
+                container.innerHTML = '<p style="color:#999; font-size:0.9rem;">Nenhum áudio personalizado no momento. O som padrão (caixa registadora) está ativo nas lojas.</p>';
             }
         });
 
@@ -732,16 +736,16 @@
             const state = document.getElementById('c-state').value.trim().toUpperCase();
             if(!name || !state) return alert("Preencha o nome da cidade e a sigla do estado.");
             const exists = globalCities.find(c => c.name.toLowerCase() === name.toLowerCase() && c.state === state);
-            if(exists) return alert("Esta cidade já está cadastrada!");
+            if(exists) return alert("Esta cidade já está registada!");
             try {
                 await addDoc(collection(db, "cities"), { name, state });
                 document.getElementById('c-name').value = '';
                 document.getElementById('c-state').value = '';
-            } catch(e) { alert("Erro ao cadastrar cidade."); }
+            } catch(e) { alert("Erro ao registar cidade."); }
         };
 
         window.deleteCity = async (id) => {
-            if(confirm("Tem certeza que deseja apagar esta cidade?")) {
+            if(confirm("Tem a certeza que deseja apagar esta cidade?")) {
                 await deleteDoc(doc(db, "cities", id));
             }
         };
@@ -749,7 +753,7 @@
         function renderCitiesList() {
             const container = document.getElementById('city-list-container');
             if(globalCities.length === 0) {
-                container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade cadastrada ainda.</p>`; return;
+                container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade registada ainda.</p>`; return;
             }
             container.innerHTML = globalCities.map(c => `
                 <div class="card-item" style="justify-content: space-between;">
@@ -781,7 +785,7 @@
         }
 
         // ==========================================
-        // 2. GESTÃO DE USUÁRIOS
+        // 2. GESTÃO DE UTILIZADORES
         // ==========================================
         onSnapshot(collection(db, "customers"), (snapshot) => {
             globalUsers = []; let sicoobCount = 0;
@@ -810,7 +814,7 @@
             }
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">Nenhum usuário encontrado.</div>`; return;
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">Nenhum utilizador encontrado.</div>`; return;
             }
 
             filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
@@ -832,7 +836,7 @@
                     </div>
                     <div class="badge-city" style="margin-bottom: 18px; width: fit-content;">📍 ${cityBadge}</div>
                     <div class="u-data-row"><strong>Telefone:</strong> <span>${u.phone || 'N/A'}</span></div>
-                    <div class="u-data-row" style="margin-bottom: 20px;"><strong>Cadastrado em:</strong> <span>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '--'}</span></div>
+                    <div class="u-data-row" style="margin-bottom: 20px;"><strong>Registado em:</strong> <span>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '--'}</span></div>
                     <div class="sicoob-area">
                         <div class="sicoob-logo-text">Associado Patrocinador</div>
                         <label class="toggle-switch">
@@ -840,23 +844,23 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-                    <button class="btn-delete" style="color: #ea1d2c; border: 1px solid #fbd5d5; background: #fef0f0; padding: 12px; border-radius: 10px; cursor: pointer; width:100%; text-align:center; margin-top: auto;" onclick="window.deleteUser('${u.id}', '${safeName}')">Excluir Usuário</button>
+                    <button class="btn-delete" style="color: #ea1d2c; border: 1px solid #fbd5d5; background: #fef0f0; padding: 12px; border-radius: 10px; cursor: pointer; width:100%; text-align:center; margin-top: auto;" onclick="window.deleteUser('${u.id}', '${safeName}')">Excluir Utilizador</button>
                 </div>`;
             }).join('');
         };
 
         window.toggleSicoobStatus = async (userId, isNowSicoob) => {
-            try { await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob }); } catch(e) { alert("Erro ao salvar."); window.filterUsers(); }
+            try { await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob }); } catch(e) { alert("Erro ao guardar."); window.filterUsers(); }
         };
 
         window.deleteUser = async (userId, userName) => {
-            if (confirm(`Tem certeza que deseja excluir ${userName}?`)) {
+            if (confirm(`Tem a certeza que deseja excluir ${userName}?`)) {
                 try { await deleteDoc(doc(db, "customers", userId)); } catch(e) {}
             }
         };
 
         // ==========================================
-        // 3. CUPONS PATROCINADOS
+        // 3. CUPÕES PATROCINADOS
         // ==========================================
         window.toggleSponsorValueInput = () => {
             const type = document.getElementById('admin-sponsor-type').value;
@@ -873,6 +877,9 @@
             const sponsorName = document.getElementById('admin-sponsor-name').value.trim();
             const code = document.getElementById('admin-sponsor-code').value.trim().toUpperCase();
             const type = document.getElementById('admin-sponsor-type').value;
+            // 🟢 LER O NOVO CAMPO DE PÚBLICO ALVO 🟢
+            const exclusiveFor = document.getElementById('admin-sponsor-audience').value;
+
             let value = parseFloat(document.getElementById('admin-sponsor-value').value);
             if (type === 'free_shipping') value = 0;
             const minOrder = parseFloat(document.getElementById('admin-sponsor-min').value) || 0;
@@ -886,9 +893,11 @@
 
             try {
                 await addDoc(collection(db, "coupons"), {
-                    code, type, value, minOrder, usageLimit, storeId: "GLOBAL", targetCity, sponsorName, active: true, usedCount: 0, createdAt: Date.now()
+                    code, type, value, minOrder, usageLimit, storeId: "GLOBAL", targetCity, sponsorName, 
+                    exclusiveFor: exclusiveFor, // 🟢 GUARDAR A NOVA CONFIGURAÇÃO 🟢
+                    active: true, usedCount: 0, createdAt: Date.now()
                 });
-                alert(`Sucesso! Cupom gerado.`);
+                alert(`Sucesso! Cupão criado.`);
                 document.getElementById('admin-sponsor-code').value = ''; document.getElementById('admin-sponsor-value').value = '';
             } catch (error) {}
         };
@@ -896,20 +905,29 @@
         function renderAdminSponsorCoupons() {
             const container = document.getElementById('sponsor-coupons-list-container');
             const sponsorCoupons = globalCoupons.filter(c => c.storeId === 'GLOBAL');
-            if (sponsorCoupons.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum cupom ativo.</p>'; return; }
+            if (sponsorCoupons.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum cupão ativo.</p>'; return; }
 
             container.innerHTML = sponsorCoupons.map(c => {
                 const toggleBtn = c.active ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>` : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
-                let discountText = c.type === 'percentage' ? `${c.value}%` : (c.type === 'free_shipping' ? `FRETE GRÁTIS` : `R$ ${c.value.toFixed(2)}`);
+                let discountText = c.type === 'percentage' ? `${c.value}%` : (c.type === 'free_shipping' ? `ENTREGA GRÁTIS` : `R$ ${c.value.toFixed(2)}`);
                 let limitText = c.usageLimit ? `${c.usedCount || 0} / ${c.usageLimit}` : 'Ilimitado';
+                
+                // 🟢 EXIBIR A INFORMAÇÃO NO CARD DO ADMIN 🟢
+                let audienceBadge = c.exclusiveFor === 'sicoob' 
+                    ? '<span style="background:#e6f4ea; color:#00a14b; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">Apenas Sicoob</span>' 
+                    : '<span style="background:#eef4ff; color:#0d6efd; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">Todos os Clientes</span>';
+
                 return `
                 <div class="card-item" style="flex-direction: column; align-items: flex-start; ${!c.active ? 'opacity: 0.6;' : ''}">
-                    <strong style="font-size:1.3rem;">${c.code}</strong>
-                    <div style="font-size:0.9rem; color:#555; width:100%;">
+                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                        <strong style="font-size:1.3rem;">${c.code}</strong>
+                        ${audienceBadge}
+                    </div>
+                    <div style="font-size:0.9rem; color:#555; width:100%; margin-top: 10px;">
                         <strong>Patrocinador:</strong> ${c.sponsorName}<br>
                         <strong>Cidade Alvo:</strong> ${c.targetCity}<br>
                         <strong>Desconto:</strong> ${discountText}<br>
-                        <strong>Mínimo:</strong> R$ ${c.minOrder.toFixed(2)} | <strong>Usos:</strong> ${limitText}
+                        <strong>Mínimo:</strong> R$ ${c.minOrder.toFixed(2)} | <strong>Utilizações:</strong> ${limitText}
                     </div>
                     <div class="actions-col" style="margin-top: 10px; width: 100%;">
                         ${toggleBtn} <button class="btn-del" onclick="window.deleteAdminCoupon('${c.id}')">Excluir</button>
@@ -919,7 +937,7 @@
         }
 
         window.toggleAdminCoupon = async (id, isActive) => { await updateDoc(doc(db, "coupons", id), { active: isActive }); };
-        window.deleteAdminCoupon = async (id) => { if(confirm("Apagar este cupom?")) await deleteDoc(doc(db, "coupons", id)); };
+        window.deleteAdminCoupon = async (id) => { if(confirm("Apagar este cupão?")) await deleteDoc(doc(db, "coupons", id)); };
 
         // ==========================================
         // 4. LOJAS
@@ -966,7 +984,7 @@
             } else { 
                 if(allStores.find(s => s.email === email)) return alert("Já existe loja com este e-mail."); 
                 storeData.status = 'Aberto'; storeData.isActive = true; storeData.logo = storeImgBase64 || 'https://via.placeholder.com/60';
-                await addDoc(collection(db, "stores"), storeData); alert("Loja cadastrada com sucesso!"); 
+                await addDoc(collection(db, "stores"), storeData); alert("Loja registada com sucesso!"); 
             } 
             window.cancelEdit(); 
         };
@@ -980,7 +998,7 @@
             document.getElementById('s-featured').checked = store.isFeatured || false;
             if (store.dueDate) { document.getElementById('s-due-date').value = new Date(store.dueDate).toISOString().split('T')[0]; } else { document.getElementById('s-due-date').value = ''; }
             document.getElementById('s-logo').value = ''; storeImgBase64 = ''; 
-            document.getElementById('btn-save-store').innerHTML = `Salvar Alterações`; 
+            document.getElementById('btn-save-store').innerHTML = `Guardar Alterações`; 
             document.getElementById('btn-cancel-edit').style.display = "inline-flex"; 
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
         };
@@ -992,7 +1010,7 @@
             document.getElementById('s-pass').value = ''; document.getElementById('s-logo').value = ''; document.getElementById('s-due-date').value = ''; 
             document.getElementById('s-featured').checked = false;
             storeImgBase64 = ''; 
-            document.getElementById('btn-save-store').innerHTML = `Registrar Loja`; 
+            document.getElementById('btn-save-store').innerHTML = `Registar Loja`; 
             document.getElementById('btn-cancel-edit').style.display = "none"; 
         };
 
@@ -1149,7 +1167,7 @@
         // 6. REPASSE
         // ==========================================
         window.renderRepasse = () => {
-            // Será implementado futuramente para visualização de taxas dos motoboys
+            // Será implementado futuramente para visualização de taxas dos estafetas
         };
 
         // ==========================================
@@ -1166,7 +1184,7 @@
             if (editingDriverId) { 
                 await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass, city }); alert("Entregador atualizado!"); 
             } else { 
-                await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); alert("Entregador cadastrado!"); 
+                await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); alert("Entregador registado!"); 
             } 
             window.cancelEditDriver(); 
         };
@@ -1176,7 +1194,7 @@
             document.getElementById('d-name').value = driver.name; document.getElementById('d-phone').value = driver.phone; 
             document.getElementById('d-email').value = driver.email; document.getElementById('d-pass').value = driver.password; 
             document.getElementById('d-city').value = driver.city || '';
-            document.getElementById('btn-save-driver').innerHTML = `Salvar Alterações`; 
+            document.getElementById('btn-save-driver').innerHTML = `Guardar Alterações`; 
             document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; 
         };
 
@@ -1185,7 +1203,7 @@
             document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; 
             document.getElementById('d-email').value = ''; document.getElementById('d-pass').value = ''; 
             document.getElementById('d-city').value = '';
-            document.getElementById('btn-save-driver').innerHTML = `Registrar Entregador`; 
+            document.getElementById('btn-save-driver').innerHTML = `Registar Entregador`; 
             document.getElementById('btn-cancel-driver-edit').style.display = "none"; 
         };
 
@@ -1194,7 +1212,7 @@
         
         function renderDriverList() { 
             const container = document.getElementById('driver-list-container'); 
-            if(allDrivers.length === 0) { container.innerHTML = `<p style="color:#999; padding:20px;">Nenhum entregador cadastrado.</p>`; return; } 
+            if(allDrivers.length === 0) { container.innerHTML = `<p style="color:#999; padding:20px;">Nenhum entregador registado.</p>`; return; } 
             container.innerHTML = allDrivers.map(d => { 
                 const isActive = d.isActive !== false; 
                 return ` 
@@ -1248,18 +1266,18 @@
                 document.getElementById('b-store').value = '';
                 document.getElementById('b-link').value = '';
                 alert("Banner adicionado com sucesso!");
-            } catch(e) { alert("Erro ao salvar banner."); }
+            } catch(e) { alert("Erro ao guardar banner."); }
         };
 
         window.deleteBanner = async (id) => {
-            if(confirm("Remover este banner do aplicativo?")) {
+            if(confirm("Remover este banner da aplicação?")) {
                 await deleteDoc(doc(db, "banners", id));
             }
         };
 
         function renderBanners() {
             const container = document.getElementById('banner-list-container');
-            if(globalBanners.length === 0) { container.innerHTML = '<p style="color:#999; padding: 20px;">Nenhum banner cadastrado.</p>'; return; }
+            if(globalBanners.length === 0) { container.innerHTML = '<p style="color:#999; padding: 20px;">Nenhum banner registado.</p>'; return; }
             
             container.innerHTML = globalBanners.map(b => {
                 let storeName = "Nenhuma";
@@ -1313,15 +1331,15 @@
                     duration: parseInt(duration), transition: transition, timestamp: Date.now() 
                 });
                 sponsorImgBase64 = ''; document.getElementById('sp-image').value = '';
-                alert("Patrocinador registrado com sucesso!");
-            } catch(e) { alert("Erro ao salvar patrocinador."); }
+                alert("Patrocinador registado com sucesso!");
+            } catch(e) { alert("Erro ao guardar patrocinador."); }
         };
 
         window.deleteSponsor = async (id) => { if(confirm("Remover este patrocinador?")) await deleteDoc(doc(db, "sponsors", id)); };
 
         function renderSponsors() {
             const container = document.getElementById('sponsor-list-container');
-            if(globalSponsors.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum patrocinador cadastrado.</p>'; return; }
+            if(globalSponsors.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum patrocinador registado.</p>'; return; }
             container.innerHTML = globalSponsors.map(s => {
                 let transName = 'Esmaecer';
                 if (s.transition === 'zoom') transName = 'Aproximar';
