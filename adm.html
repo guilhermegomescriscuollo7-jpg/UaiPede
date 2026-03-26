@@ -16,8 +16,14 @@
         body { background-color: #f4f5f7; color: #333; overflow: hidden; margin: 0; padding: 0; }
         
         /* ==========================================
-           TELA DE LOGIN
+           TELA DE LOGIN E LOGO CSS
            ========================================== */
+        .logo-text { font-weight: 900; font-style: italic; letter-spacing: -1px; display: inline-flex; align-items: center; }
+        .logo-text .uai { color: #ea1d2c; }
+        .logo-text .pede-light { color: #fff; }
+        .logo-text .pede-dark { color: #111; }
+        .admin-badge { background:#ea1d2c; color:#fff; padding: 3px 8px; border-radius:6px; font-size:0.75rem; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; margin-left: 8px;}
+
         #login-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #111; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100000; 
@@ -28,11 +34,8 @@
         }
         .login-box h2 { 
             border-bottom: none; margin-bottom: 25px; padding-bottom: 0; justify-content: center; 
-            font-size: 2rem; color: #111; font-weight: 900; letter-spacing: -1px;
-            display: flex; flex-direction: column; align-items: center;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
         }
-        /* ESTILO DA LOGO NO LOGIN */
-        .login-logo-img { max-width: 180px; max-height: 80px; margin-bottom: 15px; object-fit: contain; }
 
         /* ==========================================
            LAYOUT BASE DO APP
@@ -41,11 +44,7 @@
 
         /* SIDEBAR / MENU */
         .sidebar { width: 270px; background: #111; color: #fff; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; box-shadow: 4px 0 15px rgba(0,0,0,0.1); z-index: 10; transition: left 0.3s ease; }
-        .sidebar-header { padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; justify-content: center; flex-wrap: wrap;}
-        
-        /* ESTILO DA LOGO NA SIDEBAR E TOPO */
-        .sidebar-logo-img { max-width: 140px; max-height: 50px; object-fit: contain; }
-        .admin-badge { background:#ea1d2c; color:#fff; padding: 4px 8px; border-radius:6px; font-size:0.75rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;}
+        .sidebar-header { padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;}
 
         .nav-menu { list-style: none; flex: 1; margin-top: 15px; padding: 0 10px; }
         .nav-item { padding: 15px 15px; margin-bottom: 5px; border-radius: 12px; cursor: pointer; color: #aaa; transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; font-weight: 500; font-size: 0.95rem; }
@@ -55,7 +54,7 @@
         .nav-item.active { background: rgba(234, 29, 44, 0.1); color: #ea1d2c; font-weight: 700; border-left: 4px solid #ea1d2c; border-radius: 0 12px 12px 0; }
         .nav-item.active svg { stroke: #ea1d2c; }
         
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; position: relative; background: #f4f5f7; }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; position: relative; background: #f4f5f7; -webkit-overflow-scrolling: touch; }
         .section { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.03); margin-bottom: 30px; border: 1px solid #eaeaea; }
         .section.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -167,16 +166,16 @@
         .sidebar-overlay.active { display: block; animation: fadeInBg 0.3s; }
 
         @media screen and (max-width: 850px) {
-            /* 🟢 CORREÇÃO DO SCROLL NO MOBILE: Libera a rolagem do body 🟢 */
-            body { overflow-y: auto; overflow-x: hidden; }
-            #app-screen { flex-direction: column; overflow: visible; height: auto; min-height: 100vh; display: none; } 
+            /* 🟢 CORREÇÃO DO SCROLL NO MOBILE: Libera a rolagem 🟢 */
+            body, html { overflow-y: auto !important; height: auto !important; }
+            #app-screen { flex-direction: column; overflow-y: auto !important; height: auto !important; min-height: 100vh; display: none; } 
             
             .mobile-header { display: flex; }
             
             .sidebar { position: fixed; top: 0; left: -300px; height: 100vh; width: 280px; z-index: 100; transition: left 0.3s ease; box-shadow: none; }
             .sidebar.open { left: 0; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
             
-            .main-content { padding: 20px 15px; height: auto; overflow: visible; flex: 1; }
+            .main-content { padding: 20px 15px; overflow-y: visible !important; height: auto !important; flex: 1; }
             
             h2 { font-size: 1.4rem; flex-wrap: wrap; }
             
@@ -208,9 +207,11 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <h2>
-                <img src="https://via.placeholder.com/200x80?text=Sua+Logo+Aqui" alt="Dores Delivery" class="login-logo-img">
-                <span style="font-size: 1.4rem; color: #111;">Painel Admin</span>
+            <h2 style="display: flex; flex-direction: column; align-items: center; gap: 5px; border: none; margin-bottom: 25px;">
+                <div style="font-size: 2.8rem; font-weight: 900; font-style: italic; letter-spacing: -1px;">
+                    <span style="color: #ea1d2c;">Uai</span><span style="color: #111;">Pede</span>
+                </div>
+                <span style="font-size: 1.1rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">Painel Admin</span>
             </h2>
             <div class="form-group">
                 <label>Usuário Administrativo</label>
@@ -227,8 +228,10 @@
     <div id="app-screen">
         
         <div class="mobile-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <img src="https://via.placeholder.com/120x40?text=Sua+Logo" alt="Dores Delivery" style="max-height: 35px; object-fit: contain;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div style="font-size: 1.4rem; font-weight: 900; font-style: italic; letter-spacing: -1px;">
+                    <span style="color: #ea1d2c;">Uai</span><span style="color: #fff;">Pede</span>
+                </div>
                 <span class="admin-badge">Admin</span>
             </div>
             <button class="mobile-btn" onclick="window.toggleSidebar()">☰</button>
@@ -238,8 +241,11 @@
 
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <img src="https://via.placeholder.com/150x60?text=Sua+Logo+Aqui" alt="Dores Delivery" class="sidebar-logo-img">
-                <span class="admin-badge">Admin</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><path d="M5 15 Q 50 55 95 15"></path></svg>
+                <div style="font-size: 1.6rem; font-weight: 900; font-style: italic; letter-spacing: -1px;">
+                    <span style="color: #ea1d2c;">Uai</span><span style="color: #fff;">Pede</span>
+                </div>
+                <span class="admin-badge" style="margin-left: 8px;">Admin</span>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item active" onclick="window.switchTab('lojas', this)">
