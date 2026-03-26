@@ -42,7 +42,9 @@
         /* ESTRUTURA DO TOPO DA LOJA */
         .store-cover { height: 160px; background-color: #ea1d2c; background-size: cover; background-position: center; position: relative; }
         .cover-btns { position: absolute; top: 15px; left: 15px; z-index: 10; }
+        /* 🟢 MUDAMOS DE 'a' PARA 'button' */
         .btn-back-home { background: #fff; color: #ea1d2c; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 0.9rem;}
+        
         .store-card-overlay { background: #fff; position: relative; margin-top: -20px; border-radius: 20px 20px 0 0; padding: 45px 20px 15px; text-align: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
         .overlay-logo { width: 76px; height: 76px; border-radius: 50%; border: 3px solid #fff; position: absolute; top: -38px; left: 50%; transform: translateX(-50%); object-fit: cover; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .store-title { font-size: 1.4rem; color: #111; margin-bottom: 4px; font-weight: 900; letter-spacing: -0.5px;}
@@ -55,23 +57,23 @@
         .info-label { font-size: 0.7rem; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;}
         .info-value { font-size: 0.85rem; color: #111; font-weight: 800; }
 
-        /* BOTÕES DE AÇÃO ATUALIZADOS (PAGAMENTO, TAXA, INFO) */
+        /* BOTÕES DE AÇÃO ATUALIZADOS */
         .store-actions-row { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .store-actions-row::-webkit-scrollbar { display: none; }
         .action-btn { flex: 1; min-width: 105px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 5px; border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #333; font-size: 0.7rem; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
         .action-btn:active { background: #f2f2f2; transform: scale(0.98); }
 
-        /* BANNER DE STATUS (ABERTO/FECHADO) */
+        /* BANNER DE STATUS */
         .status-banner { background: #00a14b; color: #fff; border-radius: 50px; padding: 10px 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0, 161, 75, 0.3);}
         .status-banner.closed { background: #ea1d2c; box-shadow: 0 4px 10px rgba(234, 29, 44, 0.3);}
 
-        /* BARRA DE PESQUISA FUNCIONAL */
+        /* BARRA DE PESQUISA */
         .search-bar-container { position: relative; margin-bottom: 5px; }
         .search-input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #ddd; border-radius: 50px; font-size: 0.95rem; outline: none; background: #f9f9f9; transition: 0.2s; font-family: 'Roboto', sans-serif;}
         .search-input:focus { background: #fff; border-color: #ea1d2c; box-shadow: 0 0 0 3px rgba(234,29,44,0.1); }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; color: #ea1d2c; }
 
-        /* CUPONS NA LOJA (TICKET PREMIUM E COMPACTO) */
+        /* CUPONS NA LOJA */
         .store-coupons-container { display: flex; overflow-x: auto; gap: 12px; padding: 10px 20px 20px; background: #fff; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .store-coupons-container::-webkit-scrollbar { display: none; }
         
@@ -157,9 +159,9 @@
         .qty-number { font-size: 1.1rem; font-weight: 500; color: #333; }
         .btn-add-cart { background: #ea1d2c; color: #fff; border: none; border-radius: 8px; padding: 14px 20px; font-weight: 500; font-size: 1rem; flex: 1; margin-left: 15px; display: flex; justify-content: space-between; cursor: pointer; transition: background 0.2s; }
         
-        /* CARRINHO FLUTUANTE */
+        /* CARRINHO FLUTUANTE 🟢 MODIFICADO PARA DIV COM JAVASCRIPT 🟢 */
         .floating-cart {
-            position: fixed; bottom: 30px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 9998; text-decoration: none; transition: 0.3s;
+            position: fixed; bottom: 30px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 9998; text-decoration: none; transition: 0.3s; cursor: pointer;
         }
         .floating-cart:active { transform: scale(0.9); }
         .cart-badge-float { position: absolute; top: -5px; right: -5px; background: #111; color: #fff; font-size: 0.75rem; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
@@ -226,10 +228,10 @@
         </div>
     </div>
 
-    <a href="carrinho.html" class="floating-cart" id="floating-cart">
+    <div onclick="window.location.href='carrinho.html'" class="floating-cart" id="floating-cart">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         <div class="cart-badge-float" id="floating-cart-count">0</div>
-    </a>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -330,14 +332,12 @@
                 onSnapshot(query(collection(db, "products"), where("storeId", "==", storeIdParam)), (snapshot) => {
                     currentStoreProducts = []; snapshot.forEach(docP => currentStoreProducts.push({ id: docP.id, ...docP.data() }));
                     
-                    // 🟢 TRAVA DE 2 SEGUNDOS APENAS PARA A PRIMEIRA VEZ QUE ABRIR A LOJA
                     if (isFirstLoad) {
                         setTimeout(() => {
                             renderFullStore(s, dynamicStatus);
                             isFirstLoad = false;
-                        }, 2000); // Exatos 2 segundos de carregamento obrigatório
+                        }, 2000); 
                     } else {
-                        // Se for uma atualização em tempo real (loja mudou um preço), atualiza na hora sem piscar a tela
                         renderFullStore(s, dynamicStatus);
                     }
                 });
@@ -547,7 +547,7 @@
             document.getElementById('store-page-content').innerHTML = `
                 <div class="store-cover" style="background-image: url('${coverImage}');">
                     <div class="cover-btns">
-                        <a href="index.html" class="btn-back-home">‹ Voltar</a>
+                        <button onclick="window.location.href='index.html'" class="btn-back-home">‹ Voltar</button>
                     </div>
                 </div>
                 <div class="store-card-overlay">
