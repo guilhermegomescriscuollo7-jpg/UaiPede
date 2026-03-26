@@ -42,7 +42,6 @@
         /* ESTRUTURA DO TOPO DA LOJA */
         .store-cover { height: 160px; background-color: #ea1d2c; background-size: cover; background-position: center; position: relative; }
         .cover-btns { position: absolute; top: 15px; left: 15px; z-index: 10; }
-        /* 🟢 MUDAMOS DE 'a' PARA 'button' */
         .btn-back-home { background: #fff; color: #ea1d2c; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 0.9rem;}
         
         .store-card-overlay { background: #fff; position: relative; margin-top: -20px; border-radius: 20px 20px 0 0; padding: 45px 20px 15px; text-align: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
@@ -50,14 +49,14 @@
         .store-title { font-size: 1.4rem; color: #111; margin-bottom: 4px; font-weight: 900; letter-spacing: -0.5px;}
         .store-sub { font-size: 0.85rem; color: #717171; margin-bottom: 20px; font-weight: 500; }
         
-        /* BARRA DE INFORMAÇÕES (DELIVERY, RETIRADA, MÍNIMO) */
+        /* BARRA DE INFORMAÇÕES */
         .store-info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #f2f2f2; padding-bottom: 15px;}
         .info-box { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .info-icon { margin-bottom: 6px; display: flex; align-items: center; justify-content: center;}
         .info-label { font-size: 0.7rem; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;}
         .info-value { font-size: 0.85rem; color: #111; font-weight: 800; }
 
-        /* BOTÕES DE AÇÃO ATUALIZADOS */
+        /* BOTÕES DE AÇÃO */
         .store-actions-row { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .store-actions-row::-webkit-scrollbar { display: none; }
         .action-btn { flex: 1; min-width: 105px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 5px; border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #333; font-size: 0.7rem; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
@@ -159,7 +158,7 @@
         .qty-number { font-size: 1.1rem; font-weight: 500; color: #333; }
         .btn-add-cart { background: #ea1d2c; color: #fff; border: none; border-radius: 8px; padding: 14px 20px; font-weight: 500; font-size: 1rem; flex: 1; margin-left: 15px; display: flex; justify-content: space-between; cursor: pointer; transition: background 0.2s; }
         
-        /* CARRINHO FLUTUANTE 🟢 MODIFICADO PARA DIV COM JAVASCRIPT 🟢 */
+        /* CARRINHO FLUTUANTE */
         .floating-cart {
             position: fixed; bottom: 30px; right: 20px; background: #ea1d2c; color: #fff; width: 55px; height: 55px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.4); z-index: 9998; text-decoration: none; transition: 0.3s; cursor: pointer;
         }
@@ -252,7 +251,7 @@
         let prodQty = 1; let basePriceCalc = 0; let storeCoupons = [];
         window.currentStoreModalContent = {};
         
-        let isFirstLoad = true; // Variável para controlar os 2 segundos da animação inicial
+        let isFirstLoad = true;
 
         const params = new URLSearchParams(window.location.search);
         const storeIdParam = params.get('id');
@@ -271,7 +270,6 @@
 
                 const s = storeSnap.data();
 
-                // ATUALIZA O TEXTO E A IMAGEM DO LOADER IMEDIATAMENTE
                 const loaderLogoImg = document.getElementById('loader-store-logo');
                 if (loaderLogoImg) {
                     if (s.logo && s.logo !== 'https://via.placeholder.com/60') {
@@ -320,12 +318,25 @@
                     if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { storeCoupons.push(c); }
                 });
 
-                if (s.city && isSponsorAssociated) {
+                // 🟢 LÓGICA DE CUPONS GLOBAIS CORRIGIDA AQUI 🟢
+                if (s.city) {
                     const qGlobalCoupons = query(collection(db, "coupons"), where("storeId", "==", "GLOBAL"), where("targetCity", "==", s.city), where("active", "==", true));
                     const snapGlobalCoupons = await getDocs(qGlobalCoupons);
                     snapGlobalCoupons.forEach(docC => {
                         const c = docC.data();
-                        if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { storeCoupons.push(c); }
+                        
+                        // Verifica se o cupom é exclusivo do Sicoob (Pelo nome)
+                        const isSicoobCoupon = (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
+                        
+                        // Se for do Sicoob e o usuário NÃO for sócio, ele nem entra na lista
+                        if (isSicoobCoupon && !isSponsorAssociated) {
+                            return; 
+                        }
+
+                        // Se passou pelas regras, adiciona o cupom!
+                        if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { 
+                            storeCoupons.push(c); 
+                        }
                     });
                 }
 
@@ -421,9 +432,21 @@
                 <div class="store-coupons-container">
                     ${storeCoupons.map(c => {
                         const isGlobal = c.storeId === 'GLOBAL';
-                        const bgStyle = isGlobal 
-                            ? 'background: linear-gradient(135deg, #00a14b, #00d262); box-shadow: 0 4px 12px rgba(0, 161, 75, 0.3);' 
-                            : 'background: linear-gradient(135deg, #ea1d2c, #ff5e6a); box-shadow: 0 4px 12px rgba(234, 29, 44, 0.3);';
+                        const isSicoob = c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob');
+
+                        // 🟢 SEPARAÇÃO DE CORES DOS CUPONS 🟢
+                        let bgStyle = 'background: linear-gradient(135deg, #ea1d2c, #ff5e6a); box-shadow: 0 4px 12px rgba(234, 29, 44, 0.3);'; 
+                        let btnColor = '#ea1d2c';
+
+                        if (isGlobal) {
+                            if (isSicoob) {
+                                bgStyle = 'background: linear-gradient(135deg, #00a14b, #00d262); box-shadow: 0 4px 12px rgba(0, 161, 75, 0.3);'; // Verde Sicoob
+                                btnColor = '#00a14b';
+                            } else {
+                                bgStyle = 'background: linear-gradient(135deg, #0d6efd, #3b82f6); box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);'; // Azul Geral
+                                btnColor = '#0d6efd';
+                            }
+                        }
                         
                         const sponsorTitle = isGlobal 
                             ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> ' + (c.sponsorName || 'Patrocinador')
@@ -443,8 +466,6 @@
                         }
                         
                         let minText = cMin > 0 ? `Acima de R$ ${cMin.toFixed(2)}` : 'Sem mínimo';
-                        
-                        const btnColor = isGlobal ? '#00a14b' : '#ea1d2c';
 
                         return `
                         <div class="ticket-coupon" style="${bgStyle}" onclick="window.copyCoupon('${c.code}')">
