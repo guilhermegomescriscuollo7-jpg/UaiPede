@@ -6,10 +6,10 @@
     <meta name="theme-color" content="#f8f8f8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Dores Delivery">
+    <meta name="apple-mobile-web-app-title" content="UaiPede">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <title>Cardápio - Dores Delivery</title>
+    <title>Cardápio - UaiPede</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
@@ -291,7 +291,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // As credenciais oficiais do Firebase do Dores Delivery
+        // As credenciais oficiais do Firebase do Dores Delivery / UaiPede
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -306,8 +306,6 @@
         let currentStoreProducts = []; let activeProduct = null; let activeStore = {};
         let prodQty = 1; let basePriceCalc = 0; let storeCoupons = [];
         window.currentStoreModalContent = {};
-        
-        let isFirstLoad = true;
 
         const params = new URLSearchParams(window.location.search);
         const storeIdParam = params.get('id');
@@ -326,8 +324,6 @@
 
                 const s = storeSnap.data();
 
-                // REMOVIDO: O bloco que tentava exibir a logo antiga durante o Skeleton!
-                
                 let dynamicStatus = s.status || 'Aberto';
                 if (dynamicStatus === 'Aberto' && s.schedule) {
                     const now = new Date(); 
@@ -387,16 +383,11 @@
                 }
 
                 onSnapshot(query(collection(db, "products"), where("storeId", "==", storeIdParam)), (snapshot) => {
-                    currentStoreProducts = []; snapshot.forEach(docP => currentStoreProducts.push({ id: docP.id, ...docP.data() }));
+                    currentStoreProducts = []; 
+                    snapshot.forEach(docP => currentStoreProducts.push({ id: docP.id, ...docP.data() }));
                     
-                    if (isFirstLoad) {
-                        setTimeout(() => {
-                            renderFullStore(s, dynamicStatus);
-                            isFirstLoad = false;
-                        }, 2000); 
-                    } else {
-                        renderFullStore(s, dynamicStatus);
-                    }
+                    // Renderiza a loja imediatamente assim que o Firebase entrega os dados
+                    renderFullStore(s, dynamicStatus);
                 });
 
             } catch (error) { console.error("Erro ao carregar loja:", error); }
