@@ -54,6 +54,12 @@
         /* ESTRUTURA DO TOPO DA LOJA */
         .store-cover { height: 160px; background-color: #ea1d2c; background-size: cover; background-position: center; position: relative; }
         .cover-btns { position: absolute; top: 15px; left: 15px; z-index: 10; }
+        
+        /* NOVO: Div e estilos para o botão de partilha */
+        .cover-btns-right { position: absolute; top: 15px; right: 15px; z-index: 10; }
+        .btn-share { background: #fff; color: #ea1d2c; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; transition: 0.2s; }
+        .btn-share:active { transform: scale(0.9); }
+
         .btn-back-home { background: #fff; color: #ea1d2c; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 0.9rem;}
         
         .store-card-overlay { background: #fff; position: relative; margin-top: -20px; border-radius: 20px 20px 0 0; padding: 45px 20px 15px; text-align: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
@@ -326,6 +332,28 @@
             toast.innerHTML = msg;
             container.appendChild(toast);
             setTimeout(() => { toast.remove(); }, 3000);
+        };
+
+        // Nova função para partilhar a loja
+        window.shareStore = () => {
+            if (!activeStore || !activeStore.name) return;
+            
+            const shareUrl = window.location.href;
+            const shareTitle = `Peça agora no UaiPede!`;
+            const shareText = `Olha o cardápio de ${activeStore.name} no UaiPede! Fica a dica:`;
+
+            if (navigator.share) {
+                // Se for telemóvel moderno, abre a gaveta nativa de partilha (WhatsApp, etc)
+                navigator.share({
+                    title: shareTitle,
+                    text: shareText,
+                    url: shareUrl
+                }).catch(err => console.log('Erro ao partilhar', err));
+            } else {
+                // Fallback para PC ou navegadores antigos (abre direto o WhatsApp)
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+                window.open(whatsappUrl, '_blank');
+            }
         };
 
         const loadStoreData = async () => {
@@ -630,10 +658,16 @@
                     Pedimos desculpa, estamos fechados agora.
                    </div>`;
 
+            // NOVO: Adicionado o botão de partilha (btn-share) à área da foto de capa (cover-btns-right)
             document.getElementById('store-page-content').innerHTML = `
                 <div class="store-cover" style="background-image: url('${coverImage}');">
                     <div class="cover-btns">
                         <button onclick="window.location.href='index.html'" class="btn-back-home">‹ Voltar</button>
+                    </div>
+                    <div class="cover-btns-right">
+                        <button onclick="window.shareStore()" class="btn-share" aria-label="Partilhar Loja">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        </button>
                     </div>
                 </div>
                 <div class="store-card-overlay">
