@@ -195,10 +195,6 @@
 <body>
 
     <div id="store-page-content">
-        <span id="loader-generic-icon" style="display:none;"></span>
-        <img id="loader-store-logo" style="display:none;">
-        <span id="loader-text" style="display:none;"></span>
-        
         <div class="skeleton-wrapper">
             <div class="skel-cover skeleton"></div>
             <div class="skel-store-card">
@@ -330,15 +326,7 @@
 
                 const s = storeSnap.data();
 
-                const loaderLogoImg = document.getElementById('loader-store-logo');
-                if (loaderLogoImg) {
-                    if (s.logo && s.logo !== 'https://via.placeholder.com/60') {
-                        loaderLogoImg.src = s.logo;
-                        loaderLogoImg.style.display = 'block';
-                        document.getElementById('loader-generic-icon').style.display = 'none';
-                    }
-                    document.getElementById('loader-text').innerText = s.name;
-                }
+                // REMOVIDO: O bloco que tentava exibir a logo antiga durante o Skeleton!
                 
                 let dynamicStatus = s.status || 'Aberto';
                 if (dynamicStatus === 'Aberto' && s.schedule) {
@@ -386,15 +374,12 @@
                     snapGlobalCoupons.forEach(docC => {
                         const c = docC.data();
                         
-                        // 🟢 MELHORIA NA LÓGICA: Lê diretamente a configuração "exclusiveFor" da BD
                         const isSicoobCoupon = (c.exclusiveFor === 'sicoob') || (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
                         
-                        // Se o cupão for exclusivo Sicoob mas o cliente não for associado, aborta!
                         if (isSicoobCoupon && !isSponsorAssociated) {
                             return; 
                         }
 
-                        // Se passou na verificação, adiciona o cupão (verificando o limite de uso)
                         if (!c.usageLimit || (c.usedCount || 0) < c.usageLimit) { 
                             storeCoupons.push(c); 
                         }
@@ -493,8 +478,6 @@
                 <div class="store-coupons-container">
                     ${storeCoupons.map(c => {
                         const isGlobal = c.storeId === 'GLOBAL';
-                        
-                        // 🟢 VERIFICAÇÃO ATUALIZADA PARA AS CORES DOS CUPÕES 🟢
                         const isSicoob = (c.exclusiveFor === 'sicoob') || (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
 
                         let bgStyle = 'background: linear-gradient(135deg, #ea1d2c, #ff5e6a); box-shadow: 0 4px 12px rgba(234, 29, 44, 0.3);'; 
@@ -502,10 +485,10 @@
 
                         if (isGlobal) {
                             if (isSicoob) {
-                                bgStyle = 'background: linear-gradient(135deg, #00a14b, #00d262); box-shadow: 0 4px 12px rgba(0, 161, 75, 0.3);'; // Verde Sicoob
+                                bgStyle = 'background: linear-gradient(135deg, #00a14b, #00d262); box-shadow: 0 4px 12px rgba(0, 161, 75, 0.3);';
                                 btnColor = '#00a14b';
                             } else {
-                                bgStyle = 'background: linear-gradient(135deg, #0d6efd, #3b82f6); box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);'; // Azul Geral
+                                bgStyle = 'background: linear-gradient(135deg, #0d6efd, #3b82f6); box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);';
                                 btnColor = '#0d6efd';
                             }
                         }
