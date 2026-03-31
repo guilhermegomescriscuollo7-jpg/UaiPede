@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f4f5f7; display: flex; align-items: center; justify-content: center; height: 100vh; color: #333; }
+        body { background-color: #f4f5f7; display: flex; align-items: center; justify-content: center; min-height: 100vh; color: #333; padding: 20px; }
 
         .login-box { background: #fff; padding: 40px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
         
@@ -33,10 +33,22 @@
         .form-group input, .form-group select { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; background: #f9f9f9; transition: 0.2s; color: #333; font-family: 'Roboto', sans-serif;}
         .form-group input:focus, .form-group select:focus { border-color: #ea1d2c; background: #fff; }
 
-        .btn-primary { width: 100%; background: #ea1d2c; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .forgot-password { display: block; text-align: right; font-size: 0.85rem; color: #ea1d2c; text-decoration: none; margin-top: -5px; margin-bottom: 15px; font-weight: 500; cursor: pointer; }
+        .forgot-password:hover { text-decoration: underline; }
+
+        .btn-primary { width: 100%; background: #ea1d2c; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; }
         .btn-primary:hover { background: #c81824; }
         .btn-primary:active { transform: scale(0.98); }
         .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+
+        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: #999; font-size: 0.85rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #eee; }
+        .divider:not(:empty)::before { margin-right: .25em; }
+        .divider:not(:empty)::after { margin-left: .25em; }
+
+        .btn-google { width: 100%; background: #fff; color: #555; border: 1px solid #ddd; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-google:hover { background: #f9f9f9; border-color: #ccc; }
+        .btn-google img { width: 20px; }
 
         .toggle-mode { margin-top: 20px; font-size: 0.9rem; color: #555; }
         .toggle-link { color: #ea1d2c; font-weight: bold; cursor: pointer; text-decoration: none; }
@@ -89,8 +101,17 @@
                 <input type="password" id="pass" placeholder="Sua senha" required>
             </div>
             
+            <a id="forgot-password" class="forgot-password" onclick="resetPassword()">Esqueceu a senha?</a>
+
             <button type="submit" class="btn-primary" id="btn-submit">Entrar</button>
         </form>
+
+        <div class="divider">OU</div>
+
+        <button type="button" class="btn-google" id="btn-google">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+            Continuar com o Google
+        </button>
 
         <div class="toggle-mode" id="toggle-text">
             Ainda não tem conta? <span class="toggle-link" onclick="window.toggleMode()">Cadastre-se</span>
@@ -101,7 +122,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // Novos imports de Autenticação do Firebase
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -114,6 +137,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app); // Inicializa o Auth
 
         if (localStorage.getItem('isLogged') === 'true') {
             window.location.href = "index.html";
@@ -124,7 +148,7 @@
             try {
                 const citiesSnap = await getDocs(collection(db, "cities"));
                 let cities = [];
-                citiesSnap.forEach(doc => { cities.push(doc.data()); });
+                citiesSnap.forEach(document => { cities.push(document.data()); });
                 
                 cities.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -152,12 +176,14 @@
             const btnSubmit = document.getElementById('btn-submit');
             const toggleText = document.getElementById('toggle-text');
             const registerFields = document.getElementById('register-fields');
+            const forgotPassword = document.getElementById('forgot-password');
             
             if (isRegisterMode) {
                 title.innerText = "Criar Conta";
                 btnSubmit.innerText = "Cadastrar";
                 toggleText.innerHTML = `Já tem uma conta? <span class="toggle-link" onclick="window.toggleMode()">Faça Login</span>`;
                 registerFields.style.display = "block";
+                forgotPassword.style.display = "none"; // Esconde o "esqueci a senha" no cadastro
                 
                 document.getElementById('name').required = true;
                 document.getElementById('phone').required = true;
@@ -167,6 +193,7 @@
                 btnSubmit.innerText = "Entrar";
                 toggleText.innerHTML = `Ainda não tem conta? <span class="toggle-link" onclick="window.toggleMode()">Cadastre-se</span>`;
                 registerFields.style.display = "none";
+                forgotPassword.style.display = "block";
                 
                 document.getElementById('name').required = false;
                 document.getElementById('phone').required = false;
@@ -180,7 +207,7 @@
             alertBox.className = type === 'error' ? 'alert-box alert-error' : 'alert-box alert-success';
             alertBox.style.display = 'block';
             if(type === 'error') {
-                setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
+                setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
             }
         }
 
@@ -200,6 +227,28 @@
             }
         }
 
+        // --- LÓGICA DE RECUPERAÇÃO DE SENHA ---
+        window.resetPassword = async () => {
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                showAlert("❌ Digite seu e-mail no campo acima para recuperar a senha.", "error");
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showAlert("✅ E-mail de redefinição enviado! Verifique sua caixa de entrada.", "success");
+            } catch (error) {
+                console.error(error);
+                if (error.code === 'auth/user-not-found') {
+                    showAlert("❌ E-mail não encontrado.", "error");
+                } else {
+                    showAlert("❌ Erro ao enviar e-mail. Tente novamente.", "error");
+                }
+            }
+        };
+
+        // --- LÓGICA DE LOGIN / CADASTRO COM EMAIL E SENHA ---
         const form = document.getElementById('auth-form');
         const btnSubmit = document.getElementById('btn-submit');
 
@@ -219,6 +268,7 @@
 
             try {
                 if (isRegisterMode) {
+                    // CADASTRO NOVO FIREBASE AUTH
                     const name = document.getElementById('name').value.trim();
                     const phone = document.getElementById('phone').value.trim();
                     const city = document.getElementById('regCity').value;
@@ -230,50 +280,108 @@
                         return;
                     }
 
-                    const qCheck = query(collection(db, "customers"), where("email", "==", email));
-                    const checkSnapshot = await getDocs(qCheck);
+                    // Cria o usuário na Autenticação Oficial do Firebase
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                    const user = userCredential.user;
 
-                    if (!checkSnapshot.empty) {
-                        showAlert("❌ Este e-mail já está cadastrado. Faça login.", "error");
-                        btnSubmit.disabled = false;
-                        btnSubmit.innerText = "Cadastrar";
-                        return;
-                    }
+                    // Salva os dados complementares no Firestore usando o UID (Segurança melhorada)
+                    const userData = { name, email, phone, city, uid: user.uid };
+                    await setDoc(doc(db, "customers", user.uid), userData);
 
-                    const newUser = { name, email, phone, city, password: pass };
-                    await addDoc(collection(db, "customers"), newUser);
-
-                    saveLocalSession(newUser);
+                    saveLocalSession(userData);
                     showAlert("✅ Conta criada com sucesso!", "success");
-                    
                     setTimeout(() => { window.location.href = "index.html"; }, 800);
 
                 } else {
-                    const q = query(collection(db, "customers"), where("email", "==", email), where("password", "==", pass));
-                    const querySnapshot = await getDocs(q);
+                    // LOGIN EXISTENTE FIREBASE AUTH
+                    const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                    const user = userCredential.user;
 
-                    if (querySnapshot.empty) {
-                        showAlert("❌ E-mail ou senha incorretos.", "error");
-                        document.getElementById('pass').value = '';
-                        btnSubmit.disabled = false;
-                        btnSubmit.innerText = "Entrar";
-                        return;
+                    // Busca os dados do usuário no Firestore
+                    let userData = null;
+                    const docRef = doc(db, "customers", user.uid);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        userData = docSnap.data();
+                    } else {
+                        // Fallback para usuários antigos criados antes dessa mudança
+                        const q = query(collection(db, "customers"), where("email", "==", email));
+                        const querySnapshot = await getDocs(q);
+                        querySnapshot.forEach((d) => { userData = d.data(); });
                     }
 
-                    let userData = null;
-                    querySnapshot.forEach((doc) => { userData = doc.data(); });
-
-                    saveLocalSession(userData);
-                    showAlert("✅ Login efetuado! Redirecionando...", "success");
-                    
-                    setTimeout(() => { window.location.href = "index.html"; }, 800);
+                    if(userData) {
+                        saveLocalSession(userData);
+                        showAlert("✅ Login efetuado! Redirecionando...", "success");
+                        setTimeout(() => { window.location.href = "index.html"; }, 800);
+                    } else {
+                        showAlert("❌ Dados do usuário não encontrados.", "error");
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerText = "Entrar";
+                    }
                 }
 
             } catch (error) {
-                console.error("Erro na autenticação:", error);
-                showAlert("❌ Erro de conexão com o servidor. Tente novamente.", "error");
+                console.error("Erro na autenticação:", error.code);
+                if (error.code === 'auth/email-already-in-use') {
+                    showAlert("❌ Este e-mail já está cadastrado. Faça login.", "error");
+                } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                    showAlert("❌ E-mail ou senha incorretos.", "error");
+                } else if (error.code === 'auth/weak-password') {
+                    showAlert("❌ A senha deve ter pelo menos 6 caracteres.", "error");
+                } else {
+                    showAlert("❌ Erro de conexão com o servidor. Tente novamente.", "error");
+                }
+                
+                document.getElementById('pass').value = '';
                 btnSubmit.disabled = false;
                 btnSubmit.innerText = isRegisterMode ? "Cadastrar" : "Entrar";
+            }
+        });
+
+        // --- LÓGICA DE LOGIN COM O GOOGLE ---
+        const btnGoogle = document.getElementById('btn-google');
+        const provider = new GoogleAuthProvider();
+
+        btnGoogle.addEventListener('click', async () => {
+            try {
+                btnGoogle.disabled = true;
+                btnGoogle.innerHTML = 'Aguarde...';
+
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                // Verifica se o usuário já existe no nosso Firestore
+                const docRef = doc(db, "customers", user.uid);
+                const docSnap = await getDoc(docRef);
+                
+                let userData;
+
+                if (docSnap.exists()) {
+                    // Usuário já cadastrado
+                    userData = docSnap.data();
+                } else {
+                    // Primeiro login com o Google: salva no Firestore
+                    userData = { 
+                        name: user.displayName || "Usuário UaiPede", 
+                        email: user.email, 
+                        phone: "", // Pode ser preenchido futuramente no app
+                        city: "",  // Pode ser preenchido futuramente no app
+                        uid: user.uid 
+                    };
+                    await setDoc(doc(db, "customers", user.uid), userData);
+                }
+
+                saveLocalSession(userData);
+                showAlert("✅ Login efetuado com o Google!", "success");
+                setTimeout(() => { window.location.href = "index.html"; }, 800);
+
+            } catch (error) {
+                console.error("Erro no login com Google:", error);
+                showAlert("❌ Falha ao conectar com o Google.", "error");
+                btnGoogle.disabled = false;
+                btnGoogle.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google"> Continuar com o Google`;
             }
         });
 
