@@ -1863,6 +1863,184 @@
                 </div>`;
             });
         };
+        
+        // 🟢 LÓGICA DE RELATÓRIOS E MÉTRICAS UAI 🟢
+        
+        // Força o filtro de relatórios para a data específica quando o calendário for usado
+        window.forceDateFilter = () => {
+            const select = document.getElementById('filter-reports');
+            let optionData = Array.from(select.options).find(opt => opt.value === 'data');
+            if (!optionData) {
+                optionData = new Option('Data Específica', 'data');
+                optionData.style.display = 'none';
+                select.add(optionData);
+            }
+            select.value = 'data';
+            window.renderReports();
+        };
+
+        // Limpa a data selecionada se o usuário usar o dropdown de atalhos (Hoje, 7 Dias, etc)
+        window.clearDateFilter = () => {
+            document.getElementById('filter-reports-date').value = '';
+            window.renderReports();
+        };
+
+        window.renderReports = () => {
+            // 1. Coleta dos filtros da tela
+            const filterValue = document.getElementById('filter-reports').value;
+            const filterDate = document.getElementById('filter-reports-date').value;
+            
+            let filteredOrders = [];
+            const nowTime = Date.now();
+            const startOfToday = new Date().setHours(0,0,0,0);
+            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
+            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
+            const startOfSemester = nowTime - (180 * 24 * 60 * 60 * 1000);
+
+            // Considera para as métricas financeiras apenas pedidos que foram de fato concluídos/entregues
+            const validOrders = globalOrders.filter(o => ['Entregue', 'Concluído', 'Concluido'].includes(o.status));
+
+            validOrders.forEach(order => {
+                let showOrder = false;
+                
+                if (filterDate && filterValue === 'data') {
+                    // Trata o fuso horário para bater a data selecionada
+                    const orderDateStr = new Date(order.timestamp - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+                    if (orderDateStr === filterDate) showOrder = true;
+                } else {
+                    if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
+                    else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
+                    else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
+                    else if (filterValue === 'semestre') showOrder = order.timestamp >= startOfSemester;
+                    else if (filterValue === 'todos') showOrder = true;
+                }
+
+                if (showOrder) filteredOrders.push(order);
+            });
+
+            // 2. Cálculo de Faturamento, Total e Ticket Médio
+            let totalRevenue = 0;
+            filteredOrders.forEach(o => totalRevenue += (o.total || 0));
+            const totalOrders = filteredOrders.length;
+            const avgTicket = totalOrders > 0 ? (totalRevenue / totalOrders) : 0;
+
+            document.getElementById('rep-revenue').innerText = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
+            document.getElementById('rep-count').innerText = totalOrders;
+            document.getElementById('rep-avg').innerText = `R$ ${avgTicket.toFixed(2).replace('.', ',')}`;
+
+            // 3. Proporção Delivery vs Retirada
+            let deliveryCount = 0;
+            let pickupCount = 0;
+            filteredOrders.forEach(o => {
+                const isPickup = o.orderType === 'retirada' || (o.customer && o.customer.address && o.customer.address.toUpperCase().includes('RETIRADA'));
+                if (isPickup) pickupCount++; else deliveryCount++;
+            });
+            const percDelivery = totalOrders > 0 ? Math.round((deliveryCount / totalOrders) * 100) : 0;
+            const percPickup = totalOrders > 0 ? Math.round((pickupCount / totalOrders) * 100) : 0;
+            document.getElementById('rep-delivery-vs-pickup').innerText = `🛵 ${percDelivery}% / 🚶 ${percPickup}%`;
+
+            // 4. Tempo Médio de Preparo (Na Cozinha)
+            let totalPrepTime = 0;
+            let prepCount = 0;
+            filteredOrders.forEach(o => {
+                if (o.prepStartedAt && o.dispatchedAt && o.dispatchedAt > o.prepStartedAt) {
+                    totalPrepTime += (o.dispatchedAt - o.prepStartedAt);
+                    prepCount++;
+                }
+            });
+            const avgPrepMinutes = prepCount > 0 ? Math.round(totalPrepTime / prepCount / 60000) : 0;
+            document.getElementById('rep-prep-time').innerText = `⏱️ ${avgPrepMinutes} min`;
+
+            // 5. Retenção de Clientes
+            const customerCounts = {};
+            filteredOrders.forEach(o => {
+                const name = o.customerName || 'Cliente Desconhecido';
+                customerCounts[name] = (customerCounts[name] || 0) + 1;
+            });
+            let newCustomers = 0;
+            let returningCustomers = 0;
+            Object.values(customerCounts).forEach(count => {
+                if (count > 1) returningCustomers++; else newCustomers++;
+            });
+            const totalUnique = newCustomers + returningCustomers;
+            const percNew = totalUnique > 0 ? Math.round((newCustomers / totalUnique) * 100) : 0;
+            const percRet = totalUnique > 0 ? Math.round((returningCustomers / totalUnique) * 100) : 0;
+            document.getElementById('rep-retention').innerText = `✨ ${percNew}% / 💖 ${percRet}%`;
+
+            // Função ajudante para injetar listas na tela
+            const renderList = (elementId, dataArray, formatFn) => {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+                if (dataArray.length === 0) {
+                    el.innerHTML = '<li style="color:#999; justify-content:center; padding:15px 0;">Nenhum dado no período</li>';
+                    return;
+                }
+                el.innerHTML = dataArray.map(formatFn).join('');
+            };
+
+            // 6. Top 5 Produtos
+            const productSales = {};
+            filteredOrders.forEach(o => {
+                if(o.items) {
+                    o.items.forEach(item => {
+                        productSales[item.name] = (productSales[item.name] || 0) + (item.qty || 1);
+                    });
+                }
+            });
+            const topProducts = Object.entries(productSales).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            renderList('rep-top-products', topProducts, ([name, qty]) => `<li><span>${name}</span> <strong>${qty} un</strong></li>`);
+
+            // 7. Top 5 Melhores Clientes (Por valor gasto)
+            const customerSpend = {};
+            filteredOrders.forEach(o => {
+                const name = o.customerName || 'Cliente Desconhecido';
+                customerSpend[name] = (customerSpend[name] || 0) + (o.total || 0);
+            });
+            const topCustomers = Object.entries(customerSpend).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            renderList('rep-top-customers', topCustomers, ([name, total]) => `<li><span>${name}</span> <strong style="color:#00a14b;">R$ ${total.toFixed(2).replace('.',',')}</strong></li>`);
+
+            // 8. Vendas por Dia da Semana
+            const daysMap = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const daysSales = {};
+            filteredOrders.forEach(o => {
+                const dayName = daysMap[new Date(o.timestamp).getDay()];
+                daysSales[dayName] = (daysSales[dayName] || 0) + 1;
+            });
+            const bestDays = Object.entries(daysSales).sort((a, b) => b[1] - a[1]);
+            renderList('rep-best-days', bestDays, ([day, count]) => `<li><span>${day}</span> <strong>${count} pedidos</strong></li>`);
+
+            // 9. Horários de Pico
+            const hoursSales = {};
+            filteredOrders.forEach(o => {
+                const hour = new Date(o.timestamp).getHours();
+                const hourStr = `${hour}h00 - ${hour+1}h00`;
+                hoursSales[hourStr] = (hoursSales[hourStr] || 0) + 1;
+            });
+            const peakHours = Object.entries(hoursSales).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            renderList('rep-peak-hours', peakHours, ([hour, count]) => `<li><span>${hour}</span> <strong>${count} pedidos</strong></li>`);
+
+            // 10. Top Bairros / Destinos
+            const addressSales = {};
+            filteredOrders.forEach(o => {
+                if(o.customer && o.customer.address && !o.customer.address.toUpperCase().includes('RETIRADA')) {
+                    // Extrai apenas a rua principal ignorando complementos para agrupar melhor
+                    let addr = o.customer.address.split(',')[0].trim(); 
+                    addressSales[addr] = (addressSales[addr] || 0) + 1;
+                }
+            });
+            const topAddresses = Object.entries(addressSales).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            renderList('rep-top-neighborhoods', topAddresses, ([addr, count]) => `<li><span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;" title="${addr}">${addr}</span> <strong>${count} envios</strong></li>`);
+
+            // 11. Formas de Pagamento mais usadas
+            const paymentSales = {};
+            filteredOrders.forEach(o => {
+                const pay = o.paymentMethod || 'Não informado';
+                paymentSales[pay] = (paymentSales[pay] || 0) + 1;
+            });
+            const topPayments = Object.entries(paymentSales).sort((a, b) => b[1] - a[1]);
+            renderList('rep-payments', topPayments, ([pay, count]) => `<li><span>${pay}</span> <strong>${count}x</strong></li>`);
+        };
+
     </script>
 </body>
 </html>
