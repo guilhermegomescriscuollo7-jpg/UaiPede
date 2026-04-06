@@ -819,12 +819,10 @@
         // 🟢 LÓGICA DO ÁUDIO CUSTOMIZADO 🟢
         let customAlertSound = null;
 
-        // Fica escutando as mudanças de áudio no painel do administrador em tempo real
         onSnapshot(doc(db, "global_settings", "notification_audio"), (docSnap) => {
             if (docSnap.exists() && docSnap.data().audioData) {
                 customAlertSound = new Audio(docSnap.data().audioData);
             } else {
-                // Se não houver nada no painel admin, usa a caixa registradora como fallback
                 customAlertSound = new Audio('https://www.myinstants.com/media/sounds/cash-register-purchase.mp3');
             }
         });
@@ -849,7 +847,7 @@
         
         let chatListeners = {};
         let initialLoadMsg = {};
-        window.unreadCounts = {}; // Armazena a contagem de msgs não lidas por pedido
+        window.unreadCounts = {}; 
 
         let globalProducts = [];
         let myCategories = ['Geral', 'Destaques'];
@@ -952,7 +950,6 @@
 
         window.closeToast = () => { document.getElementById('new-order-toast').classList.remove('show'); };
 
-        // 🟢 FUNÇÃO ATUALIZADA PARA TOCAR SOMENTE O MP3 🟢
         function playAlertSound() {
             try {
                 if (customAlertSound) {
@@ -2041,8 +2038,115 @@
             renderList('rep-payments', topPayments, ([pay, count]) => `<li><span>${pay}</span> <strong>${count}x</strong></li>`);
         };
 
-        // 🟢 LÓGICA DO CHAT DA LOJA 🟢
+        // 🟢 LÓGICA DE GESTÃO DE CUPONS 🟢
+        const qCoupons = query(collection(db, "coupons"), where("storeId", "==", loggedStore.id));
+        onSnapshot(qCoupons, (snapshot) => {
+            globalCoupons = [];
+            snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() }));
+            window.renderCoupons();
+        });
 
+        window.createCoupon = async () => {
+            const code = document.getElementById('cp-code').value.trim().toUpperCase();
+            const type = document.getElementById('cp-type').value;
+            const value = parseFloat(document.getElementById('cp-value').value);
+            const minOrder = parseFloat(document.getElementById('cp-min').value) || 0;
+            const limitStr = document.getElementById('cp-limit').value;
+            const limit = limitStr ? parseInt(limitStr) : null;
+
+            if (!code || isNaN(value) || value <= 0) {
+                return alert("Preencha o código e o valor do desconto corretamente.");
+            }
+
+            const btn = document.querySelector('.coupon-form .btn-accept');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Salvando...';
+            btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "coupons"), {
+                    storeId: loggedStore.id,
+                    code: code,
+                    type: type,
+                    value: value,
+                    minOrder: minOrder,
+                    limit: limit,
+                    usedCount: 0,
+                    isActive: true,
+                    createdAt: Date.now()
+                });
+                
+                alert("Cupom criado com sucesso!");
+                document.getElementById('cp-code').value = '';
+                document.getElementById('cp-value').value = '';
+                document.getElementById('cp-min').value = '';
+                document.getElementById('cp-limit').value = '';
+            } catch (error) {
+                console.error("Erro ao criar cupom:", error);
+                alert("Erro ao salvar o cupom. Verifique sua conexão.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        window.renderCoupons = () => {
+            const container = document.getElementById('coupon-list-render');
+            if (globalCoupons.length === 0) {
+                container.innerHTML = '<div style="color:#999; text-align:center; padding: 20px; font-weight:bold; border: 1px dashed #ccc; border-radius: 8px;">Nenhum cupom cadastrado.</div>';
+                return;
+            }
+
+            container.innerHTML = globalCoupons.sort((a, b) => b.createdAt - a.createdAt).map(cp => {
+                const valDisplay = cp.type === 'fixed' ? `R$ ${cp.value.toFixed(2)}` : `${cp.value}%`;
+                const minDisplay = cp.minOrder > 0 ? `Pedidos acima de R$ ${cp.minOrder.toFixed(2)}` : `Sem valor mínimo`;
+                const limitDisplay = cp.limit ? `Uso: ${cp.usedCount || 0}/${cp.limit}` : `Uso ilimitado (${cp.usedCount || 0} usados)`;
+                
+                const toggleClass = cp.isActive ? 'active' : 'inactive';
+                const toggleText = cp.isActive ? 'Ativo' : 'Inativo';
+                const bgClass = cp.isActive ? '#ea1d2c' : '#777';
+
+                return `
+                <div class="ticket-coupon" style="background: ${bgClass};">
+                    <div class="ticket-left">
+                        <div class="t-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> 
+                            CUPOM DE DESCONTO
+                        </div>
+                        <div class="t-value">${valDisplay}</div>
+                        <div class="t-info">${minDisplay}</div>
+                        <div class="t-info">${limitDisplay}</div>
+                    </div>
+                    <div class="ticket-right">
+                        <div class="t-code">${cp.code}</div>
+                        <button class="t-btn-toggle ${toggleClass}" onclick="window.toggleCouponStatus('${cp.id}', ${cp.isActive})">${toggleText}</button>
+                        <button class="t-btn-del" onclick="window.deleteCoupon('${cp.id}')" title="Excluir Cupom">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        window.toggleCouponStatus = async (id, currentStatus) => {
+            try {
+                await updateDoc(doc(db, "coupons", id), { isActive: !currentStatus });
+            } catch(e) {
+                alert("Erro ao alterar o status do cupom.");
+            }
+        };
+
+        window.deleteCoupon = async (id) => {
+            if(confirm("Tem certeza que deseja excluir este cupom permanentemente?")) {
+                try {
+                    await deleteDoc(doc(db, "coupons", id));
+                } catch(e) {
+                    alert("Erro ao excluir o cupom.");
+                }
+            }
+        };
+
+        // 🟢 LÓGICA DO CHAT DA LOJA 🟢
         window.openChatModal = (orderId, customerName) => {
             currentChatOrderId = orderId;
             document.getElementById('chat-customer-name').innerText = customerName;
