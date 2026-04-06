@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f4f5f7; color: #333; overflow-x: hidden; }
+        body { background-color: #f4f5f7; color: #333; overflow-x: hidden; height: 100vh; display: flex; flex-direction: column; }
         
         /* TELA DE LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
@@ -18,280 +18,219 @@
         .form-group label { display: block; font-size: 0.8rem; color: #555; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
         .form-input { width: 100%; padding: 16px; border: 1px solid #e5e5e5; border-radius: 12px; font-size: 1rem; outline: none; background: #fdfdfd; transition: 0.3s; color: #333;}
         .form-input:focus { border-color: #ea1d2c; box-shadow: 0 0 0 4px rgba(234, 29, 44, 0.1); background: #fff;}
-        .btn-login { width: 100%; background: #e81f40; color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.15rem; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn-login { width: 100%; background: #ea1d2c; color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.15rem; cursor: pointer; margin-top: 10px; transition: 0.3s; }
         .btn-login:active { transform: translateY(2px); opacity: 0.9; }
 
-        /* HEADER */
-        #app-screen { display: none; padding-bottom: 90px; }
-        header { 
-            background: #fff; 
-            padding: 15px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-            position: sticky; 
-            top: 0; 
+        /* APP CONTAINER */
+        #app-screen { display: none; flex: 1; flex-direction: column; position: relative; height: 100%; overflow: hidden;}
+        
+        /* HEADER PRINCIPAL (FLUTUANTE SOBRE O MAPA/ESTADOS) */
+        .top-header {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             z-index: 100;
         }
-        .app-logo-text { font-size: 1.4rem; font-weight: 900; font-style: italic; letter-spacing: -1px; display: flex; align-items: center; gap: 8px;}
-        .app-logo-text .icon { background: #e81f40; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;}
-        .app-logo-text .uai { color: #e81f40; }
-        .app-logo-text .pede { color: #111; }
-        
-        /* BOTÃO DISPONÍVEL (PILL VERDE) */
+        .header-avatar {
+            width: 40px; height: 40px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center; font-weight: bold; color: #ea1d2c; border: 2px solid #fff;
+        }
         .status-pill {
-            background: #f4f5f7;
+            background: #fff;
             color: #777;
             border-radius: 30px;
-            padding: 8px 16px;
+            padding: 10px 20px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-weight: 900;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transition: 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .status-pill input { display: none; }
-        .status-pill.online { background: #00a14b; color: #fff; box-shadow: 0 4px 12px rgba(0, 161, 75, 0.3); }
+        .status-pill.online { background: #00a14b; color: #fff; }
+        .header-bell {
+            width: 40px; height: 40px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center; color: #ea1d2c;
+        }
 
         /* NAVEGAÇÃO INFERIOR */
         .bottom-nav {
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            background: #fff;
-            display: flex; 
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05); 
-            padding-bottom: env(safe-area-inset-bottom);
-            z-index: 100;
-            border-top: 1px solid #eee;
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #fff;
+            display: flex; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100; border-top: 1px solid #f0f0f0;
         }
         .tab-btn { 
-            flex: 1; 
-            padding: 12px 5px; 
-            text-align: center; 
-            font-weight: 800; 
-            font-size: 0.75rem; 
-            background: none; 
-            border: none; 
-            cursor: pointer; 
-            color: #aaa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            transition: 0.2s;
+            flex: 1; padding: 12px 5px; text-align: center; font-weight: 800; font-size: 0.75rem; 
+            background: none; border: none; cursor: pointer; color: #aaa; display: flex; flex-direction: column; align-items: center; gap: 4px;
         }
-        .tab-btn svg { stroke: #aaa; transition: 0.2s; }
-        .tab-btn.active { color: #e81f40; }
-        .tab-btn.active svg { stroke: #e81f40; }
+        .tab-btn.active { color: #ea1d2c; }
+        .tab-btn.active svg { stroke: #ea1d2c; }
 
-        .content-area { padding: 20px; }
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* SECTIONS & ÁREA PRINCIPAL */
+        .content-area { flex: 1; position: relative; height: 100%; overflow: hidden; }
+        .section { display: none; height: 100%; width: 100%; position: absolute; top:0; left:0; overflow-y: auto; padding-bottom: 70px;}
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* TELA LARANJA DE BUSCA (IDÊNTICA À IMAGEM) */
+        /* =======================================================
+           TELA 1: ESTADO OFFLINE E ESTADO MAPA (COM PEDIDOS)
+        ======================================================== */
+        .map-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #e5e3df;
+            background-image: radial-gradient(#d5d3cf 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 1;
+        }
+        .map-pin {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 2; width: 40px; height: 40px; background: #ea1d2c; border-radius: 50% 50% 50% 0;
+            transform: translate(-50%, -50%) rotate(-45deg); box-shadow: -2px 2px 6px rgba(0,0,0,0.3);
+        }
+        .map-pin::after {
+            content: ''; position: absolute; width: 14px; height: 14px; background: #111;
+            border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        
+        .bottom-sheet-home {
+            position: absolute; bottom: 70px; left: 0; width: 100%;
+            background: #fff; border-radius: 24px 24px 0 0; padding: 25px 20px 20px;
+            z-index: 10; box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+            transform: translateY(100%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bottom-sheet-home.show { transform: translateY(0); }
+        .bottom-sheet-home h3 { font-size: 1.2rem; font-weight: 900; color: #111; margin-bottom: 5px; }
+        .bottom-sheet-home p { font-size: 0.85rem; color: #777; margin-bottom: 20px; }
+        
+        .btn-available-orders {
+            width: 100%; padding: 16px; border: 1px solid #ea1d2c; border-radius: 16px;
+            background: #fff; color: #ea1d2c; font-weight: 900; font-size: 0.95rem;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(234, 29, 44, 0.08);
+        }
+        .btn-available-orders:active { background: #fff5f5; }
+        
+        .earnings-row { display: flex; justify-content: space-between; align-items: flex-start; border-top: 1px solid #f0f0f0; padding-top: 15px;}
+        .earnings-col { display: flex; flex-direction: column; }
+        .earnings-col span { font-size: 0.8rem; color: #777; font-weight: bold; margin-bottom: 4px; }
+        .earnings-col strong { font-size: 1.4rem; font-weight: 900; color: #111; }
+        .earnings-stats { font-size: 0.85rem; color: #555; font-weight: 600; text-align: right; line-height: 1.6;}
+        .earnings-stats b { color: #111; font-weight: 900; margin-left: 8px;}
+
+        /* =======================================================
+           TELA 2: BUSCANDO PEDIDOS (FUNDO LARANJA)
+        ======================================================== */
         .searching-state-wrapper {
-            position: fixed;
-            top: 60px; /* Abaixo do header */
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 60px - 60px); /* Tira header e footer */
-            background: #ff9b26; /* Laranja exato */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            text-align: center;
-            color: #fff;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #f7941d; /* Laranja da imagem */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 50; text-align: center; color: #fff; padding-bottom: 70px;
         }
-        .searching-illustration {
-            width: 180px;
-            height: 180px;
-            background: #fff;
-            border-radius: 20px 20px 0 0;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 30px rgba(234, 29, 44, 0.2);
-            position: relative;
-            overflow: hidden;
+        .arch-illustration {
+            width: 200px; height: 240px; background: #fff; border-radius: 100px 100px 0 0;
+            margin-bottom: 30px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 15px 40px rgba(234, 29, 44, 0.2); font-size: 6rem;
+            border: 8px solid rgba(255,255,255,0.2); background-clip: padding-box;
         }
-        .searching-illustration::after {
-            content: "🛵";
-            font-size: 5rem;
-        }
-        .searching-state-wrapper h3 {
-            font-weight: 900;
-            font-size: 2.2rem;
-            line-height: 1.1;
-            letter-spacing: -1px;
-        }
+        .searching-state-wrapper h3 { font-weight: 900; font-size: 2.2rem; line-height: 1.1; }
 
-        .offline-state {
-            background: #fff;
-            border-radius: 24px;
-            padding: 50px 20px;
-            text-align: center;
-            border: 1px solid #eee;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        /* =======================================================
+           TELA 3: LISTA DE PEDIDOS LIVRES (MODAL)
+        ======================================================== */
+        .modal-list-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 200; display: none; flex-direction: column; justify-content: flex-end;
         }
-        .offline-state h3 { font-weight: 900; font-size: 1.4rem; color: #111; margin-bottom: 10px;}
-        .offline-state p { color: #777; font-size: 0.95rem;}
+        .modal-list-overlay.active { display: flex; }
+        .modal-list-content {
+            background: #fff; width: 100%; height: 90vh; border-radius: 24px 24px 0 0;
+            display: flex; flex-direction: column; animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .modal-arch-header {
+            height: 140px; background: #ff9b26; position: relative; border-radius: 24px 24px 0 0;
+            display: flex; justify-content: center; align-items: flex-end; overflow: hidden;
+        }
+        .modal-arch-inner {
+            width: 180px; height: 120px; background: #111; border-radius: 90px 90px 0 0;
+            display: flex; align-items: center; justify-content: center; font-size: 4rem; margin-bottom: -10px;
+        }
+        .modal-list-body { flex: 1; overflow-y: auto; padding: 25px 20px; background: #fff; }
+        .modal-list-body h3 { text-align: center; font-size: 1.3rem; font-weight: 900; color: #111; margin-bottom: 5px;}
+        .modal-list-body p { text-align: center; font-size: 0.85rem; color: #777; margin-bottom: 25px;}
 
-        /* CARDS DE PEDIDO (IDÊNTICO À TELA 4 DA IMAGEM) */
-        .ride-card { 
-            background: #fff; 
-            border-radius: 24px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08); 
-            border: 1px solid #eee; 
-            overflow: hidden;
-            position: relative;
-            z-index: 60; /* Fica acima da tela laranja */
+        .order-list-item {
+            padding: 18px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+        }
+        .order-list-item.selected {
+            border: 2px solid #ea1d2c; border-radius: 12px; padding: 18px 15px; margin: -2px -15px 0 -15px;
+            box-shadow: 0 4px 15px rgba(234, 29, 44, 0.1); border-bottom: 2px solid #ea1d2c;
+        }
+        .oli-details h4 { font-size: 0.95rem; font-weight: 800; color: #111; margin-bottom: 4px; }
+        .oli-details span { font-size: 0.8rem; color: #777; font-weight: 500; }
+        .oli-arrow { color: #ccc; font-weight: bold; }
+        .order-list-item.selected .oli-arrow { color: #ea1d2c; }
+        
+        .btn-fechar-modal { text-align: center; padding: 20px; color: #ea1d2c; font-weight: 900; cursor: pointer; font-size: 1rem; }
+
+        /* =======================================================
+           TELA 4: DETALHES DO PEDIDO (MODAL VERDE)
+        ======================================================== */
+        .modal-details-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; z-index: 300; display: none; flex-direction: column;
+        }
+        .modal-details-overlay.active { display: flex; animation: slideUp 0.3s ease; }
+        
+        .details-green-banner {
+            height: 30vh; background: #008a4a; display: flex; align-items: flex-end; justify-content: center; position: relative;
+        }
+        .details-arch {
+            width: 160px; height: 140px; background: #006636; border-radius: 80px 80px 0 0;
+            display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: -20px; z-index: 2;
+        }
+        .details-white-card {
+            flex: 1; background: #fff; border-radius: 30px 30px 0 0; margin-top: -30px;
+            z-index: 5; padding: 30px 25px; overflow-y: auto; display: flex; flex-direction: column;
         }
         
-        .card-green-banner {
-            background: #008a4a; /* Verde da imagem */
-            height: 110px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        /* Ilustração abstrata no fundo verde */
-        .card-green-banner::before {
-            content: '📦';
-            font-size: 4rem;
-            opacity: 0.2;
-            position: absolute;
-            right: 20px;
-            top: 10px;
-        }
+        .det-price { text-align: center; font-size: 2rem; font-weight: 900; color: #111; margin-bottom: 25px; letter-spacing: -0.5px;}
+        .det-metrics { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 20px;}
+        .det-metrics div { display: flex; flex-direction: column; gap: 6px; }
+        .det-metrics .lbl { font-size: 0.85rem; color: #777; font-weight: 600; }
+        .det-metrics .val { font-size: 1rem; color: #111; font-weight: 900; text-align: right;}
         
-        .card-content-body {
-            background: #fff;
-            border-radius: 24px 24px 0 0;
-            margin-top: -20px; /* Sobrepõe o banner verde */
-            position: relative;
-            padding: 25px 20px;
-        }
-
-        .card-price {
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #111;
-            margin-bottom: 15px;
-        }
+        .det-alert { background: #f0f6ff; color: #0d6efd; padding: 12px 15px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; display: flex; gap: 10px; margin-bottom: 25px; line-height: 1.4;}
         
-        .card-metrics {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .card-metrics div { display: flex; flex-direction: column; gap: 4px; }
-        .card-metrics .label { font-size: 0.85rem; color: #777; font-weight: 500; }
-        .card-metrics .val { font-size: 0.95rem; color: #111; font-weight: 800; text-align: right;}
+        .det-step { display: flex; gap: 15px; margin-bottom: 20px; }
+        .det-step .icon { font-size: 1.2rem; width: 24px; text-align: center; margin-top: 2px;}
+        .det-step .info small { display: block; font-weight: 900; color: #111; font-size: 0.9rem; margin-bottom: 4px; }
+        .det-step .info p { color: #777; font-size: 0.85rem; line-height: 1.4; }
 
-        .info-alert {
-            background: #f0f6ff;
-            color: #0d6efd;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+        .btn-montar-rota { background: #ea1d2c; color: #fff; border: none; width: 100%; padding: 18px; border-radius: 14px; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-top: auto; transition: 0.2s;}
+        .btn-montar-rota:active { transform: scale(0.98); }
+        .btn-voltar-det { text-align: center; padding: 15px; color: #ea1d2c; font-weight: 800; cursor: pointer; margin-top: 10px; font-size: 0.95rem; background: none; border:none; width: 100%;}
 
-        .route-step-modern {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .route-step-modern .icon {
-            font-size: 1.1rem;
-            color: #111;
-            width: 24px;
-            display: flex;
-            justify-content: center;
-            margin-top: 2px;
-        }
-        .route-step-modern .details small {
-            display: block;
-            font-weight: 900;
-            color: #111;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-        }
-        .route-step-modern .details p {
-            color: #777;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        /* BOTÕES DOS CARDS */
-        .btn-action { 
-            width: 100%; 
-            border: none; 
-            padding: 18px; 
-            border-radius: 12px; 
-            font-weight: 900; 
-            font-size: 1.05rem; 
-            cursor: pointer; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 8px; 
-            transition: 0.2s; 
-        }
-        .btn-accept { background: #e81f40; color: #fff; }
-        .btn-accept:active { opacity: 0.9; transform: scale(0.98); }
+        /* OUTRAS ABAS (EM ROTA / GANHOS) */
+        .generic-card { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.03);}
+        .btn-waze { background: #f0f6ff; color: #0d6efd; padding: 14px; border-radius: 12px; border: 1px solid #dce8ff; font-weight: 800; font-size: 0.95rem; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
+        .btn-concluir { background: #00a14b; color: #fff; border: none; padding: 16px; border-radius: 12px; width: 100%; font-weight: 900; font-size: 1rem; cursor: pointer;}
         
-        .btn-voltar {
-            background: none;
-            border: none;
-            width: 100%;
-            text-align: center;
-            color: #e81f40;
-            font-weight: 800;
-            font-size: 0.95rem;
-            margin-top: 15px;
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        .btn-waze { 
-            background: #f0f6ff; color: #0d6efd; padding: 14px; border-radius: 12px; border: 1px solid #dce8ff; font-weight: 800; font-size: 0.95rem; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; cursor: pointer;
-        }
-
-        /* NOTIFICAÇÃO TOAST */
-        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 8px solid #e81f40; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); padding: 20px; display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100000; transition: top 0.5s ease; border: 1px solid #f0f0f0;}
-        .toast-msg h4 { font-size: 1.2rem; font-weight: 900; color: #e81f40; margin: 0; }
-        .toast-msg.show { top: 20px; }
-
-        /* HISTÓRICO */
+        .history-val-box { background: #e6f4ea; padding: 30px 20px; border-radius: 24px; text-align: center; margin-bottom: 20px; border: 1px solid #d1e7dd;}
         .filter-box { background: #fff; padding: 15px 20px; border-radius: 16px; border: 1px solid #eee; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;}
-        .filter-box label { font-weight: 800; color: #555; font-size: 0.85rem; text-transform: uppercase;}
-        .filter-box input { padding: 10px 14px; border-radius: 12px; border: 1px solid #e5e5e5; outline: none; font-weight: bold; color: #111; font-size: 0.95rem; background: #f9f9f9;}
-        
-        .history-card { background: #fff; padding: 15px; border-radius: 16px; margin-bottom: 12px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #00a14b;}
-        .h-store { font-size: 0.95rem; color: #333; font-weight: bold; }
-        .h-val { font-size: 1.1rem; color: #00a14b; font-weight: 900; }
+        .filter-box input { padding: 10px; border-radius: 8px; border: 1px solid #ccc; outline: none; font-weight: bold; }
+
+        /* TOAST */
+        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 8px solid #ea1d2c; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); padding: 20px; display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100000; transition: top 0.5s ease;}
+        .toast-msg h4 { font-size: 1.2rem; font-weight: 900; color: #ea1d2c; margin: 0; }
+        .toast-msg.show { top: 20px; }
     </style>
 </head>
 <body>
@@ -306,74 +245,160 @@
     </div>
 
     <div id="app-screen">
-        <header>
-            <div class="app-logo-text">
-                <div class="icon">🛵</div>
-                <div><span class="uai">Uai</span><span class="pede">Pede</span></div>
-            </div>
-            
+        
+        <div class="top-header">
+            <div class="header-avatar">M</div>
             <label class="status-pill" id="pill-toggle">
                 <input type="checkbox" id="driver-status-toggle" onchange="window.toggleOnlineStatus()">
                 <span id="status-icon">⚪</span> <span id="status-text">Indisponível</span>
             </label>
-        </header>
+            <div class="header-bell" onclick="window.logoutDriver()" title="Sair"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></div>
+        </div>
 
         <div class="content-area">
-            <div id="sec-novas" class="section active">
+            
+            <div id="sec-novas" class="section active" style="padding:0; overflow:hidden;">
                 
-                <div id="offline-msg" class="offline-state">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px;"><path d="M10.1 2.182a10 10 0 0 1 3.8 0"></path><path d="M13.9 21.818a10 10 0 0 1-3.8 0"></path><path d="M17.609 3.721a10 10 0 0 1 2.69 2.7"></path><path d="M2.69 17.609a10 10 0 0 1 2.7 2.69"></path><path d="M20.279 17.609a10 10 0 0 1-2.7 2.69"></path><path d="M6.391 3.721a10 10 0 0 1-2.7 2.7"></path><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="12" x2="22" y2="2"></line><line x1="2" y1="2" x2="22" y2="22"></line></svg>
-                    <h3>Você está Indisponível</h3>
-                    <p>Toque no botão acima para ficar online e receber novas rotas.</p>
+                <div id="state-offline" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px; text-align:center; background:#fff;">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:20px;"><path d="M10.1 2.182a10 10 0 0 1 3.8 0"></path><path d="M13.9 21.818a10 10 0 0 1-3.8 0"></path><path d="M17.609 3.721a10 10 0 0 1 2.69 2.7"></path><path d="M2.69 17.609a10 10 0 0 1 2.7 2.69"></path><path d="M20.279 17.609a10 10 0 0 1-2.7 2.69"></path><path d="M6.391 3.721a10 10 0 0 1-2.7 2.7"></path><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="12" x2="22" y2="2"></line><line x1="2" y1="2" x2="22" y2="22"></line></svg>
+                    <h3 style="font-weight:900; font-size:1.5rem; margin-bottom:10px;">Fique Disponível</h3>
+                    <p style="color:#777;">Toque no botão acima para ficar online e receber pedidos.</p>
                 </div>
-                
-                <div id="no-rides-msg" class="searching-state-wrapper" style="display: none;">
-                    <div class="searching-illustration"></div>
+
+                <div id="state-searching" class="searching-state-wrapper" style="display:none;">
+                    <div class="arch-illustration">📦</div>
                     <h3>Buscando os<br>pedidos...</h3>
                 </div>
-                
-                <div id="available-rides-list" style="position: relative; z-index: 60;"></div>
+
+                <div id="state-map" style="display:none; width:100%; height:100%; position:relative;">
+                    <div class="map-background"></div>
+                    <div class="map-pin"></div>
+                    
+                    <div class="bottom-sheet-home show">
+                        <h3>Conheça o Rotas Disponíveis</h3>
+                        <p>Escolha o pedido que estiver livre e monte sua rota como preferir.</p>
+                        
+                        <button class="btn-available-orders" onclick="window.openOrderList()">
+                            <span style="display:flex; align-items:center; gap:8px;"><span style="font-size:1.2rem;">🛍️</span> Pedidos disponíveis pra você</span>
+                            <span style="color:#ea1d2c; font-weight:900;" id="home-orders-count">></span>
+                        </button>
+                        
+                        <div class="earnings-row">
+                            <div class="earnings-col">
+                                <span>Ganhos do dia</span>
+                                <strong id="home-earnings">R$ 0,00</strong>
+                            </div>
+                            <div class="earnings-stats">
+                                Rotas aceitas <b id="home-accepted">0</b><br>
+                                Finalizadas <b id="home-finished">0</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             
-            <div id="sec-minhas" class="section">
-                <div id="no-active-msg" class="offline-state">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    <h3>Nenhuma entrega em andamento</h3>
-                </div>
+            <div id="sec-minhas" class="section" style="padding: 90px 20px 80px;">
+                <h2 style="font-weight:900; margin-bottom:20px;">Em Rota</h2>
+                <div id="no-active-msg" style="text-align:center; padding:40px 20px; color:#999; display:none;">Nenhuma entrega em andamento.</div>
                 <div id="my-rides-list"></div>
             </div>
             
-            <div id="sec-historico" class="section">
+            <div id="sec-historico" class="section" style="padding: 90px 20px 80px;">
+                <div class="history-val-box">
+                    <span style="font-size: 0.85rem; font-weight: 800; color:#555; text-transform: uppercase;">Ganhos do dia</span>
+                    <div style="font-size: 2.5rem; font-weight: 900; margin-top: 5px; color: #00a14b; letter-spacing:-1px;" id="hist-total-val">R$ 0,00</div>
+                </div>
                 <div class="filter-box">
-                    <label>Data:</label>
+                    <label style="font-weight:bold; color:#777;">Filtrar Data:</label>
                     <input type="date" id="history-date-filter" onchange="window.renderHistoryOrders()">
                 </div>
                 <div id="history-rides-list"></div>
-                
-                <button onclick="window.logoutDriver()" style="width:100%; margin-top:30px; background:#f4f5f7; color:#e81f40; border:1px solid #fbd5d5; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">
-                    Sair do Aplicativo
-                </button>
             </div>
         </div>
 
         <div class="bottom-nav">
             <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                Disponível <span id="badge-novas" style="background:#e81f40; color:#fff; padding:2px 6px; border-radius:10px; font-size:0.6rem; display:none;">0</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Disponível
             </button>
             <button class="tab-btn" id="tab-minhas" onclick="window.switchTab('minhas')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 Em Rota
             </button>
             <button class="tab-btn" id="tab-historico" onclick="window.switchTab('historico')">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                 Ganhos
             </button>
         </div>
     </div>
 
+    <div class="modal-list-overlay" id="orders-list-modal">
+        <div class="modal-list-content">
+            <div class="modal-arch-header">
+                <div class="modal-arch-inner">🛵</div>
+            </div>
+            <div class="modal-list-body">
+                <h3>Pedidos livres</h3>
+                <p>Escolha um dos pedidos abaixo que<br>montaremos uma rota pra você</p>
+                <div id="list-modal-render"></div>
+            </div>
+            <div class="btn-fechar-modal" onclick="window.closeOrderList()">Fechar</div>
+        </div>
+    </div>
+
+    <div class="modal-details-overlay" id="order-details-modal">
+        <div class="details-green-banner">
+            <div class="details-arch">🧑‍🚀</div>
+        </div>
+        <div class="details-white-card">
+            <div class="det-price" id="det-price-val">R$ 0,00</div>
+            
+            <div class="det-metrics">
+                <div>
+                    <span class="lbl">Distância total da rota</span>
+                    <span class="lbl">Tempo estimado da rota</span>
+                </div>
+                <div>
+                    <span class="val" id="det-dist">--</span>
+                    <span class="val" id="det-time">--</span>
+                </div>
+            </div>
+
+            <div class="det-alert">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>Ao montar a rota com o pedido, você poderá ver mais detalhes antes de decidir</span>
+            </div>
+            
+            <div class="det-step">
+                <div class="icon">🏬</div>
+                <div class="info">
+                    <small id="det-store-name">Coleta</small>
+                    <p id="det-store-addr">Endereço da loja</p>
+                </div>
+            </div>
+            <div class="det-step">
+                <div class="icon">👤</div>
+                <div class="info">
+                    <small>Entrega</small>
+                    <p id="det-cust-addr">Endereço do cliente</p>
+                </div>
+            </div>
+            <div class="det-step" style="border:none;">
+                <div class="icon">💳</div>
+                <div class="info">
+                    <small>Pagamento</small>
+                    <p id="det-pay-method">Forma de pagamento</p>
+                </div>
+            </div>
+            
+            <button class="btn-montar-rota" id="btn-accept-route">Montar rota com esse pedido</button>
+            <button class="btn-voltar-det" onclick="window.closeOrderDetails()">Voltar</button>
+        </div>
+    </div>
+
     <div id="new-ride-toast" class="toast-msg">
-        <h4 style="color:#e81f40; font-weight:900;">NOVA CORRIDA!</h4>
+        <h4 style="color:#ea1d2c; font-weight:900;">NOVA CORRIDA!</h4>
     </div>
 
     <script type="module">
@@ -398,23 +423,23 @@
         let allPendingOrders = [];
         let myAcceptedOrders = [];
         let myHistoryOrders = [];
+        let currentSelectedOrderId = null;
 
         window.onload = async () => {
             if (loggedDriver && loggedDriver.id) {
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-screen').style.display = 'block';
+                document.getElementById('app-screen').style.display = 'flex';
                 if ("Notification" in window) Notification.requestPermission();
                 document.getElementById('history-date-filter').value = new Date().toISOString().split('T')[0];
                 
                 await loadStoresCache();
                 startListeners();
 
-                // ESCUTAR O PRÓPRIO STATUS EM TEMPO REAL
+                // Lógica de Status Online/Offline
                 onSnapshot(doc(db, "drivers", loggedDriver.id), (docSnap) => {
                     if(docSnap.exists()){
                         const data = docSnap.data();
                         isOnline = (data.isOnline === true || data.isOnline === "true");
-                        
                         document.getElementById('driver-status-toggle').checked = isOnline;
                         
                         const pill = document.getElementById('pill-toggle');
@@ -425,16 +450,13 @@
                             pill.classList.add('online');
                             icon.innerText = "🟢";
                             text.innerText = "Disponível";
-                            document.getElementById('offline-msg').style.display = 'none';
                         } else {
                             pill.classList.remove('online');
                             icon.innerText = "⚪";
                             text.innerText = "Indisponível";
-                            document.getElementById('offline-msg').style.display = 'block';
-                            document.getElementById('no-rides-msg').style.display = 'none';
                         }
                         
-                        renderAvailableOrders();
+                        updateScreensFlow();
                     }
                 });
             }
@@ -462,14 +484,8 @@
         };
 
         window.logoutDriver = async () => {
-            if(confirm("Deseja realmente sair da sua conta? Você deixará de receber pedidos.")) {
-                if(loggedDriver && loggedDriver.id) {
-                    try {
-                        await updateDoc(doc(db, "drivers", loggedDriver.id), { isOnline: false });
-                    } catch(e) {
-                        console.error("Erro ao deslogar:", e);
-                    }
-                }
+            if(confirm("Deseja sair da sua conta?")) {
+                if(loggedDriver) await updateDoc(doc(db, "drivers", loggedDriver.id), { isOnline: false });
                 localStorage.removeItem('loggedDriver');
                 window.location.reload(); 
             }
@@ -485,6 +501,12 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`sec-${tab}`).classList.add('active');
+            
+            // Controle especial para o Header não sobrepor abas fixas
+            document.querySelector('.top-header').style.background = tab === 'novas' ? 'transparent' : '#fff';
+            document.querySelector('.top-header').style.boxShadow = tab === 'novas' ? 'none' : '0 2px 10px rgba(0,0,0,0.05)';
+
+            if(tab === 'novas') updateScreensFlow();
             if(tab === 'historico') window.renderHistoryOrders();
         };
 
@@ -509,11 +531,13 @@
 
                 if(isOnline && tempPending.length > availableCount) {
                     window.playAlertSound();
-                    window.showSystemNotification();
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("UaiPede Entregas", { body: "🚀 Nova entrega disponível!" });
+                    }
                 }
                 allPendingOrders = tempPending;
                 availableCount = allPendingOrders.length;
-                renderAvailableOrders();
+                updateScreensFlow();
             });
 
             onSnapshot(query(collection(db, "orders"), where("driverId", "==", loggedDriver.id)), (snapshot) => {
@@ -524,105 +548,97 @@
                     if (['Concluído', 'Concluido', 'Entregue'].includes(order.status)) myHistoryOrders.push(order);
                 });
                 renderMyOrders();
+                updateHomeStats();
             });
         }
 
-        window.showSystemNotification = () => {
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("UaiPede Entregas", { body: "🚀 Nova entrega disponível para você!" });
-            }
-        };
+        // Lógica de qual tela mostrar na aba "Livres"
+        function updateScreensFlow() {
+            const stateOffline = document.getElementById('state-offline');
+            const stateSearch = document.getElementById('state-searching');
+            const stateMap = document.getElementById('state-map');
 
-        function renderAvailableOrders() {
-            const container = document.getElementById('available-rides-list');
-            const badge = document.getElementById('badge-novas');
-            const noRidesMsg = document.getElementById('no-rides-msg');
-            
-            if (!isOnline) { 
-                container.innerHTML = ''; 
-                badge.style.display = 'none'; 
-                noRidesMsg.style.display = 'none';
-                return; 
-            }
-            
-            if (allPendingOrders.length === 0) {
-                noRidesMsg.style.display = 'flex';
-                badge.style.display = 'none';
+            stateOffline.style.display = 'none';
+            stateSearch.style.display = 'none';
+            stateMap.style.display = 'none';
+
+            if (!isOnline) {
+                stateOffline.style.display = 'flex';
+                window.closeOrderList();
+                window.closeOrderDetails();
+            } else if (allPendingOrders.length === 0) {
+                stateSearch.style.display = 'flex';
+                window.closeOrderList();
+                window.closeOrderDetails();
             } else {
-                noRidesMsg.style.display = 'none';
-                badge.innerText = allPendingOrders.length;
-                badge.style.display = 'inline-block';
+                stateMap.style.display = 'block';
+                document.getElementById('home-orders-count').innerText = `${allPendingOrders.length} >`;
+                renderOrderListModal();
             }
+        }
 
+        function updateHomeStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const filterStart = new Date(today + 'T00:00:00').getTime();
+            const filterEnd = filterStart + 86400000;
+            
+            const todayCompleted = myHistoryOrders.filter(o => (o.deliveredAt || o.timestamp) >= filterStart && (o.deliveredAt || o.timestamp) < filterEnd);
+            let todayGains = 0;
+            todayCompleted.forEach(o => todayGains += parseFloat(o.platformDriverFee || 5));
+
+            document.getElementById('home-earnings').innerText = `R$ ${todayGains.toFixed(2)}`;
+            document.getElementById('home-accepted').innerText = myAcceptedOrders.length + todayCompleted.length;
+            document.getElementById('home-finished').innerText = todayCompleted.length;
+        }
+
+        window.openOrderList = () => { document.getElementById('orders-list-modal').classList.add('active'); };
+        window.closeOrderList = () => { document.getElementById('orders-list-modal').classList.remove('active'); };
+
+        function renderOrderListModal() {
+            const container = document.getElementById('list-modal-render');
             container.innerHTML = allPendingOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
-                let storeAddress = "Endereço não informado";
-                if (store.street) {
-                    storeAddress = store.street;
-                    if (store.city) storeAddress += ` - ${store.city}`;
-                }
-
-                // Cálculo fictício só para visual (já que não temos a distância real na API no momento)
-                const mockedDistance = (Math.random() * 5 + 1).toFixed(1);
-                const mockedTime = Math.floor(Math.random() * 15 + 10);
-
+                const mockedDistance = (Math.random() * 5 + 1).toFixed(1); // Fake dinâmico p/ visual
+                const price = (order.platformDriverFee || 5).toFixed(2);
+                
                 return `
-                <div class="ride-card">
-                    <div class="card-green-banner"></div>
-                    
-                    <div class="card-content-body">
-                        <div class="card-price">R$ ${(order.platformDriverFee || 5).toFixed(2)}</div>
-                        
-                        <div class="card-metrics">
-                            <div>
-                                <span class="label">Distância total da rota</span>
-                                <span class="label">Tempo estimado da rota</span>
-                            </div>
-                            <div>
-                                <span class="val">~ ${mockedDistance} km</span>
-                                <span class="val">~ ${mockedTime} min</span>
-                            </div>
-                        </div>
-
-                        <div class="info-alert">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                            Ao montar a rota com o pedido, você poderá ver mais detalhes antes de decidir
-                        </div>
-                        
-                        <div class="route-step-modern">
-                            <div class="icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                            </div>
-                            <div class="details">
-                                <small>Coleta • ${order.storeName}</small>
-                                <p>${storeAddress}</p>
-                            </div>
-                        </div>
-                        <div class="route-step-modern">
-                            <div class="icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                            </div>
-                            <div class="details">
-                                <small>Entrega</small>
-                                <p>${order.customer.address}</p>
-                            </div>
-                        </div>
-                        <div class="route-step-modern" style="border:none;">
-                            <div class="icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                            </div>
-                            <div class="details">
-                                <small>Pagamento</small>
-                                <p>${order.paymentMethod || 'Maquininha / Dinheiro'}</p>
-                            </div>
-                        </div>
-                        
-                        <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">Montar rota com esse pedido</button>
-                        <button class="btn-voltar" onclick="document.getElementById('available-rides-list').innerHTML=''">Voltar</button>
+                <div class="order-list-item" onclick="window.openOrderDetails('${order.id}')">
+                    <div class="oli-details">
+                        <h4>${store.name || order.storeName}</h4>
+                        <span>R$ ${price} • ${mockedDistance} km</span>
                     </div>
+                    <div class="oli-arrow">></div>
                 </div>`;
             }).join('');
         }
+
+        window.openOrderDetails = (id) => {
+            const order = allPendingOrders.find(o => o.id === id);
+            if(!order) return;
+            currentSelectedOrderId = id;
+
+            const store = storesCache[order.storeId] || {};
+            let storeAddress = store.street || "Endereço não informado";
+            if (store.city) storeAddress += ` - ${store.city}`;
+            
+            const mockedDistance = (Math.random() * 5 + 1).toFixed(1);
+            const mockedTime = Math.floor(Math.random() * 15 + 10);
+
+            document.getElementById('det-price-val').innerText = `R$ ${(order.platformDriverFee || 5).toFixed(2)}`;
+            document.getElementById('det-dist').innerText = `${mockedDistance} km`;
+            document.getElementById('det-time').innerText = `${mockedTime} min`;
+            
+            document.getElementById('det-store-name').innerText = `Coleta • ${store.name || order.storeName}`;
+            document.getElementById('det-store-addr').innerText = storeAddress;
+            document.getElementById('det-cust-addr').innerText = order.customer.address;
+            document.getElementById('det-pay-method').innerText = order.paymentMethod || 'Não informado';
+
+            document.getElementById('order-details-modal').classList.add('active');
+            
+            document.getElementById('btn-accept-route').onclick = () => window.acceptOrder(order.id);
+        };
+
+        window.closeOrderDetails = () => { document.getElementById('order-details-modal').classList.remove('active'); currentSelectedOrderId = null; };
 
         function renderMyOrders() {
             const container = document.getElementById('my-rides-list');
@@ -630,42 +646,29 @@
             
             container.innerHTML = myAcceptedOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
-                let storeAddress = "Endereço da loja não informado";
-                if (store.street) {
-                    storeAddress = store.street;
-                    if (store.city) storeAddress += ` - ${store.city}`;
-                }
+                let storeAddress = store.street || "Endereço da loja não informado";
+                if (store.city) storeAddress += ` - ${store.city}`;
                 const qCust = encodeURIComponent(order.customer.address + ', ' + loggedDriver.city);
                 
                 return `
-                <div class="ride-card">
-                    <div class="card-green-banner" style="background:#e81f40; height:80px;"></div>
-                    
-                    <div class="card-content-body">
-                        <div class="card-price">R$ ${(order.platformDriverFee || 5).toFixed(2)}</div>
-                        <div style="text-align:center; font-weight:800; color:#e81f40; text-transform:uppercase; font-size:0.8rem; margin-top:-10px; margin-bottom:20px;">Em Andamento</div>
-                        
-                        <div class="route-step-modern">
-                            <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
-                            <div class="details">
-                                <small>Coleta • ${order.storeName}</small>
-                                <p>${storeAddress}</p>
-                            </div>
-                        </div>
-                        <div class="route-step-modern" style="border:none;">
-                            <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
-                            <div class="details">
-                                <small>Entrega</small>
-                                <p>${order.customer.address}</p>
-                            </div>
-                        </div>
-                        
-                        <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qCust}&navigate=yes', '_blank')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-                            Abrir Rota no Waze
-                        </button>
-                        <button class="btn-action" style="background:#00a14b; color:#fff;" onclick="window.finishDelivery('${order.id}')">Concluir Entrega</button>
+                <div class="generic-card" style="border-left: 6px solid #ea1d2c;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #f0f0f0; padding-bottom:15px;">
+                        <span style="font-weight:900; color:#ea1d2c;">EM ANDAMENTO</span>
+                        <strong style="font-size:1.2rem; color:#111;">R$ ${(order.platformDriverFee || 5).toFixed(2)}</strong>
                     </div>
+                    
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <span style="font-size:1.2rem; width:20px;">🏬</span>
+                        <div><strong style="font-size:0.9rem;">Coleta • ${order.storeName}</strong><p style="font-size:0.8rem; color:#777; margin-top:2px;">${storeAddress}</p></div>
+                    </div>
+                    
+                    <div style="display:flex; gap:10px; margin-bottom:20px;">
+                        <span style="font-size:1.2rem; width:20px;">👤</span>
+                        <div><strong style="font-size:0.9rem;">Entrega</strong><p style="font-size:0.8rem; color:#777; margin-top:2px;">${order.customer.address}</p></div>
+                    </div>
+                    
+                    <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qCust}&navigate=yes', '_blank')">Abrir Rota no Waze</button>
+                    <button class="btn-concluir" onclick="window.finishDelivery('${order.id}')">Concluir Entrega</button>
                 </div>`;
             }).join('');
         }
@@ -682,37 +685,29 @@
             const list = filtered.map(o => {
                 const fee = parseFloat(o.platformDriverFee || 5);
                 total += fee;
-                return `
-                <div class="history-card">
-                    <div class="h-store">${o.storeName}</div>
-                    <div class="h-val">+ R$ ${fee.toFixed(2)}</div>
-                </div>`;
+                return `<div class="history-card"><div class="h-store">${o.storeName}</div><div class="h-val">+ R$ ${fee.toFixed(2)}</div></div>`;
             }).join('');
             
-            container.innerHTML = `
-                <div style="background:#fff; border: 1px solid #eee; color:#111; padding:25px; border-radius:24px; margin-bottom:20px; text-align:center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);">
-                    <span style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase;">Ganhos do dia (${filtered.length} rotas)</span>
-                    <div style="font-size: 2.5rem; font-weight: 900; margin-top: 5px; color: #00a14b; letter-spacing:-1px;">R$ ${total.toFixed(2)}</div>
-                </div>
-            ` + (list || '<div class="offline-state" style="padding:30px;"><p>Nenhuma entrega registada neste dia.</p></div>');
+            document.getElementById('hist-total-val').innerText = `R$ ${total.toFixed(2)}`;
+            container.innerHTML = list || '<div style="text-align:center; color:#999; padding:40px 20px;">Nenhuma entrega nesta data.</div>';
         };
 
-        window.acceptOrder = async (id, btn) => {
-            btn.innerHTML = "A aceitar...";
+        window.acceptOrder = async (id) => {
+            document.getElementById('btn-accept-route').innerText = "Aceitando...";
             await updateDoc(doc(db, "orders", id), { status: 'Saiu para Entrega', driverId: loggedDriver.id, driverName: loggedDriver.name, driverPhone: loggedDriver.phone || "" });
+            window.closeOrderDetails();
+            window.closeOrderList();
             window.switchTab('minhas');
         };
 
         window.finishDelivery = async (id) => {
-            if(confirm("Confirmar que a entrega foi concluída com sucesso?")) {
+            if(confirm("Confirmar entrega ao cliente?")) {
                 await updateDoc(doc(db, "orders", id), { status: 'Concluído', deliveredAt: Date.now() });
                 window.switchTab('historico');
             }
         };
 
-        window.playAlertSound = () => {
-            try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5); } catch(e){}
-        };
+        window.playAlertSound = () => { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5); } catch(e){} };
     </script>
 </body>
 </html>
