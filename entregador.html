@@ -21,82 +21,168 @@
         .btn-login { width: 100%; background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.15rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 15px rgba(234, 29, 44, 0.25); transition: 0.3s; }
         .btn-login:active { transform: translateY(2px); box-shadow: 0 2px 8px rgba(234, 29, 44, 0.2); }
 
-        /* HEADER & NAVBAR */
-        #app-screen { display: none; padding-bottom: 80px; }
-        header { background: #111; color: #fff; padding: 30px 20px 40px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100;}
-        .app-logo { text-align: center; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .app-logo-text { font-size: 2.2rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+        /* HEADER MODERNO ESTILO IFOOD */
+        #app-screen { display: none; padding-bottom: 90px; }
+        header { 
+            background: #fff; 
+            padding: 15px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+        }
+        .app-logo-text { font-size: 1.4rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
         .app-logo-text .uai { color: #ea1d2c; }
-        .app-logo-text .pede { color: #fff; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; }
-        .driver-info h1 { font-size: 1.4rem; font-weight: 900; color: #fff; margin: 0; letter-spacing: -0.5px;}
+        .app-logo-text .pede { color: #111; }
         
-        .btn-logout { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; margin-top: 8px; transition: 0.2s; }
-        .btn-logout:active { background: rgba(255,255,255,0.2); }
+        .status-pill {
+            background: #f4f5f7;
+            color: #777;
+            border-radius: 30px;
+            padding: 8px 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .status-pill input { display: none; }
+        .status-pill.online { background: #00a14b; color: #fff; box-shadow: 0 4px 12px rgba(0, 161, 75, 0.3); }
 
-        /* STATUS TOGGLE */
-        .status-toggle { display: flex; flex-direction: column; align-items: flex-end; gap: 5px;}
-        .status-badge { background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
-        .status-badge span { font-size: 0.75rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
-        .toggle-switch { position: relative; width: 42px; height: 24px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-        input:checked + .slider { background-color: #00a14b; }
-        input:checked + .slider:before { transform: translateX(18px); }
+        /* NAVEGAÇÃO INFERIOR (BOTTOM NAV) */
+        .bottom-nav {
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background: #fff;
+            display: flex; 
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05); 
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100;
+            border-top: 1px solid #eee;
+        }
+        .tab-btn { 
+            flex: 1; 
+            padding: 12px 5px; 
+            text-align: center; 
+            font-weight: 800; 
+            font-size: 0.75rem; 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            color: #aaa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .tab-btn svg { stroke: #aaa; transition: 0.2s; }
+        .tab-btn.active { color: #ea1d2c; }
+        .tab-btn.active svg { stroke: #ea1d2c; }
 
-        /* TABS */
-        .tabs { display: flex; gap: 10px; padding: 0 20px; margin-top: -20px; position: relative; z-index: 101; }
-        .tab-btn { flex: 1; padding: 14px 5px; text-align: center; font-weight: 800; font-size: 0.85rem; border-radius: 16px; border: none; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-transform: uppercase; letter-spacing: 0.5px;}
-        .tab-btn.active { background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; box-shadow: 0 6px 15px rgba(234, 29, 44, 0.3); transform: translateY(-2px);}
-        .tab-btn.inactive { background: #fff; color: #777; border: 1px solid #eee; }
-
-        .content-area { padding: 25px 20px; }
+        .content-area { padding: 20px; }
         .section { display: none; }
         .section.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CARDS DE PEDIDO MELHORADOS */
-        .ride-card { background: #fff; border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; transition: transform 0.2s;}
-        .ride-card:active { transform: scale(0.98); }
-        .ride-card.new { border: 2px solid #ea1d2c; animation: pulseBorder 2s infinite; position: relative; overflow: hidden;}
-        .ride-card.new::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: #ea1d2c; }
-        
-        @keyframes pulseBorder { 0% { box-shadow: 0 0 0 0 rgba(234,29,44,0.4); } 70% { box-shadow: 0 0 0 10px rgba(234,29,44,0); } 100% { box-shadow: 0 0 0 0 rgba(234,29,44,0); } }
-        
-        .r-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f4f5f7; padding-bottom: 15px; margin-bottom: 15px; }
-        .r-fee { display: flex; flex-direction: column; align-items: flex-end; }
-        .r-fee span { font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; }
-        .r-fee strong { font-size: 1.6rem; font-weight: 900; color: #00a14b; letter-spacing: -0.5px; }
-        .badge-new { background: #ea1d2c; color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; letter-spacing: 1px; }
+        /* ESTADOS DE BUSCA (AQUELA TELA LARANJA DA IMAGEM) */
+        .searching-state {
+            background: #f89e24; /* Laranja da imagem */
+            border-radius: 24px;
+            padding: 50px 20px;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(248, 158, 36, 0.3);
+            margin-top: 20px;
+        }
+        .searching-state h3 { font-weight: 900; font-size: 1.8rem; margin-top: 20px; line-height: 1.1; }
 
-        /* TIMELINE (ROTA DA ENTREGA) */
-        .route-info { position: relative; padding-left: 20px; margin-bottom: 20px; }
-        .route-info::before { content: ''; position: absolute; top: 8px; bottom: 15px; left: 5px; width: 2px; background: #eee; }
-        .route-step { position: relative; margin-bottom: 15px; }
-        .route-step:last-child { margin-bottom: 0; }
-        .step-dot { position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px #ddd; background: #fff;}
-        .dot-store { background: #ea1d2c; box-shadow: 0 0 0 2px #ea1d2c; }
-        .dot-house { background: #00a14b; box-shadow: 0 0 0 2px #00a14b; }
-        .route-step small { display: block; font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: bold; margin-bottom: 2px;}
-        .route-step b { display: block; font-size: 1rem; color: #111; font-weight: 800; line-height: 1.2; }
-        .route-step p { font-size: 0.85rem; color: #555; margin-top: 4px; line-height: 1.3; }
+        .offline-state {
+            background: #fff;
+            border-radius: 24px;
+            padding: 50px 20px;
+            text-align: center;
+            border: 1px solid #eee;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .offline-state h3 { font-weight: 900; font-size: 1.4rem; color: #111; margin-bottom: 10px;}
+        .offline-state p { color: #777; font-size: 0.95rem;}
+
+        /* CARDS DE PEDIDO MODERNOS */
+        .ride-card { 
+            background: #fff; 
+            border-radius: 24px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06); 
+            border: 1px solid #eee; 
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .ride-card:active { transform: scale(0.98); }
+        
+        .val-header-box {
+            background: #e6f4ea;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #d1e7dd;
+        }
+        .val-header-box .price { font-size: 1.8rem; font-weight: 900; color: #00a14b; letter-spacing: -0.5px; }
+        .val-header-box .sub { font-size: 0.8rem; color: #111; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
+        
+        .val-header-box.active-ride { background: #fff0f0; border-bottom: 1px solid #fbd5d5; }
+        .val-header-box.active-ride .price { color: #ea1d2c; }
+
+        .route-step-modern {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+        .route-step-modern .icon {
+            font-size: 1.2rem;
+            background: #f4f5f7;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .route-step-modern .details small {
+            display: block;
+            font-weight: 800;
+            color: #111;
+            font-size: 0.85rem;
+        }
+        .route-step-modern .details p {
+            color: #777;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
 
         /* BOTÕES DOS CARDS */
         .btn-waze { background: #f0f6ff; color: #0d6efd; padding: 14px; border-radius: 14px; border: 1px solid #dce8ff; font-weight: 800; font-size: 0.95rem; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; cursor: pointer;}
         .btn-waze:active { background: #dbe7ff; transform: scale(0.98);}
         
-        .btn-action { width: 100%; border: none; padding: 16px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px;}
+        .btn-action { width: 100%; border: none; padding: 18px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px;}
         .btn-action:active { transform: scale(0.98); }
-        .btn-accept { background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.25); }
-        .btn-finish { background: linear-gradient(135deg, #00a14b, #28d078); color: #fff; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.25); }
-
-        .empty-msg { text-align: center; padding: 60px 20px; }
-        .empty-msg h3 { color: #111; font-weight: 900; font-size: 1.2rem; margin-bottom: 8px;}
-        .empty-msg p { color: #777; font-size: 0.9rem; }
+        .btn-accept { background: #ea1d2c; color: #fff; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.25); }
+        .btn-finish { background: #00a14b; color: #fff; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.25); }
 
         /* NOTIFICAÇÃO TOAST */
-        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 8px solid #ea1d2c; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); padding: 20px; display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); border-right: 1px solid #f0f0f0; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;}
+        .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 8px solid #ea1d2c; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); padding: 20px; display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); border: 1px solid #f0f0f0;}
         .toast-msg h4 { font-size: 1.2rem; font-weight: 900; color: #ea1d2c; margin: 0; }
         .toast-msg.show { top: 20px; }
 
@@ -104,10 +190,7 @@
         .filter-box { background: #fff; padding: 15px 20px; border-radius: 16px; border: 1px solid #eee; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
         .filter-box label { font-weight: 800; color: #555; font-size: 0.85rem; text-transform: uppercase;}
         .filter-box input { padding: 10px 14px; border-radius: 12px; border: 1px solid #e5e5e5; outline: none; font-weight: bold; color: #111; font-family: 'Roboto', sans-serif; font-size: 0.95rem; background: #f9f9f9;}
-        .filter-box input:focus { border-color: #ea1d2c; }
-
-        /* REFINAMENTO DO CARD GERADO NO HISTÓRICO JS */
-        #history-rides-list > div:first-child { box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; font-size: 1.1rem; }
+        
         .history-card { background: #fff; padding: 15px; border-radius: 16px; margin-bottom: 12px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #00a14b;}
         .h-store { font-size: 0.95rem; color: #333; font-weight: bold; }
         .h-val { font-size: 1.1rem; color: #00a14b; font-weight: 900; }
@@ -126,53 +209,32 @@
 
     <div id="app-screen">
         <header>
-            <div class="app-logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 Q 50 55 95 15"></path></svg>
-                <div class="app-logo-text" style="font-size: 1.8rem;"><span class="uai">Uai</span><span class="pede">Pede</span></div>
-            </div>
-            <div class="header-top">
-                <div class="driver-info">
-                    <h1 id="driver-name-display">Olá</h1>
-                    <button class="btn-logout" onclick="window.logoutDriver()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                        Sair da conta
-                    </button>
-                </div>
-                <div class="status-toggle">
-                    <div class="status-badge">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="driver-status-toggle" onchange="window.toggleOnlineStatus()">
-                            <span class="slider"></span>
-                        </label>
-                        <span id="status-text">OFFLINE</span>
-                    </div>
-                </div>
-            </div>
+            <div class="app-logo-text"><span class="uai">Uai</span><span class="pede">Pede</span></div>
+            
+            <label class="status-pill" id="pill-toggle">
+                <input type="checkbox" id="driver-status-toggle" onchange="window.toggleOnlineStatus()">
+                <span id="status-icon">⚪</span> <span id="status-text">Indisponível</span>
+            </label>
         </header>
-
-        <div class="tabs">
-            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">Novas <span id="badge-novas" style="background:#fff; color:#ea1d2c; padding:2px 6px; border-radius:10px; font-size:0.7rem; display:none;">0</span></button>
-            <button class="tab-btn inactive" id="tab-minhas" onclick="window.switchTab('minhas')">Atuais</button>
-            <button class="tab-btn inactive" id="tab-historico" onclick="window.switchTab('historico')">Histórico</button>
-        </div>
 
         <div class="content-area">
             <div id="sec-novas" class="section active">
-                <div id="offline-msg" class="empty-msg">
+                <div id="offline-msg" class="offline-state">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px;"><path d="M10.1 2.182a10 10 0 0 1 3.8 0"></path><path d="M13.9 21.818a10 10 0 0 1-3.8 0"></path><path d="M17.609 3.721a10 10 0 0 1 2.69 2.7"></path><path d="M2.69 17.609a10 10 0 0 1 2.7 2.69"></path><path d="M20.279 17.609a10 10 0 0 1-2.7 2.69"></path><path d="M6.391 3.721a10 10 0 0 1-2.7 2.7"></path><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="12" x2="22" y2="2"></line><line x1="2" y1="2" x2="22" y2="22"></line></svg>
-                    <h3>Você está Offline</h3>
-                    <p>Fique online para receber novos pedidos na sua região.</p>
+                    <h3>Você está Indisponível</h3>
+                    <p>Toque no botão acima para ficar online e receber novas rotas.</p>
                 </div>
-                <div id="no-rides-msg" class="empty-msg" style="display: none;">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px; opacity:0.5;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    <h3>Buscando corridas...</h3>
-                    <p>Aguarde, os novos pedidos aparecerão aqui.</p>
+                
+                <div id="no-rides-msg" class="searching-state" style="display: none;">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <h3>Buscando os<br>pedidos...</h3>
                 </div>
+                
                 <div id="available-rides-list"></div>
             </div>
             
             <div id="sec-minhas" class="section">
-                <div id="no-active-msg" class="empty-msg">
+                <div id="no-active-msg" class="offline-state">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                     <h3>Nenhuma entrega em andamento</h3>
                 </div>
@@ -185,7 +247,26 @@
                     <input type="date" id="history-date-filter" onchange="window.renderHistoryOrders()">
                 </div>
                 <div id="history-rides-list"></div>
+                
+                <button onclick="window.logoutDriver()" style="width:100%; margin-top:30px; background:#f4f5f7; color:#ea1d2c; border:1px solid #fbd5d5; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">
+                    Sair do Aplicativo
+                </button>
             </div>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="tab-btn active" id="tab-novas" onclick="window.switchTab('novas')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Livres <span id="badge-novas" style="background:#ea1d2c; color:#fff; padding:2px 6px; border-radius:10px; font-size:0.6rem; display:none;">0</span>
+            </button>
+            <button class="tab-btn" id="tab-minhas" onclick="window.switchTab('minhas')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Em Rota
+            </button>
+            <button class="tab-btn" id="tab-historico" onclick="window.switchTab('historico')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                Ganhos
+            </button>
         </div>
     </div>
 
@@ -220,7 +301,6 @@
             if (loggedDriver && loggedDriver.id) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'block';
-                document.getElementById('driver-name-display').innerText = `Olá, ${loggedDriver.name.split(' ')[0]}`;
                 if ("Notification" in window) Notification.requestPermission();
                 document.getElementById('history-date-filter').value = new Date().toISOString().split('T')[0];
                 
@@ -234,9 +314,22 @@
                         isOnline = (data.isOnline === true || data.isOnline === "true");
                         
                         document.getElementById('driver-status-toggle').checked = isOnline;
-                        document.getElementById('status-text').innerText = isOnline ? "ONLINE" : "OFFLINE";
-                        document.getElementById('status-text').style.color = isOnline ? "#00a14b" : "#fff";
-                        document.getElementById('offline-msg').style.display = isOnline ? 'none' : 'block';
+                        
+                        const pill = document.getElementById('pill-toggle');
+                        const text = document.getElementById('status-text');
+                        const icon = document.getElementById('status-icon');
+                        
+                        if (isOnline) {
+                            pill.classList.add('online');
+                            icon.innerText = "🟢";
+                            text.innerText = "Disponível";
+                            document.getElementById('offline-msg').style.display = 'none';
+                        } else {
+                            pill.classList.remove('online');
+                            icon.innerText = "⚪";
+                            text.innerText = "Indisponível";
+                            document.getElementById('offline-msg').style.display = 'block';
+                        }
                         
                         renderAvailableOrders();
                     }
@@ -281,15 +374,11 @@
 
         window.toggleOnlineStatus = async () => {
             isOnline = document.getElementById('driver-status-toggle').checked;
-            document.getElementById('status-text').innerText = isOnline ? "ONLINE" : "OFFLINE";
-            document.getElementById('status-text').style.color = isOnline ? "#00a14b" : "#fff";
-            document.getElementById('offline-msg').style.display = isOnline ? 'none' : 'block';
-            renderAvailableOrders(); 
             if(loggedDriver) await updateDoc(doc(db, "drivers", loggedDriver.id), { isOnline: isOnline });
         };
 
         window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.classList.add('inactive'); });
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`sec-${tab}`).classList.add('active');
@@ -358,7 +447,6 @@
 
             container.innerHTML = allPendingOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
-                // Puxando do campo "street" e "city" (como foi cadastrado no adm.html)
                 let storeAddress = "Endereço da loja não informado";
                 if (store.street) {
                     storeAddress = store.street;
@@ -366,34 +454,37 @@
                 }
 
                 return `
-                <div class="ride-card new">
-                    <div class="r-header">
-                        <span class="badge-new">NOVA CORRIDA</span>
-                        <div class="r-fee">
-                            <span>Você ganha:</span>
-                            <strong>R$ ${(order.platformDriverFee || 5).toFixed(2)}</strong>
-                        </div>
+                <div class="ride-card">
+                    <div class="val-header-box">
+                        <div class="price">R$ ${(order.platformDriverFee || 5).toFixed(2)}</div>
+                        <div class="sub">Ganhos da entrega</div>
                     </div>
                     
-                    <div class="route-info">
-                        <div class="route-step">
-                            <div class="step-dot dot-store"></div>
-                            <small>Ponto de Coleta (Loja)</small>
-                            <b>${order.storeName}</b>
-                            <p>${storeAddress}</p>
+                    <div style="padding: 20px;">
+                        <div class="route-step-modern">
+                            <div class="icon">🏬</div>
+                            <div class="details">
+                                <small>Coleta • ${order.storeName}</small>
+                                <p>${storeAddress}</p>
+                            </div>
                         </div>
-                        <div class="route-step">
-                            <div class="step-dot dot-house"></div>
-                            <small>Ponto de Entrega (Cliente)</small>
-                            <b>${order.customerName}</b>
-                            <p>${order.customer.address}</p>
+                        <div class="route-step-modern">
+                            <div class="icon">👤</div>
+                            <div class="details">
+                                <small>Entrega</small>
+                                <p>${order.customer.address}</p>
+                            </div>
                         </div>
+                        <div class="route-step-modern" style="border:none; margin-bottom: 10px;">
+                            <div class="icon">💳</div>
+                            <div class="details">
+                                <small>Pagamento</small>
+                                <p>${order.paymentMethod || 'Maquininha/Dinheiro'}</p>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">Montar rota com esse pedido</button>
                     </div>
-                    
-                    <button class="btn-action btn-accept" onclick="window.acceptOrder('${order.id}', this)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Aceitar Corrida
-                    </button>
                 </div>`;
             }).join('');
         }
@@ -404,46 +495,41 @@
             
             container.innerHTML = myAcceptedOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
-                
-                // Puxando do campo "street" e "city" (como foi cadastrado no adm.html)
                 let storeAddress = "Endereço da loja não informado";
                 if (store.street) {
                     storeAddress = store.street;
                     if (store.city) storeAddress += ` - ${store.city}`;
                 }
-                
                 const qCust = encodeURIComponent(order.customer.address + ', ' + loggedDriver.city);
                 
                 return `
-                <div class="ride-card" style="border: 2px solid #00a14b;">
-                    <div class="r-header" style="border-bottom: 1px dashed #eee;">
-                        <span style="font-size: 0.8rem; font-weight: bold; color: #555;">PEDIDO #${order.id.substring(0,6).toUpperCase()}</span>
-                        <div class="r-fee"><strong>R$ ${(order.platformDriverFee || 5).toFixed(2)}</strong></div>
+                <div class="ride-card">
+                    <div class="val-header-box active-ride">
+                        <div class="price">R$ ${(order.platformDriverFee || 5).toFixed(2)}</div>
+                        <div class="sub" style="color:#ea1d2c;">Rota em andamento</div>
                     </div>
                     
-                    <div class="route-info">
-                        <div class="route-step">
-                            <div class="step-dot dot-store"></div>
-                            <small>Retirar em:</small>
-                            <b>${order.storeName}</b>
-                            <p>${storeAddress}</p>
+                    <div style="padding: 20px;">
+                        <div class="route-step-modern">
+                            <div class="icon">🏬</div>
+                            <div class="details">
+                                <small>Coleta • ${order.storeName}</small>
+                                <p>${storeAddress}</p>
+                            </div>
                         </div>
-                        <div class="route-step">
-                            <div class="step-dot dot-house"></div>
-                            <small>Entregar em:</small>
-                            <b>${order.customerName}</b>
-                            <p>${order.customer.address}</p>
+                        <div class="route-step-modern">
+                            <div class="icon">👤</div>
+                            <div class="details">
+                                <small>Entrega</small>
+                                <p>${order.customer.address}</p>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        
                         <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qCust}&navigate=yes', '_blank')">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-                            Waze
+                            Abrir Rota no Waze
                         </button>
-                        <button class="btn-action btn-finish" onclick="window.finishDelivery('${order.id}')" style="margin: 0; flex: 2;">
-                            Concluir
-                        </button>
+                        <button class="btn-action btn-finish" onclick="window.finishDelivery('${order.id}')">Concluir Entrega</button>
                     </div>
                 </div>`;
             }).join('');
@@ -469,15 +555,15 @@
             }).join('');
             
             container.innerHTML = `
-                <div style="background:linear-gradient(135deg, #00a14b, #28d078); color:#fff; padding:20px; border-radius:16px; margin-bottom:20px; text-align:center; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.25);">
-                    <span style="font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">Ganhos do dia (${filtered.length} corridas)</span>
-                    <div style="font-size: 2.2rem; font-weight: 900; margin-top: 5px;">R$ ${total.toFixed(2)}</div>
+                <div style="background:#e6f4ea; border: 1px solid #d1e7dd; color:#111; padding:25px; border-radius:24px; margin-bottom:20px; text-align:center; box-shadow: 0 4px 15px rgba(0, 161, 75, 0.1);">
+                    <span style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase;">Ganhos do dia (${filtered.length} rotas)</span>
+                    <div style="font-size: 2.5rem; font-weight: 900; margin-top: 5px; color: #00a14b; letter-spacing:-1px;">R$ ${total.toFixed(2)}</div>
                 </div>
-            ` + (list || '<div class="empty-msg"><p>Nenhuma entrega registrada neste dia.</p></div>');
+            ` + (list || '<div class="offline-state" style="padding:30px;"><p>Nenhuma entrega registrada neste dia.</p></div>');
         };
 
         window.acceptOrder = async (id, btn) => {
-            btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Aceitando...`;
+            btn.innerHTML = "Aceitando...";
             await updateDoc(doc(db, "orders", id), { status: 'Saiu para Entrega', driverId: loggedDriver.id, driverName: loggedDriver.name, driverPhone: loggedDriver.phone || "" });
             window.switchTab('minhas');
         };
