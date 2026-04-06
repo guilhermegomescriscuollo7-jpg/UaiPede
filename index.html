@@ -44,12 +44,14 @@
         .alert-close { background: #f4f5f7; border: none; font-size: 1rem; color: #777; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
 
         /* SPLASH & SPONSOR */
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
         #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        
         .splash-logo-container { display: flex; align-items: center; gap: 12px; animation: pulseSplash 1.5s ease-in-out infinite alternate; }
         @keyframes pulseSplash { 0% { transform: scale(0.95); } 100% { transform: scale(1.05); } }
         .splash-swoosh { width: 60px; height: auto; transform: rotate(-10deg); }
-        .splash-text { font-size: 2.5rem; font-weight: 700; color: #ea1d2c; letter-spacing: -1.5px; margin: 0; }
+        .splash-text { font-size: 2.5rem; font-weight: 900; color: #fff; font-style: italic; letter-spacing: -1px; margin: 0; }
+        .splash-text span { color: #ea1d2c; }
         
         #sponsor-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 99998; display: none; align-items: center; justify-content: center; }
         #sponsor-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
@@ -58,21 +60,19 @@
         /* EFEITOS DE TRANSIÇÃO DOS PATROCINADORES */
         .effect-fade { opacity: 0; transition: opacity 0.6s ease; }
         .effect-fade.active { opacity: 1; }
-        
         .effect-zoom { transform: scale(0.8); opacity: 0; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .effect-zoom.active { transform: scale(1); opacity: 1; }
-        
         .effect-slide { transform: translateY(50px); opacity: 0; transition: all 0.6s ease-out; }
         .effect-slide.active { transform: translateY(0); opacity: 1; }
-        
         .effect-slide-left { transform: translateX(100px); opacity: 0; transition: all 0.6s ease-out; }
         .effect-slide-left.active { transform: translateX(0); opacity: 1; }
 
         /* CABEÇALHO */
         .brand-header { background: #fff; padding: 0 15px; height: 70px; position: fixed; top: 0; left: 0; width: 100%; border-bottom: 1px solid #f2f2f2; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .brand-logo-container { display: flex; align-items: center; gap: 6px; }
-        .brand-logo-container svg { width: 32px; height: auto; transform: rotate(-10deg); }
-        .brand-logo-container span { font-size: 1.4rem; font-weight: 900; color: #ea1d2c; letter-spacing: -0.5px; }
+        .brand-logo-container svg { width: 28px; height: auto; transform: rotate(-10deg); }
+        .brand-logo-container span { font-size: 1.4rem; font-weight: 900; color: #111; font-style: italic; letter-spacing: -0.5px; }
+        .brand-logo-container span .uai { color: #ea1d2c; }
         .city-selector-btn { display: flex; align-items: center; gap: 6px; background: #fff5f5; border: 1px solid #fbd5d5; padding: 8px 12px; border-radius: 50px; color: #ea1d2c; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; max-width: 160px;}
         .city-name-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
 
@@ -244,12 +244,13 @@
 <body>
 
     <div id="splash-screen">
-        <div class="splash-logo-container">
+        <div class="splash-logo-container" id="splash-default-logo">
             <svg class="splash-swoosh" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="8" stroke-linecap="round"/>
             </svg>
-            <h1 class="splash-text">UaiPede</h1>
+            <h1 class="splash-text"><span style="color: #ea1d2c;">Uai</span><span style="color: #fff;">Pede</span></h1>
         </div>
+        <video id="splash-video" style="display:none; width:100%; height:100%; object-fit:cover;" autoplay muted playsinline></video>
     </div>
 
     <div id="sponsor-wrapper"><div id="sponsor-content"></div></div>
@@ -264,7 +265,7 @@
             <svg viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="10" stroke-linecap="round"/>
             </svg>
-            <span>UaiPede</span>
+            <span style="font-size: 1.4rem; font-weight: 900; color: #111; font-style: italic; letter-spacing: -0.5px;"><span style="color: #ea1d2c;">Uai</span>Pede</span>
         </div>
         
         <button class="city-selector-btn" onclick="window.openCityModal(true)">
@@ -321,9 +322,9 @@
             <div class="featured-track" id="featured-track-container"></div>
         </section>
 
-        <h2 class="section-title" id="list-title">Lojas</h2>
+        <h2 class="section-title" id="list-title">Lojas Disponíveis</h2>
         <div class="store-list" id="store-list-container">
-            <div style="text-align:center; padding:30px; color:#aaa; font-weight:bold;">A buscar lojas perto de você...</div>
+            <div style="text-align:center; padding:30px; color:#aaa; font-weight:bold;">Buscando lojas perto de você...</div>
         </div>
     </main>
 
@@ -382,8 +383,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // As credenciais oficiais do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -406,11 +408,10 @@
         let bannerInterval; 
         let userCity = localStorage.getItem('userCity');
         
-        // NOVAS VARIÁVEIS DE ESTADO
         let userFavorites = JSON.parse(localStorage.getItem('userFavorites')) || [];
         let quickFilters = { freeShipping: false, hasCoupon: false, openNow: false, favorites: false };
 
-        // 🟢 BUSCAR STATUS DO USUÁRIO LOGADO (Para validação de cupons Sicoob)
+        // 🟢 BUSCAR STATUS DO USUÁRIO LOGADO
         let isSponsorAssociated = false;
         const loggedCustomer = JSON.parse(localStorage.getItem('loggedCustomer'));
         const userEmail = loggedCustomer ? loggedCustomer.email : localStorage.getItem('userEmail');
@@ -420,7 +421,7 @@
             getDocs(userQ).then(userSnap => {
                 if (!userSnap.empty) {
                     isSponsorAssociated = userSnap.docs[0].data().isSicoob === true;
-                    if(userCity) window.renderStores(); // Re-renderiza as lojas quando souber o status
+                    if(userCity) window.renderStores();
                 }
             });
         }
@@ -508,9 +509,11 @@
             if(userCity) window.renderStores(); 
         });
 
-        // INICIALIZAÇÃO DA TELA
-        window.addEventListener('load', () => {
+        // 🟢 INICIALIZAÇÃO DA TELA COM VÍDEO MP4 🟢
+        window.addEventListener('load', async () => {
             const splash = document.getElementById('splash-screen');
+            const defaultLogo = document.getElementById('splash-default-logo');
+            const splashVideo = document.getElementById('splash-video');
             const sponsorWrapper = document.getElementById('sponsor-wrapper');
             const sponsorContent = document.getElementById('sponsor-content');
 
@@ -528,8 +531,12 @@
             }
 
             sessionStorage.setItem('splashShown', 'true');
-            
-            setTimeout(() => {
+            let splashDone = false;
+
+            const proceedAfterSplash = () => {
+                if (splashDone) return;
+                splashDone = true;
+
                 let citySponsors = [];
                 if (userCity) {
                     citySponsors = allActiveSponsors.filter(s => !s.city || s.city === 'all' || s.city === userCity);
@@ -591,7 +598,31 @@
                         }
                     }
                 }, 500); 
-            }, 1500); 
+            };
+
+            // Busca o vídeo no Firebase (Painel Admin)
+            try {
+                const videoSnap = await getDoc(doc(db, "global_settings", "splash_video"));
+                if (videoSnap.exists() && videoSnap.data().videoData) {
+                    
+                    // Se existe vídeo, oculta a logo padrão e mostra o vídeo
+                    defaultLogo.style.display = 'none';
+                    splashVideo.src = videoSnap.data().videoData;
+                    splashVideo.style.display = 'block';
+
+                    splashVideo.play().catch(() => proceedAfterSplash());
+                    splashVideo.onended = proceedAfterSplash;
+                    
+                    // Timeout de segurança: 6 segundos
+                    setTimeout(proceedAfterSplash, 6000); 
+                } else {
+                    // Se não existe vídeo, usa a animação CSS (2 segundos)
+                    setTimeout(proceedAfterSplash, 2000);
+                }
+            } catch(e) {
+                // Se der erro de conexão, usa a animação CSS
+                setTimeout(proceedAfterSplash, 2000);
+            }
         });
 
         // FUNÇÕES DO MODAL DE CIDADES
