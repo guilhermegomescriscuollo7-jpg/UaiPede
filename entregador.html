@@ -31,9 +31,9 @@
         .top-header {
             position: absolute; top: 0; left: 0; width: 100%; padding: 15px 20px;
             display: flex; justify-content: space-between; align-items: flex-start; z-index: 100;
-            pointer-events: none; /* Para não bloquear cliques no mapa */
+            pointer-events: none;
         }
-        .top-header > * { pointer-events: auto; } /* Reativa cliques nos botões */
+        .top-header > * { pointer-events: auto; }
         
         .header-avatar {
             width: 48px; height: 48px; border-radius: 50%; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -79,41 +79,31 @@
 
         /* ÁREA PRINCIPAL */
         .content-area { flex: 1; position: relative; height: 100%; overflow: hidden; }
-        .section { display: none; height: 100%; width: 100%; position: absolute; top:0; left:0; overflow-y: auto; padding-bottom: 80px; background: #fff;}
+        .section { display: none; height: 100%; width: 100%; position: absolute; top:0; left:0; overflow-y: auto; padding-bottom: 80px; background: #f4f5f7;}
         .section.active { display: block; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* =======================================================
            TELA 1: INÍCIO (MAPA E BOTTOM SHEETS)
         ======================================================== */
-        #sec-inicio { background: #f4f5f7; }
-        
-        #map-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-        }
-        
+        #map-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         .map-fabs { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 5; display: flex; flex-direction: column; gap: 15px; }
         .map-fab { width: 50px; height: 50px; background: #fff; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; cursor:pointer;}
 
-        /* Bottom Sheet (Seus Ganhos) */
         .bottom-sheet-home {
             position: absolute; bottom: 70px; left: 0; width: 100%;
             background: #fff; border-radius: 24px 24px 0 0; padding: 25px 20px;
             z-index: 10; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); transition: 0.4s ease;
         }
         .sheet-handle { width: 40px; height: 4px; background: #e0e0e0; border-radius: 4px; margin: 0 auto 20px; }
-        
         .promo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .promo-header h3 { font-size: 1.2rem; font-weight: 900; color: #111; }
         .promo-header a { font-size: 0.9rem; font-weight: 800; color: #ea1d2c; text-decoration: none; }
-
         .earnings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .earn-card { background: #f9f9f9; padding: 15px; border-radius: 16px; }
         .earn-card span { display: block; font-size: 0.8rem; color: #717171; font-weight: 500; margin-bottom: 5px; }
         .earn-card strong { display: block; font-size: 1.3rem; font-weight: 900; color: #111; }
         .earn-card p { font-size: 0.85rem; color: #111; font-weight: 800; display: flex; justify-content: space-between; margin-top: 5px; }
-
-        /* Botão Rotas Disponíveis (Aparece quando tem pedido) */
         .btn-rotas-disponiveis {
             width: 100%; border: 1px solid #ea1d2c; background: #fff; color: #ea1d2c;
             padding: 16px; border-radius: 16px; font-weight: 900; font-size: 1rem;
@@ -122,112 +112,101 @@
         }
 
         /* =======================================================
-           MODAL 1: PEDIDOS LIVRES (LISTA BRANCA)
+           MODAL 1: PEDIDOS LIVRES
         ======================================================== */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 200; display: none; flex-direction: column; justify-content: flex-end;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: none; flex-direction: column; justify-content: flex-end; }
         .modal-overlay.active { display: flex; }
-        .modal-content {
-            background: #fff; width: 100%; height: 85vh; border-radius: 24px 24px 0 0;
-            display: flex; flex-direction: column; animation: slideUp 0.3s ease; position: relative;
-        }
+        .modal-content { background: #fff; width: 100%; height: 85vh; border-radius: 24px 24px 0 0; display: flex; flex-direction: column; animation: slideUp 0.3s ease; position: relative; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
-        .modal-header-img {
-            height: 140px; background: #ff9b26; border-radius: 24px 24px 0 0;
-            display: flex; justify-content: center; align-items: flex-end; overflow: hidden;
-        }
+        .modal-header-img { height: 140px; background: #ff9b26; border-radius: 24px 24px 0 0; display: flex; justify-content: center; align-items: flex-end; overflow: hidden; }
         .modal-header-img::after { content: '🛵'; font-size: 6rem; margin-bottom: -20px; }
-        
         .modal-body { flex: 1; overflow-y: auto; padding: 25px 20px; background: #fff; }
         .modal-body h3 { text-align: center; font-size: 1.2rem; font-weight: 900; color: #111; margin-bottom: 5px;}
         .modal-body p { text-align: center; font-size: 0.85rem; color: #717171; margin-bottom: 25px;}
-
-        .order-list-item {
-            padding: 20px 15px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;
-            border: 1px solid transparent; transition: 0.2s;
-        }
-        .order-list-item:hover { background: #f9f9f9; }
-        .order-list-item.selected {
-            border: 2px solid #ea1d2c; border-radius: 12px; margin: 0;
-            box-shadow: 0 4px 15px rgba(234, 29, 44, 0.1);
-        }
+        .order-list-item { padding: 20px 15px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
         .oli-details h4 { font-size: 1rem; font-weight: 800; color: #111; margin-bottom: 4px; }
         .oli-details span { font-size: 0.85rem; color: #717171; font-weight: 500; }
         .oli-arrow { color: #ea1d2c; font-weight: 900; font-size: 1.2rem;}
-        
         .btn-fechar { text-align: center; padding: 20px; color: #ea1d2c; font-weight: 900; cursor: pointer; font-size: 1rem; }
 
         /* =======================================================
-           MODAL 2: DETALHES DO PEDIDO (FUNDO VERDE)
+           MODAL 2: DETALHES DO PEDIDO
         ======================================================== */
-        .modal-details {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 300; display: none; flex-direction: column;
-        }
+        .modal-details { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 300; display: none; flex-direction: column; }
         .modal-details.active { display: flex; animation: slideUp 0.3s ease; }
-        
-        .det-green-banner {
-            height: 25vh; background: #008a4a; display: flex; align-items: center; justify-content: center; position: relative;
-        }
+        .det-green-banner { height: 25vh; background: #008a4a; display: flex; align-items: center; justify-content: center; position: relative; }
         .det-green-banner::after { content: '🧑‍🚀'; font-size: 5rem; }
-        
-        .det-white-card {
-            flex: 1; background: #fff; border-radius: 24px 24px 0 0; margin-top: -24px;
-            z-index: 5; padding: 30px 25px; overflow-y: auto; display: flex; flex-direction: column;
-        }
-        
+        .det-white-card { flex: 1; background: #fff; border-radius: 24px 24px 0 0; margin-top: -24px; z-index: 5; padding: 30px 25px; overflow-y: auto; display: flex; flex-direction: column; }
         .det-price { text-align: center; font-size: 1.8rem; font-weight: 900; color: #111; margin-bottom: 25px; }
         .det-metrics { display: flex; justify-content: space-between; border-bottom: 1px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 20px;}
         .det-metrics div { display: flex; flex-direction: column; gap: 6px; }
         .det-metrics .lbl { font-size: 0.85rem; color: #717171; font-weight: 500; }
         .det-metrics .val { font-size: 0.95rem; color: #111; font-weight: 800; text-align: right;}
-        
         .det-alert { background: #f0f6ff; color: #0d6efd; padding: 12px 15px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; display: flex; align-items:center; gap: 10px; margin-bottom: 25px; line-height: 1.4;}
-        
         .det-step { display: flex; gap: 15px; margin-bottom: 20px; }
         .det-step .icon { font-size: 1.2rem; width: 24px; display:flex; justify-content:center; margin-top: 2px;}
         .det-step .info small { display: block; font-weight: 900; color: #111; font-size: 0.9rem; margin-bottom: 4px; }
         .det-step .info p { color: #717171; font-size: 0.85rem; line-height: 1.4; }
-
         .btn-montar-rota { background: #ea1d2c; color: #fff; border: none; width: 100%; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 1.05rem; cursor: pointer; margin-top: auto; transition: 0.2s;}
-        .btn-montar-rota:active { opacity: 0.9; transform: scale(0.98); }
         .btn-voltar-det { text-align: center; padding: 15px; color: #ea1d2c; font-weight: 800; cursor: pointer; margin-top: 10px; font-size: 0.95rem; background: none; border:none; width: 100%;}
 
         /* =======================================================
            TELA: EXTRATO (MEUS REPASSES)
         ======================================================== */
-        #sec-extrato { padding-top: 20px; }
+        #sec-extrato { background: #fff; padding-top: 20px;}
         .extrato-header { padding: 0 20px 20px; border-bottom: 8px solid #f4f5f7; }
         .extrato-header h2 { font-size: 0.85rem; color: #111; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display:flex; align-items:center; justify-content:space-between;}
         .extrato-header .total { font-size: 2.2rem; font-weight: 900; color: #111; letter-spacing: -1px; margin-bottom: 8px;}
         .extrato-header p { font-size: 0.9rem; color: #717171; }
-
         .extrato-list { padding: 20px; }
         .extrato-list h3 { font-size: 1.1rem; font-weight: 900; color: #111; margin-bottom: 20px; }
-        
         .repasse-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .rep-left { display: flex; align-items: center; gap: 15px; }
         .rep-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .rep-icon.green { background: #e6f4ea; color: #00a14b; }
-        .rep-icon.yellow { background: #fff8e1; color: #f39c12; }
         .rep-info strong { display: block; font-size: 0.95rem; font-weight: 800; color: #111; margin-bottom: 2px;}
         .rep-info span { font-size: 0.8rem; color: #717171; }
         .rep-right { font-size: 1rem; font-weight: 900; }
         .rep-right.green { color: #00a14b; }
-        .rep-right.yellow { color: #f39c12; }
 
         /* =======================================================
-           TELA: EM ROTA (ACOMPANHAMENTO COM MAPA)
+           TELA: EM ROTA (MAPA)
         ======================================================== */
-        .rota-card { 
-            background: #fff; padding: 20px; border-radius: 24px; margin: 0 0 20px 0; 
-            border: 1px solid #eee; box-shadow: 0 -4px 30px rgba(0,0,0,0.15); pointer-events:auto;
-        }
+        .rota-card { background: #fff; padding: 20px; border-radius: 24px; margin: 0 0 20px 0; border: 1px solid #eee; box-shadow: 0 -4px 30px rgba(0,0,0,0.15); pointer-events:auto; }
         .btn-waze { background: #f0f6ff; color: #0d6efd; padding: 14px; border-radius: 12px; border: 1px solid #dce8ff; font-weight: 800; font-size: 0.95rem; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
         .btn-concluir { background: #00a14b; color: #fff; border: none; padding: 16px; border-radius: 12px; width: 100%; font-weight: 900; font-size: 1rem; cursor: pointer;}
+
+        /* =======================================================
+           TELA: MAIS (OPÇÕES) - NOVO LAYOUT IFOOD
+        ======================================================== */
+        #sec-mais { background: #f4f5f7; padding: 0; }
+        .profile-header { background: #ea1d2c; padding: 30px 20px; color: #fff; display: flex; align-items: center; gap: 15px; }
+        .profile-avatar { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+        .profile-info { flex: 1; }
+        .profile-info h2 { font-size: 1.2rem; font-weight: 900; margin-bottom: 2px; }
+        .profile-info p { font-size: 0.85rem; opacity: 0.9; margin-bottom: 4px; }
+        .profile-info .loc { font-size: 0.8rem; display: flex; align-items: center; gap: 4px; opacity: 0.9; margin-bottom: 8px;}
+        .profile-status { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; }
+        .profile-status .dot { width: 8px; height: 8px; border-radius: 50%; background: #00a14b; }
+        .profile-status.offline .dot { background: #ccc; }
+        
+        .menu-section { padding: 20px; }
+        .menu-section-title { font-size: 0.75rem; font-weight: 800; color: #777; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
+        .menu-block { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02); margin-bottom: 20px; border: 1px solid #f0f0f0; }
+        .menu-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s; }
+        .menu-item:active { background: #f9f9f9; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item.active-item { border-left: 3px solid #111; background: #fafafa; }
+        .menu-icon { width: 40px; height: 40px; border-radius: 50%; background: #f9f9f9; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: #333; }
+        .menu-text { flex: 1; }
+        .menu-text h4 { font-size: 0.95rem; font-weight: 800; color: #111; margin-bottom: 2px; }
+        .menu-text p { font-size: 0.8rem; color: #888; }
+        .menu-arrow { color: #ccc; }
+        
+        .menu-logout { display: flex; align-items: center; padding: 16px; background: #fff; border-radius: 16px; cursor: pointer; color: #ea1d2c; font-weight: 900; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid #f0f0f0; justify-content: flex-start; gap: 15px;}
+        .menu-logout .icon { width: 40px; height: 40px; border-radius: 50%; background: #fff5f5; display: flex; align-items: center; justify-content: center; color: #ea1d2c; }
+        
+        .app-version { text-align: center; color: #aaa; font-size: 0.8rem; margin-top: 10px; margin-bottom: 30px; font-weight: 500; }
 
         /* TOAST */
         .toast-msg { position: fixed; top: -100px; left: 5%; right: 5%; background: #fff; border-left: 8px solid #ea1d2c; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); padding: 20px; display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 100000; transition: top 0.5s ease;}
@@ -249,7 +228,7 @@
     <div id="app-screen">
         
         <div class="top-header" id="main-header">
-            <div class="header-avatar"><img src="https://ui-avatars.com/api/?name=Entregador&background=ea1d2c&color=fff" id="drv-avatar"></div>
+            <div class="header-avatar"><img src="" id="drv-avatar" alt="Avatar"></div>
             
             <div class="header-center">
                 <label class="status-pill" id="pill-toggle">
@@ -262,7 +241,7 @@
                 </div>
             </div>
 
-            <div class="header-bell" onclick="window.logoutDriver()" title="Sair (Apenas para testes)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+            <div class="header-bell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
         </div>
 
         <div class="content-area">
@@ -350,13 +329,71 @@
             </div>
 
             <div id="sec-mais" class="section">
-                <div style="padding: 20px; border-bottom: 1px solid #f0f0f0; text-align:center;">
-                    <h2 style="font-size: 1rem; font-weight: 800; text-transform: uppercase;">Mais Opções</h2>
+                <div class="profile-header">
+                    <div class="profile-avatar" id="mais-avatar">E</div>
+                    <div class="profile-info">
+                        <h2 id="mais-name">Carregando...</h2>
+                        <p id="mais-email">...</p>
+                        <div class="loc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span id="mais-city">Sua Cidade</span></div>
+                        <div class="profile-status" id="mais-status-badge"><div class="dot"></div> <span id="mais-status-text">Disponível</span></div>
+                    </div>
                 </div>
-                <div style="padding: 20px; text-align:center;">
-                    <button onclick="window.logoutDriver()" style="width:100%; background:#fff; color:#ea1d2c; border:1px solid #fbd5d5; padding:16px; border-radius:12px; font-weight:900; font-size:1rem; cursor:pointer;">
-                        Sair do Aplicativo
-                    </button>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">Conta</div>
+                    <div class="menu-block">
+                        <div class="menu-item active-item">
+                            <div class="menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                            <div class="menu-text">
+                                <h4>Meu perfil</h4>
+                                <p>Ver e editar informações</p>
+                            </div>
+                            <div class="menu-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                        </div>
+                        <div class="menu-item" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <div class="menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+                            <div class="menu-text">
+                                <h4>Notificações</h4>
+                                <p>Configurar alertas</p>
+                            </div>
+                            <div class="menu-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                        </div>
+                        <div class="menu-item" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <div class="menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                            <div class="menu-text">
+                                <h4>Segurança</h4>
+                                <p>Senha e privacidade</p>
+                            </div>
+                            <div class="menu-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                        </div>
+                    </div>
+
+                    <div class="menu-section-title">Suporte</div>
+                    <div class="menu-block">
+                        <div class="menu-item" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <div class="menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                            <div class="menu-text">
+                                <h4>Central de ajuda</h4>
+                                <p>Dúvidas e suporte</p>
+                            </div>
+                            <div class="menu-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                        </div>
+                        <div class="menu-item" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <div class="menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+                            <div class="menu-text">
+                                <h4>Termos de uso</h4>
+                                <p></p>
+                            </div>
+                            <div class="menu-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                        </div>
+                    </div>
+
+                    <div class="menu-logout" onclick="window.logoutDriver()">
+                        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></div>
+                        Sair da conta
+                    </div>
+                    
+                    <div class="app-version">UaiPede Entregador v1.0.0</div>
                 </div>
             </div>
         </div>
@@ -491,6 +528,12 @@
                 const firstLetter = loggedDriver.name ? loggedDriver.name.charAt(0).toUpperCase() : 'E';
                 document.getElementById('drv-avatar').src = `https://ui-avatars.com/api/?name=${firstLetter}&background=ea1d2c&color=fff&bold=true`;
                 
+                // Preenche os dados na aba Mais
+                document.getElementById('mais-name').innerText = loggedDriver.name || "Entregador";
+                document.getElementById('mais-email').innerText = loggedDriver.email || "";
+                document.getElementById('mais-city').innerText = loggedDriver.city || "Sua Cidade";
+                document.getElementById('mais-avatar').innerText = firstLetter;
+                
                 // INICIALIZAR MAPA LEAFLET DA TELA INICIAL
                 initMap();
 
@@ -506,15 +549,23 @@
                         
                         const pill = document.getElementById('pill-toggle');
                         const searchingPill = document.getElementById('pill-searching');
+                        const maisStatusBadge = document.getElementById('mais-status-badge');
+                        const maisStatusText = document.getElementById('mais-status-text');
                         
                         if (isOnline) {
                             pill.classList.add('online');
                             pill.innerHTML = '<input type="checkbox" id="driver-status-toggle" checked onchange="window.toggleOnlineStatus()"><span>Disponível</span>';
                             searchingPill.style.display = 'flex'; 
+                            
+                            maisStatusBadge.classList.remove('offline');
+                            maisStatusText.innerText = "Disponível";
                         } else {
                             pill.classList.remove('online');
                             pill.innerHTML = '<input type="checkbox" id="driver-status-toggle" onchange="window.toggleOnlineStatus()"><span>⚪ Indisponível</span>';
                             searchingPill.style.display = 'none';
+                            
+                            maisStatusBadge.classList.add('offline');
+                            maisStatusText.innerText = "Indisponível";
                         }
                         
                         updateScreensFlow();
@@ -761,7 +812,6 @@
             mapRotaContainer.style.display = 'block';
             topBadge.style.display = 'block';
             
-            // Desenha a lista de entregas ativas (normalmente é só 1)
             container.innerHTML = myAcceptedOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
                 let storeAddress = store.street || "Endereço da loja não informado";
@@ -796,7 +846,6 @@
                 </div>`;
             }).join('');
 
-            // INICIALIZA OU ATUALIZA O MAPA DA ROTA
             if (!window.rotaMap) {
                 window.rotaMap = L.map('map-rota-container', {zoomControl: false}).setView([window.driverLat, window.driverLon], 14);
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(window.rotaMap);
@@ -816,7 +865,6 @@
                 window.routeLine = L.polyline([], {color: '#0d6efd', weight: 5, dashArray: '10, 10'}).addTo(window.rotaMap);
             }
 
-            // Simula as posições da loja e cliente baseadas no motorista para visualização
             const storeLat = window.driverLat + 0.003;
             const storeLon = window.driverLon + 0.003;
             const custLat = window.driverLat - 0.005;
@@ -832,7 +880,6 @@
                 [custLat, custLon]
             ]);
             
-            // Foca o mapa nos pontos criados, deixando espaço para o bottom-sheet não tampar
             setTimeout(() => {
                 window.rotaMap.invalidateSize();
                 window.rotaMap.fitBounds(window.routeLine.getBounds(), {paddingTopLeft: [50, 50], paddingBottomRight: [50, 350]}); 
