@@ -2041,6 +2041,100 @@
             renderList('rep-payments', topPayments, ([pay, count]) => `<li><span>${pay}</span> <strong>${count}x</strong></li>`);
         };
 
+        // 🟢 LÓGICA DO CHAT DA LOJA 🟢
+
+        window.openChatModal = (orderId, customerName) => {
+            currentChatOrderId = orderId;
+            document.getElementById('chat-customer-name').innerText = customerName;
+            document.getElementById('chat-order-id').innerText = '#' + orderId.substring(0, 6).toUpperCase();
+            document.getElementById('chat-modal').classList.add('active');
+            
+            // Zera o contador de mensagens não lidas no painel
+            window.unreadCounts[orderId] = 0;
+            const badge = document.getElementById(`badge-${orderId}`);
+            if (badge) badge.style.display = 'none';
+
+            const container = document.getElementById('chat-messages-container');
+            container.innerHTML = '<div class="chat-sys-msg">Carregando mensagens...</div>';
+
+            // Cancela a escuta de outro chat, se houver um aberto anteriormente
+            if (chatUnsubscribe) chatUnsubscribe();
+            
+            // Busca as mensagens em tempo real ordenadas por data
+            const qMsg = query(collection(db, "orders", orderId, "messages"), orderBy("timestamp", "asc"));
+            
+            chatUnsubscribe = onSnapshot(qMsg, (snapshot) => {
+                container.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    container.innerHTML = '<div class="chat-sys-msg">Nenhuma mensagem ainda. Envie um "Olá"!</div>';
+                    return;
+                }
+
+                snapshot.forEach(docSnap => {
+                    const msg = docSnap.data();
+                    const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+                    
+                    if (msg.sender === 'store') {
+                        container.innerHTML += `
+                            <div class="msg-bubble msg-store">
+                                ${msg.text}
+                                <span class="msg-time">${timeStr}</span>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML += `
+                            <div class="msg-bubble msg-customer">
+                                <span class="msg-sender">${customerName}</span>
+                                ${msg.text}
+                                <span class="msg-time">${timeStr}</span>
+                            </div>
+                        `;
+                        // Se for mensagem do cliente e não estiver lida, marca como lida no banco
+                        if (!msg.read) {
+                            updateDoc(doc(db, "orders", orderId, "messages", docSnap.id), { read: true }).catch(()=>{});
+                        }
+                    }
+                });
+                
+                // Rola o chat para o final (mensagens mais recentes)
+                setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
+            });
+        };
+
+        window.closeChatModal = () => {
+            document.getElementById('chat-modal').classList.remove('active');
+            currentChatOrderId = null;
+            if (chatUnsubscribe) {
+                chatUnsubscribe();
+                chatUnsubscribe = null;
+            }
+        };
+
+        // Escuta o envio do formulário do chat
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            
+            if (!text || !currentChatOrderId) return;
+            
+            input.value = ''; // Limpa a caixa de texto
+            
+            try {
+                // Salva a mensagem no Firebase
+                await addDoc(collection(db, "orders", currentChatOrderId, "messages"), {
+                    text: text,
+                    sender: 'store',
+                    timestamp: Date.now(),
+                    read: false
+                });
+            } catch(error) {
+                console.error("Erro ao enviar mensagem:", error);
+                alert("Erro de conexão ao enviar a mensagem. Tente novamente.");
+            }
+        });
+
     </script>
 </body>
 </html>
