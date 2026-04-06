@@ -220,9 +220,12 @@
         .rep-right.yellow { color: #f39c12; }
 
         /* =======================================================
-           TELA: EM ROTA (ACOMPANHAMENTO)
+           TELA: EM ROTA (ACOMPANHAMENTO COM MAPA)
         ======================================================== */
-        .rota-card { background: #fff; padding: 20px; border-radius: 16px; margin: 20px; border: 1px solid #eee; box-shadow: 0 4px 20px rgba(0,0,0,0.05);}
+        .rota-card { 
+            background: #fff; padding: 20px; border-radius: 24px; margin: 0 0 20px 0; 
+            border: 1px solid #eee; box-shadow: 0 -4px 30px rgba(0,0,0,0.15); pointer-events:auto;
+        }
         .btn-waze { background: #f0f6ff; color: #0d6efd; padding: 14px; border-radius: 12px; border: 1px solid #dce8ff; font-weight: 800; font-size: 0.95rem; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
         .btn-concluir { background: #00a14b; color: #fff; border: none; padding: 16px; border-radius: 12px; width: 100%; font-weight: 900; font-size: 1rem; cursor: pointer;}
 
@@ -320,12 +323,17 @@
                 </div>
             </div>
             
-            <div id="sec-em-rota" class="section">
-                <div style="padding: 20px; border-bottom: 1px solid #f0f0f0; text-align:center;">
-                    <h2 style="font-size: 1rem; font-weight: 800; text-transform: uppercase;">Em Rota</h2>
+            <div id="sec-em-rota" class="section" style="padding:0; overflow:hidden;">
+                <div id="map-rota-container" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; display:none;"></div>
+                
+                <div class="top-header" style="pointer-events:none; z-index:100; justify-content:center; padding-top:20px;">
+                    <div style="background:#fff; padding:10px 20px; border-radius:20px; font-weight:900; font-size:0.9rem; box-shadow:0 4px 15px rgba(0,0,0,0.1); color:#111; pointer-events:auto; display:none;" id="rota-top-badge">Acompanhamento de Rota</div>
                 </div>
-                <div id="no-active-msg" style="text-align:center; padding:40px 20px; color:#999; display:none;">Nenhuma entrega em andamento.</div>
-                <div id="my-rides-list"></div>
+
+                <div id="rota-bottom-sheet" style="position:absolute; bottom:70px; left:0; width:100%; z-index:10; padding:0 20px; display:flex; flex-direction:column; justify-content:flex-end; pointer-events:none;">
+                    <div id="no-active-msg" style="text-align:center; padding:40px 20px; color:#999; background:#fff; border-radius:24px; box-shadow:0 4px 20px rgba(0,0,0,0.1); margin-bottom:20px; pointer-events:auto;">Nenhuma entrega em andamento.</div>
+                    <div id="my-rides-list" style="pointer-events:auto;"></div>
+                </div>
             </div>
             
             <div id="sec-extrato" class="section">
@@ -414,7 +422,7 @@
                 </div>
             </div>
             <div class="det-step">
-                <div class="icon">👤</div>
+                <div class="icon">📍</div>
                 <div class="info">
                     <small>Entrega</small>
                     <p id="det-cust-addr">Endereço</p>
@@ -462,17 +470,28 @@
         let myAcceptedOrders = [];
         let myHistoryOrders = [];
 
+        // Coordenadas Globais para os mapas
+        window.driverLat = -15.7801;
+        window.driverLon = -47.9292;
+        window.appMap = null;
+        window.driverMarker = null;
+        
+        window.rotaMap = null;
+        window.rotaDriverMarker = null;
+        window.storeMarker = null;
+        window.customerMarker = null;
+        window.routeLine = null;
+
         window.onload = async () => {
             if (loggedDriver && loggedDriver.id) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'flex';
                 if ("Notification" in window) Notification.requestPermission();
                 
-                // Avatar com inicial
                 const firstLetter = loggedDriver.name ? loggedDriver.name.charAt(0).toUpperCase() : 'E';
                 document.getElementById('drv-avatar').src = `https://ui-avatars.com/api/?name=${firstLetter}&background=ea1d2c&color=fff&bold=true`;
                 
-                // INICIALIZAR MAPA LEAFLET
+                // INICIALIZAR MAPA LEAFLET DA TELA INICIAL
                 initMap();
 
                 await loadStoresCache();
@@ -486,7 +505,6 @@
                         document.getElementById('driver-status-toggle').checked = isOnline;
                         
                         const pill = document.getElementById('pill-toggle');
-                        const text = document.getElementById('status-text');
                         const searchingPill = document.getElementById('pill-searching');
                         
                         if (isOnline) {
@@ -505,35 +523,32 @@
             }
         };
 
-        // VARIÁVEIS DO MAPA
-        window.appMap = null;
-        window.driverMarker = null;
-
         function initMap() {
             const mapContainer = document.getElementById('map-container');
             if(!mapContainer) return;
             
-            // Inicia numa coordenada padrão (Brasil centralizado)
-            window.appMap = L.map('map-container', {zoomControl: false}).setView([-15.7801, -47.9292], 4);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19
-            }).addTo(window.appMap);
+            window.appMap = L.map('map-container', {zoomControl: false}).setView([window.driverLat, window.driverLon], 4);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(window.appMap);
 
             const motoIcon = L.divIcon({
                 html: '<div style="font-size: 40px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); text-align: center; line-height: 1;">🛵</div>',
-                className: '',
-                iconSize: [40, 40],
-                iconAnchor: [20, 40]
+                className: '', iconSize: [40, 40], iconAnchor: [20, 40]
             });
 
-            window.driverMarker = L.marker([-15.7801, -47.9292], {icon: motoIcon}).addTo(window.appMap);
+            window.driverMarker = L.marker([window.driverLat, window.driverLon], {icon: motoIcon}).addTo(window.appMap);
 
             if(navigator.geolocation) {
                 navigator.geolocation.watchPosition(pos => {
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
-                    window.driverMarker.setLatLng([lat, lon]);
-                    window.appMap.setView([lat, lon], 16);
+                    window.driverLat = pos.coords.latitude;
+                    window.driverLon = pos.coords.longitude;
+                    
+                    window.driverMarker.setLatLng([window.driverLat, window.driverLon]);
+                    window.appMap.setView([window.driverLat, window.driverLon], 16);
+                    
+                    // Se o mapa da rota já existir, atualiza o motoqueiro lá também
+                    if(window.rotaDriverMarker) {
+                        window.rotaDriverMarker.setLatLng([window.driverLat, window.driverLon]);
+                    }
                 }, err => {
                     console.log("GPS Blocked or unavailable", err);
                 }, {enableHighAccuracy: true});
@@ -543,9 +558,7 @@
         window.centerMap = () => {
             if(navigator.geolocation && window.appMap && window.driverMarker) {
                 navigator.geolocation.getCurrentPosition(pos => {
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
-                    window.appMap.setView([lat, lon], 16);
+                    window.appMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
                 });
             }
         };
@@ -594,10 +607,13 @@
             if(tab === 'inicio') {
                 header.style.display = 'flex';
                 updateScreensFlow();
-                // Forçar o recálculo do tamanho do mapa ao voltar para a aba Inicio
                 setTimeout(() => { if(window.appMap) window.appMap.invalidateSize(); }, 150);
             } else {
                 header.style.display = 'none';
+            }
+
+            if(tab === 'em-rota') {
+                setTimeout(() => { if(window.rotaMap) window.rotaMap.invalidateSize(); }, 150);
             }
 
             if(tab === 'extrato') window.renderHistoryOrders();
@@ -650,11 +666,7 @@
             const viewOffline = document.getElementById('view-offline-gains');
             const viewFound = document.getElementById('view-found-orders');
 
-            if (!isOnline) {
-                viewOffline.style.display = 'block';
-                viewFound.style.display = 'none';
-                window.closeOrderList();
-            } else if (allPendingOrders.length === 0) {
+            if (!isOnline || allPendingOrders.length === 0) {
                 viewOffline.style.display = 'block';
                 viewFound.style.display = 'none';
                 window.closeOrderList();
@@ -733,8 +745,23 @@
 
         function renderMyOrders() {
             const container = document.getElementById('my-rides-list');
-            document.getElementById('no-active-msg').style.display = myAcceptedOrders.length === 0 ? 'block' : 'none';
+            const noMsg = document.getElementById('no-active-msg');
+            const mapRotaContainer = document.getElementById('map-rota-container');
+            const topBadge = document.getElementById('rota-top-badge');
+
+            if (myAcceptedOrders.length === 0) {
+                noMsg.style.display = 'block';
+                container.innerHTML = '';
+                mapRotaContainer.style.display = 'none';
+                topBadge.style.display = 'none';
+                return;
+            }
+
+            noMsg.style.display = 'none';
+            mapRotaContainer.style.display = 'block';
+            topBadge.style.display = 'block';
             
+            // Desenha a lista de entregas ativas (normalmente é só 1)
             container.innerHTML = myAcceptedOrders.map(order => {
                 const store = storesCache[order.storeId] || {};
                 let storeAddress = store.street || "Endereço da loja não informado";
@@ -757,17 +784,59 @@
                     </div>
                     
                     <div style="display:flex; gap:12px; margin-bottom:25px;">
-                        <span style="font-size:1.2rem; width:24px; text-align:center;">👤</span>
+                        <span style="font-size:1.2rem; width:24px; text-align:center;">📍</span>
                         <div><strong style="font-size:0.95rem; color:#111;">Entrega</strong><p style="font-size:0.85rem; color:#717171; margin-top:2px;">${order.customer.address}</p></div>
                     </div>
                     
                     <button class="btn-waze" onclick="window.open('https://waze.com/ul?q=${qCust}&navigate=yes', '_blank')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-                        Abrir Rota no Waze
+                        Abrir no Waze
                     </button>
                     <button class="btn-concluir" onclick="window.finishDelivery('${order.id}')">Concluir Entrega</button>
                 </div>`;
             }).join('');
+
+            // INICIALIZA OU ATUALIZA O MAPA DA ROTA
+            if (!window.rotaMap) {
+                window.rotaMap = L.map('map-rota-container', {zoomControl: false}).setView([window.driverLat, window.driverLon], 14);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(window.rotaMap);
+                
+                window.rotaDriverMarker = L.marker([window.driverLat, window.driverLon], {
+                    icon: L.divIcon({html: '<div style="font-size:35px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">🛵</div>', className: '', iconSize: [35,35], iconAnchor: [17,35]})
+                }).addTo(window.rotaMap);
+
+                window.storeMarker = L.marker([0,0], {
+                    icon: L.divIcon({html: '<div style="font-size:30px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">🏬</div>', className: '', iconSize: [30,30], iconAnchor: [15,30]})
+                }).addTo(window.rotaMap);
+
+                window.customerMarker = L.marker([0,0], {
+                    icon: L.divIcon({html: '<div style="font-size:30px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">📍</div>', className: '', iconSize: [30,30], iconAnchor: [15,30]})
+                }).addTo(window.rotaMap);
+                
+                window.routeLine = L.polyline([], {color: '#0d6efd', weight: 5, dashArray: '10, 10'}).addTo(window.rotaMap);
+            }
+
+            // Simula as posições da loja e cliente baseadas no motorista para visualização
+            const storeLat = window.driverLat + 0.003;
+            const storeLon = window.driverLon + 0.003;
+            const custLat = window.driverLat - 0.005;
+            const custLon = window.driverLon - 0.001;
+            
+            window.storeMarker.setLatLng([storeLat, storeLon]);
+            window.customerMarker.setLatLng([custLat, custLon]);
+            window.rotaDriverMarker.setLatLng([window.driverLat, window.driverLon]);
+            
+            window.routeLine.setLatLngs([
+                [window.driverLat, window.driverLon],
+                [storeLat, storeLon],
+                [custLat, custLon]
+            ]);
+            
+            // Foca o mapa nos pontos criados, deixando espaço para o bottom-sheet não tampar
+            setTimeout(() => {
+                window.rotaMap.invalidateSize();
+                window.rotaMap.fitBounds(window.routeLine.getBounds(), {paddingTopLeft: [50, 50], paddingBottomRight: [50, 350]}); 
+            }, 300);
         }
 
         window.renderHistoryOrders = () => {
