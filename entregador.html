@@ -146,13 +146,18 @@
         .btn-voltar-det { text-align: center; padding: 15px; color: #ea1d2c; font-weight: 800; cursor: pointer; margin-top: 10px; font-size: 0.95rem; background: none; border:none; width: 100%;}
 
         /* =======================================================
-           TELA: EXTRATO (MEUS REPASSES)
+           TELA: EXTRATO (MEUS REPASSES) E FILTRO DIÁRIO
         ======================================================== */
         #sec-extrato { background: #fff; padding-top: 20px;}
         .extrato-header { padding: 0 20px 20px; border-bottom: 8px solid #f4f5f7; }
-        .extrato-header h2 { font-size: 0.85rem; color: #111; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display:flex; align-items:center; justify-content:space-between;}
+        .extrato-header h2 { font-size: 0.85rem; color: #111; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; display:flex; align-items:center; justify-content:space-between;}
+        
+        .filter-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .filter-row p { font-size: 0.9rem; color: #111; font-weight: 800; margin: 0; }
+        .filter-row input[type="date"] { padding: 8px 12px; border-radius: 8px; border: 1px solid #fbd5d5; background: #fff5f5; color: #ea1d2c; font-weight: 900; outline: none; font-size: 0.85rem; }
+
         .extrato-header .total { font-size: 2.2rem; font-weight: 900; color: #111; letter-spacing: -1px; margin-bottom: 8px;}
-        .extrato-header p { font-size: 0.9rem; color: #717171; }
+        .extrato-header p.sub { font-size: 0.9rem; color: #717171; }
         .extrato-list { padding: 20px; }
         .extrato-list h3 { font-size: 1.1rem; font-weight: 900; color: #111; margin-bottom: 20px; }
         .repasse-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
@@ -310,9 +315,14 @@
             <div id="sec-extrato" class="section">
                 <div class="extrato-header">
                     <h2>Meus Repasses <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ea1d2c" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></h2>
-                    <p style="margin-bottom:5px; color:#111; font-weight:800;">Repasse fechado</p>
+                    
+                    <div class="filter-row">
+                        <p>Repasse Diário</p>
+                        <input type="date" id="filter-date-extrato" onchange="window.renderHistoryOrders()">
+                    </div>
+
                     <div class="total" id="hist-total-val">R$ 0,00</div>
-                    <p>O valor vai pra sua conta em breve.</p>
+                    <p class="sub">O valor vai pra sua conta em breve.</p>
                 </div>
                 <div class="extrato-list">
                     <h3>Histórico de repasses</h3>
@@ -484,6 +494,10 @@
         window.routeLine = null;
 
         window.onload = async () => {
+            // Seta o filtro de data do extrato para a data de hoje ao abrir
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('filter-date-extrato').value = todayStr;
+
             if (loggedDriver && loggedDriver.id) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'flex';
@@ -698,7 +712,10 @@
             const filterStart = new Date(today + 'T00:00:00').getTime();
             const filterEnd = filterStart + 86400000;
             
-            const todayCompleted = myHistoryOrders.filter(o => (o.deliveredAt || o.timestamp) >= filterStart && (o.deliveredAt || o.timestamp) < filterEnd);
+            const todayCompleted = myHistoryOrders.filter(o => {
+                const t = o.deliveredAt || o.timestamp;
+                return t >= filterStart && t < filterEnd;
+            });
             let todayGains = 0;
             todayCompleted.forEach(o => todayGains += parseFloat(o.platformDriverFee || 5));
 
@@ -881,9 +898,25 @@
 
         window.renderHistoryOrders = () => {
             const container = document.getElementById('history-rides-list');
+            const filterDateStr = document.getElementById('filter-date-extrato').value;
+            
+            let filteredHistory = myHistoryOrders;
+
+            if (filterDateStr) {
+                const parts = filterDateStr.split('-');
+                const startOfDay = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0).getTime();
+                const endOfDay = new Date(parts[0], parts[1] - 1, parts[2], 23, 59, 59, 999).getTime();
+
+                filteredHistory = myHistoryOrders.filter(o => {
+                    const t = o.deliveredAt || o.timestamp;
+                    return t >= startOfDay && t <= endOfDay;
+                });
+            }
+
+            filteredHistory.sort((a, b) => (b.deliveredAt || b.timestamp) - (a.deliveredAt || a.timestamp));
             
             let total = 0;
-            const list = myHistoryOrders.map(o => {
+            const list = filteredHistory.map(o => {
                 const fee = parseFloat(o.platformDriverFee || 5);
                 total += fee;
                 
@@ -907,7 +940,7 @@
             }).join('');
             
             document.getElementById('hist-total-val').innerText = `R$ ${total.toFixed(2).replace('.',',')}`;
-            container.innerHTML = list || '<div style="text-align:center; color:#999; padding:20px;">Nenhum repasse no período.</div>';
+            container.innerHTML = list || '<div style="text-align:center; color:#999; padding:20px;">Nenhum repasse neste dia.</div>';
         };
 
         window.acceptOrder = async (id) => {
