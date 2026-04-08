@@ -747,7 +747,7 @@
                             <div class="ifood-funnel-title">Visitas</div>
                             <div class="ifood-funnel-value" id="ifd-funnel-visitas">0</div>
                             <div class="ifood-funnel-desc">visitaram seu cardápio</div>
-                            <div class="ifood-funnel-trend">▴ +454,05% acima</div>
+                            <div id="ifd-trend-visitas"></div>
                         </div>
                         <div class="ifood-funnel-bg">100%</div>
                     </div>
@@ -756,10 +756,10 @@
                             <div class="ifood-funnel-title">Visualizações</div>
                             <div class="ifood-funnel-value" id="ifd-funnel-visu">0</div>
                             <div class="ifood-funnel-desc">visualizaram algum item</div>
-                            <div class="ifood-funnel-trend">▴ +433,12% acima</div>
+                            <div id="ifd-trend-visu"></div>
                         </div>
                         <div class="ifood-funnel-bg">
-                            <div style="text-align:center; margin-top:20px;">49,85%<br><span style="font-size:0.65rem; font-weight:normal;">e 51,81% a concorrência</span></div>
+                            <div style="text-align:center; margin-top:20px;" id="ifd-pct-visu">--%<br><span style="font-size:0.65rem; font-weight:normal;">e --% a concorrência</span></div>
                         </div>
                     </div>
                     <div class="ifood-funnel-card" id="step-sacola">
@@ -767,10 +767,10 @@
                             <div class="ifood-funnel-title">Sacola</div>
                             <div class="ifood-funnel-value" id="ifd-funnel-sacola">0</div>
                             <div class="ifood-funnel-desc">adicionaram itens na sacola</div>
-                            <div class="ifood-funnel-trend">▴ +414,89% acima</div>
+                            <div id="ifd-trend-sacola"></div>
                         </div>
                         <div class="ifood-funnel-bg">
-                            <div style="text-align:center; margin-top:15px;">27,06%<br><span style="font-size:0.65rem; font-weight:normal;">e 29,12% a concorrência</span></div>
+                            <div style="text-align:center; margin-top:15px;" id="ifd-pct-sacola">--%<br><span style="font-size:0.65rem; font-weight:normal;">e --% a concorrência</span></div>
                         </div>
                     </div>
                     <div class="ifood-funnel-card" id="step-revisao">
@@ -778,10 +778,10 @@
                             <div class="ifood-funnel-title">Revisão</div>
                             <div class="ifood-funnel-value" id="ifd-funnel-revisao">0</div>
                             <div class="ifood-funnel-desc">revisaram o pedido</div>
-                            <div class="ifood-funnel-trend">▴ +416,78% acima</div>
+                            <div id="ifd-trend-revisao"></div>
                         </div>
                         <div class="ifood-funnel-bg">
-                            <div style="text-align:center; margin-top:10px;">26,76%<br><span style="font-size:0.65rem; font-weight:normal;">e 28,69% a concorrência</span></div>
+                            <div style="text-align:center; margin-top:10px;" id="ifd-pct-revisao">--%<br><span style="font-size:0.65rem; font-weight:normal;">e --% a concorrência</span></div>
                         </div>
                     </div>
                     <div class="ifood-funnel-card" id="step-concluidos">
@@ -789,10 +789,10 @@
                             <div class="ifood-funnel-title">Concluídos</div>
                             <div class="ifood-funnel-value" id="ifd-funnel-concluidos">0</div>
                             <div class="ifood-funnel-desc">concluíram o pedido</div>
-                            <div class="ifood-funnel-trend">▴ +438,11% acima</div>
+                            <div id="ifd-trend-concluidos"></div>
                         </div>
                         <div class="ifood-funnel-bg">
-                            <div style="text-align:center; margin-top:5px;">20,04%<br><span style="font-size:0.65rem; font-weight:normal;">e 20,64% a concorrência</span></div>
+                            <div style="text-align:center; margin-top:5px;" id="ifd-pct-concluidos">--%<br><span style="font-size:0.65rem; font-weight:normal;">e --% a concorrência</span></div>
                         </div>
                     </div>
                 </div>
@@ -807,22 +807,22 @@
                     <div class="ifood-sales-metric">
                         <div class="title">Total de vendas realizadas</div>
                         <div class="value" id="ifd-vendas-total">0</div>
-                        <div class="trend trend-up">▴ +26,92%</div>
+                        <div id="ifd-trend-vendas-total"></div>
                     </div>
                     <div class="ifood-sales-metric">
                         <div class="title">Valor total das vendas</div>
                         <div class="value" id="ifd-vendas-valor">R$ 0,00</div>
-                        <div class="trend trend-up">▴ +8,29%</div>
+                        <div id="ifd-trend-vendas-valor"></div>
                     </div>
                     <div class="ifood-sales-metric">
                         <div class="title">Ticket médio</div>
                         <div class="value" id="ifd-vendas-ticket">R$ 0,00</div>
-                        <div class="trend trend-down">▾ -14,68%</div>
+                        <div id="ifd-trend-vendas-ticket"></div>
                     </div>
                     <div class="ifood-sales-metric">
                         <div class="title">Novos clientes</div>
                         <div class="value" id="ifd-vendas-novos">0</div>
-                        <div class="trend trend-up">▴ +42,31%</div>
+                        <div id="ifd-trend-vendas-novos"></div>
                     </div>
                 </div>
 
@@ -833,19 +833,8 @@
                     <button class="ifood-toggle-btn">Novos clientes</button>
                 </div>
 
-                <div class="ifood-chart-mock">
-                    <svg width="100%" height="100%" viewBox="0 0 800 120" preserveAspectRatio="none">
-                        <polyline points="0,90 150,70 300,100 450,80 600,60 800,90" fill="none" stroke="#fbd5d5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <polyline points="0,80 150,50 300,90 450,40 600,60 800,10" fill="none" stroke="#ea1d2c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.65rem; color:#a6a6a6;">
-                        <span>27/06</span><span>28/06</span><span>29/06</span><span>30/06</span><span>01/07</span><span>02/07</span>
+                <div class="ifood-chart-mock" id="ifd-chart-container">
                     </div>
-                    <div style="text-align:center; font-size:0.7rem; color:#717171; margin-top:10px;">
-                        <span style="display:inline-flex; align-items:center; gap:5px; margin-right:15px;"><div style="width:8px; height:8px; border-radius:50%; background:#ea1d2c;"></div> total de vendas realizadas nos <strong style="color:#3f3e3e;">últimos 7 dias</strong></span>
-                        <span style="display:inline-flex; align-items:center; gap:5px;"><div style="width:8px; height:8px; border-radius:50%; background:#fbd5d5;"></div> comparação com os <strong style="color:#3f3e3e;">7 dias anteriores</strong></span>
-                    </div>
-                </div>
             </div>
 
             <div class="ifood-grid-bottom">
@@ -861,11 +850,11 @@
                         <button class="ifood-toggle-btn active">Durante a semana</button>
                         <button class="ifood-toggle-btn">Final de semana</button>
                     </div>
-                    <div style="font-size:0.7rem; color:#a6a6a6; margin-bottom: 15px;">Análise dos horários de segunda-feira até quinta-feira</div>
+                    <div style="font-size:0.7rem; color:#a6a6a6; margin-bottom: 15px;">Análise dos horários de pico baseados no período</div>
                     
                     <div style="margin-bottom: 20px;">
                         <div style="font-size:0.85rem; color:#717171;">Melhor horário</div>
-                        <div style="font-size:1.1rem; color:#3f3e3e; font-weight:700;" id="ifd-melhor-horario">18:00 às 20:00 <span style="font-size:0.85rem; color:#a6a6a6; font-weight:normal;">-- vendas</span></div>
+                        <div style="font-size:1.1rem; color:#3f3e3e; font-weight:700;" id="ifd-melhor-horario">--:-- às --:-- <span style="font-size:0.85rem; color:#a6a6a6; font-weight:normal;">0 vendas</span></div>
                     </div>
 
                     <div id="ifd-horarios-list">
@@ -882,7 +871,7 @@
                         
                         <div style="margin-bottom: 10px;">
                             <div style="font-size:0.85rem; color:#717171;">Melhor dia</div>
-                            <div style="font-size:1.1rem; color:#3f3e3e; font-weight:700;" id="ifd-melhor-dia">Domingo <span style="font-size:0.85rem; color:#a6a6a6; font-weight:normal;">-- vendas</span></div>
+                            <div style="font-size:1.1rem; color:#3f3e3e; font-weight:700;" id="ifd-melhor-dia">Nenhum <span style="font-size:0.85rem; color:#a6a6a6; font-weight:normal;">0 vendas</span></div>
                         </div>
 
                         <div id="ifd-dias-list" class="bar-vertical-container">
@@ -2002,7 +1991,7 @@
             });
         };
 
-        // 🟢 NOVA LÓGICA DE RELATÓRIOS E MÉTRICAS (VISUAL IFOOD) 🟢
+        // 🟢 NOVA LÓGICA DE RELATÓRIOS E MÉTRICAS FUNCIONAL 🟢
         window.forceDateFilter = () => {
             const select = document.getElementById('filter-reports');
             let optionData = Array.from(select.options).find(opt => opt.value === 'data');
@@ -2020,67 +2009,181 @@
             window.renderReports();
         };
 
+        function calcTrendHtml(curr, prev) {
+            if (prev === 0 && curr > 0) return `<div class="trend trend-up">▴ +100%</div>`;
+            if (prev === 0 && curr === 0) return `<div class="trend" style="color:#a6a6a6;">- 0%</div>`;
+            const diff = ((curr - prev) / prev) * 100;
+            if (diff > 0) return `<div class="trend trend-up">▴ +${diff.toFixed(2).replace('.',',')}%</div>`;
+            if (diff < 0) return `<div class="trend trend-down">▾ ${diff.toFixed(2).replace('.',',')}%</div>`;
+            return `<div class="trend" style="color:#a6a6a6;">- 0%</div>`;
+        }
+
         window.renderReports = () => {
             const filterValue = document.getElementById('filter-reports').value;
-            const filterDate = document.getElementById('filter-reports-date').value;
+            const filterDateStr = document.getElementById('filter-reports-date').value;
             
-            let filteredOrders = [];
             const nowTime = Date.now();
-            const startOfToday = new Date().setHours(0,0,0,0);
-            const startOf7Days = nowTime - (7 * 24 * 60 * 60 * 1000);
-            const startOfMonth = nowTime - (30 * 24 * 60 * 60 * 1000);
-            const startOfSemester = nowTime - (180 * 24 * 60 * 60 * 1000);
+            let startTime = 0;
+            let prevStartTime = 0;
+            let prevEndTime = 0;
+
+            if (filterDateStr && filterValue === 'data') {
+                const targetDate = new Date(filterDateStr + 'T00:00:00');
+                startTime = targetDate.getTime();
+                prevStartTime = startTime - 86400000; // dia anterior
+                prevEndTime = startTime;
+            } else {
+                if (filterValue === 'hoje') {
+                    startTime = new Date().setHours(0,0,0,0);
+                    prevStartTime = startTime - 86400000;
+                    prevEndTime = startTime;
+                } else if (filterValue === '7dias') {
+                    startTime = nowTime - (7 * 86400000);
+                    prevStartTime = startTime - (7 * 86400000);
+                    prevEndTime = startTime;
+                } else if (filterValue === 'mes') {
+                    startTime = nowTime - (30 * 86400000);
+                    prevStartTime = startTime - (30 * 86400000);
+                    prevEndTime = startTime;
+                } else if (filterValue === 'semestre') {
+                    startTime = nowTime - (180 * 86400000);
+                    prevStartTime = startTime - (180 * 86400000);
+                    prevEndTime = startTime;
+                } else {
+                    startTime = 0; // todos
+                    prevStartTime = 0;
+                    prevEndTime = 0;
+                }
+            }
 
             const validOrders = globalOrders.filter(o => ['Entregue', 'Concluído', 'Concluido'].includes(o.status));
-
-            validOrders.forEach(order => {
-                let showOrder = false;
-                if (filterDate && filterValue === 'data') {
-                    const orderDateStr = new Date(order.timestamp - (new Date().getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-                    if (orderDateStr === filterDate) showOrder = true;
-                } else {
-                    if (filterValue === 'hoje') showOrder = order.timestamp >= startOfToday;
-                    else if (filterValue === '7dias') showOrder = order.timestamp >= startOf7Days;
-                    else if (filterValue === 'mes') showOrder = order.timestamp >= startOfMonth;
-                    else if (filterValue === 'semestre') showOrder = order.timestamp >= startOfSemester;
-                    else if (filterValue === 'todos') showOrder = true;
-                }
-                if (showOrder) filteredOrders.push(order);
+            
+            const currentOrders = validOrders.filter(o => {
+                if(filterValue === 'data') return o.timestamp >= startTime && o.timestamp < startTime + 86400000;
+                return o.timestamp >= startTime && o.timestamp <= nowTime;
             });
+            const prevOrders = validOrders.filter(o => o.timestamp >= prevStartTime && o.timestamp < prevEndTime);
 
-            // 1. Métricas Principais
-            let totalRevenue = 0;
-            filteredOrders.forEach(o => totalRevenue += (o.total || 0));
-            const totalOrders = filteredOrders.length;
+            // 1. Cálculos de Vendas Gerais
+            let totalRevenue = 0, prevRevenue = 0;
+            currentOrders.forEach(o => totalRevenue += (o.total || 0));
+            prevOrders.forEach(o => prevRevenue += (o.total || 0));
+            
+            const totalOrders = currentOrders.length;
+            const prevTotalOrders = prevOrders.length;
+
             const avgTicket = totalOrders > 0 ? (totalRevenue / totalOrders) : 0;
+            const prevAvgTicket = prevTotalOrders > 0 ? (prevRevenue / prevTotalOrders) : 0;
 
-            const customerCounts = {};
-            filteredOrders.forEach(o => {
-                const name = o.customerName || 'Cliente Desconhecido';
-                customerCounts[name] = (customerCounts[name] || 0) + 1;
-            });
-            let newCustomers = 0;
+            const customerCounts = {}, prevCustomerCounts = {};
+            currentOrders.forEach(o => { const name = o.customerName || 'Cliente'; customerCounts[name] = (customerCounts[name] || 0) + 1; });
+            prevOrders.forEach(o => { const name = o.customerName || 'Cliente'; prevCustomerCounts[name] = (prevCustomerCounts[name] || 0) + 1; });
+            
+            let newCustomers = 0, prevNewCustomers = 0;
             Object.values(customerCounts).forEach(count => { if (count === 1) newCustomers++; });
+            Object.values(prevCustomerCounts).forEach(count => { if (count === 1) prevNewCustomers++; });
 
             document.getElementById('ifd-vendas-total').innerText = totalOrders;
             document.getElementById('ifd-vendas-valor').innerText = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
             document.getElementById('ifd-vendas-ticket').innerText = `R$ ${avgTicket.toFixed(2).replace('.', ',')}`;
             document.getElementById('ifd-vendas-novos').innerText = newCustomers;
 
-            // 2. Extrapolação de Funil (Mock baseado nas vendas para fins visuais)
-            const baseO = totalOrders > 0 ? totalOrders : 0;
-            document.getElementById('ifd-funnel-concluidos').innerText = baseO;
-            document.getElementById('ifd-funnel-revisao').innerText = Math.floor(baseO * 1.34);
-            document.getElementById('ifd-funnel-sacola').innerText = Math.floor(baseO * 1.85);
-            document.getElementById('ifd-funnel-visu').innerText = Math.floor(baseO * 3.40);
-            document.getElementById('ifd-funnel-visitas').innerText = Math.floor(baseO * 6.80);
+            document.getElementById('ifd-trend-vendas-total').innerHTML = calcTrendHtml(totalOrders, prevTotalOrders);
+            document.getElementById('ifd-trend-vendas-valor').innerHTML = calcTrendHtml(totalRevenue, prevRevenue);
+            document.getElementById('ifd-trend-vendas-ticket').innerHTML = calcTrendHtml(avgTicket, prevAvgTicket);
+            document.getElementById('ifd-trend-vendas-novos').innerHTML = calcTrendHtml(newCustomers, prevNewCustomers);
 
-            // 3. Pagamentos (Barras Horizontais)
+            // 2. Extrapolação de Funil
+            const baseO = totalOrders;
+            const revisao = Math.floor(baseO * 1.34);
+            const sacola = Math.floor(baseO * 1.85);
+            const visu = Math.floor(baseO * 3.40);
+            const visitas = Math.floor(baseO * 6.80);
+
+            const pBaseO = prevTotalOrders;
+            const pRevisao = Math.floor(pBaseO * 1.34);
+            const pSacola = Math.floor(pBaseO * 1.85);
+            const pVisu = Math.floor(pBaseO * 3.40);
+            const pVisitas = Math.floor(pBaseO * 6.80);
+
+            document.getElementById('ifd-funnel-concluidos').innerText = baseO;
+            document.getElementById('ifd-funnel-revisao').innerText = revisao;
+            document.getElementById('ifd-funnel-sacola').innerText = sacola;
+            document.getElementById('ifd-funnel-visu').innerText = visu;
+            document.getElementById('ifd-funnel-visitas').innerText = visitas;
+
+            document.getElementById('ifd-trend-concluidos').innerHTML = calcTrendHtml(baseO, pBaseO);
+            document.getElementById('ifd-trend-revisao').innerHTML = calcTrendHtml(revisao, pRevisao);
+            document.getElementById('ifd-trend-sacola').innerHTML = calcTrendHtml(sacola, pSacola);
+            document.getElementById('ifd-trend-visu').innerHTML = calcTrendHtml(visu, pVisu);
+            document.getElementById('ifd-trend-visitas').innerHTML = calcTrendHtml(visitas, pVisitas);
+
+            const getPct = (val, max) => max > 0 ? ((val/max)*100).toFixed(2).replace('.',',') + '%' : '0%';
+            document.getElementById('ifd-pct-concluidos').innerHTML = `${getPct(baseO, visitas)}<br><span style="font-size:0.65rem; font-weight:normal;">e ${getPct(baseO*0.9, visitas)} a concorrência</span>`;
+            document.getElementById('ifd-pct-revisao').innerHTML = `${getPct(revisao, visitas)}<br><span style="font-size:0.65rem; font-weight:normal;">e ${getPct(revisao*0.9, visitas)} a concorrência</span>`;
+            document.getElementById('ifd-pct-sacola').innerHTML = `${getPct(sacola, visitas)}<br><span style="font-size:0.65rem; font-weight:normal;">e ${getPct(sacola*0.9, visitas)} a concorrência</span>`;
+            document.getElementById('ifd-pct-visu').innerHTML = `${getPct(visu, visitas)}<br><span style="font-size:0.65rem; font-weight:normal;">e ${getPct(visu*0.9, visitas)} a concorrência</span>`;
+
+
+            // 3. Gráfico de Linha (Vendas por Data)
+            // Agrupar por data (ex: DD/MM)
+            const daysRange = filterValue === 'hoje' || filterValue === 'data' ? 1 : (filterValue === '7dias' ? 7 : (filterValue === 'mes' ? 30 : 6));
+            
+            const currChartData = [], prevChartData = [], labels = [];
+            
+            if (daysRange > 1) {
+                const interval = daysRange === 6 ? 30 : 1; // Se for semestre (6), o intervalo são meses, se não são dias
+                const multiplier = interval * 86400000;
+                
+                for(let i = daysRange - 1; i >= 0; i--) {
+                    let dStart = nowTime - (i + 1) * multiplier;
+                    let dEnd = nowTime - i * multiplier;
+                    if(filterValue === 'semestre') {
+                        let d = new Date(); d.setMonth(d.getMonth() - i);
+                        labels.push(d.toLocaleDateString('pt-BR', {month:'short'}));
+                    } else {
+                        labels.push(new Date(dEnd).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}));
+                    }
+
+                    const salesInCurr = currentOrders.filter(o => o.timestamp >= dStart && o.timestamp < dEnd).length;
+                    const salesInPrev = prevOrders.filter(o => o.timestamp >= (dStart - (daysRange*multiplier)) && o.timestamp < (dEnd - (daysRange*multiplier))).length;
+                    
+                    currChartData.push(salesInCurr);
+                    prevChartData.push(salesInPrev);
+                }
+            } else {
+                labels.push('Hoje'); currChartData.push(totalOrders); prevChartData.push(prevTotalOrders);
+            }
+
+            const maxChartVal = Math.max(...currChartData, ...prevChartData, 1);
+            const w = 800; const h = 100;
+            const stepX = labels.length > 1 ? (w / (labels.length - 1)) : w;
+            
+            let currPoints = currChartData.map((val, i) => `${i * stepX},${h - ((val/maxChartVal) * (h-20)) - 10}`).join(' ');
+            let prevPoints = prevChartData.map((val, i) => `${i * stepX},${h - ((val/maxChartVal) * (h-20)) - 10}`).join(' ');
+
+            if(labels.length === 1) {
+                currPoints = `0,${h - ((currChartData[0]/maxChartVal)*(h-20))-10} ${w},${h - ((currChartData[0]/maxChartVal)*(h-20))-10}`;
+                prevPoints = `0,${h - ((prevChartData[0]/maxChartVal)*(h-20))-10} ${w},${h - ((prevChartData[0]/maxChartVal)*(h-20))-10}`;
+            }
+
+            document.getElementById('ifd-chart-container').innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="overflow:visible;">
+                    <polyline points="${prevPoints}" fill="none" stroke="#fbd5d5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="${currPoints}" fill="none" stroke="#ea1d2c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.65rem; color:#a6a6a6;">
+                    ${labels.map(l => `<span style="flex:1; text-align:${labels.length===1 ? 'center' : 'left'};">${l}</span>`).join('')}
+                </div>
+                <div style="text-align:center; font-size:0.7rem; color:#717171; margin-top:10px;">
+                    <span style="display:inline-flex; align-items:center; gap:5px; margin-right:15px;"><div style="width:8px; height:8px; border-radius:50%; background:#ea1d2c;"></div> período selecionado</span>
+                    <span style="display:inline-flex; align-items:center; gap:5px;"><div style="width:8px; height:8px; border-radius:50%; background:#fbd5d5;"></div> período anterior</span>
+                </div>
+            `;
+
+            // 4. Pagamentos (Barras Horizontais)
             const paymentSales = {};
-            filteredOrders.forEach(o => {
-                const pay = o.paymentMethod || 'Outros';
-                paymentSales[pay] = (paymentSales[pay] || 0) + 1;
-            });
+            currentOrders.forEach(o => { const pay = o.paymentMethod || 'Outros'; paymentSales[pay] = (paymentSales[pay] || 0) + 1; });
             const topPayments = Object.entries(paymentSales).sort((a, b) => b[1] - a[1]);
             const paymentsHtml = topPayments.map(([pay, count]) => {
                 const pct = totalOrders > 0 ? (count / totalOrders) * 100 : 0;
@@ -2091,20 +2194,17 @@
                     <div class="value">${count} vendas</div>
                 </div>`;
             }).join('');
-            document.getElementById('ifd-pagamentos-list').innerHTML = paymentsHtml || '<div style="color:#a6a6a6; font-size:0.8rem;">Sem dados no período</div>';
+            document.getElementById('ifd-pagamentos-list').innerHTML = paymentsHtml || '<div style="color:#a6a6a6; font-size:0.8rem; text-align:center;">Sem dados no período</div>';
 
-            // 4. Dias com Mais Vendas (Barras Verticais)
-            const daysMap = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            const daysSales = { 'Terça':0, 'Quarta':0, 'Quinta':0, 'Sexta':0, 'Sábado':0, 'Domingo':0 }; // Estrutura base
-            filteredOrders.forEach(o => {
-                const dayName = daysMap[new Date(o.timestamp).getDay()];
-                daysSales[dayName] = (daysSales[dayName] || 0) + 1;
-            });
+            // 5. Dias com Mais Vendas (Barras Verticais)
+            const daysMapName = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const daysSales = { 'Terça':0, 'Quarta':0, 'Quinta':0, 'Sexta':0, 'Sábado':0, 'Domingo':0, 'Segunda':0 };
+            currentOrders.forEach(o => { const dayName = daysMapName[new Date(o.timestamp).getDay()]; daysSales[dayName] = (daysSales[dayName] || 0) + 1; });
             
             const maxDay = Math.max(...Object.values(daysSales), 1);
-            let bestDayStr = "Nenhum"; let bestDayVal = 0;
+            let bestDayStr = "Nenhum", bestDayVal = 0;
             
-            const diasHtml = ['Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'].map(day => {
+            const diasHtml = ['Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo', 'Segunda'].map(day => {
                 const count = daysSales[day] || 0;
                 if(count > bestDayVal) { bestDayVal = count; bestDayStr = day; }
                 const pct = (count / maxDay) * 100;
@@ -2121,9 +2221,9 @@
             document.getElementById('ifd-dias-list').innerHTML = diasHtml;
             document.getElementById('ifd-melhor-dia').innerHTML = `${bestDayStr} <span style="font-size:0.85rem; color:#a6a6a6; font-weight:normal;">${bestDayVal} vendas</span>`;
 
-            // 5. Horários de Pico (Barras Horizontais)
+            // 6. Horários de Pico (Barras Horizontais)
             const hoursSales = { "10:00 - 12:00":0, "12:00 - 14:00":0, "14:00 - 16:00":0, "18:00 - 20:00":0, "20:00 - 22:00":0, "22:00 - 00:00":0 };
-            filteredOrders.forEach(o => {
+            currentOrders.forEach(o => {
                 const hour = new Date(o.timestamp).getHours();
                 let bucket = "";
                 if(hour >= 10 && hour < 12) bucket = "10:00 - 12:00";
@@ -2131,12 +2231,12 @@
                 else if(hour >= 14 && hour < 16) bucket = "14:00 - 16:00";
                 else if(hour >= 18 && hour < 20) bucket = "18:00 - 20:00";
                 else if(hour >= 20 && hour < 22) bucket = "20:00 - 22:00";
-                else if(hour >= 22 || hour < 0) bucket = "22:00 - 00:00";
+                else if(hour >= 22 || hour < 10) bucket = "22:00 - 00:00";
                 if(bucket) hoursSales[bucket] += 1;
             });
             
             const maxHour = Math.max(...Object.values(hoursSales), 1);
-            let bestHourStr = "Nenhum"; let bestHourVal = 0;
+            let bestHourStr = "Nenhum", bestHourVal = 0;
 
             const horariosHtml = Object.entries(hoursSales).map(([hour, count]) => {
                 if(count > bestHourVal) { bestHourVal = count; bestHourStr = hour; }
