@@ -731,17 +731,10 @@
                 </div>
                 
                 <div class="ifood-toggle-group">
-                    <button class="ifood-toggle-btn active">Concorrência</button>
-                    <button class="ifood-toggle-btn">Sua loja</button>
+                    <button class="ifood-toggle-btn active" style="cursor: default;">Sua loja</button>
                 </div>
 
-                <p style="font-size: 0.85rem; color: #717171; margin-bottom: 15px;">Consideramos como sua concorrência as lojas que estão na mesma região, possuem o mesmo segmento e média de pedidos que a sua loja.</p>
-
-                <div class="ifood-alert">
-                    No período analisado, a conversão do seu cardápio ficou <span class="highlight">▾ -2,88% abaixo em comparação com a concorrência</span>
-                </div>
-
-                <div class="ifood-funnel-grid">
+                <div class="ifood-funnel-grid" style="margin-top: 15px;">
                     <div class="ifood-funnel-card" id="step-visitas">
                         <div class="ifood-funnel-content">
                             <div class="ifood-funnel-title">Visitas</div>
@@ -759,7 +752,7 @@
                             <div id="ifd-trend-visu"></div>
                         </div>
                         <div class="ifood-funnel-bg">
-                            <div style="text-align:center; margin-top:20px;" id="ifd-pct-visu">--%<br><span style="font-size:0.65rem; font-weight:normal;">e --% a concorrência</span></div>
+                            <div style="text-align:center; margin-top:20px;" id="ifd-pct-visu">--%</div>
                         </div>
                     </div>
                     <div class="ifood-funnel-card" id="step-sacola">
@@ -770,7 +763,7 @@
                             <div id="ifd-trend-sacola"></div>
                         </div>
                         <div class="ifood-funnel-bg">
-                            <div style="text-align:center; margin-top:15px;" id="ifd-pct-sacola">--%<br><span style="font-size:0.65rem; font-weight:normal;">e --% a concorrência</span></div>
+                            <div style="text-align:center; margin-top:15px;" id="ifd-pct-sacola">--%</div>
                         </div>
                     </div>
                     <div class="ifood-funnel-card" id="step-revisao">
@@ -781,7 +774,7 @@
                             <div id="ifd-trend-revisao"></div>
                         </div>
                         <div class="ifood-funnel-bg">
-                            <div style="text-align:center; margin-top:10px;" id="ifd-pct-revisao">--%<br><span style="font-size:0.65rem; font-weight:normal;">e --% a concorrência</span></div>
+                            <div style="text-align:center; margin-top:10px;" id="ifd-pct-revisao">--%</div>
                         </div>
                     </div>
                     <div class="ifood-funnel-card" id="step-concluidos">
@@ -792,7 +785,7 @@
                             <div id="ifd-trend-concluidos"></div>
                         </div>
                         <div class="ifood-funnel-bg">
-                            <div style="text-align:center; margin-top:5px;" id="ifd-pct-concluidos">--%<br><span style="font-size:0.65rem; font-weight:normal;">e --% a concorrência</span></div>
+                            <div style="text-align:center; margin-top:5px;" id="ifd-pct-concluidos">--%</div>
                         </div>
                     </div>
                 </div>
@@ -826,11 +819,11 @@
                     </div>
                 </div>
 
-                <div class="ifood-toggle-group" style="margin-bottom: 5px;">
-                    <button class="ifood-toggle-btn active">Total de vendas</button>
-                    <button class="ifood-toggle-btn">Valor das vendas</button>
-                    <button class="ifood-toggle-btn">Ticket médio</button>
-                    <button class="ifood-toggle-btn">Novos clientes</button>
+                <div class="ifood-toggle-group" id="btn-group-vendas" style="margin-bottom: 5px;">
+                    <button id="btn-vendas-total" class="ifood-toggle-btn active" onclick="window.setSalesTab('total')">Total de vendas</button>
+                    <button id="btn-vendas-valor" class="ifood-toggle-btn" onclick="window.setSalesTab('valor')">Valor das vendas</button>
+                    <button id="btn-vendas-ticket" class="ifood-toggle-btn" onclick="window.setSalesTab('ticket')">Ticket médio</button>
+                    <button id="btn-vendas-novos" class="ifood-toggle-btn" onclick="window.setSalesTab('novos')">Novos clientes</button>
                 </div>
 
                 <div class="ifood-chart-mock" id="ifd-chart-container">
@@ -846,11 +839,11 @@
                         <span style="background:#333; color:#fff; border-radius:50%; width:14px; height:14px; display:inline-flex; align-items:center; justify-content:center; font-size:0.6rem; cursor:pointer;" title="Info">i</span>
                     </div>
                     
-                    <div class="ifood-toggle-group" style="margin-bottom: 15px;">
-                        <button class="ifood-toggle-btn active">Durante a semana</button>
-                        <button class="ifood-toggle-btn">Final de semana</button>
+                    <div class="ifood-toggle-group" id="btn-group-horarios" style="margin-bottom: 15px;">
+                        <button id="btn-horarios-semana" class="ifood-toggle-btn active" onclick="window.setHoursTab('semana')">Durante a semana</button>
+                        <button id="btn-horarios-fimdesemana" class="ifood-toggle-btn" onclick="window.setHoursTab('fimdesemana')">Final de semana</button>
                     </div>
-                    <div style="font-size:0.7rem; color:#a6a6a6; margin-bottom: 15px;">Análise dos horários de pico baseados no período</div>
+                    <div style="font-size:0.7rem; color:#a6a6a6; margin-bottom: 15px;" id="horarios-desc">Análise dos horários de pico (Segunda a Sexta)</div>
                     
                     <div style="margin-bottom: 20px;">
                         <div style="font-size:0.85rem; color:#717171;">Melhor horário</div>
@@ -1992,6 +1985,9 @@
         };
 
         // 🟢 NOVA LÓGICA DE RELATÓRIOS E MÉTRICAS FUNCIONAL 🟢
+        window.currentSalesTab = 'total';
+        window.chartData = null;
+        
         window.forceDateFilter = () => {
             const select = document.getElementById('filter-reports');
             let optionData = Array.from(select.options).find(opt => opt.value === 'data');
@@ -2018,6 +2014,108 @@
             return `<div class="trend" style="color:#a6a6a6;">- 0%</div>`;
         }
 
+        window.setSalesTab = (tab) => {
+            window.currentSalesTab = tab;
+            document.querySelectorAll('#btn-group-vendas .ifood-toggle-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-vendas-${tab}`).classList.add('active');
+            if (window.chartData) window.renderSalesChart();
+        };
+
+        window.renderSalesChart = () => {
+            const data = window.chartData;
+            if(!data) return;
+            const currData = data.curr[window.currentSalesTab];
+            const prevData = data.prev[window.currentSalesTab];
+            const labels = data.labels;
+
+            const maxChartVal = Math.max(...currData, ...prevData, 1);
+            const w = 800; const h = 120;
+            const stepX = labels.length > 1 ? (w / (labels.length - 1)) : w;
+            
+            let currPoints = currData.map((val, i) => `${i * stepX},${h - ((val/maxChartVal) * (h-30)) - 15}`).join(' ');
+            let prevPoints = prevData.map((val, i) => `${i * stepX},${h - ((val/maxChartVal) * (h-30)) - 15}`).join(' ');
+
+            if(labels.length === 1) {
+                currPoints = `0,${h - ((currData[0]/maxChartVal)*(h-30))-15} ${w},${h - ((currData[0]/maxChartVal)*(h-30))-15}`;
+                prevPoints = `0,${h - ((prevData[0]/maxChartVal)*(h-30))-15} ${w},${h - ((prevData[0]/maxChartVal)*(h-30))-15}`;
+            }
+
+            let metricName = "vendas realizadas";
+            if(window.currentSalesTab === 'valor') metricName = "R$ faturados";
+            if(window.currentSalesTab === 'ticket') metricName = "R$ de ticket médio";
+            if(window.currentSalesTab === 'novos') metricName = "novos clientes";
+
+            document.getElementById('ifd-chart-container').innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="overflow:visible;">
+                    <polyline points="${prevPoints}" fill="none" stroke="#fbd5d5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="${currPoints}" fill="none" stroke="#ea1d2c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.65rem; color:#a6a6a6;">
+                    ${labels.map(l => `<span style="flex:1; text-align:${labels.length===1 ? 'center' : 'left'};">${l}</span>`).join('')}
+                </div>
+                <div style="text-align:center; font-size:0.7rem; color:#717171; margin-top:15px;">
+                    <span style="display:inline-flex; align-items:center; gap:5px; margin-right:15px;"><div style="width:8px; height:8px; border-radius:50%; background:#ea1d2c;"></div> ${metricName} (período selecionado)</span>
+                    <span style="display:inline-flex; align-items:center; gap:5px;"><div style="width:8px; height:8px; border-radius:50%; background:#fbd5d5;"></div> (período anterior)</span>
+                </div>
+            `;
+        };
+
+        window.currentHoursTab = 'semana';
+        window.currentFilteredOrders = [];
+
+        window.setHoursTab = (tab) => {
+            window.currentHoursTab = tab;
+            document.querySelectorAll('#btn-group-horarios .ifood-toggle-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-horarios-${tab}`).classList.add('active');
+            
+            const desc = document.getElementById('horarios-desc');
+            if(tab === 'semana') desc.innerText = "Análise dos horários de pico (Segunda a Sexta)";
+            else desc.innerText = "Análise dos horários de pico (Sábado e Domingo)";
+
+            if (window.currentFilteredOrders) window.renderPeakHours();
+        };
+
+        window.renderPeakHours = () => {
+            const hoursSales = { "10:00 - 12:00":0, "12:00 - 14:00":0, "14:00 - 16:00":0, "16:00 - 18:00":0, "18:00 - 20:00":0, "20:00 - 22:00":0, "22:00 - 00:00":0 };
+            
+            let targetOrders = window.currentFilteredOrders;
+            if (window.currentHoursTab === 'semana') {
+                targetOrders = targetOrders.filter(o => { const d = new Date(o.timestamp).getDay(); return d >= 1 && d <= 5; });
+            } else {
+                targetOrders = targetOrders.filter(o => { const d = new Date(o.timestamp).getDay(); return d === 0 || d === 6; });
+            }
+
+            targetOrders.forEach(o => {
+                const hour = new Date(o.timestamp).getHours();
+                let bucket = "";
+                if(hour >= 10 && hour < 12) bucket = "10:00 - 12:00";
+                else if(hour >= 12 && hour < 14) bucket = "12:00 - 14:00";
+                else if(hour >= 14 && hour < 16) bucket = "14:00 - 16:00";
+                else if(hour >= 16 && hour < 18) bucket = "16:00 - 18:00";
+                else if(hour >= 18 && hour < 20) bucket = "18:00 - 20:00";
+                else if(hour >= 20 && hour < 22) bucket = "20:00 - 22:00";
+                else if(hour >= 22 || hour < 10) bucket = "22:00 - 00:00";
+                if(bucket) hoursSales[bucket] += 1;
+            });
+            
+            const maxHour = Math.max(...Object.values(hoursSales), 1);
+            let bestHourStr = "Nenhum", bestHourVal = 0;
+
+            const horariosHtml = Object.entries(hoursSales).map(([hour, count]) => {
+                if(count > bestHourVal) { bestHourVal = count; bestHourStr = hour; }
+                const pct = (count / maxHour) * 100;
+                return `
+                <div class="bar-horizontal">
+                    <div class="label">${hour}</div>
+                    <div class="track"><div class="fill" style="width:${pct}%;"></div></div>
+                    <div class="value">${count > 0 ? count : ''}</div>
+                </div>`;
+            }).join('');
+            
+            document.getElementById('ifd-horarios-list').innerHTML = horariosHtml;
+            document.getElementById('ifd-melhor-horario').innerHTML = `${bestHourStr} <span style="font-size:0.85rem; color:#a6a6a6; font-weight:normal;">${bestHourVal} vendas</span>`;
+        };
+
         window.renderReports = () => {
             const filterValue = document.getElementById('filter-reports').value;
             const filterDateStr = document.getElementById('filter-reports-date').value;
@@ -2029,8 +2127,8 @@
 
             if (filterDateStr && filterValue === 'data') {
                 const targetDate = new Date(filterDateStr + 'T00:00:00');
-                startTime = targetDate.getTime();
-                prevStartTime = startTime - 86400000; // dia anterior
+                startTime = targetDate.getTime() + (targetDate.getTimezoneOffset() * 60000); 
+                prevStartTime = startTime - 86400000; 
                 prevEndTime = startTime;
             } else {
                 if (filterValue === 'hoje') {
@@ -2080,8 +2178,21 @@
             prevOrders.forEach(o => { const name = o.customerName || 'Cliente'; prevCustomerCounts[name] = (prevCustomerCounts[name] || 0) + 1; });
             
             let newCustomers = 0, prevNewCustomers = 0;
-            Object.values(customerCounts).forEach(count => { if (count === 1) newCustomers++; });
-            Object.values(prevCustomerCounts).forEach(count => { if (count === 1) prevNewCustomers++; });
+            const nCurrSet = new Set(), nPrevSet = new Set();
+            
+            currentOrders.forEach(o => {
+                if (!validOrders.some(vo => vo.customerName === o.customerName && vo.timestamp < startTime)) {
+                    nCurrSet.add(o.customerName);
+                }
+            });
+            newCustomers = nCurrSet.size;
+
+            prevOrders.forEach(o => {
+                if (!validOrders.some(vo => vo.customerName === o.customerName && vo.timestamp < prevStartTime)) {
+                    nPrevSet.add(o.customerName);
+                }
+            });
+            prevNewCustomers = nPrevSet.size;
 
             document.getElementById('ifd-vendas-total').innerText = totalOrders;
             document.getElementById('ifd-vendas-valor').innerText = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
@@ -2119,67 +2230,63 @@
             document.getElementById('ifd-trend-visitas').innerHTML = calcTrendHtml(visitas, pVisitas);
 
             const getPct = (val, max) => max > 0 ? ((val/max)*100).toFixed(2).replace('.',',') + '%' : '0%';
-            document.getElementById('ifd-pct-concluidos').innerHTML = `${getPct(baseO, visitas)}<br><span style="font-size:0.65rem; font-weight:normal;">e ${getPct(baseO*0.9, visitas)} a concorrência</span>`;
-            document.getElementById('ifd-pct-revisao').innerHTML = `${getPct(revisao, visitas)}<br><span style="font-size:0.65rem; font-weight:normal;">e ${getPct(revisao*0.9, visitas)} a concorrência</span>`;
-            document.getElementById('ifd-pct-sacola').innerHTML = `${getPct(sacola, visitas)}<br><span style="font-size:0.65rem; font-weight:normal;">e ${getPct(sacola*0.9, visitas)} a concorrência</span>`;
-            document.getElementById('ifd-pct-visu').innerHTML = `${getPct(visu, visitas)}<br><span style="font-size:0.65rem; font-weight:normal;">e ${getPct(visu*0.9, visitas)} a concorrência</span>`;
+            document.getElementById('ifd-pct-concluidos').innerHTML = `${getPct(baseO, visitas)}`;
+            document.getElementById('ifd-pct-revisao').innerHTML = `${getPct(revisao, visitas)}`;
+            document.getElementById('ifd-pct-sacola').innerHTML = `${getPct(sacola, visitas)}`;
+            document.getElementById('ifd-pct-visu').innerHTML = `${getPct(visu, visitas)}`;
 
-
-            // 3. Gráfico de Linha (Vendas por Data)
-            // Agrupar por data (ex: DD/MM)
+            // 3. Gerar Dados do Gráfico de Linhas (Vendas por Data)
             const daysRange = filterValue === 'hoje' || filterValue === 'data' ? 1 : (filterValue === '7dias' ? 7 : (filterValue === 'mes' ? 30 : 6));
             
-            const currChartData = [], prevChartData = [], labels = [];
+            window.chartData = { labels: [], curr: { total:[], valor:[], ticket:[], novos:[] }, prev: { total:[], valor:[], ticket:[], novos:[] } };
             
             if (daysRange > 1) {
-                const interval = daysRange === 6 ? 30 : 1; // Se for semestre (6), o intervalo são meses, se não são dias
+                const interval = daysRange === 6 ? 30 : 1; 
                 const multiplier = interval * 86400000;
                 
                 for(let i = daysRange - 1; i >= 0; i--) {
                     let dStart = nowTime - (i + 1) * multiplier;
                     let dEnd = nowTime - i * multiplier;
+                    
                     if(filterValue === 'semestre') {
                         let d = new Date(); d.setMonth(d.getMonth() - i);
-                        labels.push(d.toLocaleDateString('pt-BR', {month:'short'}));
+                        window.chartData.labels.push(d.toLocaleDateString('pt-BR', {month:'short'}));
                     } else {
-                        labels.push(new Date(dEnd).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}));
+                        window.chartData.labels.push(new Date(dEnd).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}));
                     }
 
-                    const salesInCurr = currentOrders.filter(o => o.timestamp >= dStart && o.timestamp < dEnd).length;
-                    const salesInPrev = prevOrders.filter(o => o.timestamp >= (dStart - (daysRange*multiplier)) && o.timestamp < (dEnd - (daysRange*multiplier))).length;
+                    const salesInCurr = currentOrders.filter(o => o.timestamp >= dStart && o.timestamp < dEnd);
+                    const salesInPrev = prevOrders.filter(o => o.timestamp >= (dStart - (daysRange*multiplier)) && o.timestamp < (dEnd - (daysRange*multiplier)));
                     
-                    currChartData.push(salesInCurr);
-                    prevChartData.push(salesInPrev);
+                    window.chartData.curr.total.push(salesInCurr.length);
+                    window.chartData.prev.total.push(salesInPrev.length);
+                    
+                    let vCurr = 0, vPrev = 0;
+                    salesInCurr.forEach(o => vCurr += (o.total || 0));
+                    salesInPrev.forEach(o => vPrev += (o.total || 0));
+                    
+                    window.chartData.curr.valor.push(vCurr);
+                    window.chartData.prev.valor.push(vPrev);
+                    
+                    window.chartData.curr.ticket.push(salesInCurr.length ? vCurr / salesInCurr.length : 0);
+                    window.chartData.prev.ticket.push(salesInPrev.length ? vPrev / salesInPrev.length : 0);
+                    
+                    const ncSet = new Set(), npSet = new Set();
+                    salesInCurr.forEach(o => { if(!validOrders.some(vo => vo.customerName === o.customerName && vo.timestamp < dStart)) ncSet.add(o.customerName); });
+                    salesInPrev.forEach(o => { if(!validOrders.some(vo => vo.customerName === o.customerName && vo.timestamp < (dStart - (daysRange*multiplier)))) npSet.add(o.customerName); });
+                    
+                    window.chartData.curr.novos.push(ncSet.size);
+                    window.chartData.prev.novos.push(npSet.size);
                 }
             } else {
-                labels.push('Hoje'); currChartData.push(totalOrders); prevChartData.push(prevTotalOrders);
+                window.chartData.labels.push(filterValue === 'data' ? new Date(startTime).toLocaleDateString('pt-BR') : 'Hoje');
+                window.chartData.curr.total.push(totalOrders); window.chartData.prev.total.push(prevTotalOrders);
+                window.chartData.curr.valor.push(totalRevenue); window.chartData.prev.valor.push(prevRevenue);
+                window.chartData.curr.ticket.push(avgTicket); window.chartData.prev.ticket.push(prevAvgTicket);
+                window.chartData.curr.novos.push(newCustomers); window.chartData.prev.novos.push(prevNewCustomers);
             }
 
-            const maxChartVal = Math.max(...currChartData, ...prevChartData, 1);
-            const w = 800; const h = 100;
-            const stepX = labels.length > 1 ? (w / (labels.length - 1)) : w;
-            
-            let currPoints = currChartData.map((val, i) => `${i * stepX},${h - ((val/maxChartVal) * (h-20)) - 10}`).join(' ');
-            let prevPoints = prevChartData.map((val, i) => `${i * stepX},${h - ((val/maxChartVal) * (h-20)) - 10}`).join(' ');
-
-            if(labels.length === 1) {
-                currPoints = `0,${h - ((currChartData[0]/maxChartVal)*(h-20))-10} ${w},${h - ((currChartData[0]/maxChartVal)*(h-20))-10}`;
-                prevPoints = `0,${h - ((prevChartData[0]/maxChartVal)*(h-20))-10} ${w},${h - ((prevChartData[0]/maxChartVal)*(h-20))-10}`;
-            }
-
-            document.getElementById('ifd-chart-container').innerHTML = `
-                <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="overflow:visible;">
-                    <polyline points="${prevPoints}" fill="none" stroke="#fbd5d5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <polyline points="${currPoints}" fill="none" stroke="#ea1d2c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.65rem; color:#a6a6a6;">
-                    ${labels.map(l => `<span style="flex:1; text-align:${labels.length===1 ? 'center' : 'left'};">${l}</span>`).join('')}
-                </div>
-                <div style="text-align:center; font-size:0.7rem; color:#717171; margin-top:10px;">
-                    <span style="display:inline-flex; align-items:center; gap:5px; margin-right:15px;"><div style="width:8px; height:8px; border-radius:50%; background:#ea1d2c;"></div> período selecionado</span>
-                    <span style="display:inline-flex; align-items:center; gap:5px;"><div style="width:8px; height:8px; border-radius:50%; background:#fbd5d5;"></div> período anterior</span>
-                </div>
-            `;
+            window.renderSalesChart();
 
             // 4. Pagamentos (Barras Horizontais)
             const paymentSales = {};
@@ -2222,34 +2329,8 @@
             document.getElementById('ifd-melhor-dia').innerHTML = `${bestDayStr} <span style="font-size:0.85rem; color:#a6a6a6; font-weight:normal;">${bestDayVal} vendas</span>`;
 
             // 6. Horários de Pico (Barras Horizontais)
-            const hoursSales = { "10:00 - 12:00":0, "12:00 - 14:00":0, "14:00 - 16:00":0, "18:00 - 20:00":0, "20:00 - 22:00":0, "22:00 - 00:00":0 };
-            currentOrders.forEach(o => {
-                const hour = new Date(o.timestamp).getHours();
-                let bucket = "";
-                if(hour >= 10 && hour < 12) bucket = "10:00 - 12:00";
-                else if(hour >= 12 && hour < 14) bucket = "12:00 - 14:00";
-                else if(hour >= 14 && hour < 16) bucket = "14:00 - 16:00";
-                else if(hour >= 18 && hour < 20) bucket = "18:00 - 20:00";
-                else if(hour >= 20 && hour < 22) bucket = "20:00 - 22:00";
-                else if(hour >= 22 || hour < 10) bucket = "22:00 - 00:00";
-                if(bucket) hoursSales[bucket] += 1;
-            });
-            
-            const maxHour = Math.max(...Object.values(hoursSales), 1);
-            let bestHourStr = "Nenhum", bestHourVal = 0;
-
-            const horariosHtml = Object.entries(hoursSales).map(([hour, count]) => {
-                if(count > bestHourVal) { bestHourVal = count; bestHourStr = hour; }
-                const pct = (count / maxHour) * 100;
-                return `
-                <div class="bar-horizontal">
-                    <div class="label">${hour}</div>
-                    <div class="track"><div class="fill" style="width:${pct}%;"></div></div>
-                    <div class="value">${count > 0 ? count : ''}</div>
-                </div>`;
-            }).join('');
-            document.getElementById('ifd-horarios-list').innerHTML = horariosHtml;
-            document.getElementById('ifd-melhor-horario').innerHTML = `${bestHourStr} <span style="font-size:0.85rem; color:#a6a6a6; font-weight:normal;">${bestHourVal} vendas</span>`;
+            window.currentFilteredOrders = currentOrders;
+            window.renderPeakHours();
         };
 
         // 🟢 LÓGICA DE GESTÃO DE CUPONS 🟢
