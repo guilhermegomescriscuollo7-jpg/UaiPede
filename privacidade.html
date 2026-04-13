@@ -3,264 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacidade - UaiPede</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Privacidade e Proteção de Dados - UaiPede</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #ea1d2c;
-            --primary-soft: #fef2f2;
-            --text-main: #1f2937;
-            --text-sub: #6b7280;
-            --bg-body: #f9fafb;
-            --card-bg: #ffffff;
+            --primary-hover: #c51825;
+            --slate-900: #0f172a;
+            --slate-600: #475569;
+            --slate-100: #f1f5f9;
+            --border: #e2e8f0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
-        body { 
-            background-color: var(--bg-body); 
-            color: var(--text-main); 
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
+        body { background-color: #ffffff; color: var(--slate-900); line-height: 1.7; }
 
-        /* HEADER MODERNO */
-        header { 
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 15px 5%;
-            text-align: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+        /* Navigation Bar */
+        nav {
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             position: sticky;
             top: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 100;
         }
 
-        .back-btn { 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary-soft);
-            color: var(--primary);
+        .back-link {
+            color: var(--slate-600);
             text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: 0.2s;
         }
 
-        .back-btn:hover { background: var(--primary); color: #fff; }
+        .back-link:hover { color: var(--primary); }
 
-        .logo-text { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
-
-        /* LAYOUT EM DUAS COLUNAS */
-        .container { 
-            max-width: 1100px; 
-            margin: 40px auto; 
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 40px;
+        /* Hero Section */
+        .hero {
+            padding: 80px 20px;
+            text-align: center;
+            background: var(--slate-100);
+            border-bottom: 1px solid var(--border);
         }
 
-        /* MENU LATERAL DINÂMICO */
-        aside { position: sticky; top: 100px; height: fit-content; }
-        
-        .side-nav { list-style: none; border-left: 2px solid #eee; padding-left: 20px; }
-        .side-nav li { margin-bottom: 15px; }
-        .side-nav a { 
-            text-decoration: none; 
-            color: var(--text-sub); 
-            font-size: 0.9rem; 
-            transition: 0.3s;
-            font-weight: 500;
-        }
-        .side-nav a:hover { color: var(--primary); }
-
-        /* CARDS E CONTEÚDO */
-        .content-section {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-
-        .hero-section { margin-bottom: 40px; }
-        .hero-section h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -1px; }
-        .last-updated { 
-            display: inline-block;
-            background: var(--primary-soft);
-            color: var(--primary);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        /* ACORDEÃO ESTILIZADO */
-        details {
-            margin-bottom: 15px;
-            border-radius: 12px;
+        .hero h1 { font-size: 2.5rem; font-weight: 800; color: var(--slate-900); margin-bottom: 1rem; }
+        .badge {
             background: #fff;
-            border: 1px solid #f0f0f0;
-            transition: 0.3s;
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--slate-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        details[open] { border-color: var(--primary); box-shadow: 0 5px 15px rgba(234, 29, 44, 0.05); }
+        /* Content Layout */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
 
-        summary {
-            padding: 20px;
-            list-style: none;
-            cursor: pointer;
+        .section-block { margin-bottom: 48px; }
+        .section-block h2 {
+            font-size: 1.5rem;
             font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-block h2::before {
+            content: "";
+            width: 4px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        p { margin-bottom: 1rem; color: var(--slate-600); }
+
+        .data-list {
+            background: var(--slate-100);
+            padding: 24px;
+            border-radius: 12px;
+            list-style: none;
+        }
+
+        .data-list li {
+            margin-bottom: 12px;
+            padding-left: 24px;
+            position: relative;
+            font-size: 0.95rem;
+            color: var(--slate-600);
+        }
+
+        .data-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Footer Branding */
+        .footer-info {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .support-card {
+            background: var(--slate-900);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: left;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: var(--text-main);
         }
 
-        summary::after {
-            content: '+';
-            color: var(--primary);
-            font-size: 1.2rem;
+        .btn-contact {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
             transition: 0.3s;
         }
 
-        details[open] summary::after { content: '-'; transform: rotate(180deg); }
+        .btn-contact:hover { background: var(--primary-hover); }
 
-        .details-content { padding: 0 20px 20px 20px; color: var(--text-sub); font-size: 0.95rem; }
-        .details-content ul { padding-left: 20px; margin-top: 10px; }
-        .details-content li { margin-bottom: 8px; }
-
-        /* BOX DE CONTATO */
-        .contact-card {
-            background: linear-gradient(135deg, #111, #333);
-            color: white;
-            padding: 30px;
-            border-radius: 20px;
-            margin-top: 40px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .contact-info h3 { margin-bottom: 5px; color: #fff; }
-        .contact-info p { opacity: 0.8; font-size: 0.9rem; }
-
-        /* RESPONSIVIDADE */
-        @media (max-width: 900px) {
-            .container { grid-template-columns: 1fr; }
-            aside { display: none; }
-            .hero-section h1 { font-size: 1.8rem; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.75rem; }
+            .support-card { flex-direction: column; gap: 24px; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="javascript:history.back()" class="back-btn">←</a>
-        <div class="logo-text">UaiPede</div>
-        <div style="width: 40px;"></div> </header>
+    <nav>
+        <a href="javascript:history.back()" class="back-link">← Voltar para a plataforma</a>
+        <strong style="color: var(--primary)">UaiPede</strong>
+    </nav>
 
-    <div class="container">
-        <aside>
-            <ul class="side-nav">
-                <li><a href="#intro">01. Introdução</a></li>
-                <li><a href="#dados">02. Informações Recolhidas</a></li>
-                <li><a href="#uso">03. Como Usamos</a></li>
-                <li><a href="#partilha">04. Partilha</a></li>
-                <li><a href="#seguranca">05. Segurança</a></li>
-                <li><a href="#direitos">06. Seus Direitos</a></li>
+    <header class="hero">
+        <span class="badge">Transparência e Segurança</span>
+        <h1>Política de Privacidade</h1>
+        <p>Última atualização: 28 de Fevereiro de 2026</p>
+    </header>
+
+    <main class="main-content">
+        
+        <section class="section-block">
+            <h2>1. Compromisso com a Privacidade</h2>
+            <p>O <strong>UaiPede</strong>, operado pela Gh Space Tech, valoriza a confiança depositada em nossos serviços. Esta política estabelece de forma clara como tratamos seus dados pessoais em conformidade com as legislações de proteção de dados vigentes.</p>
+        </section>
+
+        <section class="section-block">
+            <h2>2. Coleta de Dados Minimamente Necessária</h2>
+            <p>Para prover nossos serviços de intermediação logística e entregas, coletamos estritamente o necessário:</p>
+            <ul class="data-list">
+                <li><strong>Identificação:</strong> Nome completo e endereço de correio eletrônico.</li>
+                <li><strong>Logística:</strong> Endereço exato de entrega e geolocalização em tempo real.</li>
+                <li><strong>Transacional:</strong> Histórico de interações na plataforma e métodos de pagamento preferenciais.</li>
             </ul>
-        </aside>
+        </section>
 
-        <main>
-            <div class="hero-section">
-                <span class="last-updated">Atualizado em 28 de Fevereiro de 2026</span>
-                <h1>Sua privacidade é <span style="color: var(--primary);">nossa prioridade.</span></h1>
-                <p>No UaiPede, tratamos seus dados com a mesma transparência com que entregamos seu pedido.</p>
+        <section class="section-block">
+            <h2>3. Finalidade do Tratamento</h2>
+            <p>Os dados coletados possuem finalidades específicas voltadas à execução do serviço contratado:</p>
+            <p>• Viabilização técnica de pedidos junto a estabelecimentos parceiros.<br>
+               • Compartilhamento de rota com entregadores autônomos para fins de entrega.<br>
+               • Suporte ao cliente e comunicações transacionais críticas.</p>
+        </section>
+
+        <section class="section-block">
+            <h2>4. Segurança da Informação</h2>
+            <p>Utilizamos a infraestrutura <strong>Google Cloud (Firebase)</strong>, garantindo camadas de encriptação em repouso e em trânsito, seguindo os mais rigorosos padrões internacionais de segurança cibernética.</p>
+        </section>
+
+        <section class="section-block">
+            <h2>5. Direitos do Titular</h2>
+            <p>Em conformidade com a LGPD, garantimos ao usuário o direito de:</p>
+            <p>• Acessar e retificar seus dados através das configurações de perfil.<br>
+               • Revogar o consentimento e solicitar a <strong>exclusão definitiva</strong> de sua conta e dados associados.</p>
+        </section>
+
+        <div class="support-card">
+            <div>
+                <h3 style="margin-bottom: 8px;">Dúvidas Jurídicas?</h3>
+                <p style="color: #cbd5e1; margin: 0;">Nossa equipe de suporte está pronta para esclarecer questões sobre seus dados.</p>
             </div>
+            <a href="mailto:suporte@uaipede.com.br" class="btn-contact">Contatar Suporte</a>
+        </div>
 
-            <section class="content-section">
-                
-                <details id="intro" open>
-                    <summary>1. Introdução</summary>
-                    <div class="details-content">
-                        <p>Bem-vindo ao <strong>UaiPede</strong>. Esta Política explica como protegemos suas informações pessoais ao utilizar nossa plataforma, seja você um fã de comida, um lojista parceiro ou um entregador herói.</p>
-                    </div>
-                </details>
+        <footer class="footer-info">
+            <p style="font-size: 0.8rem;">© 2026 UaiPede Delivery. Todos os direitos reservados.<br>
+            Gh Space Tech • CNPJ: 59.742.566/0001-31</p>
+        </footer>
 
-                <details id="dados">
-                    <summary>2. Informações que Recolhemos</summary>
-                    <div class="details-content">
-                        <p>Para garantir a melhor experiência, precisamos de alguns dados essenciais:</p>
-                        <ul>
-                            <li><strong>Registo:</strong> Nome, e-mail e credenciais de acesso.</li>
-                            <li><strong>Entrega:</strong> Endereço completo com geolocalização para precisão.</li>
-                            <li><strong>Preferências:</strong> Histórico de pedidos e lojas favoritas para recomendações personalizadas.</li>
-                        </ul>
-                    </div>
-                </details>
-
-                <details id="uso">
-                    <summary>3. Como Usamos as Suas Informações</summary>
-                    <div class="details-content">
-                        <p>Os dados são o motor da nossa eficiência:</p>
-                        <ul>
-                            <li>Conectar você às melhores cozinhas da região.</li>
-                            <li>Traçar a rota mais rápida para o entregador.</li>
-                            <li>Manter você informado via notificações em tempo real.</li>
-                        </ul>
-                    </div>
-                </details>
-
-                <details id="partilha">
-                    <summary>4. Partilha de Informações</summary>
-                    <div class="details-content">
-                        <p>Transparência total: <strong>não vendemos seus dados.</strong> A partilha ocorre apenas com:</p>
-                        <ul>
-                            <li><strong>Lojas:</strong> Apenas o necessário para preparar seu prato.</li>
-                            <li><strong>Entregadores:</strong> Nome e endereço apenas durante o trajeto.</li>
-                            <li><strong>Leis:</strong> Em caso de obrigatoriedade jurídica.</li>
-                        </ul>
-                    </div>
-                </details>
-
-                <details id="seguranca">
-                    <summary>5. Armazenamento e Segurança</summary>
-                    <div class="details-content">
-                        <p>Utilizamos infraestrutura de classe mundial através do <strong>Google Firebase</strong>, garantindo encriptação de ponta a ponta e proteção contra acessos não autorizados.</p>
-                    </div>
-                </details>
-
-                <details id="direitos">
-                    <summary>6. Os Seus Direitos</summary>
-                    <div class="details-content">
-                        <p>O dono dos dados é você. No menu "Perfil" você pode:</p>
-                        <ul>
-                            <li>Aceder e exportar seus dados.</li>
-                            <li>Corrigir informações desatualizadas.</li>
-                            <li><strong>Eliminar sua conta</strong> permanentemente a qualquer momento.</li>
-                        </ul>
-                    </div>
-                </details>
-
-                <div class="contact-card">
-                    <div style="font-size: 2rem;">✉️</div>
-                    <div class="contact-info">
-                        <h3>Dúvidas ou Suporte?</h3>
-                        <p>Fale conosco pelas redes sociais ou suporte oficial.</p>
-                    </div>
-                </div>
-
-            </section>
-        </main>
-    </div>
+    </main>
 
 </body>
 </html>
