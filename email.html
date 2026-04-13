@@ -40,13 +40,15 @@
         .info-box { background: #fafafa; padding: 15px; border-radius: var(--radius); border: 1px solid #f0f0f0; }
         .info-label { font-size: 0.75rem; text-transform: uppercase; color: var(--uai-gray); font-weight: 700; margin-bottom: 5px; }
         .info-value { font-size: 0.95rem; font-weight: 500; color: var(--uai-dark); }
-        .actions { display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--uai-border); }
-        .btn { padding: 12px 25px; border-radius: var(--radius); font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: 0.3s;}
+        .actions { display: flex; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--uai-border); flex-wrap: wrap; }
+        .btn { padding: 12px 20px; border-radius: var(--radius); font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
         .btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-approve { background: #10b981; color: white; }
         .btn-approve:hover:not(:disabled) { background: #059669; }
-        .btn-reject { background: #fee2e2; color: #ef4444; }
-        .btn-reject:hover:not(:disabled) { background: #fca5a5; }
+        .btn-reject { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+        .btn-reject:hover:not(:disabled) { background: #fee2e2; }
+        .btn-delete { background: #111; color: #fff; }
+        .btn-delete:hover:not(:disabled) { background: #333; }
         .btn-back-mobile { display: none; margin-bottom: 20px; color: var(--uai-red); font-weight: 600; cursor: pointer; }
         @media (max-width: 900px) { .sidebar { display: none; } .inbox-list { width: 40%; } }
         @media (max-width: 600px) { .inbox-list { width: 100%; } .detail-pane { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--uai-white); display: none; } .btn-back-mobile { display: inline-block; } .info-grid { grid-template-columns: 1fr; } }
@@ -67,7 +69,7 @@
     <div class="app-body">
         
         <aside class="sidebar">
-            <div class="menu-item" onclick="window.location.href='adm (11).html'" style="margin-bottom: 20px; border-bottom: 1px solid var(--uai-border); padding-bottom: 20px;">
+            <div class="menu-item" onclick="window.location.href='https://uaipede.vercel.app/adm.html'" style="margin-bottom: 20px; border-bottom: 1px solid var(--uai-border); padding-bottom: 20px;">
                 <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Voltar ao Painel
             </div>
@@ -100,7 +102,7 @@
             <div class="empty-state" id="empty-state">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 <h3>Nenhuma solicitação selecionada</h3>
-                <p>Clique num e-mail da lista à esquerda para ler os detalhes.</p>
+                <p>Selecione um item na lista para gerenciar.</p>
             </div>
 
             <div class="request-content" id="request-content">
@@ -160,9 +162,12 @@
                     </div>
                 </div>
 
-                <div class="actions" id="action-buttons">
-                    <button class="btn btn-approve" id="btn-approve" onclick="aprovarLoja()">✓ Marcar como Aprovada</button>
-                    <button class="btn btn-reject" onclick="arquivarSolicitacao()">✕ Reprovar / Arquivar</button>
+                <div class="actions">
+                    <div id="pendente-actions" style="display: flex; gap: 10px;">
+                        <button class="btn btn-approve" id="btn-approve" onclick="aprovarLoja()">✓ Aprovar</button>
+                        <button class="btn btn-reject" onclick="arquivarSolicitacao()">✕ Reprovar</button>
+                    </div>
+                    <button class="btn btn-delete" onclick="excluirSolicitacao()">🗑️ Excluir Permanentemente</button>
                 </div>
             </div>
         </main>
@@ -170,7 +175,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -189,7 +194,6 @@
         let cidadeAtual = 'Todas';
         let solicitacaoAbertaId = null;
 
-        // Puxa tudo ordenado por data
         const q = query(collection(db, "solicitacoes"), orderBy("dataCriacao", "desc"));
         
         onSnapshot(q, (snapshot) => {
@@ -206,22 +210,13 @@
             return date.toLocaleDateString('pt-BR') + ' às ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         }
 
-        // Função para alternar entre Pendentes, Aprovadas e Arquivadas
         window.mudarAba = function(aba) {
             abaAtual = aba;
-            cidadeAtual = 'Todas'; // Reseta o filtro de cidade ao mudar de aba
-            
-            // UI Update
+            cidadeAtual = 'Todas';
             document.querySelectorAll('.tab-menu').forEach(el => el.classList.remove('active'));
             document.getElementById(`tab-${aba}`).classList.add('active');
-
-            const titulos = {
-                'pendente': 'Pendentes',
-                'aprovado': 'Aprovadas',
-                'arquivado': 'Reprovadas'
-            };
+            const titulos = { 'pendente': 'Pendentes', 'aprovado': 'Aprovadas', 'arquivado': 'Reprovadas' };
             document.getElementById('titulo-lista').innerHTML = `${titulos[aba]} (<span id="contador-inbox">0</span>)`;
-            
             fecharDetalhes();
             aplicarFiltros();
         }
@@ -233,40 +228,27 @@
 
         function aplicarFiltros() {
             let cidadesSet = new Set();
-            
-            // Filtra pela aba (Status)
             let filtradosPorAba = todasDoBanco.filter(req => {
                 let status = req.status || 'pendente';
-                if (abaAtual === 'pendente') {
-                    return status !== 'aprovado' && status !== 'arquivado';
-                }
+                if (abaAtual === 'pendente') return status !== 'aprovado' && status !== 'arquivado';
                 return status === abaAtual;
             });
 
-            // Extrai cidades apenas das solicitações da aba atual
-            filtradosPorAba.forEach(req => {
-                if(req.cidade) cidadesSet.add(req.cidade);
-            });
+            filtradosPorAba.forEach(req => { if(req.cidade) cidadesSet.add(req.cidade); });
             renderFiltros(Array.from(cidadesSet));
-
-            // Aplica filtro de cidade
             let filtradosFinais = cidadeAtual === 'Todas' ? filtradosPorAba : filtradosPorAba.filter(r => r.cidade === cidadeAtual);
-            
             renderLista(filtradosFinais);
         }
 
         function renderFiltros(cidadesUnicas) {
             const container = document.getElementById('city-filters');
             container.innerHTML = '';
-            
-            // Botão "Todas"
             const divTodas = document.createElement('div');
             divTodas.className = `menu-item filter-city ${cidadeAtual === 'Todas' ? 'active' : ''}`;
             divTodas.innerHTML = `<svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg> Todas as Cidades`;
             divTodas.onclick = () => window.filtrarCidade('Todas');
             container.appendChild(divTodas);
 
-            // Botões das cidades
             cidadesUnicas.forEach(cidade => {
                 const div = document.createElement('div');
                 div.className = `menu-item filter-city ${cidadeAtual === cidade ? 'active' : ''}`;
@@ -280,24 +262,18 @@
             const container = document.getElementById('request-list-container');
             document.getElementById('contador-inbox').innerText = dados.length;
             container.innerHTML = '';
-
             if (dados.length === 0) {
-                container.innerHTML = `<div style="padding: 20px; color: #999; text-align: center;">Nenhuma solicitação encontrada.</div>`;
+                container.innerHTML = `<div style="padding: 20px; color: #999; text-align: center;">Vazio.</div>`;
                 return;
             }
-
             dados.forEach(req => {
                 const item = document.createElement('div');
                 item.className = `request-item ${!req.lida && abaAtual === 'pendente' ? 'unread' : ''}`;
                 item.onclick = () => abrirDetalhes(req, item);
-                
                 item.innerHTML = `
                     <div class="req-time">${formatarData(req.dataCriacao)}</div>
                     <div class="req-title">${req.nomeFantasia}</div>
-                    <div class="req-city">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                        ${req.cidade || 'Não informada'}
-                    </div>
+                    <div class="req-city">${req.cidade || '---'}</div>
                 `;
                 container.appendChild(item);
             });
@@ -307,100 +283,76 @@
             solicitacaoAbertaId = req.id;
             document.querySelectorAll('.request-item').forEach(el => el.classList.remove('active'));
             elementoClicado.classList.add('active');
-            elementoClicado.classList.remove('unread');
-
+            
             if(!req.lida && abaAtual === 'pendente') {
-                const docRef = doc(db, "solicitacoes", req.id);
-                await updateDoc(docRef, { lida: true });
+                await updateDoc(doc(db, "solicitacoes", req.id), { lida: true });
             }
 
             document.getElementById('empty-state').style.display = 'none';
             document.getElementById('request-content').style.display = 'block';
             if (window.innerWidth <= 600) document.getElementById('detail-pane').style.display = 'block';
 
-            document.getElementById('det-nome').innerText = req.nomeFantasia || '--';
-            document.getElementById('det-cidade').innerText = req.cidade || '--';
-            document.getElementById('det-segmento').innerText = req.segmento || '--';
+            document.getElementById('det-nome').innerText = req.nomeFantasia;
+            document.getElementById('det-cidade').innerText = req.cidade;
+            document.getElementById('det-segmento').innerText = req.segmento;
             document.getElementById('det-data').innerText = formatarData(req.dataCriacao);
             document.getElementById('det-razao').innerText = `${req.razaoSocial} | ${req.cnpj}`;
-            document.getElementById('det-responsavel').innerText = req.responsavel || '--';
-            
-            let compText = req.complemento ? ` - ${req.complemento}` : '';
-            document.getElementById('det-endereco').innerText = `${req.ruaNumero || ''}, ${req.bairro || ''}${compText} - CEP: ${req.cep || 'N/A'}`;
-            
-            document.getElementById('det-whats').innerText = req.whatsapp || '--';
-            document.getElementById('det-email').innerText = req.email || '--';
-            document.getElementById('det-operacao').innerText = `Prazo: ${req.prazoDelivery} min | Taxa: ${req.taxaEntrega}`;
-            
-            document.getElementById('det-pagamentos').innerText = Array.isArray(req.pagamentos) ? req.pagamentos.join(', ') : 'Não informado';
+            document.getElementById('det-responsavel').innerText = req.responsavel;
+            document.getElementById('det-endereco').innerText = `${req.ruaNumero}, ${req.bairro}${req.complemento ? ' - '+req.complemento : ''}`;
+            document.getElementById('det-whats').innerText = req.whatsapp;
+            document.getElementById('det-email').innerText = req.email;
+            document.getElementById('det-operacao').innerText = `Prazo: ${req.prazoDelivery}m | Taxa: ${req.taxaEntrega}`;
+            document.getElementById('det-pagamentos').innerText = Array.isArray(req.pagamentos) ? req.pagamentos.join(', ') : '---';
             document.getElementById('det-obs').innerText = req.obs || "Sem observações.";
 
             const imgEl = document.getElementById('det-logo-img');
-            if (req.logoFileBase64) {
-                imgEl.src = req.logoFileBase64;
-                imgEl.style.display = 'block';
-            } else {
-                imgEl.style.display = 'none';
-            }
+            imgEl.src = req.logoFileBase64 || '';
+            imgEl.style.display = req.logoFileBase64 ? 'block' : 'none';
 
-            // Controle de Botões vs Status Badge
+            // Visibilidade de Botões baseada no Status
+            const status = req.status || 'pendente';
             const badge = document.getElementById('det-status-badge');
-            const actions = document.getElementById('action-buttons');
-            let statusAtual = req.status || 'pendente';
+            const pendenteBtns = document.getElementById('pendente-actions');
 
-            if(statusAtual === 'aprovado' || statusAtual === 'arquivado') {
-                actions.style.display = 'none';
+            if(status === 'aprovado' || status === 'arquivado') {
+                pendenteBtns.style.display = 'none';
                 badge.style.display = 'inline-block';
-                if(statusAtual === 'aprovado') {
-                    badge.innerText = 'APROVADA';
-                    badge.style.background = '#10b981';
-                } else {
-                    badge.innerText = 'REPROVADA / ARQUIVADA';
-                    badge.style.background = '#ef4444';
-                }
+                badge.innerText = status === 'aprovado' ? 'APROVADA' : 'REPROVADA';
+                badge.style.background = status === 'aprovado' ? '#10b981' : '#ef4444';
             } else {
-                actions.style.display = 'flex';
+                pendenteBtns.style.display = 'flex';
                 badge.style.display = 'none';
             }
         }
 
-        // APENAS ATUALIZA O STATUS - SEM INSERIR NO BD DE LOJAS
         window.aprovarLoja = async function() {
             if(!solicitacaoAbertaId) return;
-
-            const req = todasDoBanco.find(s => s.id === solicitacaoAbertaId);
-            if(!req) return;
-
-            if(confirm(`Deseja marcar a solicitação de "${req.nomeFantasia}" como APROVADA?\n\nAtenção: O cadastro no painel principal precisará ser feito manualmente.`)) {
-                try {
-                    const btn = document.getElementById('btn-approve');
-                    btn.innerText = "A Processar...";
-                    btn.disabled = true;
-
-                    const docRef = doc(db, "solicitacoes", solicitacaoAbertaId);
-                    await updateDoc(docRef, { status: 'aprovado' });
-
-                    alert(`Solicitação marcada como APROVADA com sucesso! Ela foi movida para a aba de Aprovadas.`);
-                    fecharDetalhes();
-                    
-                } catch(e) {
-                    console.error("Erro ao aprovar:", e);
-                    alert("Ocorreu um erro: " + e.message);
-                } finally {
-                    const btn = document.getElementById('btn-approve');
-                    if(btn) {
-                        btn.innerText = "✓ Marcar como Aprovada";
-                        btn.disabled = false;
-                    }
-                }
+            if(confirm("Aprovar esta solicitação?")) {
+                await updateDoc(doc(db, "solicitacoes", solicitacaoAbertaId), { status: 'aprovado' });
+                alert("Aprovada!");
+                fecharDetalhes();
             }
         };
 
         window.arquivarSolicitacao = async function() {
-            if(solicitacaoAbertaId && confirm("Tem certeza que deseja reprovar/arquivar esta solicitação? Ela será movida para a aba de reprovadas.")) {
-                const docRef = doc(db, "solicitacoes", solicitacaoAbertaId);
-                await updateDoc(docRef, { status: 'arquivado' });
+            if(!solicitacaoAbertaId) return;
+            if(confirm("Reprovar/Arquivar esta solicitação?")) {
+                await updateDoc(doc(db, "solicitacoes", solicitacaoAbertaId), { status: 'arquivado' });
                 fecharDetalhes();
+            }
+        };
+
+        // NOVA FUNÇÃO DE EXCLUSÃO
+        window.excluirSolicitacao = async function() {
+            if(!solicitacaoAbertaId) return;
+            if(confirm("ATENÇÃO: Deseja EXCLUIR PERMANENTEMENTE esta solicitação do banco de dados? Esta ação não pode ser desfeita.")) {
+                try {
+                    await deleteDoc(doc(db, "solicitacoes", solicitacaoAbertaId));
+                    alert("Solicitação excluída com sucesso.");
+                    fecharDetalhes();
+                } catch (e) {
+                    alert("Erro ao excluir: " + e.message);
+                }
             }
         };
 
@@ -412,7 +364,6 @@
 
         window.fecharDetalhesMobile = function() {
             document.getElementById('detail-pane').style.display = 'none';
-            document.querySelectorAll('.request-item').forEach(el => el.classList.remove('active'));
         };
     </script>
 </body>
