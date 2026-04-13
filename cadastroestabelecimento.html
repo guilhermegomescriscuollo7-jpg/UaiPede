@@ -8,214 +8,32 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --uai-red: #ea1d2c;
-            --uai-dark: #111111;
-            --uai-bg: #f8f9fa;
-            --uai-white: #ffffff;
-            --uai-gray: #717171;
-            --uai-border: #eaeaea;
-            --radius: 12px;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--uai-bg);
-            color: var(--uai-dark);
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* HEADER COM LOGÓTIPO SVG OFICIAL A VERMELHO */
-        .header {
-            background-color: var(--uai-white);
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .logo-svg {
-            width: 45px;
-            height: auto;
-            transform: rotate(-5deg);
-        }
-
-        .logo-text {
-            font-size: 2rem;
-            font-weight: 900;
-            font-style: italic;
-            letter-spacing: -1.5px;
-            color: var(--uai-red);
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .card {
-            background: var(--uai-white);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
-            border: 1px solid var(--uai-border);
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 900;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .intro-text {
-            text-align: center;
-            color: var(--uai-gray);
-            margin-bottom: 40px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.2rem;
-            font-weight: 800;
-            margin: 35px 0 20px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f2f2f2;
-        }
-
-        .icon-svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--uai-red);
-        }
-
-        /* FORMULÁRIO */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
+        :root { --uai-red: #ea1d2c; --uai-dark: #111111; --uai-bg: #f8f9fa; --uai-white: #ffffff; --uai-gray: #717171; --uai-border: #eaeaea; --radius: 12px; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--uai-bg); color: var(--uai-dark); margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+        .header { background-color: var(--uai-white); padding: 20px 0; text-align: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .logo-container { display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .logo-svg { width: 45px; height: auto; transform: rotate(-5deg); }
+        .logo-text { font-size: 2rem; font-weight: 900; font-style: italic; letter-spacing: -1.5px; color: var(--uai-red); }
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .card { background: var(--uai-white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid var(--uai-border); }
+        h1 { font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 10px; }
+        .intro-text { text-align: center; color: var(--uai-gray); margin-bottom: 40px; font-size: 0.95rem; line-height: 1.6; }
+        .section-title { display: flex; align-items: center; gap: 12px; font-size: 1.2rem; font-weight: 800; margin: 35px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #f2f2f2; }
+        .icon-svg { width: 24px; height: 24px; stroke: var(--uai-red); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
         .full-width { grid-column: 1 / -1; }
-
-        label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #888;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        input, select, textarea {
-            padding: 14px 16px;
-            border: 1px solid #ddd;
-            border-radius: var(--radius);
-            font-family: inherit;
-            font-size: 0.95rem;
-            outline: none;
-            transition: 0.3s;
-            background: #fafafa;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--uai-red);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(234, 29, 44, 0.1);
-        }
-
-        .help-text {
-            font-size: 0.75rem;
-            color: #999;
-            margin-top: 6px;
-            line-height: 1.4;
-        }
-
-        /* PAGAMENTO */
-        .payment-box {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: var(--radius);
-            border: 1px solid #eee;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .checkbox-item input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--uai-red);
-        }
-
-        .btn-submit {
-            width: 100%;
-            background: linear-gradient(135deg, var(--uai-red), #ff4b58);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: var(--radius);
-            font-size: 1.1rem;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 30px;
-            box-shadow: 0 8px 20px rgba(234, 29, 44, 0.2);
-            transition: 0.3s;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(234, 29, 44, 0.3);
-        }
-
-        .btn-submit:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* A CARREGAR CIDADES */
-        #loading-cities {
-            font-size: 0.85rem;
-            color: var(--uai-red);
-            font-weight: 600;
-        }
-
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .card { padding: 25px 20px; }
-        }
+        label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #888; margin-bottom: 8px; letter-spacing: 0.5px; }
+        input, select, textarea { padding: 14px 16px; border: 1px solid #ddd; border-radius: var(--radius); font-family: inherit; font-size: 0.95rem; outline: none; transition: 0.3s; background: #fafafa; }
+        input:focus, select:focus, textarea:focus { border-color: var(--uai-red); background: #fff; box-shadow: 0 0 0 4px rgba(234, 29, 44, 0.1); }
+        .payment-box { background: #f9f9f9; padding: 20px; border-radius: var(--radius); border: 1px solid #eee; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer; font-weight: 500; font-size: 0.9rem; }
+        .checkbox-item input { width: 18px; height: 18px; accent-color: var(--uai-red); }
+        .btn-submit { width: 100%; background: linear-gradient(135deg, var(--uai-red), #ff4b58); color: white; border: none; padding: 18px; border-radius: var(--radius); font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 30px; box-shadow: 0 8px 20px rgba(234, 29, 44, 0.2); transition: 0.3s; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(234, 29, 44, 0.3); }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+        #loading-cities { font-size: 0.85rem; color: var(--uai-red); font-weight: 600; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .card { padding: 25px 20px; } }
     </style>
 </head>
 <body>
@@ -225,9 +43,7 @@
             <svg class="logo-svg" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="12" stroke-linecap="round"/>
             </svg>
-            <div class="logo-text">
-                UaiPede
-            </div>
+            <div class="logo-text">UaiPede</div>
         </a>
     </header>
 
@@ -343,7 +159,7 @@
                     <label class="checkbox-item"><input type="checkbox" class="pag-check"> Dinheiro</label>
                     <label class="checkbox-item"><input type="checkbox" class="pag-check"> Cartão de Crédito (Máquina)</label>
                     <label class="checkbox-item"><input type="checkbox" class="pag-check"> Cartão de Débito (Máquina)</label>
-                    <label class="checkbox-item"><input type="checkbox" class="pag-check" checked> PIX </label>
+                    <label class="checkbox-item"><input type="checkbox" class="pag-check" checked> PIX / MB WAY</label>
                 </div>
 
                 <div class="form-group full-width" style="margin-top: 25px;">
@@ -361,7 +177,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CONFIGURAÇÃO DO FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -374,7 +189,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. CARREGAR AS CIDADES DINAMICAMENTE
         const selectCidade = document.getElementById('select-cidade');
         const loadingText = document.getElementById('loading-cities');
 
@@ -396,7 +210,6 @@
             loadingText.innerText = "Erro ao ligar. Tente novamente.";
         });
 
-        // 2. ENVIAR OS DADOS PARA A COLEÇÃO "solicitacoes"
         document.getElementById('form-cadastro').onsubmit = async (e) => {
             e.preventDefault();
             
@@ -405,13 +218,11 @@
             btnSubmit.disabled = true;
 
             try {
-                // Converter a Logo anexada para Base64 (para guardar diretamente no Firebase)
                 const logoInput = document.getElementById('cad-logo');
                 let logoDataUrl = "";
                 
                 if (logoInput.files.length > 0) {
                     const file = logoInput.files[0];
-                    // Ler ficheiro como URL de Dados
                     logoDataUrl = await new Promise((resolve, reject) => {
                         const reader = new FileReader();
                         reader.onload = (evt) => resolve(evt.target.result);
@@ -420,14 +231,12 @@
                     });
                 }
 
-                // Pegar os pagamentos selecionados
                 const checkboxesPagamento = document.querySelectorAll('.pag-check:checked');
                 const pagamentosSelecionados = Array.from(checkboxesPagamento).map(cb => cb.parentElement.textContent.trim());
 
-                // Montar o objeto exato que a página de email precisa
                 const novaSolicitacao = {
                     nomeFantasia: document.getElementById('cad-nome').value,
-                    logoFileBase64: logoDataUrl, // Opcional para ver o ficheiro no BD futuramente
+                    logoFileBase64: logoDataUrl,
                     razaoSocial: document.getElementById('cad-razao').value,
                     cnpj: document.getElementById('cad-cnpj').value,
                     responsavel: document.getElementById('cad-responsavel').value,
@@ -446,31 +255,24 @@
                     pagamentos: pagamentosSelecionados,
                     obs: document.getElementById('cad-obs').value,
 
-                    // Metadados importantes para o painel de Email
                     lida: false,
-                    status: 'pendente', // pendente, arquivado, aprovado
+                    status: 'pendente',
                     dataCriacao: serverTimestamp()
                 };
 
-                // Salvar no Banco de Dados do Firebase
                 await addDoc(collection(db, "solicitacoes"), novaSolicitacao);
 
                 alert("Pedido de registo enviado com sucesso! Aceda agora à página 'UaiPede Email' para ver esta solicitação chegar em tempo real.");
-                
-                // Limpar formulário após sucesso
                 e.target.reset(); 
                 
             } catch (error) {
                 console.error("Erro ao enviar:", error);
-                
                 if (error.message && error.message.includes("payload is too large")) {
                     alert("Ocorreu um erro: O ficheiro da Logo é demasiado grande. Por favor, tente enviar uma imagem com tamanho menor.");
                 } else {
                     alert("Ocorreu um erro ao enviar. Tente novamente.");
                 }
-                
             } finally {
-                // Restaurar botão
                 btnSubmit.innerText = "Enviar Pedido de Registo";
                 btnSubmit.disabled = false;
             }
