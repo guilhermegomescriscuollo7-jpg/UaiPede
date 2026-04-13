@@ -15,9 +15,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f4f5f7; color: #333; overflow: hidden; margin: 0; padding: 0; }
         
-        /* ==========================================
-           ECRÃ DE LOGIN E LOGO CSS
-           ========================================== */
         .admin-badge { background:#ea1d2c; color:#fff; padding: 3px 8px; border-radius:6px; font-size:0.75rem; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; margin-left: 8px;}
 
         #login-screen { 
@@ -33,12 +30,8 @@
             display: flex; flex-direction: column; align-items: center; gap: 5px;
         }
 
-        /* ==========================================
-           LAYOUT BASE DO APP
-           ========================================== */
         #app-screen { display: none; height: 100vh; width: 100vw; flex-direction: row; overflow: hidden; }
 
-        /* SIDEBAR / MENU */
         .sidebar { width: 270px; background: #111; color: #fff; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; box-shadow: 4px 0 15px rgba(0,0,0,0.1); z-index: 10; transition: left 0.3s ease; }
         .sidebar-header { padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;}
 
@@ -57,7 +50,6 @@
 
         h2 { margin-bottom: 25px; color: #111; padding-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.6rem; border-bottom: 2px solid #f2f2f2; }
         
-        /* FORMULÁRIOS MODERNOS */
         .form-group { margin-bottom: 18px; text-align: left; }
         label { display: block; font-size: 0.8rem; margin-bottom: 6px; color: #777; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
         input, select { width: 100%; padding: 14px 16px; border: 1px solid #e5e5e5; border-radius: 10px; outline: none; font-family: 'Roboto', sans-serif; background: #fdfdfd; transition: all 0.3s ease; font-size: 0.95rem; color: #333;}
@@ -65,7 +57,6 @@
         input:disabled { background-color: #f0f0f0; color: #aaa; cursor: not-allowed; }
         input[type="range"] { padding: 0; border: none; cursor: pointer; background: transparent; box-shadow: none; }
         
-        /* BOTÕES ESTILIZADOS */
         .btn { background: linear-gradient(135deg, #ea1d2c, #ff4b58); color: #fff; border: none; padding: 14px 24px; border-radius: 10px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; box-shadow: 0 4px 12px rgba(234, 29, 44, 0.2);}
         .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(234, 29, 44, 0.35);}
         .btn:active { transform: translateY(1px); box-shadow: 0 2px 8px rgba(234, 29, 44, 0.2);}
@@ -73,7 +64,6 @@
         .btn-secondary { background: #f0f0f0; color: #555; border: none; padding: 14px 24px; border-radius: 10px; font-weight: bold; cursor: pointer; display: none; margin-left: 10px; transition: 0.3s;}
         .btn-secondary:hover { background: #e4e4e4; color: #111; }
         
-        /* LISTAS E CARDS */
         .item-list { margin-top: 25px; display: grid; grid-template-columns: 1fr; gap: 18px; }
         .card-item { border: 1px solid #f0f0f0; padding: 22px; border-radius: 16px; display: flex; align-items: center; gap: 18px; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.3s ease;}
         .card-item:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-color: #ea1d2c; }
@@ -83,21 +73,17 @@
         .card-img { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; background: #f4f5f7; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
         
         .actions-col { display: flex; gap: 10px; margin-left: auto; align-items: center; flex-wrap: wrap; justify-content: flex-end;}
-        .btn-edit { color: #0d6efd; border: none; background: #eef4ff; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
-        .btn-edit:hover { background: #dbe7ff; transform: translateY(-1px); }
-        .btn-suspend { color: #ea1d2c; border: none; background: #fef0f0; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
-        .btn-suspend:hover { background: #fce4e4; transform: translateY(-1px); }
-        .btn-reactivate { color: #00a14b; border: none; background: #e6f4ea; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;}
-        .btn-reactivate:hover { background: #d3f0db; transform: translateY(-1px); }
-        .btn-del { color: #777; border: none; background: #f4f4f4; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
-        .btn-del:hover { background: #ea1d2c; color: #fff; transform: translateY(-1px); }
+        .btn-edit, .btn-suspend, .btn-reactivate, .btn-del { border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .btn-edit { color: #0d6efd; background: #eef4ff; } .btn-edit:hover { background: #dbe7ff; transform: translateY(-1px); }
+        .btn-suspend { color: #ea1d2c; background: #fef0f0; } .btn-suspend:hover { background: #fce4e4; transform: translateY(-1px); }
+        .btn-reactivate { color: #00a14b; background: #e6f4ea; } .btn-reactivate:hover { background: #d3f0db; transform: translateY(-1px); }
+        .btn-del { color: #777; background: #f4f4f4; } .btn-del:hover { background: #ea1d2c; color: #fff; transform: translateY(-1px); }
 
         .badge-status { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-top: 6px; letter-spacing: 0.5px;}
         .badge-active { background: #e6f4ea; color: #00a14b; }
         .badge-suspended { background: #fef0f0; color: #ea1d2c; }
         .badge-city { background: #eef4ff; color: #0d6efd; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;}
 
-        /* ABA FATURAMENTO E RANKING */
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 35px; }
         .metric-card { background: #fff; padding: 30px 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; position: relative; overflow: hidden; transition: 0.3s;}
         .metric-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
@@ -122,7 +108,6 @@
         .r-revenue-val { font-size: 1.3rem; font-weight: 900; color: #00a14b; }
         .r-revenue-tax { font-size: 0.8rem; color: #8e44ad; font-weight: 800; margin-top: 4px; background: rgba(142, 68, 173, 0.1); padding: 4px 8px; border-radius: 8px; display: inline-block;}
 
-        /* ABA USUÁRIOS E TOGGLE SICOOB */
         .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         .user-card { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; display: flex; flex-direction: column; position: relative; transition: 0.3s;}
         .user-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
@@ -146,15 +131,11 @@
 
         .controls-area { background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #f0f0f0; margin-bottom: 25px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
         
-        /* SCROLLBAR CUSTOMIZADA */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #aaa; }
 
-        /* ==========================================
-           RESPONSIVIDADE MOBILE (TELEMÓVEL) - COM FIX DE SCROLL
-           ========================================== */
         .mobile-header { display: none; background: #111; color: #fff; padding: 15px 20px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .mobile-btn { background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;}
 
@@ -178,8 +159,7 @@
             .section > div[style*="display: flex"] > .form-group, 
             .section > div[style*="display: flex"] > .btn { width: 100% !important; margin-bottom: 0 !important; }
             
-            .btn { width: 100%; justify-content: center; }
-            .btn-secondary { width: 100%; justify-content: center; margin-left: 0; }
+            .btn, .btn-secondary { width: 100%; justify-content: center; margin-left: 0; }
             .actions-col { margin-left: 0; width: 100%; flex-wrap: wrap; justify-content: space-between; margin-top: 15px; }
             .actions-col > button { flex: 1; min-width: 100px; justify-content: center;}
 
@@ -243,6 +223,12 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                     Lojas Parceiras
                 </li>
+
+                <li class="nav-item" onclick="window.location.href='email.html'" style="color: #ea1d2c;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Solicitações de Cadastro
+                </li>
+
                 <li class="nav-item" onclick="window.switchTab('cidades', this)">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                     Cidades Atendidas
@@ -604,7 +590,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // As suas credenciais do Firebase do Dores Delivery
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -625,7 +610,6 @@
 
         const formatBRL = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        // 🟢 SISTEMA DE LOGIN 🟢
         window.onload = () => {
             const isAdminLogged = sessionStorage.getItem('adminAuth');
             if(isAdminLogged === 'true') {
@@ -653,7 +637,6 @@
             }
         };
 
-        // 🟢 CONTROLO DE MENU MOBILE 🟢
         window.toggleSidebar = () => {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebar-overlay').classList.toggle('active');
@@ -689,48 +672,33 @@
             reader.readAsDataURL(file);
         }
 
-        // ==========================================
-        // ÁUDIO DE NOTIFICAÇÃO
-        // ==========================================
         let alertAudioBase64 = '';
-
         document.getElementById('audio-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 if (file.size > 800000) { 
-                    alert("O ficheiro é muito grande! Escolha um áudio menor que 800KB para não pesar o carregamento das lojas.");
+                    alert("O ficheiro é muito grande! Escolha um áudio menor que 800KB.");
                     this.value = '';
                     return;
                 }
                 const reader = new FileReader();
-                reader.onload = function(evt) {
-                    alertAudioBase64 = evt.target.result;
-                };
+                reader.onload = function(evt) { alertAudioBase64 = evt.target.result; };
                 reader.readAsDataURL(file);
             }
         });
 
         window.saveAudioAlert = async () => {
-            if (!alertAudioBase64) return alert("Por favor, selecione um ficheiro de áudio primeiro.");
+            if (!alertAudioBase64) return alert("Por favor, selecione um ficheiro.");
             try {
-                await setDoc(doc(db, "global_settings", "notification_audio"), {
-                    audioData: alertAudioBase64,
-                    updatedAt: Date.now()
-                });
-                alert("Áudio de notificação guardado com sucesso! A partir de agora, todas as lojas ouvirão este som.");
-                document.getElementById('audio-file').value = '';
-                alertAudioBase64 = '';
-            } catch (e) {
-                alert("Erro ao guardar áudio: " + e.message);
-            }
+                await setDoc(doc(db, "global_settings", "notification_audio"), { audioData: alertAudioBase64, updatedAt: Date.now() });
+                alert("Áudio de notificação guardado!");
+                document.getElementById('audio-file').value = ''; alertAudioBase64 = '';
+            } catch (e) { alert("Erro: " + e.message); }
         };
 
         window.deleteAudioAlert = async () => {
-            if(confirm("Deseja remover o áudio personalizado e voltar para o som padrão (caixa registadora)?")) {
-                try {
-                    await deleteDoc(doc(db, "global_settings", "notification_audio"));
-                    alert("Áudio restaurado para o padrão!");
-                } catch(e) {}
+            if(confirm("Deseja voltar para o som padrão?")) {
+                try { await deleteDoc(doc(db, "global_settings", "notification_audio")); alert("Restaurado!"); } catch(e) {}
             }
         };
 
@@ -738,36 +706,22 @@
             const container = document.getElementById('current-audio-container');
             if (docSnap.exists() && docSnap.data().audioData) {
                 container.innerHTML = `
-                    <audio controls style="width: 100%; border-radius: 8px; margin-bottom: 15px; outline: none; background: #f9f9f9;">
-                        <source src="${docSnap.data().audioData}">
-                        O seu navegador não suporta áudio.
-                    </audio>
-                    <button class="btn-del" onclick="window.deleteAudioAlert()" style="width: 100%; justify-content: center;">Restaurar Som Padrão</button>
+                    <audio controls style="width: 100%; border-radius: 8px; margin-bottom: 15px;"><source src="${docSnap.data().audioData}"></audio>
+                    <button class="btn-del" onclick="window.deleteAudioAlert()" style="width: 100%; justify-content: center;">Restaurar Padrão</button>
                 `;
-            } else {
-                container.innerHTML = '<p style="color:#999; font-size:0.9rem;">Nenhum áudio personalizado no momento. O som padrão (caixa registadora) está ativo nas lojas.</p>';
-            }
+            } else { container.innerHTML = '<p style="color:#999; font-size:0.9rem;">Som padrão (caixa registadora) ativo.</p>'; }
         });
 
-
-        // ==========================================
-        // LÓGICA DO VÍDEO DE SPLASH SCREEN
-        // ==========================================
         let splashVideoBase64 = '';
-
         document.getElementById('splash-video-file').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                // 🟢 LIMITE AUMENTADO PARA 10MB (10.000.000 BYTES) 🟢
                 if (file.size > 10000000) { 
-                    alert("O ficheiro excede o limite de 10MB! Por favor, diminua a resolução do vídeo ou use um Link Externo.");
-                    this.value = '';
-                    return;
+                    alert("O ficheiro excede o limite de 10MB!");
+                    this.value = ''; return;
                 }
                 const reader = new FileReader();
-                reader.onload = function(evt) {
-                    splashVideoBase64 = evt.target.result;
-                };
+                reader.onload = function(evt) { splashVideoBase64 = evt.target.result; };
                 reader.readAsDataURL(file);
             }
         });
@@ -775,57 +729,30 @@
         window.saveSplashVideo = async () => {
             const urlInput = document.getElementById('splash-video-url').value.trim();
             const finalVideo = urlInput ? urlInput : splashVideoBase64;
-            
-            if (!finalVideo) return alert("Por favor, carregue um ficheiro de vídeo MP4 ou insira um link externo válido.");
-            
+            if (!finalVideo) return alert("Por favor, carregue um ficheiro ou insira um link.");
             try {
-                await setDoc(doc(db, "global_settings", "splash_video"), {
-                    videoData: finalVideo,
-                    updatedAt: Date.now()
-                });
-                alert("Vídeo de abertura guardado com sucesso! A aplicação já exibirá esta nova animação.");
-                document.getElementById('splash-video-file').value = '';
-                document.getElementById('splash-video-url').value = '';
-                splashVideoBase64 = '';
-            } catch (e) {
-                // Se o Firebase recusar o tamanho do ficheiro durante o envio
-                if(e.message.includes('payload is too large') || e.message.includes('size limit')) {
-                     alert("Erro: O ficheiro de vídeo selecionado é grande demais para ser guardado diretamente na base de dados. Por favor, coloque o vídeo no YouTube, Google Drive ou outro serviço e cole apenas o Link Externo na caixa apropriada.");
-                } else {
-                    alert("Erro ao guardar vídeo: " + e.message);
-                }
-            }
+                await setDoc(doc(db, "global_settings", "splash_video"), { videoData: finalVideo, updatedAt: Date.now() });
+                alert("Vídeo guardado!");
+                document.getElementById('splash-video-file').value = ''; document.getElementById('splash-video-url').value = ''; splashVideoBase64 = '';
+            } catch (e) { alert("Erro: " + e.message); }
         };
 
         window.deleteSplashVideo = async () => {
-            if(confirm("Deseja remover o vídeo de abertura e voltar para a animação padrão da aplicação?")) {
-                try {
-                    await deleteDoc(doc(db, "global_settings", "splash_video"));
-                    alert("Vídeo restaurado para o padrão!");
-                } catch(e) {}
+            if(confirm("Restaurar animação padrão?")) {
+                try { await deleteDoc(doc(db, "global_settings", "splash_video")); alert("Restaurado!"); } catch(e) {}
             }
         };
 
-        // Carrega o vídeo atual para visualização no admin
         onSnapshot(doc(db, "global_settings", "splash_video"), (docSnap) => {
             const container = document.getElementById('current-splash-container');
             if (docSnap.exists() && docSnap.data().videoData) {
                 container.innerHTML = `
-                    <video controls autoplay muted loop style="width: 100%; max-width: 250px; border-radius: 12px; margin-bottom: 15px; background: #000; border: 1px solid #eee;">
-                        <source src="${docSnap.data().videoData}">
-                        O seu navegador não suporta vídeo.
-                    </video>
-                    <button class="btn-del" onclick="window.deleteSplashVideo()" style="width: 100%; justify-content: center;">Remover Vídeo e Usar Padrão</button>
+                    <video controls autoplay muted loop style="width: 100%; max-width: 250px; border-radius: 12px; margin-bottom: 15px;"><source src="${docSnap.data().videoData}"></video>
+                    <button class="btn-del" onclick="window.deleteSplashVideo()" style="width: 100%; justify-content: center;">Restaurar Padrão</button>
                 `;
-            } else {
-                container.innerHTML = '<p style="color:#999; font-size:0.9rem;">Nenhum vídeo personalizado no momento. A aplicação está a usar a animação padrão.</p>';
-            }
+            } else { container.innerHTML = '<p style="color:#999; font-size:0.9rem;">Animação padrão ativa.</p>'; }
         });
 
-
-        // ==========================================
-        // 1. CIDADES
-        // ==========================================
         onSnapshot(collection(db, "cities"), (snapshot) => {
             globalCities = [];
             snapshot.forEach(doc => globalCities.push({ id: doc.id, ...doc.data() }));
@@ -842,22 +769,15 @@
             if(exists) return alert("Esta cidade já está registada!");
             try {
                 await addDoc(collection(db, "cities"), { name, state });
-                document.getElementById('c-name').value = '';
-                document.getElementById('c-state').value = '';
-            } catch(e) { alert("Erro ao registar cidade."); }
+                document.getElementById('c-name').value = ''; document.getElementById('c-state').value = '';
+            } catch(e) { alert("Erro ao registar."); }
         };
 
-        window.deleteCity = async (id) => {
-            if(confirm("Tem a certeza que deseja apagar esta cidade?")) {
-                await deleteDoc(doc(db, "cities", id));
-            }
-        };
+        window.deleteCity = async (id) => { if(confirm("Apagar cidade?")) { await deleteDoc(doc(db, "cities", id)); } };
 
         function renderCitiesList() {
             const container = document.getElementById('city-list-container');
-            if(globalCities.length === 0) {
-                container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade registada ainda.</p>`; return;
-            }
+            if(globalCities.length === 0) { container.innerHTML = `<p style="color:#999; font-size:0.9rem;">Nenhuma cidade registada.</p>`; return; }
             container.innerHTML = globalCities.map(c => `
                 <div class="card-item" style="justify-content: space-between;">
                     <div style="display:flex; align-items:center; gap:12px;">
@@ -887,9 +807,6 @@
             fillSelect('filter-store-city', '<option value="all">Todas as Cidades</option>');
         }
 
-        // ==========================================
-        // 2. GESTÃO DE UTILIZADORES
-        // ==========================================
         onSnapshot(collection(db, "customers"), (snapshot) => {
             globalUsers = []; let sicoobCount = 0;
             snapshot.forEach(doc => {
@@ -916,9 +833,7 @@
                 );
             }
 
-            if (filtered.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">Nenhum utilizador encontrado.</div>`; return;
-            }
+            if (filtered.length === 0) { container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #999;">Nenhum utilizador encontrado.</div>`; return; }
 
             filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
@@ -952,19 +867,9 @@
             }).join('');
         };
 
-        window.toggleSicoobStatus = async (userId, isNowSicoob) => {
-            try { await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob }); } catch(e) { alert("Erro ao guardar."); window.filterUsers(); }
-        };
+        window.toggleSicoobStatus = async (userId, isNowSicoob) => { try { await updateDoc(doc(db, "customers", userId), { isSicoob: isNowSicoob }); } catch(e) { window.filterUsers(); } };
+        window.deleteUser = async (userId, userName) => { if (confirm(`Tem a certeza que deseja excluir ${userName}?`)) { try { await deleteDoc(doc(db, "customers", userId)); } catch(e) {} } };
 
-        window.deleteUser = async (userId, userName) => {
-            if (confirm(`Tem a certeza que deseja excluir ${userName}?`)) {
-                try { await deleteDoc(doc(db, "customers", userId)); } catch(e) {}
-            }
-        };
-
-        // ==========================================
-        // 3. CUPÕES PATROCINADOS
-        // ==========================================
         window.toggleSponsorValueInput = () => {
             const type = document.getElementById('admin-sponsor-type').value;
             const valInput = document.getElementById('admin-sponsor-value');
@@ -972,17 +877,13 @@
             else { valInput.disabled = false; valInput.placeholder = "Ex: 20"; }
         };
 
-        onSnapshot(collection(db, "coupons"), (snapshot) => {
-            globalCoupons = []; snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() })); renderAdminSponsorCoupons();
-        });
+        onSnapshot(collection(db, "coupons"), (snapshot) => { globalCoupons = []; snapshot.forEach(doc => globalCoupons.push({ id: doc.id, ...doc.data() })); renderAdminSponsorCoupons(); });
 
         window.createSponsorCoupon = async () => {
             const sponsorName = document.getElementById('admin-sponsor-name').value.trim();
             const code = document.getElementById('admin-sponsor-code').value.trim().toUpperCase();
             const type = document.getElementById('admin-sponsor-type').value;
-            // 🟢 LER O NOVO CAMPO DE PÚBLICO ALVO 🟢
             const exclusiveFor = document.getElementById('admin-sponsor-audience').value;
-
             let value = parseFloat(document.getElementById('admin-sponsor-value').value);
             if (type === 'free_shipping') value = 0;
             const minOrder = parseFloat(document.getElementById('admin-sponsor-min').value) || 0;
@@ -990,17 +891,14 @@
             const usageLimit = limitStr ? parseInt(limitStr) : null;
             const targetCity = document.getElementById('admin-sponsor-city').value;
 
-            if (!sponsorName || !code || !targetCity || (type !== 'free_shipping' && (isNaN(value) || value <= 0))) {
-                return alert("Preencha todos os campos obrigatórios.");
-            }
+            if (!sponsorName || !code || !targetCity || (type !== 'free_shipping' && (isNaN(value) || value <= 0))) { return alert("Preencha todos os campos obrigatórios."); }
 
             try {
                 await addDoc(collection(db, "coupons"), {
                     code, type, value, minOrder, usageLimit, storeId: "GLOBAL", targetCity, sponsorName, 
-                    exclusiveFor: exclusiveFor, // 🟢 GUARDAR A NOVA CONFIGURAÇÃO 🟢
-                    active: true, usedCount: 0, createdAt: Date.now()
+                    exclusiveFor: exclusiveFor, active: true, usedCount: 0, createdAt: Date.now()
                 });
-                alert(`Sucesso! Cupão criado.`);
+                alert(`Cupão criado.`);
                 document.getElementById('admin-sponsor-code').value = ''; document.getElementById('admin-sponsor-value').value = '';
             } catch (error) {}
         };
@@ -1014,17 +912,12 @@
                 const toggleBtn = c.active ? `<button class="btn-suspend" onclick="window.toggleAdminCoupon('${c.id}', false)">Desativar</button>` : `<button class="btn-reactivate" onclick="window.toggleAdminCoupon('${c.id}', true)">Ativar</button>`;
                 let discountText = c.type === 'percentage' ? `${c.value}%` : (c.type === 'free_shipping' ? `ENTREGA GRÁTIS` : `R$ ${c.value.toFixed(2)}`);
                 let limitText = c.usageLimit ? `${c.usedCount || 0} / ${c.usageLimit}` : 'Ilimitado';
-                
-                // 🟢 EXIBIR A INFORMAÇÃO NO CARD DO ADMIN 🟢
-                let audienceBadge = c.exclusiveFor === 'sicoob' 
-                    ? '<span style="background:#e6f4ea; color:#00a14b; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">Apenas Sicoob</span>' 
-                    : '<span style="background:#eef4ff; color:#0d6efd; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">Todos os Clientes</span>';
+                let audienceBadge = c.exclusiveFor === 'sicoob' ? '<span style="background:#e6f4ea; color:#00a14b; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">Apenas Sicoob</span>' : '<span style="background:#eef4ff; color:#0d6efd; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem;">Todos</span>';
 
                 return `
                 <div class="card-item" style="flex-direction: column; align-items: flex-start; ${!c.active ? 'opacity: 0.6;' : ''}">
                     <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                        <strong style="font-size:1.3rem;">${c.code}</strong>
-                        ${audienceBadge}
+                        <strong style="font-size:1.3rem;">${c.code}</strong> ${audienceBadge}
                     </div>
                     <div style="font-size:0.9rem; color:#555; width:100%; margin-top: 10px;">
                         <strong>Patrocinador:</strong> ${c.sponsorName}<br>
@@ -1040,29 +933,21 @@
         }
 
         window.toggleAdminCoupon = async (id, isActive) => { await updateDoc(doc(db, "coupons", id), { active: isActive }); };
-        window.deleteAdminCoupon = async (id) => { if(confirm("Apagar este cupão?")) await deleteDoc(doc(db, "coupons", id)); };
+        window.deleteAdminCoupon = async (id) => { if(confirm("Apagar cupão?")) await deleteDoc(doc(db, "coupons", id)); };
 
-        // ==========================================
-        // 4. LOJAS
-        // ==========================================
         document.getElementById('s-logo').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) { resizeAndCompressImage(file, (compressedBase64) => { storeImgBase64 = compressedBase64; }); }
         });
         
         onSnapshot(collection(db, "stores"), (snapshot) => { 
-            allStores = []; 
-            snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
-            
-            window.renderStoreList(); 
-            window.onCityFatChange(); 
-            
+            allStores = []; snapshot.forEach(doc => allStores.push({ id: doc.id, ...doc.data() })); 
+            window.renderStoreList(); window.onCityFatChange(); 
             const bStoreEl = document.getElementById('b-store');
             if(bStoreEl) {
                 const currentVal = bStoreEl.value;
                 const sortedStores = [...allStores].sort((a,b) => a.name.localeCompare(b.name));
-                bStoreEl.innerHTML = '<option value="">Nenhuma (Apenas visual)</option>' + 
-                    sortedStores.map(s => `<option value="${s.id}">🏪 ${s.name} (${s.city ? s.city.split(' - ')[0] : 'Sem cidade'})</option>`).join('');
+                bStoreEl.innerHTML = '<option value="">Nenhuma</option>' + sortedStores.map(s => `<option value="${s.id}">🏪 ${s.name} (${s.city ? s.city.split(' - ')[0] : 'S/ C'})</option>`).join('');
                 if(currentVal) bStoreEl.value = currentVal;
             }
         });
@@ -1081,13 +966,13 @@
             const storeData = { name, email, password: pass, cat, doc: docId, cep, street, city: cityDropdownVal, dueDate: dueDateTimestamp, isFeatured: isFeatured };
 
             if (editingStoreId) { 
-                if(allStores.find(s => s.email === email && s.id !== editingStoreId)) return alert("Já existe loja com este e-mail."); 
+                if(allStores.find(s => s.email === email && s.id !== editingStoreId)) return alert("E-mail em uso."); 
                 if (storeImgBase64) storeData.logo = storeImgBase64; 
-                await updateDoc(doc(db, "stores", editingStoreId), storeData); alert("Loja atualizada com sucesso!"); 
+                await updateDoc(doc(db, "stores", editingStoreId), storeData); alert("Loja atualizada!"); 
             } else { 
-                if(allStores.find(s => s.email === email)) return alert("Já existe loja com este e-mail."); 
+                if(allStores.find(s => s.email === email)) return alert("E-mail em uso."); 
                 storeData.status = 'Aberto'; storeData.isActive = true; storeData.logo = storeImgBase64 || 'https://via.placeholder.com/60';
-                await addDoc(collection(db, "stores"), storeData); alert("Loja registada com sucesso!"); 
+                await addDoc(collection(db, "stores"), storeData); alert("Loja registada!"); 
             } 
             window.cancelEdit(); 
         };
@@ -1101,8 +986,7 @@
             document.getElementById('s-featured').checked = store.isFeatured || false;
             if (store.dueDate) { document.getElementById('s-due-date').value = new Date(store.dueDate).toISOString().split('T')[0]; } else { document.getElementById('s-due-date').value = ''; }
             document.getElementById('s-logo').value = ''; storeImgBase64 = ''; 
-            document.getElementById('btn-save-store').innerHTML = `Guardar Alterações`; 
-            document.getElementById('btn-cancel-edit').style.display = "inline-flex"; 
+            document.getElementById('btn-save-store').innerHTML = `Guardar Alterações`; document.getElementById('btn-cancel-edit').style.display = "inline-flex"; 
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' }); 
         };
 
@@ -1111,46 +995,38 @@
             document.getElementById('s-name').value = ''; document.getElementById('s-doc').value = ''; document.getElementById('s-cep').value = ''; 
             document.getElementById('s-street').value = ''; document.getElementById('s-city').value = ''; document.getElementById('s-email').value = ''; 
             document.getElementById('s-pass').value = ''; document.getElementById('s-logo').value = ''; document.getElementById('s-due-date').value = ''; 
-            document.getElementById('s-featured').checked = false;
-            storeImgBase64 = ''; 
-            document.getElementById('btn-save-store').innerHTML = `Registar Loja`; 
-            document.getElementById('btn-cancel-edit').style.display = "none"; 
+            document.getElementById('s-featured').checked = false; storeImgBase64 = ''; 
+            document.getElementById('btn-save-store').innerHTML = `Registar Loja`; document.getElementById('btn-cancel-edit').style.display = "none"; 
         };
 
         window.toggleSubscription = async (id) => { const store = allStores.find(s => s.id === id); if (store) { await updateDoc(doc(db, "stores", id), { isActive: !store.isActive }); } };
-        window.deleteStore = async (id) => { if(confirm("Apagar loja permanentemente?")) { await deleteDoc(doc(db, "stores", id)); } };
-
+        window.deleteStore = async (id) => { if(confirm("Apagar loja?")) { await deleteDoc(doc(db, "stores", id)); } };
         window.renewSubscription = async (storeId, currentDue) => {
-            if(confirm("Renovar por 1 mês e ativar loja?")) {
+            if(confirm("Renovar por 1 mês?")) {
                 const date = new Date(currentDue); date.setMonth(date.getMonth() + 1);
                 await updateDoc(doc(db, "stores", storeId), { dueDate: date.getTime(), isActive: true });
             }
         };
 
         window.renderStoreList = () => { 
-            const container = document.getElementById('store-list-container'); 
-            const cityFilter = document.getElementById('filter-store-city').value;
-            
-            let filteredStores = allStores;
-            if (cityFilter !== 'all') filteredStores = filteredStores.filter(s => s.city === cityFilter);
-
+            const container = document.getElementById('store-list-container'); const cityFilter = document.getElementById('filter-store-city').value;
+            let filteredStores = allStores; if (cityFilter !== 'all') filteredStores = filteredStores.filter(s => s.city === cityFilter);
             if(filteredStores.length === 0) { container.innerHTML = `<p style="color:#999; padding:20px;">Nenhuma loja encontrada.</p>`; return; } 
             
             container.innerHTML = filteredStores.map(s => { 
-                const isActive = s.isActive !== false; 
-                let dueBadge = ''; let payButton = '';
-                let featuredIcon = s.isFeatured ? '<span title="Loja em Destaque" style="color:#ea1d2c;">⭐</span>' : '';
+                const isActive = s.isActive !== false; let dueBadge = ''; let payButton = '';
+                let featuredIcon = s.isFeatured ? '<span title="Destaque" style="color:#ea1d2c;">⭐</span>' : '';
 
                 if (s.dueDate) {
                     const daysLeft = Math.ceil((s.dueDate - Date.now()) / (1000 * 60 * 60 * 24));
                     if (daysLeft < 0) dueBadge = `<span style="background: #fef0f0; color: #ea1d2c; padding: 4px; border-radius: 8px; font-size: 0.75rem;">Vencida</span>`; 
                     else if (daysLeft <= 3) dueBadge = `<span style="background: #fff8e1; color: #d39e00; padding: 4px; border-radius: 8px; font-size: 0.75rem;">Vence em ${daysLeft}d</span>`; 
                     else dueBadge = `<span style="background: #e6f4ea; color: #00a14b; padding: 4px; border-radius: 8px; font-size: 0.75rem;">Ativo</span>`;
-                    payButton = `<button class="btn-reactivate" onclick="window.renewSubscription('${s.id}', ${s.dueDate})">Renovar +1 Mês</button>`;
+                    payButton = `<button class="btn-reactivate" onclick="window.renewSubscription('${s.id}', ${s.dueDate})">Renovar</button>`;
                 }
 
                 return ` 
-                <div class="card-item ${isActive ? '' : 'suspended'}" style="position: relative;"> 
+                <div class="card-item ${isActive ? '' : 'suspended'}"> 
                     <img src="${s.logo}" class="card-img" style="width: 75px; height: 75px; border-radius: 16px;"> 
                     <div style="flex-grow: 1; line-height: 1.6;"> 
                         <strong style="font-size: 1.2rem; color: #111;">${s.name} ${featuredIcon}</strong> ${dueBadge}<br>
@@ -1169,25 +1045,13 @@
             }).join(''); 
         }
 
-        // ==========================================
-        // 5. FATURAMENTO
-        // ==========================================
         window.onCityFatChange = () => {
             const cityFilter = document.getElementById('filter-city-fat').value;
             const storeSelect = document.getElementById('filter-store-fat');
             const currentStore = storeSelect.value;
-
-            let filteredStores = allStores;
-            if(cityFilter !== 'all') {
-                filteredStores = filteredStores.filter(s => s.city === cityFilter);
-            }
-            
-            storeSelect.innerHTML = '<option value="all">Ver Todas as Lojas</option>' + 
-                filteredStores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-            
-            if(filteredStores.find(s => s.id === currentStore)) storeSelect.value = currentStore;
-            else storeSelect.value = 'all';
-
+            let filteredStores = allStores; if(cityFilter !== 'all') { filteredStores = filteredStores.filter(s => s.city === cityFilter); }
+            storeSelect.innerHTML = '<option value="all">Ver Todas as Lojas</option>' + filteredStores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            if(filteredStores.find(s => s.id === currentStore)) storeSelect.value = currentStore; else storeSelect.value = 'all';
             window.renderFaturamento();
         };
 
@@ -1196,44 +1060,24 @@
             const cityFilter = document.getElementById('filter-city-fat').value;
             const storeFilter = document.getElementById('filter-store-fat').value;
             
-            const now = Date.now();
-            let startTime = 0;
+            const now = Date.now(); let startTime = 0;
             if (timeFilter === 'hoje') startTime = new Date().setHours(0,0,0,0);
             else if (timeFilter === '7dias') startTime = now - (7 * 24 * 60 * 60 * 1000);
             else if (timeFilter === 'mes') startTime = now - (30 * 24 * 60 * 60 * 1000);
 
-            let totalVendas = 0;
-            let totalTaxa = 0;
-            let totalPedidos = 0;
-            let storeRanking = {};
+            let totalVendas = 0; let totalTaxa = 0; let totalPedidos = 0; let storeRanking = {};
 
             allOrders.forEach(o => {
                 if (o.timestamp >= startTime && ['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
-                    
-                    // FILTRO DE CIDADE
-                    if(cityFilter !== 'all') {
-                        const st = allStores.find(s => s.id === o.storeId);
-                        if(!st || st.city !== cityFilter) return;
-                    }
-                    
-                    // FILTRO DE LOJA
+                    if(cityFilter !== 'all') { const st = allStores.find(s => s.id === o.storeId); if(!st || st.city !== cityFilter) return; }
                     if(storeFilter !== 'all' && o.storeId !== storeFilter) return;
-
-                    const val = o.total || 0;
-                    totalVendas += val;
-                    const taxa = o.platformFee || (val * 0.10); // Taxa padrao 10%
-                    totalTaxa += taxa;
-                    totalPedidos++;
-
+                    const val = o.total || 0; totalVendas += val; const taxa = o.platformFee || (val * 0.10); totalTaxa += taxa; totalPedidos++;
                     if(o.storeName) {
                         if(!storeRanking[o.storeName]) {
                             storeRanking[o.storeName] = { rev: 0, orders: 0, tax: 0, logo: 'https://via.placeholder.com/80' };
-                            const s = allStores.find(st => st.id === o.storeId);
-                            if(s && s.logo) storeRanking[o.storeName].logo = s.logo;
+                            const s = allStores.find(st => st.id === o.storeId); if(s && s.logo) storeRanking[o.storeName].logo = s.logo;
                         }
-                        storeRanking[o.storeName].rev += val;
-                        storeRanking[o.storeName].orders += 1;
-                        storeRanking[o.storeName].tax += taxa;
+                        storeRanking[o.storeName].rev += val; storeRanking[o.storeName].orders += 1; storeRanking[o.storeName].tax += taxa;
                     }
                 }
             });
@@ -1245,37 +1089,20 @@
             const rankContainer = document.getElementById('ranking-list-render');
             const sorted = Object.keys(storeRanking).map(k => ({name: k, ...storeRanking[k]})).sort((a,b) => b.rev - a.rev);
             
-            if(sorted.length === 0) {
-                rankContainer.innerHTML = '<li style="justify-content:center; color:#999; padding:20px;">Nenhuma venda encontrada para o filtro.</li>';
-            } else {
+            if(sorted.length === 0) { rankContainer.innerHTML = '<li style="justify-content:center; color:#999; padding:20px;">Nenhuma venda encontrada para o filtro.</li>'; } 
+            else {
                 const medals = ['🥇','🥈','🥉','4º','5º','6º','7º','8º','9º','10º'];
                 rankContainer.innerHTML = sorted.map((s, i) => `
                     <li class="ranking-item">
                         <div class="r-medal">${medals[i] || (i+1)+'º'}</div>
                         <img src="${s.logo}" class="r-logo">
-                        <div class="r-info">
-                            <div class="r-name">${s.name}</div>
-                            <div class="r-orders">${s.orders} Pedidos Concluídos</div>
-                        </div>
-                        <div class="r-revenue">
-                            <div class="r-revenue-val">${formatBRL(s.rev)}</div>
-                            <div class="r-revenue-tax">Taxa UaiPede: ${formatBRL(s.tax)}</div>
-                        </div>
+                        <div class="r-info"><div class="r-name">${s.name}</div><div class="r-orders">${s.orders} Pedidos Concluídos</div></div>
+                        <div class="r-revenue"><div class="r-revenue-val">${formatBRL(s.rev)}</div><div class="r-revenue-tax">Taxa: ${formatBRL(s.tax)}</div></div>
                     </li>
                 `).join('');
             }
         };
 
-        // ==========================================
-        // 6. REPASSE
-        // ==========================================
-        window.renderRepasse = () => {
-            // Será implementado futuramente para visualização de taxas dos estafetas
-        };
-
-        // ==========================================
-        // 7. ENTREGADORES
-        // ==========================================
         onSnapshot(collection(db, "drivers"), (snapshot) => { allDrivers = []; snapshot.forEach(doc => allDrivers.push({ id: doc.id, ...doc.data() })); renderDriverList(); });
         
         window.saveDriver = async () => { 
@@ -1284,11 +1111,8 @@
             const city = document.getElementById('d-city').value;
 
             if(!name || !email || !pass || !phone || !city) return alert("Preencha todos os dados."); 
-            if (editingDriverId) { 
-                await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass, city }); alert("Entregador atualizado!"); 
-            } else { 
-                await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); alert("Entregador registado!"); 
-            } 
+            if (editingDriverId) { await updateDoc(doc(db, "drivers", editingDriverId), { name, phone, email, password: pass, city }); alert("Atualizado!"); } 
+            else { await addDoc(collection(db, "drivers"), { name, phone, email, password: pass, city, isActive: true }); alert("Registado!"); } 
             window.cancelEditDriver(); 
         };
 
@@ -1297,17 +1121,14 @@
             document.getElementById('d-name').value = driver.name; document.getElementById('d-phone').value = driver.phone; 
             document.getElementById('d-email').value = driver.email; document.getElementById('d-pass').value = driver.password; 
             document.getElementById('d-city').value = driver.city || '';
-            document.getElementById('btn-save-driver').innerHTML = `Guardar Alterações`; 
-            document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; 
+            document.getElementById('btn-save-driver').innerHTML = `Guardar Alterações`; document.getElementById('btn-cancel-driver-edit').style.display = "inline-flex"; 
         };
 
         window.cancelEditDriver = () => { 
             editingDriverId = null; 
-            document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; 
-            document.getElementById('d-email').value = ''; document.getElementById('d-pass').value = ''; 
-            document.getElementById('d-city').value = '';
-            document.getElementById('btn-save-driver').innerHTML = `Registar Entregador`; 
-            document.getElementById('btn-cancel-driver-edit').style.display = "none"; 
+            document.getElementById('d-name').value = ''; document.getElementById('d-phone').value = ''; document.getElementById('d-email').value = ''; 
+            document.getElementById('d-pass').value = ''; document.getElementById('d-city').value = '';
+            document.getElementById('btn-save-driver').innerHTML = `Registar Entregador`; document.getElementById('btn-cancel-driver-edit').style.display = "none"; 
         };
 
         window.toggleDriverStatus = async (id) => { const driver = allDrivers.find(d => d.id === id); if (driver) { await updateDoc(doc(db, "drivers", id), { isActive: !driver.isActive }); } };
@@ -1315,7 +1136,7 @@
         
         function renderDriverList() { 
             const container = document.getElementById('driver-list-container'); 
-            if(allDrivers.length === 0) { container.innerHTML = `<p style="color:#999; padding:20px;">Nenhum entregador registado.</p>`; return; } 
+            if(allDrivers.length === 0) { container.innerHTML = `<p style="color:#999; padding:20px;">Nenhum registado.</p>`; return; } 
             container.innerHTML = allDrivers.map(d => { 
                 const isActive = d.isActive !== false; 
                 return ` 
@@ -1334,182 +1155,92 @@
             }).join(''); 
         }
 
-        // ==========================================
-        // 8. BANNERS DO APP COM LINK EXTERNO
-        // ==========================================
-        document.getElementById('b-image').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) { resizeAndCompressImage(file, (base64) => { bannerImgBase64 = base64; }); }
-        });
-
-        onSnapshot(collection(db, "banners"), (snapshot) => {
-            globalBanners = [];
-            snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() }));
-            renderBanners();
-        });
+        document.getElementById('b-image').addEventListener('change', function(e) { const file = e.target.files[0]; if (file) { resizeAndCompressImage(file, (base64) => { bannerImgBase64 = base64; }); } });
+        onSnapshot(collection(db, "banners"), (snapshot) => { globalBanners = []; snapshot.forEach(doc => globalBanners.push({ id: doc.id, ...doc.data() })); renderBanners(); });
 
         window.saveBanner = async () => {
-            const city = document.getElementById('b-city').value;
-            const storeId = document.getElementById('b-store').value;
-            const linkUrl = document.getElementById('b-link').value.trim(); 
-            
-            if (!bannerImgBase64) return alert("Por favor, selecione uma imagem para o banner.");
-            
+            const city = document.getElementById('b-city').value; const storeId = document.getElementById('b-store').value; const linkUrl = document.getElementById('b-link').value.trim(); 
+            if (!bannerImgBase64) return alert("Selecione imagem.");
             try {
-                await addDoc(collection(db, "banners"), { 
-                    image: bannerImgBase64, 
-                    city: city, 
-                    storeId: storeId, 
-                    link: linkUrl, 
-                    timestamp: Date.now() 
-                });
-                
-                bannerImgBase64 = ''; 
-                document.getElementById('b-image').value = '';
-                document.getElementById('b-store').value = '';
-                document.getElementById('b-link').value = '';
-                alert("Banner adicionado com sucesso!");
-            } catch(e) { alert("Erro ao guardar banner."); }
+                await addDoc(collection(db, "banners"), { image: bannerImgBase64, city: city, storeId: storeId, link: linkUrl, timestamp: Date.now() });
+                bannerImgBase64 = ''; document.getElementById('b-image').value = ''; document.getElementById('b-store').value = ''; document.getElementById('b-link').value = '';
+                alert("Adicionado!");
+            } catch(e) { alert("Erro."); }
         };
 
-        window.deleteBanner = async (id) => {
-            if(confirm("Remover este banner da aplicação?")) {
-                await deleteDoc(doc(db, "banners", id));
-            }
-        };
+        window.deleteBanner = async (id) => { if(confirm("Remover banner?")) { await deleteDoc(doc(db, "banners", id)); } };
 
         function renderBanners() {
             const container = document.getElementById('banner-list-container');
-            if(globalBanners.length === 0) { container.innerHTML = '<p style="color:#999; padding: 20px;">Nenhum banner registado.</p>'; return; }
-            
+            if(globalBanners.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum banner.</p>'; return; }
             container.innerHTML = globalBanners.map(b => {
-                let storeName = "Nenhuma";
-                if(b.storeId) {
-                    const st = allStores.find(s => s.id === b.storeId);
-                    if(st) storeName = st.name;
-                }
-                
+                let storeName = "Nenhuma"; if(b.storeId) { const st = allStores.find(s => s.id === b.storeId); if(st) storeName = st.name; }
                 let linkInfo = b.link ? `<span style="font-size:0.8rem; color:#0d6efd; display:block; margin-top:2px;">🔗 Externo: <b>${b.link}</b></span>` : '';
                 let storeInfo = b.storeId ? `<span style="font-size:0.8rem; color:#555; display:block; margin-top:2px;">🏪 Loja: <b>${storeName}</b></span>` : '';
-
                 return `
                 <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
                     <img src="${b.image}" style="width:100%; height:130px; object-fit:cover; border-radius:12px; margin-bottom:15px; border: 1px solid #eee;">
                     <div style="width:100%; display:flex; justify-content:space-between; align-items:flex-start;">
                         <div style="display:flex; flex-direction:column; gap:2px; max-width:70%;">
-                            <span class="badge-city" style="margin: 0; width: fit-content;">📍 ${b.city === 'all' ? 'Global' : b.city}</span>
-                            ${storeInfo}
-                            ${linkInfo}
+                            <span class="badge-city" style="margin: 0; width: fit-content;">📍 ${b.city === 'all' ? 'Global' : b.city}</span>${storeInfo}${linkInfo}
                         </div>
                         <button class="btn-del" onclick="window.deleteBanner('${b.id}')">Apagar</button>
                     </div>
-                </div>
-            `}).join('');
-        }
-
-        // ==========================================
-        // 9. PATROCINADORES (COM EFEITO DESLIZAR P/ ESQUERDA)
-        // ==========================================
-        document.getElementById('sp-image').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) { resizeAndCompressImage(file, (base64) => { sponsorImgBase64 = base64; }); }
-        });
-
-        onSnapshot(collection(db, "sponsors"), (snapshot) => {
-            globalSponsors = [];
-            snapshot.forEach(doc => globalSponsors.push({ id: doc.id, ...doc.data() }));
-            renderSponsors();
-        });
-
-        window.saveSponsor = async () => {
-            const city = document.getElementById('sp-city').value;
-            const duration = document.getElementById('sp-duration').value;
-            const transition = document.getElementById('sp-transition').value;
-
-            if (!sponsorImgBase64) return alert("Por favor, selecione a imagem do patrocinador.");
-            
-            try {
-                await addDoc(collection(db, "sponsors"), { 
-                    image: sponsorImgBase64, city: city, 
-                    duration: parseInt(duration), transition: transition, timestamp: Date.now() 
-                });
-                sponsorImgBase64 = ''; document.getElementById('sp-image').value = '';
-                alert("Patrocinador registado com sucesso!");
-            } catch(e) { alert("Erro ao guardar patrocinador."); }
-        };
-
-        window.deleteSponsor = async (id) => { if(confirm("Remover este patrocinador?")) await deleteDoc(doc(db, "sponsors", id)); };
-
-        function renderSponsors() {
-            const container = document.getElementById('sponsor-list-container');
-            if(globalSponsors.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum patrocinador registado.</p>'; return; }
-            container.innerHTML = globalSponsors.map(s => {
-                let transName = 'Esmaecer';
-                if (s.transition === 'zoom') transName = 'Aproximar';
-                else if (s.transition === 'slide') transName = 'Deslizar Baixo';
-                else if (s.transition === 'slide-left') transName = 'Deslizar Esquerda'; 
-
-                return `
-                <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
-                    <img src="${s.image}" style="width:100%; height:200px; object-fit:contain; background:#111; border-radius:12px; margin-bottom:15px;">
-                    <div style="width:100%; font-size:0.85rem; color:#555; margin-bottom:15px;">
-                        <strong style="color:#111;">Tempo:</strong> ${s.duration} Segs<br>
-                        <strong style="color:#111;">Efeito:</strong> ${transName}<br>
-                    </div>
-                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                        <span class="badge-city" style="margin: 0;">📍 ${s.city === 'all' ? 'Global' : s.city}</span>
-                        <button class="btn-del" onclick="window.deleteSponsor('${s.id}')">Apagar</button>
-                    </div>
-                </div>
-                `;
+                </div>`
             }).join('');
         }
 
-        // ==========================================
-        // 10. AVISOS GLOBAIS
-        // ==========================================
-        onSnapshot(collection(db, "global_alerts"), (snapshot) => {
-            globalAlerts = []; snapshot.forEach(doc => globalAlerts.push({ id: doc.id, ...doc.data() }));
-            globalAlerts.sort((a,b) => b.timestamp - a.timestamp); renderAlerts();
-        });
+        document.getElementById('sp-image').addEventListener('change', function(e) { const file = e.target.files[0]; if (file) { resizeAndCompressImage(file, (base64) => { sponsorImgBase64 = base64; }); } });
+        onSnapshot(collection(db, "sponsors"), (snapshot) => { globalSponsors = []; snapshot.forEach(doc => globalSponsors.push({ id: doc.id, ...doc.data() })); renderSponsors(); });
+
+        window.saveSponsor = async () => {
+            const city = document.getElementById('sp-city').value; const duration = document.getElementById('sp-duration').value; const transition = document.getElementById('sp-transition').value;
+            if (!sponsorImgBase64) return alert("Selecione a imagem.");
+            try {
+                await addDoc(collection(db, "sponsors"), { image: sponsorImgBase64, city: city, duration: parseInt(duration), transition: transition, timestamp: Date.now() });
+                sponsorImgBase64 = ''; document.getElementById('sp-image').value = ''; alert("Registado!");
+            } catch(e) { alert("Erro."); }
+        };
+
+        window.deleteSponsor = async (id) => { if(confirm("Remover patrocinador?")) await deleteDoc(doc(db, "sponsors", id)); };
+
+        function renderSponsors() {
+            const container = document.getElementById('sponsor-list-container');
+            if(globalSponsors.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum patrocinador.</p>'; return; }
+            container.innerHTML = globalSponsors.map(s => {
+                let transName = 'Esmaecer'; if (s.transition === 'zoom') transName = 'Aproximar'; else if (s.transition === 'slide') transName = 'Deslizar Baixo'; else if (s.transition === 'slide-left') transName = 'Deslizar Esquerda'; 
+                return `
+                <div class="card-item" style="flex-direction:column; align-items:flex-start; padding: 15px;">
+                    <img src="${s.image}" style="width:100%; height:200px; object-fit:contain; background:#111; border-radius:12px; margin-bottom:15px;">
+                    <div style="width:100%; font-size:0.85rem; color:#555; margin-bottom:15px;"><strong style="color:#111;">Tempo:</strong> ${s.duration} Segs<br><strong style="color:#111;">Efeito:</strong> ${transName}<br></div>
+                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;"><span class="badge-city" style="margin: 0;">📍 ${s.city === 'all' ? 'Global' : s.city}</span><button class="btn-del" onclick="window.deleteSponsor('${s.id}')">Apagar</button></div>
+                </div>`;
+            }).join('');
+        }
+
+        onSnapshot(collection(db, "global_alerts"), (snapshot) => { globalAlerts = []; snapshot.forEach(doc => globalAlerts.push({ id: doc.id, ...doc.data() })); globalAlerts.sort((a,b) => b.timestamp - a.timestamp); renderAlerts(); });
 
         window.saveAlert = async () => {
             const text = document.getElementById('alert-text').value.trim(); const type = document.getElementById('alert-type').value;
-            if(!text) return alert("Digite o texto do aviso.");
-            try {
-                await addDoc(collection(db, "global_alerts"), { text, type, timestamp: Date.now(), active: true });
-                document.getElementById('alert-text').value = ''; alert("Aviso disparado!");
-            } catch(e) { alert("Erro ao disparar aviso."); }
+            if(!text) return alert("Digite o texto.");
+            try { await addDoc(collection(db, "global_alerts"), { text, type, timestamp: Date.now(), active: true }); document.getElementById('alert-text').value = ''; alert("Aviso disparado!"); } catch(e) { alert("Erro."); }
         }
         
-        window.deleteAlert = async (id) => { if(confirm("Apagar e remover este aviso?")) await deleteDoc(doc(db, "global_alerts", id)); }
+        window.deleteAlert = async (id) => { if(confirm("Apagar aviso?")) await deleteDoc(doc(db, "global_alerts", id)); }
 
         function renderAlerts() {
             const container = document.getElementById('alerts-list-container');
-            if(globalAlerts.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum aviso ativo no momento.</p>'; return; }
+            if(globalAlerts.length === 0) { container.innerHTML = '<p style="color:#999;">Nenhum aviso ativo.</p>'; return; }
             container.innerHTML = globalAlerts.map(a => {
-                let badgeColor = '#0d6efd'; let typeName = 'Comunicado';
-                if(a.type === 'promo') { badgeColor = '#ea1d2c'; typeName = 'Promoção'; }
-                if(a.type === 'success') { badgeColor = '#00a14b'; typeName = 'Sucesso'; }
-                
+                let badgeColor = '#0d6efd'; let typeName = 'Comunicado'; if(a.type === 'promo') { badgeColor = '#ea1d2c'; typeName = 'Promoção'; } if(a.type === 'success') { badgeColor = '#00a14b'; typeName = 'Sucesso'; }
                 return `
                 <div style="background:#fff; padding:15px; border-radius:12px; border:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <strong style="color: ${badgeColor}; font-size:0.75rem; background: ${badgeColor}15; padding: 4px 8px; border-radius: 6px;">${typeName}</strong>
-                        <div style="color:#111; font-size:1.05rem; font-weight:bold; margin-top:8px;">${a.text}</div>
-                    </div>
+                    <div><strong style="color: ${badgeColor}; font-size:0.75rem; background: ${badgeColor}15; padding: 4px 8px; border-radius: 6px;">${typeName}</strong><div style="color:#111; font-size:1.05rem; font-weight:bold; margin-top:8px;">${a.text}</div></div>
                     <button onclick="window.deleteAlert('${a.id}')" style="background:#fef0f0; border:1px solid #fbd5d5; padding: 10px; border-radius: 8px; color:#ea1d2c; cursor:pointer;">🗑️</button>
-                </div>
-            `}).join('');
+                </div>`}).join('');
         }
 
-        // ==========================================
-        // CARREGAMENTO FINAL DE PEDIDOS (START DA ABA FATURAMENTO)
-        // ==========================================
-        onSnapshot(collection(db, "orders"), (snapshot) => {
-            allOrders = []; snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
-            if (typeof window.renderFaturamento === 'function') window.renderFaturamento(); 
-        });
+        onSnapshot(collection(db, "orders"), (snapshot) => { allOrders = []; snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() })); if (typeof window.renderFaturamento === 'function') window.renderFaturamento(); });
 
     </script>
 </body>
