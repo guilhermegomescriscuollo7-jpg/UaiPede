@@ -58,13 +58,6 @@
             background: var(--gradient-hero);
         }
         .hero-content { max-width: 600px; }
-        .badge-mineiro {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: var(--primary-light); color: var(--primary);
-            padding: 8px 16px; border-radius: 50px; font-weight: 800;
-            font-size: 0.8rem; text-transform: uppercase; margin-bottom: 25px;
-            border: 1px solid #fbd5d5; box-shadow: 0 4px 15px rgba(234, 29, 44, 0.1);
-        }
         .hero h1 { font-size: 4.5rem; font-weight: 900; line-height: 1.05; margin-bottom: 25px; letter-spacing: -2px; }
         .hero p { font-size: 1.2rem; color: var(--gray-text); margin-bottom: 40px; max-width: 500px; }
         
@@ -91,7 +84,7 @@
             width: 300px; height: 600px; background: #fff; border: 12px solid #111;
             border-radius: 45px; box-shadow: 0 40px 80px rgba(234, 29, 44, 0.15);
             position: relative; overflow: hidden;
-            animation: float 5s ease-in-out infinite; /* EFEITO FLUTUANTE */
+            animation: float 5s ease-in-out infinite; 
         }
         .phone-mockup::after {
             content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -108,17 +101,19 @@
         }
         .phone-screen .uai-logo-mock { color: var(--primary); font-size: 2rem; font-weight: 900; font-style: italic; z-index: 2;}
 
-        /* COMO FUNCIONA */
-        .how-it-works { padding: 100px 8%; background-color: var(--bg-light); text-align: center; }
+        /* SECTIONS GERAIS */
+        .section-padding { padding: 100px 8%; }
         .section-title { font-size: 3rem; font-weight: 900; margin-bottom: 15px; }
         .section-title span { color: var(--primary); }
         .section-subtitle { color: var(--gray-text); font-size: 1.1rem; margin-bottom: 60px; }
 
+        /* COMO FUNCIONA */
+        .how-it-works { background-color: var(--bg-light); text-align: center; }
         .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; justify-content: center; }
         .step-card { 
             background: #fff; padding: 40px 25px; border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.02); 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Hover com efeito "elástico" */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             border: 1px solid transparent;
         }
         .step-card:hover { transform: translateY(-15px) scale(1.02); box-shadow: 0 20px 40px rgba(234, 29, 44, 0.1); border-color: rgba(234,29,44,0.1); }
@@ -132,9 +127,9 @@
         .step-card p { font-size: 0.9rem; color: var(--gray-text); line-height: 1.5; }
 
         /* COMO ABRIR LOJA */
-        .how-to-open-store { padding: 100px 8%; background: #fff; text-align: center; }
-        .open-steps-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 60px; }
-        .open-step { padding: 0 20px; transition: 0.3s; }
+        .how-to-open-store { background: #fff; text-align: center; }
+        .open-steps-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 60px; }
+        .open-step { padding: 0 15px; transition: 0.3s; }
         .open-step:hover { transform: translateY(-5px); }
         .open-step .icon-img { height: 100px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; }
         .open-step .icon-img i { font-size: 4rem; color: var(--primary); transition: 0.3s; }
@@ -143,14 +138,14 @@
         .open-step p { font-size: 0.95rem; color: #666; line-height: 1.6; }
 
         /* PLANOS SECTION */
-        .plans-section { padding: 100px 8%; background-color: var(--dark-red); color: var(--white); text-align: center; position: relative; overflow: hidden; }
+        .plans-section { background-color: var(--dark-red); color: var(--white); text-align: center; position: relative; overflow: hidden; }
         .plans-section::before {
             content: ''; position: absolute; width: 500px; height: 500px;
             background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
             top: -200px; left: -100px; border-radius: 50%;
         }
         .plans-title { font-size: 2.8rem; font-weight: 900; margin-bottom: 60px; color: var(--white); position: relative; z-index: 2; }
-        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; text-align: left; position: relative; z-index: 2; }
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; text-align: left; position: relative; z-index: 2; }
         
         .plan-card { 
             background: var(--white); color: var(--dark); border-radius: 20px; padding: 40px 30px; 
@@ -178,7 +173,7 @@
         .plans-footer-note { font-size: 0.85rem; color: rgba(255,255,255,0.8); text-align: center; margin-top: 40px; font-weight: 500;}
 
         /* POR QUE ESCOLHER */
-        .why-us { padding: 100px 8%; display: flex; justify-content: center; }
+        .why-us { display: flex; justify-content: center; }
         .why-content { max-width: 900px; width: 100%; }
         .why-features { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
         .why-item { transition: 0.3s; padding: 15px; border-radius: 12px; border: 1px solid transparent; }
@@ -189,7 +184,7 @@
         .why-item p { font-size: 0.9rem; color: var(--gray-text); line-height: 1.4; }
 
         /* SEÇÃO PARCEIRO (LOJA) */
-        .partner-section { padding: 100px 8%; background: var(--bg-light); }
+        .partner-section { background: var(--bg-light); }
         .partner-box {
             background: #fff; border-radius: 30px; padding: 60px;
             display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
@@ -223,7 +218,7 @@
         .btn-send:hover { background: var(--primary); transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 25px rgba(234,29,44,0.3); }
 
         /* TECNOLOGIA */
-        .tech-section { padding: 100px 8%; text-align: center; }
+        .tech-section { text-align: center; }
         .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 60px; }
         .tech-item { transition: 0.3s; padding: 20px; border-radius: 15px; }
         .tech-item:hover { background: var(--primary-light); transform: translateY(-10px); }
@@ -249,7 +244,7 @@
 
         .footer-bottom { border-top: 1px solid #222; padding-top: 40px; display: flex; justify-content: space-between; color: #777; font-size: 0.85rem; flex-wrap: wrap; gap: 20px; text-align: left; }
         
-        /* RESPONSIVIDADE */
+        /* RESPONSIVIDADE (MOBILE E TABLET) */
         @media (max-width: 992px) {
             .hero { flex-direction: column; text-align: center; padding-top: 120px; }
             .hero-image { width: 100%; margin-top: 60px; }
@@ -262,9 +257,31 @@
             .tech-grid { grid-template-columns: 1fr; }
             nav { gap: 15px; }
         }
+        
         @media (max-width: 768px) {
+            .section-padding { padding: 60px 5%; } /* Reduz espaços verticais no mobile */
+            .hero { padding-top: 110px; padding-bottom: 50px; }
+            .hero h1 { font-size: 2.5rem; letter-spacing: -1px; }
+            .hero p { font-size: 1rem; }
+            .section-title, .plans-title { font-size: 2.2rem; }
+            
+            .partner-box { padding: 30px 20px; gap: 40px; }
+            .partner-box h2 { font-size: 2rem; }
+            .contact-form { padding: 30px 20px; }
+            .plan-card { padding: 30px 20px; }
+            
+            .phone-mockup { width: 260px; height: 520px; border-width: 8px; } /* Celular menor para não vazar tela */
+            
             .footer-bottom { flex-direction: column; text-align: center; justify-content: center; }
             nav a { font-size: 0.85rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2.2rem; }
+            .logo span { font-size: 1.5rem; }
+            nav { gap: 10px; }
+            .btn-app { width: 100%; justify-content: center; } /* Botões ocupam 100% da largura em telas bem pequenas */
+            .footer-apps .btn-app { width: auto; } /* Deixa os botões do rodapé normais */
         }
     </style>
 </head>
@@ -283,9 +300,8 @@
         </nav>
     </header>
 
-    <section class="hero">
+    <section class="hero section-padding">
         <div class="hero-content reveal">
-            <div class="badge-mineiro">📍 O delivery mais mineiro</div>
             <h1>Tudo o que você pede, do jeito que você gosta.</h1>
             <p>Baixe agora nosso app nas melhores plataformas digitais e tenha os melhores sabores de Doresópolis na palma da sua mão.</p>
             <div class="hero-apps">
@@ -308,7 +324,7 @@
         </div>
     </section>
 
-    <section id="funciona" class="how-it-works">
+    <section id="funciona" class="how-it-works section-padding">
         <h2 class="section-title reveal">Como funciona o <span>UaiPede?</span></h2>
         <p class="section-subtitle reveal">É tão simples que parece mágica. Veja só:</p>
         
@@ -331,7 +347,7 @@
         </div>
     </section>
 
-    <section class="why-us">
+    <section class="why-us section-padding">
         <div class="why-content">
             <h2 class="section-title reveal" style="text-align: left;">Por que escolher o <span>UaiPede?</span></h2>
             <p class="section-subtitle reveal delay-1" style="text-align: left; margin-bottom: 20px;">Criamos a melhor experiência de delivery para você aproveitar o que realmente importa.</p>
@@ -361,7 +377,7 @@
         </div>
     </section>
 
-    <section class="how-to-open-store">
+    <section class="how-to-open-store section-padding">
         <h2 class="section-title reveal">Como abrir uma loja no <span>UaiPede?</span></h2>
         
         <div class="open-steps-container">
@@ -385,7 +401,7 @@
         </div>
     </section>
 
-    <section class="plans-section">
+    <section class="plans-section section-padding">
         <h2 class="plans-title reveal">Conheça nossos planos</h2>
         <div class="plans-grid">
             
@@ -491,7 +507,7 @@
         <p class="plans-footer-note reveal">*Inicie o cadastro e verifique a disponibilidade na sua região.</p>
     </section>
 
-    <section id="parceiro" class="partner-section">
+    <section id="parceiro" class="partner-section section-padding">
         <div class="partner-box reveal">
             <div>
                 <h2>Sua loja no <span>UaiPede.</span></h2>
@@ -513,7 +529,7 @@
         </div>
     </section>
 
-    <section class="tech-section">
+    <section class="tech-section section-padding">
         <h2 class="section-title reveal">Tecnologia que impulsiona seu negócio</h2>
         <p class="section-subtitle reveal delay-1">Ferramentas completas para você ter autonomia total sobre sua vitrine digital.</p>
         
@@ -579,14 +595,14 @@
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
-                threshold: 0.15 // Dispara quando 15% do elemento estiver visível
+                threshold: 0.15 
             };
 
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
-                        observer.unobserve(entry.target); // Para animar apenas uma vez
+                        observer.unobserve(entry.target); 
                     }
                 });
             }, observerOptions);
