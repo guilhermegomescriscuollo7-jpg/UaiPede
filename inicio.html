@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UaiPede - O Delivery Mais Mineiro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ea1d2c;
+            --primary-light: #fff5f5;
+            --dark: #111111;
+            --gray-text: #717171;
+            --bg-light: #f8f8f8;
+            --white: #ffffff;
+            --dark-red: #8e0c19; /* Cor de fundo dos planos */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--white); color: var(--dark); overflow-x: hidden; }
+
+        /* HEADER */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 15px 8%;
+            background: rgba(255, 255, 255, 0.98); display: flex; 
+            justify-content: space-between; align-items: center;
+            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .logo svg { width: 35px; height: auto; transform: rotate(-10deg); }
+        .logo span { font-size: 1.8rem; font-weight: 900; color: var(--primary); font-style: italic; letter-spacing: -1px; }
+
+        nav { display: flex; gap: 30px; align-items: center; }
+        nav a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.95rem; transition: 0.2s; }
+        nav a:hover { color: var(--primary); }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 140px 8% 80px; display: flex; align-items: center; 
+            justify-content: space-between; min-height: 100vh;
+        }
+        .hero-content { max-width: 600px; }
+        .badge-mineiro {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--primary-light); color: var(--primary);
+            padding: 8px 16px; border-radius: 50px; font-weight: 800;
+            font-size: 0.8rem; text-transform: uppercase; margin-bottom: 25px;
+            border: 1px solid #fbd5d5;
+        }
+        .hero h1 { font-size: 4.5rem; font-weight: 900; line-height: 1; margin-bottom: 25px; letter-spacing: -2px; }
+        .hero p { font-size: 1.2rem; color: var(--gray-text); margin-bottom: 40px; max-width: 500px; }
+        
+        .hero-apps { display: flex; gap: 15px; }
+        .btn-app { background: #000; color: #fff; padding: 10px 20px; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-decoration: none; transition: 0.3s; }
+        .btn-app:hover { transform: translateY(-3px); }
+        .btn-app i { font-size: 1.5rem; }
+        .btn-app div span { display: block; font-size: 0.7rem; opacity: 0.8; }
+        .btn-app div strong { font-size: 1rem; }
+
+        .hero-image { position: relative; width: 40%; display: flex; justify-content: center; }
+        .phone-mockup {
+            width: 300px; height: 600px; background: #fff; border: 12px solid #111;
+            border-radius: 45px; box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            position: relative; overflow: hidden;
+        }
+        .phone-mockup::after {
+            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 130px; height: 25px; background: #111; border-radius: 0 0 20px 20px;
+        }
+        .phone-screen {
+            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+            background: #fff;
+        }
+        .phone-screen .uai-logo-mock { color: var(--primary); font-size: 2rem; font-weight: 900; font-style: italic; }
+
+        /* COMO FUNCIONA */
+        .how-it-works { padding: 100px 8%; background-color: var(--bg-light); text-align: center; }
+        .section-title { font-size: 3rem; font-weight: 900; margin-bottom: 15px; }
+        .section-title span { color: var(--primary); }
+        .section-subtitle { color: var(--gray-text); font-size: 1.1rem; margin-bottom: 60px; }
+
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; justify-content: center; }
+        .step-card { background: #fff; padding: 40px 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); transition: 0.3s; }
+        .step-card:hover { transform: translateY(-5px); }
+        .step-icon { width: 50px; height: 50px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 1.2rem; }
+        .step-card h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; }
+        .step-card p { font-size: 0.9rem; color: var(--gray-text); line-height: 1.5; }
+
+        /* NOVA SEÇÃO: COMO ABRIR LOJA */
+        .how-to-open-store { padding: 100px 8%; background: #fff; text-align: center; }
+        .open-steps-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 60px; }
+        .open-step { padding: 0 20px; }
+        .open-step .icon-img { height: 100px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; }
+        .open-step .icon-img i { font-size: 4rem; color: var(--primary); }
+        .open-step h4 { font-size: 1.4rem; font-weight: 900; margin-bottom: 15px; color: #111; line-height: 1.2; }
+        .open-step p { font-size: 0.95rem; color: #666; line-height: 1.6; }
+
+        /* PLANOS SECTION */
+        .plans-section { padding: 100px 8%; background-color: var(--dark-red); color: var(--white); text-align: center; }
+        .plans-title { font-size: 2.8rem; font-weight: 900; margin-bottom: 60px; color: var(--white); }
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; text-align: left; }
+        .plan-card { background: var(--white); color: var(--dark); border-radius: 16px; padding: 40px 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .plan-header-left { display: flex; align-items: center; gap: 15px; }
+        .plan-icon { font-size: 2.2rem; color: var(--primary); }
+        .plan-title { font-size: 1.5rem; font-weight: 900; }
+        .plan-link { font-size: 0.85rem; font-weight: 800; color: var(--primary); text-decoration: none; transition: 0.2s; white-space: nowrap;}
+        .plan-link:hover { text-decoration: underline; }
+        
+        .plan-detail-group { margin-bottom: 25px; }
+        .plan-detail-val { font-size: 1.2rem; font-weight: 900; margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap;}
+        .plan-detail-desc { font-size: 0.95rem; color: var(--gray-text); line-height: 1.4; }
+        .plan-highlight { color: var(--primary); font-size: 0.95rem; margin-left: 8px; font-weight: 800; }
+        .price-strike { text-decoration: line-through; color: #aaa; margin-right: 5px; font-weight: 500;}
+        
+        .plan-features { border-top: 1px solid #eee; padding-top: 25px; margin-top: 10px; }
+        .plan-feature-item { display: flex; gap: 12px; margin-bottom: 15px; align-items: flex-start; }
+        .plan-feature-item i { color: #00a14b; font-size: 1.1rem; margin-top: 2px; }
+        .plan-feature-item span { font-size: 0.95rem; color: var(--dark); font-weight: 500; line-height: 1.4; }
+        .plans-footer-note { font-size: 0.85rem; color: rgba(255,255,255,0.8); text-align: center; margin-top: 40px; font-weight: 500;}
+
+        /* POR QUE ESCOLHER */
+        .why-us { padding: 100px 8%; display: flex; justify-content: center; }
+        .why-content { max-width: 900px; width: 100%; }
+        .why-features { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+        .why-item i { color: var(--primary); font-size: 1.5rem; margin-bottom: 15px; display: block; }
+        .why-item h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; }
+        .why-item p { font-size: 0.9rem; color: var(--gray-text); line-height: 1.4; }
+
+        /* SEÇÃO PARCEIRO (LOJA) */
+        .partner-section { padding: 100px 8%; background: var(--bg-light); }
+        .partner-box {
+            background: #fff; border-radius: 30px; padding: 60px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            align-items: center;
+        }
+        .partner-box h2 { font-size: 2.8rem; font-weight: 900; margin-bottom: 20px; }
+        .partner-box h2 span { color: var(--primary); }
+        .partner-box .desc { color: var(--gray-text); margin-bottom: 40px; font-size: 1.1rem; line-height: 1.6; }
+        
+        .partner-features { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .p-feat i { color: var(--primary); font-size: 1.2rem; margin-bottom: 10px; }
+        .p-feat h5 { font-size: 1rem; font-weight: 800; margin-bottom: 5px; }
+        .p-feat p { font-size: 0.85rem; color: var(--gray-text); }
+
+        /* FORMULÁRIO / CAIXA DE CONTATO SIMPLIFICADA */
+        .contact-form { background: #fff; padding: 50px 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid #f0f0f0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .form-title { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; margin-bottom: 15px; font-size: 1.5rem; }
+        .contact-form p { color: var(--gray-text); margin-bottom: 30px; line-height: 1.6; font-size: 1rem; }
+        .btn-send {
+            width: 100%; background: #000; color: #fff; border: none; padding: 18px;
+            border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s;
+            text-decoration: none; display: inline-block; font-size: 1.1rem;
+        }
+        .btn-send:hover { background: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(234,29,44,0.3); }
+
+        /* TECNOLOGIA */
+        .tech-section { padding: 100px 8%; text-align: center; }
+        .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 60px; }
+        .tech-item i { font-size: 2rem; color: var(--primary); margin-bottom: 20px; display: block; }
+        .tech-item h4 { font-size: 1.3rem; font-weight: 800; margin-bottom: 15px; }
+        .tech-item p { color: var(--gray-text); font-size: 0.95rem; line-height: 1.6; }
+
+        /* FOOTER */
+        footer { background: #000; color: #fff; padding: 80px 8% 40px; }
+        .footer-main { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px; text-align: left; }
+        .footer-logo { font-size: 2rem; font-weight: 900; font-style: italic; color: var(--primary); margin-bottom: 15px; display: inline-block; text-decoration: none;}
+        .footer-col h4 { margin-bottom: 25px; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 15px; }
+        .footer-col ul a { color: #aaa; text-decoration: none; transition: 0.2s; }
+        .footer-col ul a:hover { color: #fff; }
+
+        .footer-bottom { border-top: 1px solid #222; padding-top: 40px; display: flex; justify-content: space-between; color: #777; font-size: 0.85rem; flex-wrap: wrap; gap: 20px; text-align: left; }
+        
+        /* RESPONSIVIDADE */
+        @media (max-width: 992px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 120px; }
+            .hero-image { width: 100%; margin-top: 60px; }
+            .why-features, .partner-box { grid-template-columns: 1fr; gap: 40px; }
+            .footer-main { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .hero h1 { font-size: 3rem; }
+            header { padding: 15px 5%; }
+            .tech-grid { grid-template-columns: 1fr; }
+            nav { gap: 15px; }
+        }
+        @media (max-width: 768px) {
+            .footer-bottom { flex-direction: column; text-align: center; justify-content: center; }
+            nav a { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">
+            <svg viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 15 Q 50 55 95 15" stroke="#ea1d2c" stroke-width="10" stroke-linecap="round"/>
+            </svg>
+            <span>UaiPede</span>
+        </a>
+        <nav>
+            <a href="#funciona">Funcionalidades</a>
+            <a href="#parceiro">Seja Parceiro</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge-mineiro">📍 O delivery mais mineiro</div>
+            <h1>Tudo o que você pede, do jeito que você gosta.</h1>
+            <p>Baixe agora nosso app nas melhores plataformas digitais e tenha os melhores sabores de Doresópolis na palma da sua mão.</p>
+            <div class="hero-apps">
+                <a href="#" class="btn-app">
+                    <i class="fab fa-apple"></i>
+                    <div><span>Download on the</span><strong>App Store</strong></div>
+                </a>
+                <a href="#" class="btn-app">
+                    <i class="fab fa-google-play"></i>
+                    <div><span>GET IT ON</span><strong>Google Play</strong></div>
+                </a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="uai-logo-mock">UaiPede</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="funciona" class="how-it-works">
+        <h2 class="section-title">Como funciona o <span>UaiPede?</span></h2>
+        <p class="section-subtitle">É tão simples que parece mágica. Veja só:</p>
+        
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <h4>Informe seu endereço</h4>
+                <p>Encontramos as melhores lojas pertinho de você.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-search"></i></div>
+                <h4>Escolha o que pedir</h4>
+                <p>Navegue por categorias e encontre seu prato favorito.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-bicycle"></i></div>
+                <h4>Acompanhe e receba</h4>
+                <p>Veja cada passo do seu pedido até ele chegar na sua porta.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-us">
+        <div class="why-content">
+            <h2 class="section-title" style="text-align: left;">Por que escolher o <span>UaiPede?</span></h2>
+            <p class="section-subtitle" style="text-align: left; margin-bottom: 20px;">Criamos a melhor experiência de delivery para você aproveitar o que realmente importa.</p>
+            
+            <div class="why-features">
+                <div class="why-item">
+                    <i class="fas fa-utensils"></i>
+                    <h4>Variedade Incrível</h4>
+                    <p>De comida mineira raiz até sushi, temos de tudo para matar sua fome.</p>
+                </div>
+                <div class="why-item">
+                    <i class="fas fa-bolt"></i>
+                    <h4>Entrega Flash</h4>
+                    <p>Nossos entregadores são treinados para levar seu pedido o mais rápido possível.</p>
+                </div>
+                <div class="why-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Segurança Total</h4>
+                    <p>Pagamentos seguros e acompanhamento em tempo real do seu pedido.</p>
+                </div>
+                <div class="why-item">
+                    <i class="fas fa-clock"></i>
+                    <h4>Suporte 24/7</h4>
+                    <p>Estamos aqui para ajudar você a qualquer hora do dia ou da noite.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-to-open-store">
+        <h2 class="section-title">Como abrir uma loja no <span>UaiPede?</span></h2>
+        
+        <div class="open-steps-container">
+            <div class="open-step">
+                <div class="icon-img">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <h4>Crie uma conta e cadastre sua loja com CNPJ</h4>
+                <p>Pra isso, vamos precisar do seu nome completo, e-mail e celular. Pra sua loja, tenha em mãos CNPJ, CPF e RG do titular.</p>
+            </div>
+
+            <div class="open-step">
+                <div class="icon-img">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h4>Escolha um plano e assine o contrato</h4>
+                <p>Escolha um plano disponível. Vamos então validar suas informações e em poucos minutos você recebe o contrato para assinar.</p>
+            </div>
+
+            <div class="open-step">
+                <div class="icon-img">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h4>Configure sua loja e tá pronto pra começar no UaiPede!</h4>
+                <p>Preencha conta bancária, cardápio e afins, e estará tudo pronto para ativar sua loja e começar a receber pedidos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="plans-section">
+        <h2 class="plans-title">Conheça nossos planos</h2>
+        <div class="plans-grid">
+            
+            <div class="plan-card">
+                <div class="plan-header">
+                    <div class="plan-header-left">
+                        <i class="fas fa-shopping-bag plan-icon"></i>
+                        <span class="plan-title">UaiPede Básico</span>
+                    </div>
+                    <a href="https://uaipede.vercel.app/login-vendedor.html" class="plan-link">Ver mais detalhes</a>
+                </div>
+                
+                <div class="plan-detail-group">
+                    <div class="plan-detail-val" style="color: #00a14b;">Free</div>
+                    <div class="plan-detail-desc">Comissão sobre pedidos delivery</div>
+                </div>
+
+                <div class="plan-detail-group">
+                    <div class="plan-detail-val">
+                        <span>R$ 100,00/mês</span>
+                        <span class="plan-highlight" style="margin-left: 8px;">1º mês grátis!</span>
+                    </div>
+                    <div class="plan-detail-desc">Mensalidade Taxa fixa mensal.</div>
+                </div>
+
+                <div class="plan-features">
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Entrega com os entregadores UaiPede</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Rastreio de entrega em tempo real</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Tecnologia para gestão de tempo de preparo e entrega</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Atendimento UaiPede até a entrega</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-header">
+                    <div class="plan-header-left">
+                        <i class="fas fa-motorcycle plan-icon"></i>
+                        <span class="plan-title">UaiPede Destaque</span>
+                    </div>
+                    <a href="https://uaipede.vercel.app/login-vendedor.html" class="plan-link">Ver detalhes</a>
+                </div>
+                
+                <div class="plan-detail-group">
+                    <div class="plan-detail-val" style="color: #00a14b;">Free</div>
+                    <div class="plan-detail-desc">Comissão sobre pedidos delivery</div>
+                </div>
+
+                <div class="plan-detail-group">
+                    <div class="plan-detail-val">
+                        <span>R$ 150,00/mês</span>
+                        <span class="plan-highlight" style="margin-left: 8px;">1º mês grátis!</span>
+                    </div>
+                    <div class="plan-detail-desc">Mensalidade Taxa fixa mensal.</div>
+                </div>
+
+                <div class="plan-features">
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Sua Loja exibida na aba de Lojas em Destaque</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Entrega com os entegadores UaiPede</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Rastreio de entrega em tempo real</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Tecnologia para gestão de tempo de preparo e entrega</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Atendimento UaiPede até a entrega</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-header">
+                    <div class="plan-header-left">
+                        <i class="fas fa-gem plan-icon"></i>
+                        <span class="plan-title">UaiPede Premium</span>
+                    </div>
+                    <a href="https://uaipede.vercel.app/login-vendedor.html" class="plan-link">Ver detalhes</a>
+                </div>
+                
+                <div class="plan-detail-group">
+                    <div class="plan-detail-val" style="color: #00a14b;">Free</div>
+                    <div class="plan-detail-desc">Comissão sobre pedidos delivery</div>
+                </div>
+
+                <div class="plan-detail-group">
+                    <div class="plan-detail-val">4 cotas por cidade</div>
+                    <div class="plan-detail-desc">Apenas 4 lojas com banner rotativo UaiPede</div>
+                </div>
+
+                <div class="plan-detail-group">
+                    <div class="plan-detail-val">
+                        <span>R$ 200,00/mês</span>
+                        <span class="plan-highlight" style="margin-left: 8px;">1º mês grátis!</span>
+                    </div>
+                    <div class="plan-detail-desc">Mensalidade Taxa fixa mensal.</div>
+                </div>
+
+                <div class="plan-features">
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Sua Loja exibida na aba de Lojas em Destaque</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Promoções de Produtos no banner rotativo na tela principal do app</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Entrega com os entegadores UaiPede</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Rastreio de entrega em tempo real</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Tecnologia para gestão de tempo de preparo e entrega</span>
+                    </div>
+                    <div class="plan-feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Atendimento UaiPede até a entrega</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <p class="plans-footer-note">*Inicie o cadastro e verifique a disponibilidade na sua região.</p>
+    </section>
+
+    <section id="parceiro" class="partner-section">
+        <div class="partner-box">
+            <div>
+                <h2>Sua loja no <span>UaiPede.</span></h2>
+                <p class="desc">Aumente suas vendas e alcance milhares de novos clientes com a plataforma feita por quem mora aqui, para quem mora aqui.</p>
+                
+                <div class="partner-features">
+                    <div class="p-feat">
+                        <i class="fas fa-percentage"></i>
+                        <h5>Taxas Justas</h5>
+                        <p>Diferente das grandes plataformas, cobramos taxas que respeitam o lojista.</p>
+                    </div>
+                    <div class="p-feat">
+                        <i class="fas fa-headset"></i>
+                        <h5>Suporte Humanizado</h5>
+                        <p>Problemas? Você fala com a gente na hora, sem robôs ou demoras.</p>
+                    </div>
+                    <div class="p-feat">
+                        <i class="fas fa-users"></i>
+                        <h5>Comunidade Forte</h5>
+                        <p>Foco total no fortalecimento do comércio local e na nossa economia.</p>
+                    </div>
+                    <div class="p-feat">
+                        <i class="fas fa-chart-line"></i>
+                        <h5>Painel do Lojista</h5>
+                        <p>Gestão total de cardápio, preços e horários com autonomia total.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <div class="form-title"><i class="fas fa-comments" style="color: var(--primary);"></i> Fale com nosso time</div>
+                <p>Nossa equipe está pronta para ajudar a sua loja a vender mais. Clique abaixo para iniciar o seu cadastro na nossa plataforma e escolher o melhor plano para o seu negócio!</p>
+                <a href="https://uaipede.vercel.app/login-vendedor.html" class="btn-send" style="text-align: center;">Solicitar Cadastro</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-section">
+        <h2 class="section-title">Tecnologia que impulsiona seu negócio</h2>
+        <p class="section-subtitle">Ferramentas completas para você ter autonomia total sobre sua vitrine digital.</p>
+        
+        <div class="tech-grid">
+            <div class="tech-item">
+                <i class="fas fa-mobile-alt"></i>
+                <h4>Catálogo Online</h4>
+                <p>Interface limpa e intuitiva para o cliente encontrar o que deseja em segundos.</p>
+            </div>
+            <div class="tech-item">
+                <i class="fas fa-check-shield"></i>
+                <h4>Autonomia Total</h4>
+                <p>Cadastre produtos, mude preços ou pause itens esgotados em menos de 1 minuto.</p>
+            </div>
+            <div class="tech-item">
+                <i class="fas fa-bell"></i>
+                <h4>Gestão de Pedidos</h4>
+                <p>Acompanhe o fluxo completo: do preparo à entrega, com notificações em tempo real.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-main">
+            <div>
+                <a href="#" class="footer-logo">UaiPede</a>
+                <p style="color: #777; line-height: 1.6; max-width: 300px;">O delivery que entende o mineiro. Rápido, prático e sempre com as melhores opções para você.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>UaiPede</h4>
+                <ul>
+                    <li><a href="https://uaipede.vercel.app/login-vendedor.html">Portal do Parceiro</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Descobrir</h4>
+                <ul>
+                    <li><a href="https://uaipede.vercel.app/login-vendedor.html">Seja Parceiro</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Saiba mais</h4>
+                <ul>
+                    <li><a href="https://uaipede.vercel.app/privacidade.html">Privacidade</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 UaiPede Delivery. Todos os direitos reservados. Gh Space Tech CNPJ: 59.742.566/0001-31</p>
+        </div>
+    </footer>
+
+</body>
+</html>
