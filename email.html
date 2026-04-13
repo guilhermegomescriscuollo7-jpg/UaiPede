@@ -34,7 +34,7 @@
         .request-content { background: var(--uai-white); border-radius: var(--radius); padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); max-width: 800px; margin: 0 auto; display: none; }
         .content-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--uai-border); padding-bottom: 20px; margin-bottom: 20px; }
         .store-name { font-size: 1.8rem; font-weight: 700; margin: 0 0 5px 0; }
-        .store-badges { display: flex; gap: 10px; }
+        .store-badges { display: flex; gap: 10px; flex-wrap: wrap; }
         .badge { background: #eef2f5; color: #555; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
         .info-box { background: #fafafa; padding: 15px; border-radius: var(--radius); border: 1px solid #f0f0f0; }
@@ -61,7 +61,7 @@
             </svg>
             <div class="logo-text">UaiPede Email</div>
         </a>
-        <div style="font-weight: 500; color: var(--uai-gray);">Administração</div>
+        <div style="font-weight: 500; color: var(--uai-gray);">Gestão de Solicitações</div>
     </header>
 
     <div class="app-body">
@@ -69,20 +69,29 @@
         <aside class="sidebar">
             <div class="menu-item" onclick="window.location.href='adm (11).html'" style="margin-bottom: 20px; border-bottom: 1px solid var(--uai-border); padding-bottom: 20px;">
                 <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Voltar ao Painel Admin
+                Voltar ao Painel
             </div>
 
-            <div class="menu-item active" onclick="filtrarCidade('Todas')">
+            <div class="menu-item tab-menu active" id="tab-pendente" onclick="mudarAba('pendente')">
                 <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
                 Caixa de Entrada
             </div>
+            <div class="menu-item tab-menu" id="tab-aprovado" onclick="mudarAba('aprovado')">
+                <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Aprovadas
+            </div>
+            <div class="menu-item tab-menu" id="tab-arquivado" onclick="mudarAba('arquivado')">
+                <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Reprovadas/Arquivadas
+            </div>
+
             <div class="sidebar-title">Filtro por Cidade</div>
             <div id="city-filters">A carregar cidades...</div>
         </aside>
 
         <section class="inbox-list">
             <div class="inbox-header">
-                <h2>Solicitações (<span id="contador-inbox">0</span>)</h2>
+                <h2 id="titulo-lista">Pendentes (<span id="contador-inbox">0</span>)</h2>
             </div>
             <div id="request-list-container"></div>
         </section>
@@ -101,6 +110,7 @@
                     <div>
                         <h1 class="store-name" id="det-nome">Nome da Loja</h1>
                         <div class="store-badges">
+                            <span class="badge" id="det-status-badge" style="display:none; color:#fff;">Status</span>
                             <span class="badge" id="det-cidade">Cidade</span>
                             <span class="badge" id="det-segmento" style="background:#ea1d2c; color:#fff;">Segmento</span>
                         </div>
@@ -122,7 +132,7 @@
                         <div class="info-value" id="det-endereco">--</div>
                     </div>
                     <div class="info-box" style="background: #eef4ff; border-color: #dbe7ff;">
-                        <div class="info-label" style="color: #0d6efd;">Contatos (E-mail de Login)</div>
+                        <div class="info-label" style="color: #0d6efd;">Contatos</div>
                         <div class="info-value">
                             📞 <span id="det-whats">--</span><br>
                             ✉️ <strong id="det-email">--</strong>
@@ -150,9 +160,9 @@
                     </div>
                 </div>
 
-                <div class="actions">
-                    <button class="btn btn-approve" id="btn-approve" onclick="aprovarLoja()">✓ Aprovar Loja</button>
-                    <button class="btn btn-reject" onclick="arquivarSolicitacao()">✕ Arquivar / Recusar</button>
+                <div class="actions" id="action-buttons">
+                    <button class="btn btn-approve" id="btn-approve" onclick="aprovarLoja()">✓ Marcar como Aprovada</button>
+                    <button class="btn btn-reject" onclick="arquivarSolicitacao()">✕ Reprovar / Arquivar</button>
                 </div>
             </div>
         </main>
@@ -160,7 +170,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -174,26 +184,20 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let todasSolicitacoes = [];
+        let todasDoBanco = [];
+        let abaAtual = 'pendente';
         let cidadeAtual = 'Todas';
         let solicitacaoAbertaId = null;
 
+        // Puxa tudo ordenado por data
         const q = query(collection(db, "solicitacoes"), orderBy("dataCriacao", "desc"));
         
         onSnapshot(q, (snapshot) => {
-            todasSolicitacoes = [];
-            let cidadesSet = new Set();
-
+            todasDoBanco = [];
             snapshot.forEach(doc => {
-                const data = doc.data();
-                if(data.status !== 'arquivado' && data.status !== 'aprovado') { 
-                    todasSolicitacoes.push({ id: doc.id, ...data });
-                    if(data.cidade) cidadesSet.add(data.cidade);
-                }
+                todasDoBanco.push({ id: doc.id, ...doc.data() });
             });
-
-            renderFiltros(Array.from(cidadesSet));
-            filtrarCidade(cidadeAtual);
+            aplicarFiltros();
         });
 
         function formatarData(timestamp) {
@@ -202,30 +206,72 @@
             return date.toLocaleDateString('pt-BR') + ' às ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         }
 
-        window.filtrarCidade = function(cidade, elementoClicado = null) {
-            cidadeAtual = cidade;
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-            if(elementoClicado) {
-                elementoClicado.classList.add('active');
-            } else {
-                document.querySelector('.sidebar .menu-item:nth-child(2)').classList.add('active');
-            }
-
-            const filtrados = cidade === 'Todas' ? todasSolicitacoes : todasSolicitacoes.filter(s => s.cidade === cidade);
-            renderLista(filtrados);
+        // Função para alternar entre Pendentes, Aprovadas e Arquivadas
+        window.mudarAba = function(aba) {
+            abaAtual = aba;
+            cidadeAtual = 'Todas'; // Reseta o filtro de cidade ao mudar de aba
             
-            document.getElementById('empty-state').style.display = 'flex';
-            document.getElementById('request-content').style.display = 'none';
+            // UI Update
+            document.querySelectorAll('.tab-menu').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${aba}`).classList.add('active');
+
+            const titulos = {
+                'pendente': 'Pendentes',
+                'aprovado': 'Aprovadas',
+                'arquivado': 'Reprovadas'
+            };
+            document.getElementById('titulo-lista').innerHTML = `${titulos[aba]} (<span id="contador-inbox">0</span>)`;
+            
+            fecharDetalhes();
+            aplicarFiltros();
+        }
+
+        window.filtrarCidade = function(cidade) {
+            cidadeAtual = cidade;
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            let cidadesSet = new Set();
+            
+            // Filtra pela aba (Status)
+            let filtradosPorAba = todasDoBanco.filter(req => {
+                let status = req.status || 'pendente';
+                if (abaAtual === 'pendente') {
+                    return status !== 'aprovado' && status !== 'arquivado';
+                }
+                return status === abaAtual;
+            });
+
+            // Extrai cidades apenas das solicitações da aba atual
+            filtradosPorAba.forEach(req => {
+                if(req.cidade) cidadesSet.add(req.cidade);
+            });
+            renderFiltros(Array.from(cidadesSet));
+
+            // Aplica filtro de cidade
+            let filtradosFinais = cidadeAtual === 'Todas' ? filtradosPorAba : filtradosPorAba.filter(r => r.cidade === cidadeAtual);
+            
+            renderLista(filtradosFinais);
         }
 
         function renderFiltros(cidadesUnicas) {
             const container = document.getElementById('city-filters');
             container.innerHTML = '';
+            
+            // Botão "Todas"
+            const divTodas = document.createElement('div');
+            divTodas.className = `menu-item filter-city ${cidadeAtual === 'Todas' ? 'active' : ''}`;
+            divTodas.innerHTML = `<svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg> Todas as Cidades`;
+            divTodas.onclick = () => window.filtrarCidade('Todas');
+            container.appendChild(divTodas);
+
+            // Botões das cidades
             cidadesUnicas.forEach(cidade => {
                 const div = document.createElement('div');
-                div.className = 'menu-item';
+                div.className = `menu-item filter-city ${cidadeAtual === cidade ? 'active' : ''}`;
                 div.innerHTML = `<svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> ${cidade}`;
-                div.onclick = () => window.filtrarCidade(cidade, div);
+                div.onclick = () => window.filtrarCidade(cidade);
                 container.appendChild(div);
             });
         }
@@ -236,13 +282,13 @@
             container.innerHTML = '';
 
             if (dados.length === 0) {
-                container.innerHTML = '<div style="padding: 20px; color: #999; text-align: center;">Caixa de entrada vazia.</div>';
+                container.innerHTML = `<div style="padding: 20px; color: #999; text-align: center;">Nenhuma solicitação encontrada.</div>`;
                 return;
             }
 
             dados.forEach(req => {
                 const item = document.createElement('div');
-                item.className = `request-item ${!req.lida ? 'unread' : ''}`;
+                item.className = `request-item ${!req.lida && abaAtual === 'pendente' ? 'unread' : ''}`;
                 item.onclick = () => abrirDetalhes(req, item);
                 
                 item.innerHTML = `
@@ -250,7 +296,7 @@
                     <div class="req-title">${req.nomeFantasia}</div>
                     <div class="req-city">
                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                        ${req.cidade}
+                        ${req.cidade || 'Não informada'}
                     </div>
                 `;
                 container.appendChild(item);
@@ -263,7 +309,7 @@
             elementoClicado.classList.add('active');
             elementoClicado.classList.remove('unread');
 
-            if(!req.lida) {
+            if(!req.lida && abaAtual === 'pendente') {
                 const docRef = doc(db, "solicitacoes", req.id);
                 await updateDoc(docRef, { lida: true });
             }
@@ -296,61 +342,54 @@
             } else {
                 imgEl.style.display = 'none';
             }
+
+            // Controle de Botões vs Status Badge
+            const badge = document.getElementById('det-status-badge');
+            const actions = document.getElementById('action-buttons');
+            let statusAtual = req.status || 'pendente';
+
+            if(statusAtual === 'aprovado' || statusAtual === 'arquivado') {
+                actions.style.display = 'none';
+                badge.style.display = 'inline-block';
+                if(statusAtual === 'aprovado') {
+                    badge.innerText = 'APROVADA';
+                    badge.style.background = '#10b981';
+                } else {
+                    badge.innerText = 'REPROVADA / ARQUIVADA';
+                    badge.style.background = '#ef4444';
+                }
+            } else {
+                actions.style.display = 'flex';
+                badge.style.display = 'none';
+            }
         }
 
-        // 🟢 FUNÇÃO APROVAR LOJA 100% VINCULADA 🟢
+        // APENAS ATUALIZA O STATUS - SEM INSERIR NO BD DE LOJAS
         window.aprovarLoja = async function() {
             if(!solicitacaoAbertaId) return;
 
-            const req = todasSolicitacoes.find(s => s.id === solicitacaoAbertaId);
+            const req = todasDoBanco.find(s => s.id === solicitacaoAbertaId);
             if(!req) return;
 
-            if(confirm(`Deseja aprovar a loja "${req.nomeFantasia}" e criar o registo na plataforma?`)) {
+            if(confirm(`Deseja marcar a solicitação de "${req.nomeFantasia}" como APROVADA?\n\nAtenção: O cadastro no painel principal precisará ser feito manualmente.`)) {
                 try {
                     const btn = document.getElementById('btn-approve');
-                    btn.innerText = "A Aprovar...";
+                    btn.innerText = "A Processar...";
                     btn.disabled = true;
-
-                    const senhaGerada = Math.floor(100000 + Math.random() * 900000).toString(); 
-                    let compText = req.complemento ? ` - ${req.complemento}` : '';
-                    const enderecoCompleto = `${req.ruaNumero || ''}, ${req.bairro || ''}${compText}`;
-
-                    const dataVencimento = new Date();
-                    dataVencimento.setDate(dataVencimento.getDate() + 30);
-
-                    // AQUI É ONDE GRAVA NO BD DAS LOJAS - VINCULADO CERTINHO
-                    await addDoc(collection(db, "stores"), {
-                        name: req.nomeFantasia || "Sem Nome",
-                        doc: req.cnpj || "",
-                        cep: req.cep || "N/A",
-                        street: enderecoCompleto,
-                        city: req.cidade || "",
-                        cat: req.segmento || "Outros", // CATEGORIA VINCULADA
-                        email: req.email || "", // E-MAIL DE LOGIN VINCULADO
-                        password: senhaGerada,
-                        logo: req.logoFileBase64 || "https://via.placeholder.com/60",
-                        dueDate: dataVencimento.getTime(),
-                        isActive: true,
-                        isFeatured: false,
-                        status: "Aberto"
-                    });
 
                     const docRef = doc(db, "solicitacoes", solicitacaoAbertaId);
                     await updateDoc(docRef, { status: 'aprovado' });
 
-                    alert(`LOJA APROVADA COM SUCESSO!\n\nA loja já aparece no painel do administrador com o Email: ${req.email}\nPalavra-passe: ${senhaGerada}`);
-                    
-                    document.getElementById('empty-state').style.display = 'flex';
-                    document.getElementById('request-content').style.display = 'none';
-                    solicitacaoAbertaId = null;
+                    alert(`Solicitação marcada como APROVADA com sucesso! Ela foi movida para a aba de Aprovadas.`);
+                    fecharDetalhes();
                     
                 } catch(e) {
-                    console.error("Erro na aprovação:", e);
-                    alert("Ocorreu um erro ao aprovar a loja: " + e.message);
+                    console.error("Erro ao aprovar:", e);
+                    alert("Ocorreu um erro: " + e.message);
                 } finally {
                     const btn = document.getElementById('btn-approve');
                     if(btn) {
-                        btn.innerText = "✓ Aprovar Loja";
+                        btn.innerText = "✓ Marcar como Aprovada";
                         btn.disabled = false;
                     }
                 }
@@ -358,14 +397,18 @@
         };
 
         window.arquivarSolicitacao = async function() {
-            if(solicitacaoAbertaId && confirm("Tem certeza que deseja arquivar/recusar esta solicitação? Ela será removida da caixa de entrada.")) {
+            if(solicitacaoAbertaId && confirm("Tem certeza que deseja reprovar/arquivar esta solicitação? Ela será movida para a aba de reprovadas.")) {
                 const docRef = doc(db, "solicitacoes", solicitacaoAbertaId);
                 await updateDoc(docRef, { status: 'arquivado' });
-                document.getElementById('empty-state').style.display = 'flex';
-                document.getElementById('request-content').style.display = 'none';
-                solicitacaoAbertaId = null;
+                fecharDetalhes();
             }
         };
+
+        function fecharDetalhes() {
+            document.getElementById('empty-state').style.display = 'flex';
+            document.getElementById('request-content').style.display = 'none';
+            solicitacaoAbertaId = null;
+        }
 
         window.fecharDetalhesMobile = function() {
             document.getElementById('detail-pane').style.display = 'none';
