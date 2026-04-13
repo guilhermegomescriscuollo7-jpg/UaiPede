@@ -3,100 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Política de Privacidade - UaiPede</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>Privacidade - UaiPede</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f8f8f8; color: #333; line-height: 1.6; padding-bottom: 40px; }
+        :root {
+            --primary: #ea1d2c;
+            --primary-soft: #fef2f2;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --bg-body: #f9fafb;
+            --card-bg: #ffffff;
+        }
 
-        /* HEADER */
-        header { background: #fff; padding: 20px; text-align: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .back-btn { position: absolute; left: 20px; font-size: 1.5rem; color: #ea1d2c; text-decoration: none; font-weight: bold; }
-        header h1 { font-size: 1.2rem; font-weight: 700; color: #111; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
 
-        .container { padding: 20px; max-width: 800px; margin: 0 auto; }
+        /* HEADER MODERNO */
+        header { 
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-        .policy-card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); border: 1px solid #eee; }
-        
-        .last-updated { font-size: 0.85rem; color: #777; margin-bottom: 20px; display: block; }
+        .back-btn { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-soft);
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
 
-        h2 { font-size: 1.3rem; color: #ea1d2c; margin-top: 25px; margin-bottom: 10px; }
-        h2:first-of-type { margin-top: 0; }
-        
-        p { font-size: 0.95rem; color: #555; margin-bottom: 15px; text-align: justify; }
-        
-        ul { margin-left: 20px; margin-bottom: 15px; }
-        li { font-size: 0.95rem; color: #555; margin-bottom: 5px; }
-        
-        strong { color: #111; }
+        .back-btn:hover { background: var(--primary); color: #fff; }
 
-        .contact-box { background: #fdf5e6; border: 1px solid #f9e1b5; padding: 15px; border-radius: 8px; margin-top: 30px; }
-        .contact-box h3 { color: #997404; font-size: 1.1rem; margin-bottom: 5px; }
-        .contact-box p { margin-bottom: 0; color: #555; }
+        .logo-text { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+
+        /* LAYOUT EM DUAS COLUNAS */
+        .container { 
+            max-width: 1100px; 
+            margin: 40px auto; 
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+        }
+
+        /* MENU LATERAL DINÂMICO */
+        aside { position: sticky; top: 100px; height: fit-content; }
         
-        .btn-home { display: block; width: 100%; background: #111; color: #fff; text-align: center; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 30px; transition: 0.2s; }
-        .btn-home:active { transform: scale(0.98); background: #000; }
+        .side-nav { list-style: none; border-left: 2px solid #eee; padding-left: 20px; }
+        .side-nav li { margin-bottom: 15px; }
+        .side-nav a { 
+            text-decoration: none; 
+            color: var(--text-sub); 
+            font-size: 0.9rem; 
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        .side-nav a:hover { color: var(--primary); }
+
+        /* CARDS E CONTEÚDO */
+        .content-section {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .hero-section { margin-bottom: 40px; }
+        .hero-section h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -1px; }
+        .last-updated { 
+            display: inline-block;
+            background: var(--primary-soft);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* ACORDEÃO ESTILIZADO */
+        details {
+            margin-bottom: 15px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            transition: 0.3s;
+        }
+
+        details[open] { border-color: var(--primary); box-shadow: 0 5px 15px rgba(234, 29, 44, 0.05); }
+
+        summary {
+            padding: 20px;
+            list-style: none;
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        summary::after {
+            content: '+';
+            color: var(--primary);
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        details[open] summary::after { content: '-'; transform: rotate(180deg); }
+
+        .details-content { padding: 0 20px 20px 20px; color: var(--text-sub); font-size: 0.95rem; }
+        .details-content ul { padding-left: 20px; margin-top: 10px; }
+        .details-content li { margin-bottom: 8px; }
+
+        /* BOX DE CONTATO */
+        .contact-card {
+            background: linear-gradient(135deg, #111, #333);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .contact-info h3 { margin-bottom: 5px; color: #fff; }
+        .contact-info p { opacity: 0.8; font-size: 0.9rem; }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            aside { display: none; }
+            .hero-section h1 { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="javascript:history.back()" class="back-btn">‹</a>
-        <h1>Política de Privacidade</h1>
-    </header>
+        <a href="javascript:history.back()" class="back-btn">←</a>
+        <div class="logo-text">UaiPede</div>
+        <div style="width: 40px;"></div> </header>
 
-    <main class="container">
-        <div class="policy-card">
-            <span class="last-updated">Última atualização: 28 de Fevereiro de 2026</span>
-
-            <h2>1. Introdução</h2>
-            <p>Bem-vindo ao <strong>UaiPede</strong>. A sua privacidade é muito importante para nós. Esta Política de Privacidade explica como recolhemos, usamos, partilhamos e protegemos as suas informações pessoais ao utilizar a nossa aplicação, quer seja como cliente, lojista ou entregador.</p>
-
-            <h2>2. Informações que Recolhemos</h2>
-            <p>Para garantir que o seu pedido chega até si rápido e em segurança, precisamos de recolher alguns dados essenciais:</p>
-            <ul>
-                <li><strong>Informações de Registo:</strong> Nome, endereço de e-mail e palavra-passe.</li>
-                <li><strong>Informações de Entrega:</strong> Endereço completo (Rua, Número, Bairro, Ponto de Referência) da sua residência ou local de entrega.</li>
-                <li><strong>Dados de Utilização:</strong> Histórico de pedidos realizados, lojas favoritas e métodos de pagamento escolhidos (apenas a modalidade, não guardamos os dados do seu cartão de crédito).</li>
+    <div class="container">
+        <aside>
+            <ul class="side-nav">
+                <li><a href="#intro">01. Introdução</a></li>
+                <li><a href="#dados">02. Informações Recolhidas</a></li>
+                <li><a href="#uso">03. Como Usamos</a></li>
+                <li><a href="#partilha">04. Partilha</a></li>
+                <li><a href="#seguranca">05. Segurança</a></li>
+                <li><a href="#direitos">06. Seus Direitos</a></li>
             </ul>
+        </aside>
 
-            <h2>3. Como Usamos as Suas Informações</h2>
-            <p>Os dados recolhidos são utilizados exclusivamente para o funcionamento da plataforma e melhoria contínua do serviço:</p>
-            <ul>
-                <li>Processar e enviar os seus pedidos para as lojas parceiras.</li>
-                <li>Fornecer a morada exata aos entregadores para viabilizar a entrega.</li>
-                <li>Criar o seu histórico de pedidos para facilitar compras futuras.</li>
-                <li>Notificá-lo sobre o estado do seu pedido em tempo real.</li>
-            </ul>
-
-            <h2>4. Partilha de Informações</h2>
-            <p>O Dores Delivery <strong>não vende, aluga ou partilha</strong> os seus dados pessoais com empresas de publicidade externas. As suas informações só são partilhadas nos seguintes casos estritamente necessários:</p>
-            <ul>
-                <li><strong>Lojas Parceiras:</strong> O seu nome e os itens do pedido são enviados para o restaurante para que possam preparar a sua refeição.</li>
-                <li><strong>Entregadores:</strong> O seu nome e endereço completo (incluindo ligação temporária ao GPS) são fornecidos ao entregador que aceitar a corrida, apenas durante o período de entrega do pedido.</li>
-                <li><strong>Obrigação Legal:</strong> Se formos obrigados por lei ou por ordem judicial a divulgar os seus dados a autoridades competentes.</li>
-            </ul>
-
-            <h2>5. Armazenamento e Segurança</h2>
-            <p>Os seus dados são guardados de forma segura utilizando os servidores da <strong>Google (Firebase)</strong>, que contam com tecnologia de encriptação de ponta e os mais altos padrões globais de segurança da informação. Apenas você, através da sua conta, e o sistema automatizado têm acesso aos seus dados privados.</p>
-
-            <h2>6. Os Seus Direitos</h2>
-            <p>Você tem total controlo sobre os seus dados. A qualquer momento, através do menu "Perfil" na aplicação, pode:</p>
-            <ul>
-                <li>Consultar as informações que guardamos sobre si.</li>
-                <li>Editar ou atualizar a sua morada, nome e palavra-passe.</li>
-                <li>Solicitar a eliminação completa e permanente da sua conta e de todos os seus dados do nosso sistema.</li>
-            </ul>
-
-            <div class="contact-box">
-                <h3>Dúvidas ou Suporte?</h3>
-                <p>Se tiver alguma dúvida sobre a nossa Política de Privacidade ou sobre como os seus dados são tratados, entre em contacto connosco através das nossas redes sociais ou do suporte oficial do Dores Delivery em Doresópolis - MG.</p>
+        <main>
+            <div class="hero-section">
+                <span class="last-updated">Atualizado em 28 de Fevereiro de 2026</span>
+                <h1>Sua privacidade é <span style="color: var(--primary);">nossa prioridade.</span></h1>
+                <p>No UaiPede, tratamos seus dados com a mesma transparência com que entregamos seu pedido.</p>
             </div>
 
-            <a href="index.html" class="btn-home">Voltar para o Início</a>
-        </div>
-    </main>
+            <section class="content-section">
+                
+                <details id="intro" open>
+                    <summary>1. Introdução</summary>
+                    <div class="details-content">
+                        <p>Bem-vindo ao <strong>UaiPede</strong>. Esta Política explica como protegemos suas informações pessoais ao utilizar nossa plataforma, seja você um fã de comida, um lojista parceiro ou um entregador herói.</p>
+                    </div>
+                </details>
+
+                <details id="dados">
+                    <summary>2. Informações que Recolhemos</summary>
+                    <div class="details-content">
+                        <p>Para garantir a melhor experiência, precisamos de alguns dados essenciais:</p>
+                        <ul>
+                            <li><strong>Registo:</strong> Nome, e-mail e credenciais de acesso.</li>
+                            <li><strong>Entrega:</strong> Endereço completo com geolocalização para precisão.</li>
+                            <li><strong>Preferências:</strong> Histórico de pedidos e lojas favoritas para recomendações personalizadas.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details id="uso">
+                    <summary>3. Como Usamos as Suas Informações</summary>
+                    <div class="details-content">
+                        <p>Os dados são o motor da nossa eficiência:</p>
+                        <ul>
+                            <li>Conectar você às melhores cozinhas da região.</li>
+                            <li>Traçar a rota mais rápida para o entregador.</li>
+                            <li>Manter você informado via notificações em tempo real.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details id="partilha">
+                    <summary>4. Partilha de Informações</summary>
+                    <div class="details-content">
+                        <p>Transparência total: <strong>não vendemos seus dados.</strong> A partilha ocorre apenas com:</p>
+                        <ul>
+                            <li><strong>Lojas:</strong> Apenas o necessário para preparar seu prato.</li>
+                            <li><strong>Entregadores:</strong> Nome e endereço apenas durante o trajeto.</li>
+                            <li><strong>Leis:</strong> Em caso de obrigatoriedade jurídica.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details id="seguranca">
+                    <summary>5. Armazenamento e Segurança</summary>
+                    <div class="details-content">
+                        <p>Utilizamos infraestrutura de classe mundial através do <strong>Google Firebase</strong>, garantindo encriptação de ponta a ponta e proteção contra acessos não autorizados.</p>
+                    </div>
+                </details>
+
+                <details id="direitos">
+                    <summary>6. Os Seus Direitos</summary>
+                    <div class="details-content">
+                        <p>O dono dos dados é você. No menu "Perfil" você pode:</p>
+                        <ul>
+                            <li>Aceder e exportar seus dados.</li>
+                            <li>Corrigir informações desatualizadas.</li>
+                            <li><strong>Eliminar sua conta</strong> permanentemente a qualquer momento.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <div class="contact-card">
+                    <div style="font-size: 2rem;">✉️</div>
+                    <div class="contact-info">
+                        <h3>Dúvidas ou Suporte?</h3>
+                        <p>Fale conosco pelas redes sociais ou suporte oficial.</p>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
 
 </body>
-
 </html>
