@@ -67,6 +67,11 @@
     <div class="app-body">
         
         <aside class="sidebar">
+            <div class="menu-item" onclick="window.location.href='adm (11).html'" style="margin-bottom: 20px; border-bottom: 1px solid var(--uai-border); padding-bottom: 20px;">
+                <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Voltar ao Painel Admin
+            </div>
+
             <div class="menu-item active" onclick="filtrarCidade('Todas')">
                 <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
                 Caixa de Entrada
@@ -155,7 +160,6 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // IMPORTANDO "addDoc" PARA PODER ADICIONAR NA COLEÇÃO STORES
         import { getFirestore, collection, onSnapshot, doc, updateDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -174,7 +178,6 @@
         let cidadeAtual = 'Todas';
         let solicitacaoAbertaId = null;
 
-        // Buscar dados do Firebase em Tempo Real (Apenas as pendentes)
         const q = query(collection(db, "solicitacoes"), orderBy("dataCriacao", "desc"));
         
         onSnapshot(q, (snapshot) => {
@@ -183,7 +186,6 @@
 
             snapshot.forEach(doc => {
                 const data = doc.data();
-                // Ignora as recusadas/arquivadas e as aprovadas (já registadas)
                 if(data.status !== 'arquivado' && data.status !== 'aprovado') { 
                     todasSolicitacoes.push({ id: doc.id, ...data });
                     if(data.cidade) cidadesSet.add(data.cidade);
@@ -206,7 +208,7 @@
             if(elementoClicado) {
                 elementoClicado.classList.add('active');
             } else {
-                document.querySelector('.sidebar .menu-item').classList.add('active');
+                document.querySelector('.sidebar .menu-item:nth-child(2)').classList.add('active');
             }
 
             const filtrados = cidade === 'Todas' ? todasSolicitacoes : todasSolicitacoes.filter(s => s.cidade === cidade);
@@ -261,7 +263,6 @@
             elementoClicado.classList.add('active');
             elementoClicado.classList.remove('unread');
 
-            // Marca como LIDA no Firebase se ainda não foi
             if(!req.lida) {
                 const docRef = doc(db, "solicitacoes", req.id);
                 await updateDoc(docRef, { lida: true });
@@ -271,7 +272,6 @@
             document.getElementById('request-content').style.display = 'block';
             if (window.innerWidth <= 600) document.getElementById('detail-pane').style.display = 'block';
 
-            // Preencher dados na tela
             document.getElementById('det-nome').innerText = req.nomeFantasia || '--';
             document.getElementById('det-cidade').innerText = req.cidade || '--';
             document.getElementById('det-segmento').innerText = req.segmento || '--';
@@ -279,19 +279,17 @@
             document.getElementById('det-razao').innerText = `${req.razaoSocial} | ${req.cnpj}`;
             document.getElementById('det-responsavel').innerText = req.responsavel || '--';
             
-            // Tratamento do endereço para exibir bonito
             let compText = req.complemento ? ` - ${req.complemento}` : '';
-            document.getElementById('det-endereco').innerText = `${req.ruaNumero}, ${req.bairro}${compText} - CEP: ${req.cep}`;
+            // 🟢 CORREÇÃO DO CEP AQUI PARA EXIBIÇÃO: SE NÃO HOUVER, MOSTRA N/A 🟢
+            document.getElementById('det-endereco').innerText = `${req.ruaNumero || ''}, ${req.bairro || ''}${compText} - CEP: ${req.cep || 'N/A'}`;
             
             document.getElementById('det-whats').innerText = req.whatsapp || '--';
             document.getElementById('det-email').innerText = req.email || '--';
             document.getElementById('det-operacao').innerText = `Prazo: ${req.prazoDelivery} min | Taxa: ${req.taxaEntrega}`;
             
-            // Tratamento das formas de pagamento
             document.getElementById('det-pagamentos').innerText = Array.isArray(req.pagamentos) ? req.pagamentos.join(', ') : 'Não informado';
             document.getElementById('det-obs').innerText = req.obs || "Sem observações.";
 
-            // Mostra a Logo se existir
             const imgEl = document.getElementById('det-logo-img');
             if (req.logoFileBase64) {
                 imgEl.src = req.logoFileBase64;
@@ -301,11 +299,10 @@
             }
         }
 
-        // 🟢 FUNÇÃO QUE LIGA A CAIXA DE EMAIL AO PAINEL ADMIN 🟢
+        // 🟢 FUNÇÃO APROVAR LOJA CORRIGIDA 🟢
         window.aprovarLoja = async function() {
             if(!solicitacaoAbertaId) return;
 
-            // Procurar a solicitação no Array
             const req = todasSolicitacoes.find(s => s.id === solicitacaoAbertaId);
             if(!req) return;
 
@@ -315,26 +312,22 @@
                     btn.innerText = "A Aprovar...";
                     btn.disabled = true;
 
-                    // 1. Gerar uma senha aleatória de 6 números para o lojista
                     const senhaGerada = Math.floor(100000 + Math.random() * 900000).toString(); 
 
-                    // 2. Montar endereço no formato que a tabela de Lojas (stores) usa
                     let compText = req.complemento ? ` - ${req.complemento}` : '';
-                    const enderecoCompleto = `${req.ruaNumero}, ${req.bairro}${compText}`;
+                    const enderecoCompleto = `${req.ruaNumero || ''}, ${req.bairro || ''}${compText}`;
 
-                    // 3. Adicionar 30 dias grátis de plano (vencimento)
                     const dataVencimento = new Date();
                     dataVencimento.setDate(dataVencimento.getDate() + 30);
 
-                    // 4. Salvar na coleção 'stores' (a coleção que o adm(11).html lê)
                     await addDoc(collection(db, "stores"), {
-                        name: req.nomeFantasia,
-                        doc: req.cnpj,
-                        cep: req.cep,
+                        name: req.nomeFantasia || "Sem Nome",
+                        doc: req.cnpj || "",
+                        cep: req.cep || "N/A", // Evita erro se o form foi enviado sem CEP
                         street: enderecoCompleto,
-                        city: req.cidade,
+                        city: req.cidade || "",
                         cat: req.segmento || "Restaurantes",
-                        email: req.email,
+                        email: req.email || "",
                         password: senhaGerada,
                         logo: req.logoFileBase64 || "https://via.placeholder.com/60",
                         dueDate: dataVencimento.getTime(),
@@ -343,20 +336,18 @@
                         status: "Aberto"
                     });
 
-                    // 5. Mudar o status na caixa de email para "aprovado" (some da lista)
                     const docRef = doc(db, "solicitacoes", solicitacaoAbertaId);
                     await updateDoc(docRef, { status: 'aprovado' });
 
                     alert(`LOJA APROVADA COM SUCESSO!\n\nA loja já aparece no painel do administrador.\n\nInforme ao lojista a Palavra-passe criada: ${senhaGerada}`);
                     
-                    // Reset da tela
                     document.getElementById('empty-state').style.display = 'flex';
                     document.getElementById('request-content').style.display = 'none';
                     solicitacaoAbertaId = null;
                     
                 } catch(e) {
                     console.error("Erro na aprovação:", e);
-                    alert("Ocorreu um erro ao aprovar a loja. Tente novamente.");
+                    alert("Ocorreu um erro ao aprovar a loja: " + e.message);
                 } finally {
                     const btn = document.getElementById('btn-approve');
                     if(btn) {
