@@ -51,7 +51,7 @@
         .hero h1 { font-size: 4.5rem; font-weight: 900; line-height: 1; margin-bottom: 25px; letter-spacing: -2px; }
         .hero p { font-size: 1.2rem; color: var(--gray-text); margin-bottom: 40px; max-width: 500px; }
         
-        .hero-apps { display: flex; gap: 15px; }
+        .hero-apps { display: flex; gap: 15px; flex-wrap: wrap; }
         .btn-app { background: #000; color: #fff; padding: 10px 20px; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-decoration: none; transition: 0.3s; }
         .btn-app:hover { transform: translateY(-3px); }
         .btn-app i { font-size: 1.5rem; }
@@ -172,6 +172,10 @@
         .footer-col ul li { margin-bottom: 15px; }
         .footer-col ul a { color: #aaa; text-decoration: none; transition: 0.2s; }
         .footer-col ul a:hover { color: #fff; }
+        
+        .footer-apps { display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
+        .footer-apps .btn-app { background: #111; border: 1px solid #333; }
+        .footer-apps .btn-app:hover { background: #222; border-color: var(--primary); }
 
         .footer-bottom { border-top: 1px solid #222; padding-top: 40px; display: flex; justify-content: space-between; color: #777; font-size: 0.85rem; flex-wrap: wrap; gap: 20px; text-align: left; }
         
@@ -181,6 +185,7 @@
             .hero-image { width: 100%; margin-top: 60px; }
             .why-features, .partner-box { grid-template-columns: 1fr; gap: 40px; }
             .footer-main { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .footer-apps { justify-content: center; }
             .hero h1 { font-size: 3rem; }
             header { padding: 15px 5%; }
             .tech-grid { grid-template-columns: 1fr; }
@@ -532,6 +537,17 @@
             <div>
                 <a href="#" class="footer-logo">UaiPede</a>
                 <p style="color: #777; line-height: 1.6; max-width: 300px;">O delivery que entende o mineiro. Rápido, prático e sempre com as melhores opções para você.</p>
+                
+                <div class="footer-apps">
+                    <a href="https://uaipede.vercel.app/apple.html" class="btn-app">
+                        <i class="fab fa-apple"></i>
+                        <div><span>Download on the</span><strong>App Store</strong></div>
+                    </a>
+                    <a href="#" class="btn-app">
+                        <i class="fab fa-google-play"></i>
+                        <div><span>GET IT ON</span><strong>Google Play</strong></div>
+                    </a>
+                </div>
             </div>
             
             <div class="footer-col">
