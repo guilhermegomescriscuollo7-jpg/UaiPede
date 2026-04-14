@@ -116,8 +116,6 @@
         /* ==================== MAPA DARK COM PINOS ==================== */
         #map { height: 500px; width: 100%; border-radius: 12px; z-index: 1; border: 1px solid var(--border-color); }
         .leaflet-control-attribution { opacity: 0.3; background: transparent !important; color: var(--text-muted) !important;}
-        
-        /* Estilizar Popup do Leaflet para ficar Dark */
         .leaflet-popup-content-wrapper { background: var(--bg-card) !important; color: var(--text-main) !important; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         .leaflet-popup-tip { background: var(--bg-card) !important; border: 1px solid var(--border-color); }
         .leaflet-popup-content { margin: 15px !important; line-height: 1.5; }
@@ -457,7 +455,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
@@ -529,7 +527,7 @@
         let heatLayer = null;
         let storeMarkers = [];
 
-        function updateHeatMap(ordersToProcess, storesToProcess) {
+        async function updateHeatMap(ordersToProcess, storesToProcess) {
             if(!heatMapInstance) {
                 heatMapInstance = L.map('map').setView([-20.2800, -45.8000], 14);
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -540,12 +538,11 @@
             
             setTimeout(() => { heatMapInstance.invalidateSize(); }, 200);
 
-            // Limpar camadas anteriores
             if (heatLayer) heatMapInstance.removeLayer(heatLayer);
             storeMarkers.forEach(m => heatMapInstance.removeLayer(m));
             storeMarkers = [];
 
-            // 1. Manchas de Calor (Procura)
+            // 1. Manchas de Calor
             const points = [];
             ordersToProcess.forEach(o => {
                 if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
@@ -555,21 +552,15 @@
                 }
             });
 
-            // Modo Demonstração
-            if(points.length === 0) {
-                 const baseLat = -20.2810; const baseLng = -45.8020;
-                 for(let i=0; i<80; i++) points.push([baseLat + (Math.random()-0.5)*0.015, baseLng + (Math.random()-0.5)*0.015, Math.random()]);
-                 heatMapInstance.setView([baseLat, baseLng], 14);
-            } else {
+            if(points.length > 0) {
                  heatMapInstance.setView([points[0][0], points[0][1]], 14);
+                 heatLayer = L.heatLayer(points, {
+                     radius: 20, blur: 15, maxZoom: 17,
+                     gradient: {0.4: '#007AFF', 0.6: '#00B67A', 0.8: '#FF9500', 1.0: '#ea1d2c'}
+                 }).addTo(heatMapInstance);
             }
 
-            heatLayer = L.heatLayer(points, {
-                radius: 20, blur: 15, maxZoom: 17,
-                gradient: {0.4: '#007AFF', 0.6: '#00B67A', 0.8: '#FF9500', 1.0: '#ea1d2c'}
-            }).addTo(heatMapInstance);
-
-            // 2. Pinos das Lojas (Oferta)
+            // 2. Pinos das Lojas
             const storeIcon = L.divIcon({
                 className: 'custom-store-marker',
                 html: `<div style="background:var(--primary); color:white; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 4px 10px rgba(0,0,0,0.5);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>`,
@@ -578,33 +569,48 @@
                 popupAnchor: [0, -15]
             });
 
-            storesToProcess.forEach((store, index) => {
+            for (const store of storesToProcess) {
                 let lat = store.lat;
                 let lng = store.lng;
 
-                // Fallback para demonstração se a loja antiga não tiver GPS salvo
                 if (!lat || !lng) {
-                    const baseLat = -20.2810; const baseLng = -45.8020;
-                    lat = baseLat + (Math.random() - 0.5) * 0.02;
-                    lng = baseLng + (Math.random() - 0.5) * 0.02;
+                    const enderecoTexto = store.address || store.endereco || store.rua;
+                    const cidadeTexto = store.city || "Doresópolis";
+                    
+                    if (enderecoTexto) {
+                        const query = encodeURIComponent(`${enderecoTexto}, ${cidadeTexto}, Minas Gerais, Brasil`);
+                        try {
+                            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+                            const data = await response.json();
+                            
+                            if (data && data.length > 0) {
+                                lat = data[0].lat;
+                                lng = data[0].lon;
+                            }
+                        } catch (error) {
+                            console.error("Erro ao localizar endereço da loja:", store.name);
+                        }
+                    }
                 }
 
-                const statusColor = store.status === 'Aberto' ? '#00B67A' : '#FF3B30';
-                const statusText = store.status === 'Aberto' ? '🟢 Aberta' : '🔴 Fechada';
+                if (lat && lng) {
+                    const statusColor = store.status === 'Aberto' ? '#00B67A' : '#FF3B30';
+                    const statusText = store.status === 'Aberto' ? '🟢 Aberta' : '🔴 Fechada';
 
-                const marker = L.marker([parseFloat(lat), parseFloat(lng)], {icon: storeIcon})
-                                .bindPopup(`
-                                    <div style="text-align:center;">
-                                        <b style="font-size:16px;">${store.name}</b><br>
-                                        <span style="color:${statusColor}; font-weight:bold; font-size:12px; display:inline-block; margin-top:5px;">${statusText}</span>
-                                    </div>
-                                `).addTo(heatMapInstance);
-                storeMarkers.push(marker);
-            });
+                    const marker = L.marker([parseFloat(lat), parseFloat(lng)], {icon: storeIcon})
+                                    .bindPopup(`
+                                        <div style="text-align:center;">
+                                            <b style="font-size:16px;">${store.name}</b><br>
+                                            <span style="color:${statusColor}; font-weight:bold; font-size:12px; display:inline-block; margin-top:5px;">${statusText}</span>
+                                        </div>
+                                    `).addTo(heatMapInstance);
+                    storeMarkers.push(marker);
+                }
+            }
         }
 
         // =========================================
-        // FIREBASE LISTENERS E FILTROS
+        // FIREBASE LISTENERS
         // =========================================
         onSnapshot(collection(db, "stores"), (snap) => {
             allStores = []; cityMap = {};
@@ -628,6 +634,9 @@
             applyFilters();
         });
 
+        // =========================================
+        // LÓGICA DE DADOS E FILTROS
+        // =========================================
         window.applyFilters = () => {
             currentFilter = document.getElementById('city-filter').value;
             const orders = currentFilter === 'todas' ? allOrders : allOrders.filter(o => cityMap[o.storeId] === currentFilter);
@@ -797,7 +806,7 @@
             const sorted = Object.entries(prods).sort((a,b) => b[1] - a[1]).slice(0, 5);
             const tbody = document.getElementById('table-top-products').querySelector('tbody');
             if(sorted.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:var(--text-muted);">Sem vendas registadas no mês.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:var(--text-muted);">Sem vendas registradas no mês.</td></tr>';
             } else {
                 tbody.innerHTML = sorted.map(([name, qtd]) => `<tr><td><strong>${name}</strong></td><td style="color:var(--text-muted);">${qtd} un</td></tr>`).join('');
             }
@@ -833,12 +842,7 @@
                     <td data-label="Localização" style="color:var(--text-muted);">${store.city || 'N/A'}</td>
                     <td data-label="Status">${statusBadge}</td>
                     <td data-label="Faturamento" style="color:var(--text-main); font-weight:700;">R$ ${stats.total.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
-                    <td data-label="Ações">
-                        <button class="btn-ver-detalhes" onclick="openStoreDetails('${safeName}', ${stats.total}, ${stats.orders}, ${stats.canceled}, '${store.status}')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                            Detalhes
-                        </button>
-                    </td>
+                    <td data-label="Ações"><button class="btn-ver-detalhes" onclick="openStoreDetails('${safeName}', ${stats.total}, ${stats.orders}, ${stats.canceled}, '${store.status}')">Detalhes</button></td>
                 </tr>`;
             }).join('');
         }
