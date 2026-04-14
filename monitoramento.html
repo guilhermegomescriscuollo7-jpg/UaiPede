@@ -40,9 +40,12 @@
         /* Main Content */
         .main { flex: 1; overflow-y: auto; padding: 30px 40px; position: relative; }
         
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;}
         h1 { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px; }
         .subtitle { color: var(--gray); font-size: 0.95rem; margin-top: 4px;}
+        
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .city-filter { padding: 10px 16px; border-radius: 20px; border: 1px solid var(--border); outline: none; font-weight: 700; color: var(--dark); background: var(--surface); cursor: pointer; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         
         .live-badge { background: var(--primary-soft); color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 800; display: flex; align-items: center; gap: 8px; border: 1px solid #fecaca; }
         .pulse-dot { width: 10px; height: 10px; background: var(--primary); border-radius: 50%; animation: pulse 1.5s infinite; }
@@ -75,7 +78,7 @@
         .chart-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 20px; color: var(--dark); }
         .chart-container { position: relative; height: 300px; width: 100%; }
 
-        /* Tabelas Estilizadas (Lojas e Clientes) */
+        /* Tabelas Estilizadas */
         .table-container { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th { background: #f8fafc; padding: 16px 20px; font-size: 0.85rem; font-weight: 700; color: var(--gray); text-transform: uppercase; border-bottom: 1px solid var(--border); }
@@ -83,12 +86,13 @@
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #f1f5f9; }
         
-        /* Badges de Status */
         .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; display: inline-block; }
         .badge-open { background: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; }
         .badge-closed { background: var(--primary-soft); color: var(--primary); border: 1px solid #fecaca; }
+        .btn-ver-detalhes { padding: 8px 16px; border: 1px solid var(--border); background: var(--bg-body); border-radius: 8px; font-weight: 700; color: var(--dark); cursor: pointer; transition: 0.2s;}
+        .btn-ver-detalhes:hover { background: #e2e8f0; }
 
-        /* Cards de Motoboys (Logística) */
+        /* Logística */
         .driver-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .driver-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.2s;}
         .driver-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
@@ -96,12 +100,19 @@
         .driver-info h4 { margin-bottom: 4px; color: var(--dark); font-weight: 800;}
         .driver-info p { font-size: 0.85rem; color: var(--gray); font-weight: 600;}
 
+        /* Modal Detalhes Loja */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 10000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease;}
+        .modal-content { background: var(--surface); width: 90%; max-width: 420px; padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal-title { font-size: 1.25rem; font-weight: 900; margin-bottom: 20px; color: var(--dark); letter-spacing:-0.5px;}
+
         @media (max-width: 768px) {
             body { flex-direction: column; overflow-y: auto;}
             .sidebar { width: 100%; padding: 15px; flex-direction: row; justify-content: space-between; align-items: center; height: auto;}
             .brand { margin-bottom: 0; font-size: 1.2rem;}
-            .nav-menu { display: none; } /* Pode implementar um menu hamburger depois */
+            .nav-menu { display: none; }
             .main { padding: 20px; }
+            .header-actions { width: 100%; justify-content: space-between; margin-top: 10px;}
             .charts-grid { grid-template-columns: 1fr; }
             table, thead, tbody, th, td, tr { display: block; }
             th { display: none; }
@@ -129,16 +140,21 @@
                 <h1 id="page-title">Visão de Negócio</h1>
                 <div class="subtitle" id="data-atual">Acompanhamento em tempo real</div>
             </div>
-            <div class="live-badge">
-                <div class="pulse-dot"></div>
-                Conectado ao Banco de Dados
+            <div class="header-actions">
+                <select id="city-filter" class="city-filter" onchange="applyGlobalCityFilter()">
+                    <option value="todas">Todas as Cidades</option>
+                </select>
+                <div class="live-badge">
+                    <div class="pulse-dot"></div>
+                    Ao Vivo
+                </div>
             </div>
         </header>
 
         <section id="visao-geral" class="section active">
             <div class="kpi-grid">
                 <div class="kpi-card">
-                    <div class="kpi-title">Faturamento Hoje <span title="Valor total de pedidos concluídos">ℹ️</span></div>
+                    <div class="kpi-title">Faturamento Hoje <span title="Valor total de pedidos concluídos na cidade selecionada">ℹ️</span></div>
                     <div class="kpi-value" id="kpi-faturamento">R$ 0,00</div>
                     <div class="kpi-trend trend-up" id="trend-faturamento">Calculando...</div>
                 </div>
@@ -156,11 +172,11 @@
                     <div class="kpi-title">Ecossistema Ativo</div>
                     <div style="display:flex; justify-content: space-between; margin-top: 10px;">
                         <div>
-                            <div style="font-size:0.75rem; color:var(--gray); font-weight:700;">LOJAS</div>
+                            <div style="font-size:0.75rem; color:var(--gray); font-weight:700;">LOJAS (CIDADE)</div>
                             <div style="font-size:1.4rem; font-weight:900;" id="kpi-lojas">0</div>
                         </div>
                         <div>
-                            <div style="font-size:0.75rem; color:var(--gray); font-weight:700;">MOTOBOYS</div>
+                            <div style="font-size:0.75rem; color:var(--gray); font-weight:700;">MOTOBOYS (CIDADE)</div>
                             <div style="font-size:1.4rem; font-weight:900; color:var(--primary);" id="kpi-motoboys">0</div>
                         </div>
                     </div>
@@ -189,13 +205,14 @@
                     <thead>
                         <tr>
                             <th>Nome da Loja</th>
+                            <th>Cidade</th>
                             <th>Status Atual</th>
                             <th>Total Vendas (Mês)</th>
                             <th>Ação</th>
                         </tr>
                     </thead>
                     <tbody id="table-body-lojas">
-                        <tr><td colspan="4" style="text-align:center; padding:30px;">Carregando lojas...</td></tr>
+                        <tr><td colspan="5" style="text-align:center; padding:30px;">Carregando lojas...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -223,14 +240,30 @@
                 </table>
             </div>
         </section>
-
     </main>
+
+    <div class="modal-overlay" id="store-modal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modal-store-name">Nome da Loja</h3>
+            
+            <div style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; padding-bottom:15px; border-bottom:1px solid var(--border);">
+                <span style="color:var(--gray); font-weight:600; font-size:0.95rem;">Vendas no Mês (Bruto):</span>
+                <strong id="modal-store-total" style="font-size:1.2rem; color:var(--dark);">R$ 0,00</strong>
+            </div>
+            
+            <div style="margin-bottom:30px; display:flex; justify-content:space-between; align-items:center; background:var(--primary-soft); padding:16px 20px; border-radius:12px; border:1px solid #fecaca;">
+                <span style="color:var(--primary); font-weight:800; font-size:0.95rem;">Taxa UaiPede (8%):</span>
+                <strong id="modal-store-fee" style="color:var(--primary); font-weight:900; font-size:1.4rem;">R$ 0,00</strong>
+            </div>
+            
+            <button onclick="closeStoreModal()" style="width:100%; padding:14px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; font-weight:800; cursor:pointer; color:var(--dark); transition:0.2s;">Fechar Detalhes</button>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Configuração exata do UaiPede
         const firebaseConfig = {
             apiKey: "AIzaSyBinV28T4xWvYAnE0Yed1rbsp9dEF_n7Eg",
             authDomain: "dores-delivery.firebaseapp.com",
@@ -243,34 +276,49 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Formatação de data no topo
+        // Data Atual
         const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('data-atual').innerText = new Date().toLocaleDateString('pt-BR', optionsDate);
 
+        // Variáveis Globais de Filtro e Dados
+        let currentCityFilter = 'todas';
+        let allOrders = [];
+        let allStores = [];
+        let allDrivers = [];
+        let storeCityMap = {}; // Para saber a cidade do pedido baseado no ID da loja
+
         // =========================================
-        // NAVEGAÇÃO SPA (Troca de Abas)
+        // NAVEGAÇÃO SPA E MODAIS
         // =========================================
         window.switchTab = (tabId, element, title) => {
-            // Atualiza botões do menu
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             element.classList.add('active');
-
-            // Atualiza título da página
             document.getElementById('page-title').innerText = title;
-
-            // Esconde todas as seções e mostra a alvo
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
         };
 
         window.logout = () => {
-            if(confirm("Deseja sair do painel CEO?")) {
-                window.location.href = "login.html"; // Ajuste para a sua página de login
-            }
+            if(confirm("Deseja sair do painel CEO?")) window.location.href = "login.html";
         }
 
+        window.openStoreDetails = (name, total) => {
+            document.getElementById('modal-store-name').innerText = name;
+            document.getElementById('modal-store-total').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            
+            // Calcula os 8% do UaiPede
+            const fee = total * 0.08;
+            document.getElementById('modal-store-fee').innerText = `R$ ${fee.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            
+            document.getElementById('store-modal').classList.add('active');
+        };
+
+        window.closeStoreModal = () => {
+            document.getElementById('store-modal').classList.remove('active');
+        };
+
         // =========================================
-        // INICIALIZAÇÃO DE GRÁFICOS (Chart.js)
+        // INICIALIZAÇÃO DOS GRÁFICOS (Chart.js)
         // =========================================
         const ctxRev = document.getElementById('revenueChart').getContext('2d');
         const revChart = new Chart(ctxRev, {
@@ -287,54 +335,81 @@
         });
 
         // =========================================
-        // BANCO DE DADOS EM TEMPO REAL
+        // FILTROS E CARREGAMENTO DE DADOS
         // =========================================
-        
-        let allOrders = [];
-        let allStores = [];
-        let allDrivers = [];
-        
+
+        // Aplica o filtro de cidade e reconstrói as telas
+        window.applyGlobalCityFilter = () => {
+            currentCityFilter = document.getElementById('city-filter').value;
+            triggerAllUpdates();
+        };
+
+        function updateCityDropdown() {
+            const select = document.getElementById('city-filter');
+            const currentVal = select.value;
+            // Pega todas as cidades válidas cadastradas nas lojas
+            const cities = [...new Set(allStores.map(s => s.city).filter(c => c && c.trim() !== ''))].sort();
+            
+            let html = '<option value="todas">Todas as Cidades</option>';
+            cities.forEach(c => {
+                html += `<option value="${c}">${c}</option>`;
+            });
+            select.innerHTML = html;
+            
+            // Mantém a seleção se a cidade ainda existir
+            if (cities.includes(currentVal) || currentVal === 'todas') {
+                select.value = currentVal;
+            }
+        }
+
+        function triggerAllUpdates() {
+            processDashData();
+            renderLojasTable();
+            renderLogisticaGrid();
+            renderClientesTable();
+        }
+
         // 1. Escutando Lojas
         onSnapshot(collection(db, "stores"), (snapshot) => {
             allStores = [];
-            let abertas = 0;
+            storeCityMap = {};
             snapshot.forEach(doc => { 
                 const data = doc.data();
-                allStores.push({ id: doc.id, ...data });
-                if (data.status === 'Aberto') abertas++; 
+                const storeObj = { id: doc.id, ...data };
+                allStores.push(storeObj);
+                if(data.city) storeCityMap[doc.id] = data.city;
             });
-            document.getElementById('kpi-lojas').innerText = abertas;
-            renderLojasTable();
+            updateCityDropdown();
+            triggerAllUpdates();
         });
 
         // 2. Escutando Motoboys
         onSnapshot(collection(db, "drivers"), (snapshot) => {
             allDrivers = [];
-            let online = 0;
             snapshot.forEach(doc => { 
-                const d = doc.data(); 
-                allDrivers.push({ id: doc.id, ...d });
-                if ((d.isOnline === true || d.isOnline === "true") && d.isActive !== false) online++; 
+                allDrivers.push({ id: doc.id, ...doc.data() });
             });
-            document.getElementById('kpi-motoboys').innerText = online;
             renderLogisticaGrid();
         });
 
-        // 3. Escutando Pedidos (Alimenta Dashboard, Lojas e Clientes)
+        // 3. Escutando Pedidos
         onSnapshot(collection(db, "orders"), (snapshot) => {
             allOrders = [];
             snapshot.forEach(doc => allOrders.push({ id: doc.id, ...doc.data() }));
-            
-            processDashData();
-            renderLojasTable(); // Re-renderiza para atualizar vendas
-            renderClientesTable();
+            triggerAllUpdates();
         });
 
         // =========================================
-        // FUNÇÕES DE RENDERIZAÇÃO E CÁLCULO
+        // LÓGICA DE RENDERIZAÇÃO
         // =========================================
 
+        function getFilteredOrders() {
+            if (currentCityFilter === 'todas') return allOrders;
+            return allOrders.filter(o => storeCityMap[o.storeId] === currentCityFilter);
+        }
+
         function processDashData() {
+            const ordersToProcess = getFilteredOrders();
             const now = Date.now();
             const startOfToday = new Date().setHours(0,0,0,0);
             
@@ -342,43 +417,41 @@
             let pedidosHojeCount = 0;
             let statusCounts = { pendente: 0, preparo: 0, rota: 0, concluido: 0, cancelado: 0 };
 
-            allOrders.forEach(order => {
+            ordersToProcess.forEach(order => {
                 const isToday = order.timestamp >= startOfToday;
                 const isCompleted = ['Entregue', 'Concluído', 'Concluido'].includes(order.status);
                 const totalVal = order.total || 0;
 
-                // Status e Faturamento de Hoje
                 if (isToday) {
                     if (order.status === 'Pendente') statusCounts.pendente++;
                     else if (order.status === 'Aceito' || order.status === 'Em Preparo') statusCounts.preparo++;
                     else if (order.status === 'Saiu para Entrega' || order.status === 'Aguardando Entregador') statusCounts.rota++;
                     else if (isCompleted) statusCounts.concluido++;
                     else if (order.status === 'Cancelado') statusCounts.cancelado++;
-
                     pedidosHojeCount++;
                 }
 
-                if (isCompleted && isToday) {
-                    faturamentoHoje += totalVal;
-                }
+                if (isCompleted && isToday) faturamentoHoje += totalVal;
             });
 
             // Atualiza KPIs
             document.getElementById('kpi-faturamento').innerText = `R$ ${faturamentoHoje.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('kpi-pedidos').innerText = pedidosHojeCount;
-            
             const ticketMedio = statusCounts.concluido > 0 ? (faturamentoHoje / statusCounts.concluido) : 0;
             document.getElementById('kpi-ticket').innerText = `R$ ${ticketMedio.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            // Atualiza Gráfico de Status
+            // Contagem de Lojas filtradas (Abertas)
+            const lojasFiltradas = currentCityFilter === 'todas' ? allStores : allStores.filter(s => s.city === currentCityFilter);
+            const abertas = lojasFiltradas.filter(s => s.status === 'Aberto').length;
+            document.getElementById('kpi-lojas').innerText = abertas;
+
+            // Gráficos
             statusChart.data.datasets[0].data = [statusCounts.pendente, statusCounts.preparo, statusCounts.rota, statusCounts.concluido, statusCounts.cancelado];
             statusChart.update();
-
-            // Gráfico de 7 Dias
-            processWeeklyChart();
+            processWeeklyChart(ordersToProcess);
         }
 
-        function processWeeklyChart() {
+        function processWeeklyChart(ordersToProcess) {
             const daysData = {};
             const labels = [];
             const dataArr = [];
@@ -391,7 +464,7 @@
                 labels.push(dateStr);
             }
 
-            allOrders.forEach(order => {
+            ordersToProcess.forEach(order => {
                 if (['Entregue', 'Concluído', 'Concluido'].includes(order.status) && order.timestamp) {
                     const dStr = new Date(order.timestamp).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
                     if (daysData[dStr] !== undefined) {
@@ -406,37 +479,44 @@
             revChart.update();
         }
 
-        // Renderiza Tabela de Lojas
         function renderLojasTable() {
             const tbody = document.getElementById('table-body-lojas');
-            if(allStores.length === 0) return;
+            const lojasFiltradas = currentCityFilter === 'todas' ? allStores : allStores.filter(s => s.city === currentCityFilter);
 
-            // Calcula vendas do mês para cada loja
+            if(lojasFiltradas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--gray);">Nenhuma loja encontrada nesta cidade.</td></tr>';
+                return;
+            }
+
             const startOfMonth = new Date();
             startOfMonth.setDate(1);
             startOfMonth.setHours(0,0,0,0);
             const startMonthMs = startOfMonth.getTime();
 
             const storeSales = {};
-            allOrders.forEach(o => {
+            const ordersToProcess = getFilteredOrders();
+            
+            ordersToProcess.forEach(o => {
                 if (o.timestamp >= startMonthMs && ['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
                     storeSales[o.storeId] = (storeSales[o.storeId] || 0) + (o.total || 0);
                 }
             });
 
-            const html = allStores.sort((a,b) => (storeSales[b.id]||0) - (storeSales[a.id]||0)).map(store => {
+            const html = lojasFiltradas.sort((a,b) => (storeSales[b.id]||0) - (storeSales[a.id]||0)).map(store => {
                 const statusBadge = store.status === 'Aberto' 
                     ? '<span class="badge badge-open">🟢 Aberta</span>' 
                     : '<span class="badge badge-closed">🔴 Fechada</span>';
                 
                 const vendasMes = storeSales[store.id] || 0;
+                const safeStoreName = store.name.replace(/'/g, "\\'");
 
                 return `
                     <tr>
                         <td data-label="Nome da Loja"><strong>${store.name}</strong></td>
+                        <td data-label="Cidade" style="color:var(--gray);">${store.city || 'Não informada'}</td>
                         <td data-label="Status Atual">${statusBadge}</td>
-                        <td data-label="Total Vendas (Mês)" style="color:var(--primary); font-weight:800;">R$ ${vendasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
-                        <td data-label="Ação"><button style="padding:6px 12px; border:1px solid var(--border); background:var(--bg-body); border-radius:6px; font-weight:700; cursor:pointer;">Ver Detalhes</button></td>
+                        <td data-label="Total Vendas (Mês)" style="color:var(--success); font-weight:800;">R$ ${vendasMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                        <td data-label="Ação"><button class="btn-ver-detalhes" onclick="openStoreDetails('${safeStoreName}', ${vendasMes})">Ver Detalhes e 8%</button></td>
                     </tr>
                 `;
             }).join('');
@@ -444,15 +524,26 @@
             tbody.innerHTML = html;
         }
 
-        // Renderiza Grid de Logística
         function renderLogisticaGrid() {
             const grid = document.getElementById('grid-motoboys');
-            if(allDrivers.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px; color:var(--gray);">Nenhum entregador cadastrado.</div>';
+            // Motoboys podem ter a propriedade "city". Se não tiverem, mostramos todos ou filtramos os compatíveis.
+            const driversFiltrados = currentCityFilter === 'todas' 
+                ? allDrivers 
+                : allDrivers.filter(d => (d.city && d.city === currentCityFilter) || !d.city); // Exibe motoboys sem cidade atrelada para segurança
+
+            // KPI do topo (Logística)
+            let onlineCount = 0;
+            driversFiltrados.forEach(d => {
+                if ((d.isOnline === true || d.isOnline === "true") && d.isActive !== false) onlineCount++;
+            });
+            document.getElementById('kpi-motoboys').innerText = onlineCount;
+
+            if(driversFiltrados.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px; color:var(--gray);">Nenhum entregador encontrado.</div>';
                 return;
             }
 
-            const html = allDrivers.map(driver => {
+            const html = driversFiltrados.map(driver => {
                 const isOnline = (driver.isOnline === true || driver.isOnline === "true") && driver.isActive !== false;
                 const statusColor = isOnline ? 'var(--success)' : 'var(--gray)';
                 const statusText = isOnline ? 'Online Agora' : 'Offline';
@@ -467,6 +558,7 @@
                                 <span style="width:8px; height:8px; border-radius:50%; background:${statusColor}; display:inline-block;"></span>
                                 ${statusText}
                             </p>
+                            ${driver.city ? `<span style="font-size:0.7rem; background:#f1f5f9; padding:2px 8px; border-radius:8px; margin-top:4px; display:inline-block; color:var(--gray);">${driver.city}</span>` : ''}
                         </div>
                     </div>
                 `;
@@ -475,12 +567,12 @@
             grid.innerHTML = html;
         }
 
-        // Renderiza Tabela de Clientes
         function renderClientesTable() {
             const tbody = document.getElementById('table-body-clientes');
+            const ordersToProcess = getFilteredOrders();
             
             const customers = {};
-            allOrders.forEach(o => {
+            ordersToProcess.forEach(o => {
                 if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
                     const name = o.customerName || 'Cliente Anônimo';
                     if (!customers[name]) customers[name] = { count: 0, total: 0 };
@@ -492,7 +584,7 @@
             const sortedCustomers = Object.entries(customers).sort((a,b) => b[1].total - a[1].total);
 
             if(sortedCustomers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:30px;">Nenhum cliente registrado ainda.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:30px; color:var(--gray);">Nenhum cliente registrado nesta cidade.</td></tr>';
                 return;
             }
 
@@ -500,8 +592,8 @@
                 return `
                     <tr>
                         <td data-label="Nome do Cliente"><strong>${name}</strong></td>
-                        <td data-label="Pedidos Realizados">${data.count} pedidos</td>
-                        <td data-label="Total Gasto na Plataforma" style="color:var(--success); font-weight:800;">R$ ${data.total.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                        <td data-label="Pedidos Realizados">${data.count} pedidos concluídos</td>
+                        <td data-label="Total Gasto na Plataforma" style="color:var(--primary); font-weight:800;">R$ ${data.total.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
                     </tr>
                 `;
             }).join('');
