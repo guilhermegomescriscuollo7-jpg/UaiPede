@@ -34,7 +34,6 @@
             --info-soft: rgba(0, 122, 255, 0.15);
             --warning: #FF9500;
             --warning-soft: rgba(255, 149, 0, 0.15);
-            --ai-color: #8e44ad;
             --radius-md: 14px;
             --radius-lg: 20px;
         }
@@ -59,7 +58,7 @@
         
         .nav-item.ai-menu { background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(74, 20, 140, 0.15)); color: #d7aefb; border: 1px solid rgba(138, 43, 226, 0.3); margin-bottom: 15px;}
         .nav-item.ai-menu:hover { background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(74, 20, 140, 0.3)); color: #fff; border-color: rgba(138, 43, 226, 0.6);}
-        .nav-item.ai-menu.active { background: linear-gradient(135deg, var(--ai-color), #9b59b6); color: #fff; border-color: transparent; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);}
+        .nav-item.ai-menu.active { background: linear-gradient(135deg, #8e44ad, #9b59b6); color: #fff; border-color: transparent; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);}
 
         .main { flex: 1; overflow-y: auto; padding: 30px; position: relative; background: var(--bg-main); }
         
@@ -110,8 +109,6 @@
         
         .btn-ver-detalhes { padding: 8px 16px; border: 1px solid var(--border-color); background: transparent; border-radius: 8px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: 0.2s; display:inline-flex; align-items:center; gap:6px;}
         .btn-ver-detalhes:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
-        .btn-pay { padding: 8px 16px; border: none; background: var(--success); border-radius: 8px; font-weight: 700; color: #fff; cursor: pointer; transition: 0.2s; display:inline-flex; align-items:center; gap:6px;}
-        .btn-pay:hover { background: #008f5e; }
 
         /* ==================== MAPA DARK ==================== */
         #map { height: 550px; width: 100%; border-radius: 12px; z-index: 1; border: 1px solid var(--border-color); background-color: var(--bg-card); }
@@ -135,9 +132,8 @@
 
         .menu-toggle { display: none; background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
         
-        /* ==================== IA UAIPEDE STYLES AVANÇADOS ==================== */
-        .ai-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 20px; }
-        .ai-report-container { background: var(--bg-card); border: 1px solid rgba(138, 43, 226, 0.3); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; overflow: hidden; display: flex; flex-direction: column;}
+        /* ==================== IA UAIPEDE STYLES ==================== */
+        .ai-report-container { background: var(--bg-card); border: 1px solid rgba(138, 43, 226, 0.3); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; overflow: hidden;}
         .ai-report-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #8e44ad, #3498db, #ea1d2c); }
         .ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;}
         .ai-title { font-size: 1.3rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
@@ -145,36 +141,15 @@
         .btn-ai { background: linear-gradient(135deg, #8e44ad, #9b59b6); color: #fff; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3); font-size:0.95rem;}
         .btn-ai:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(142, 68, 173, 0.5); filter: brightness(1.1);}
         
-        .ai-action-btn { background: rgba(138, 43, 226, 0.1); border: 1px solid var(--ai-color); color: #d7aefb; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; margin-left: 10px; font-weight: bold; transition: 0.2s;}
-        .ai-action-btn:hover { background: var(--ai-color); color: #fff; }
-        .ai-action-danger { border-color: var(--danger); color: #ff8a8a; background: rgba(255, 59, 48, 0.1); }
-        .ai-action-danger:hover { background: var(--danger); color: #fff; }
-
-        .ai-content { font-size: 1rem; color: var(--text-main); line-height: 1.7; display: none; animation: fadeIn 0.8s ease; flex: 1;}
-        .ai-content h4 { color: #d7aefb; font-size: 1.15rem; margin: 25px 0 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; display:flex; align-items:center; gap:8px;}
+        .ai-content { font-size: 1rem; color: var(--text-main); line-height: 1.7; display: none; animation: fadeIn 0.8s ease;}
+        .ai-content h4 { color: #d7aefb; font-size: 1.15rem; margin: 25px 0 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
         .ai-content ul, .ai-content ol { margin-left: 20px; margin-bottom: 15px; color: var(--text-muted);}
-        .ai-content li { margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 10px 15px; border-radius: 8px; border-left: 3px solid var(--ai-color);}
+        .ai-content li { margin-bottom: 10px; }
         .ai-content b { color: var(--text-main); }
         
-        .ai-loading { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 60px 0; color: #d7aefb; font-weight: 600; gap: 15px; flex: 1;}
-        .ai-spinner { width: 45px; height: 45px; border: 4px solid rgba(138, 43, 226, 0.2); border-top-color: #8e44ad; border-radius: 50%; animation: spin 1s linear infinite; }
+        .ai-loading { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; color: #d7aefb; font-weight: 600; gap: 15px;}
+        .ai-spinner { width: 40px; height: 40px; border: 4px solid rgba(138, 43, 226, 0.2); border-top-color: #8e44ad; border-radius: 50%; animation: spin 1s linear infinite; }
         
-        /* Chatbot Customizado */
-        .chat-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
-        .chat-header { background: rgba(255,255,255,0.02); padding: 15px 20px; border-bottom: 1px solid var(--border-color); font-weight: bold; display: flex; align-items: center; gap: 10px;}
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; height: 400px; background: var(--bg-main);}
-        .chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; animation: fadeIn 0.3s; }
-        .chat-bubble.ai { background: rgba(138, 43, 226, 0.15); color: #e9d5ff; border: 1px solid rgba(138, 43, 226, 0.3); align-self: flex-start; border-bottom-left-radius: 4px;}
-        .chat-bubble.user { background: var(--primary-soft); color: #fff; border: 1px solid rgba(234, 29, 44, 0.3); align-self: flex-end; border-bottom-right-radius: 4px;}
-        .chat-input-area { padding: 15px; background: var(--bg-card); border-top: 1px solid var(--border-color); display: flex; gap: 10px;}
-        .chat-input-area input { flex: 1; background: var(--bg-main); border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 10px; color: #fff; outline: none; transition: 0.2s;}
-        .chat-input-area input:focus { border-color: var(--ai-color); }
-        .chat-input-area button { background: var(--ai-color); border: none; color: white; width: 45px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
-        .chat-input-area button:hover { background: #9b59b6; transform: scale(1.05);}
-
-        @media (max-width: 1000px) {
-            .ai-grid { grid-template-columns: 1fr; }
-        }
         @media (max-width: 900px) {
             .sidebar { position: fixed; left: -280px; height: 100vh; box-shadow: 10px 0 30px rgba(0,0,0,0.5);}
             .sidebar.active { left: 0; }
@@ -353,54 +328,58 @@
                     </div>
                 </div>
             </div>
+
+            <div class="bi-grid">
+                <div class="card">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        Top 5 Produtos do Mês
+                    </h3>
+                    <div class="table-responsive">
+                        <table id="table-top-products">
+                            <thead><tr><th>Produto</th><th>Volume</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+                        Status Operacional (Hoje)
+                    </h3>
+                    <div style="position: relative; height: 220px; width: 100%; display:flex; justify-content:center;">
+                        <canvas id="opsChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="ia-uaipede" class="section">
             <h1>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d7aefb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px #8e44ad);"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
-                Inteligência Artificial Operacional
+                Inteligência Artificial UaiPede
             </h1>
             
-            <div class="ai-grid">
-                <div class="ai-report-container">
-                    <div class="ai-header">
-                        <div class="ai-title">
-                            Diretor Virtual (Previsões e Decisões)
-                        </div>
-                        <button class="btn-ai" id="btn-generate-ai" onclick="generateAIReport()">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
-                            Analisar Dados Agora
-                        </button>
+            <div class="ai-report-container">
+                <div class="ai-header">
+                    <div class="ai-title">
+                        Assistente de Decisão Estratégica
                     </div>
-                    
-                    <div class="ai-loading" id="ai-loading">
-                        <div class="ai-spinner"></div>
-                        <p>A cruzar dados de vendas, logística e algoritmos de previsão...</p>
-                    </div>
-                    
-                    <div class="ai-content" id="ai-report-content">
-                        <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(138, 43, 226, 0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
-                            <p>Clique no botão acima para gerar uma auditoria e previsão automática para Doresópolis baseada no histórico deste mês.</p>
-                        </div>
-                    </div>
+                    <button class="btn-ai" id="btn-generate-ai" onclick="generateAIReport()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+                        Analisar Dados Agora
+                    </button>
                 </div>
-
-                <div class="chat-container">
-                    <div class="chat-header">
-                        <span style="display:flex; align-items:center; justify-content:center; width:24px; height:24px; background:var(--ai-color); border-radius:50%;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
-                        </span>
-                        Assistente UaiPede
-                    </div>
-                    <div class="chat-messages" id="chat-messages">
-                        <div class="chat-bubble ai">Olá, CEO! Sou a inteligência nativa do sistema. Pode fazer-me perguntas sobre as vendas, lojas com problemas, ou pedir resumos de operações de Doresópolis.</div>
-                    </div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chat-input" placeholder="Ex: Qual a previsão de faturamento?" onkeypress="if(event.key === 'Enter') sendChatMessage()">
-                        <button onclick="sendChatMessage()">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                        </button>
+                
+                <div class="ai-loading" id="ai-loading">
+                    <div class="ai-spinner"></div>
+                    <p>A cruzar dados de vendas, logística e comportamento de lojas...</p>
+                </div>
+                
+                <div class="ai-content" id="ai-report-content">
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(138, 43, 226, 0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+                        <p>Clique no botão acima para gerar um relatório inteligente baseado nos dados do filtro atual.</p>
                     </div>
                 </div>
             </div>
@@ -564,15 +543,14 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allOrders = []; let allStores = []; let allDrivers = []; let cityMap = {}; let currentFilter = 'todas';
-
-        // Globais da IA para acesso rápido no Chat
-        let globalForecast = 0;
-        let globalChurnCount = 0;
-        let globalProblemStores = [];
+        let allOrders = [];
+        let allStores = [];
+        let allDrivers = [];
+        let cityMap = {};
+        let currentFilter = 'todas';
 
         // =========================================
-        // CONFIGURAÇÕES CHART.JS
+        // CONFIGURAÇÕES CHART.JS (DARK THEME)
         // =========================================
         Chart.defaults.color = '#8A92A6';
         Chart.defaults.font.family = "'Inter', sans-serif";
@@ -585,7 +563,14 @@
         const revChart = new Chart(ctxRev, {
             type: 'line',
             data: { labels: [], datasets: [{ label: 'Vendas (R$)', data: [], borderColor: '#ea1d2c', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4, pointBackgroundColor: '#ea1d2c', pointBorderColor: '#151A23', pointBorderWidth: 2 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#1F2533' }, border: { dash: [4, 4] } }, x: { grid: { display: false } } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { legend: { display: false } }, 
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: '#1F2533' }, border: { dash: [4, 4] } }, 
+                    x: { grid: { display: false } } 
+                } 
+            }
         });
 
         const ctxOps = document.getElementById('opsChart').getContext('2d');
@@ -610,22 +595,8 @@
         });
 
         // =========================================
-        // LÓGICA IA UAIPEDE (FORECAST, CHURN, AÇÕES)
+        // LÓGICA DA IA UAIPEDE
         // =========================================
-        
-        // Funções de ação ativadas pelos botões gerados pela IA
-        window.aiActionSendCoupon = () => {
-            alert(`Ação IA executada!\nCupom de 10% criado e notificação Push enviada para os ${globalChurnCount} clientes VIPs inativos de Doresópolis.`);
-        };
-        
-        window.aiActionAlertDrivers = () => {
-            alert(`Ação IA executada!\nNotificação de "Demanda Alta" disparada para todos os entregadores da cidade. Bônus temporário ativado.`);
-        };
-
-        window.aiActionPauseStore = (storeId) => {
-            alert(`Ação IA executada!\nLoja com ID ${storeId} pausada no sistema por excesso de cancelamentos. Um aviso foi enviado ao lojista.`);
-        };
-
         window.generateAIReport = () => {
             const btn = document.getElementById('btn-generate-ai');
             const content = document.getElementById('ai-report-content');
@@ -635,8 +606,10 @@
             content.style.display = 'none';
             loading.style.display = 'flex';
 
+            // Simula processamento
             setTimeout(() => {
                 const orders = currentFilter === 'todas' ? allOrders : allOrders.filter(o => cityMap[o.storeId] === currentFilter);
+                
                 const now = new Date();
                 const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
                 
@@ -644,155 +617,68 @@
                 let totalBruto = 0; let slaSoma = 0;
                 let storesSet = new Set();
                 
-                // Variáveis para Churn de Clientes
-                const customerStats = {};
-                // Variáveis para Lojas com Problema (Cancelamentos hoje)
-                const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-                const storeCancelCount = {};
-
                 orders.forEach(o => {
-                    // Contagem mensal básica
                     if (o.timestamp >= startMonth) {
                         if(['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
                             concluidos++;
                             totalBruto += (o.total || 0);
                             storesSet.add(o.storeId);
                             if(o.timestamp && o.deliveredAt) slaSoma += (o.deliveredAt - o.timestamp) / 60000;
-                            
-                            // Rastreador de Clientes
-                            const cName = o.customerName || 'Cliente';
-                            if(!customerStats[cName]) customerStats[cName] = { count: 0, lastOrder: 0 };
-                            customerStats[cName].count++;
-                            if (o.timestamp > customerStats[cName].lastOrder) customerStats[cName].lastOrder = o.timestamp;
-
                         } else if(o.status === 'Cancelado') {
                             cancelados++;
                         }
                     }
-
-                    // Contagem de anomalias (Hoje)
-                    if (o.timestamp >= startToday && o.status === 'Cancelado') {
-                        if (!storeCancelCount[o.storeName]) storeCancelCount[o.storeName] = { id: o.storeId, count: 0 };
-                        storeCancelCount[o.storeName].count++;
-                    }
                 });
-
-                // Cálculo Forecast Matemático
-                const currentDay = now.getDate();
-                const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-                globalForecast = currentDay > 0 ? (totalBruto / currentDay) * daysInMonth : 0;
-                const forecastTaxa = globalForecast * 0.08;
-
-                // Cálculo Churn (VIPs que não compram há 15 dias)
-                const fifteenDaysAgo = now.getTime() - (15 * 24 * 60 * 60 * 1000);
-                globalChurnCount = 0;
-                Object.values(customerStats).forEach(c => {
-                    if (c.count >= 3 && c.lastOrder < fifteenDaysAgo) globalChurnCount++;
-                });
-
-                // Filtro de Lojas com problemas
-                globalProblemStores = Object.keys(storeCancelCount).filter(k => storeCancelCount[k].count >= 3);
 
                 const totalPedidos = concluidos + cancelados;
                 const taxaCancelamento = totalPedidos > 0 ? (cancelados / totalPedidos) * 100 : 0;
                 const slaMedio = concluidos > 0 ? slaSoma / concluidos : 0;
+                const ticketMedio = concluidos > 0 ? totalBruto / concluidos : 0;
+                const lucroUaiPede = totalBruto * 0.08;
 
-                // Construção do Relatório Dinâmico
-                let html = `<h4><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Previsão Financeira (Forecast)</h4>`;
+                // Construção do Relatório
+                let html = `<h4>💰 Desempenho Financeiro</h4>`;
                 html += `<ul>`;
-                html += `<li>O volume até o dia de hoje é de R$ ${totalBruto.toLocaleString('pt-BR', {minimumFractionDigits:2})}.</li>`;
-                html += `<li><b>Projeção IA:</b> Mantendo este ritmo diário, vamos fechar o mês com <b>R$ ${globalForecast.toLocaleString('pt-BR', {minimumFractionDigits:2})}</b> de faturamento bruto das lojas.</li>`;
-                html += `<li>A previsão da sua <b>Taxa UaiPede (8%)</b> para este mês é de <b style="color:var(--success);">R$ ${forecastTaxa.toLocaleString('pt-BR', {minimumFractionDigits:2})}</b>.</li>`;
-                html += `</ul>`;
-
-                html += `<h4><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-9 5 18 3-10h4"></path></svg> Auditoria Operacional</h4>`;
-                html += `<ul>`;
-                if (slaMedio > 40) {
-                    html += `<li><b>Tempo de Entrega (SLA):</b> Elevado (${Math.round(slaMedio)} min). Atrasos detetados. <button class="ai-action-btn" onclick="aiActionAlertDrivers()">Chamar mais motoboys</button></li>`;
-                } else if (slaMedio > 0) {
-                    html += `<li><b>Tempo de Entrega (SLA):</b> Excelente (${Math.round(slaMedio)} min). Rede logística saudável.</li>`;
-                }
+                html += `<li>Neste mês, o volume bruto da plataforma foi de <b>R$ ${totalBruto.toLocaleString('pt-BR', {minimumFractionDigits:2})}</b>, gerando uma receita líquida estimada de <b>R$ ${lucroUaiPede.toLocaleString('pt-BR', {minimumFractionDigits:2})}</b> para a UaiPede (8%).</li>`;
                 
-                if (globalProblemStores.length > 0) {
-                    html += `<li><b>Anomalia nas Lojas:</b> Detetei lojas com elevado número de cancelamentos <b>hoje</b>: ${globalProblemStores.join(', ')}.`;
-                    html += `<button class="ai-action-btn ai-action-danger" onclick="aiActionPauseStore('${storeCancelCount[globalProblemStores[0]].id}')">Pausar Loja p/ Proteger Clientes</button></li>`;
+                if (ticketMedio < 30) {
+                    html += `<li>O Ticket Médio está em <b>R$ ${ticketMedio.toLocaleString('pt-BR', {minimumFractionDigits:2})}</b>. Isto é considerado baixo. Recomendo negociar com as lojas a criação de combos ("Hambúrguer + Bebida + Batata") para forçar os clientes a gastar mais por pedido.</li>`;
                 } else {
-                    html += `<li><b>Anomalia nas Lojas:</b> Nenhuma loja com índice crítico de cancelamentos hoje. Operação estável.</li>`;
+                    html += `<li>O Ticket Médio está em <b>R$ ${ticketMedio.toLocaleString('pt-BR', {minimumFractionDigits:2})}</b>, um valor muito saudável para o mercado de delivery atual.</li>`;
                 }
                 html += `</ul>`;
 
-                html += `<h4><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Retenção de Clientes</h4>`;
+                html += `<h4>⚙️ Saúde Operacional</h4>`;
                 html += `<ul>`;
-                if (globalChurnCount > 0) {
-                    html += `<li><b>Risco de Abandono (Churn):</b> Existem <b>${globalChurnCount} clientes VIPs</b> (que já fizeram +3 compras) que não pedem nada há mais de 15 dias.`;
-                    html += `<button class="ai-action-btn" onclick="aiActionSendCoupon()">Disparar Cupom 10% p/ Recuperar</button></li>`;
-                } else {
-                    html += `<li><b>Risco de Abandono:</b> Base de clientes VIP engajada! Nenhum utilizador de alta frequência está inativo há muito tempo.</li>`;
+                if (slaMedio > 45) {
+                    html += `<li><b>Tempo de Entrega (SLA):</b> A média está em <b>${Math.round(slaMedio)} minutos</b>. <span style="color:var(--danger);">⚠️ CRÍTICO: Os clientes estão a esperar demasiado tempo.</span> Analise os horários de pico e contrate/atribua bônus para mais entregadores atuarem nesses momentos.</li>`;
+                } else if (slaMedio > 0) {
+                    html += `<li><b>Tempo de Entrega (SLA):</b> A média está em <b>${Math.round(slaMedio)} minutos</b>. <span style="color:var(--success);">✅ Excelente!</span> O tempo de entrega está super competitivo na região.</li>`;
                 }
+
+                if (taxaCancelamento > 5) {
+                    html += `<li><b>Taxa de Cancelamento:</b> ${taxaCancelamento.toFixed(1)}%. <span style="color:var(--danger);">⚠️ ALERTA!</span> Muitas lojas estão a rejeitar ou cancelar pedidos. Vá na aba "Gestão Lojas" e entre em contacto com as lojas com mais cancelamentos.</li>`;
+                } else {
+                    html += `<li><b>Taxa de Cancelamento:</b> ${taxaCancelamento.toFixed(1)}%. Este valor está dentro do aceitável no mercado.</li>`;
+                }
+                html += `<li><b>Ecossistema:</b> Dos ${allStores.length} parceiros registados, apenas <b>${storesSet.size} lojas</b> fizeram vendas concluídas este mês.</li>`;
                 html += `</ul>`;
+
+                html += `<h4>🎯 Ações Recomendadas para o CEO</h4>`;
+                html += `<ol>`;
+                if (taxaCancelamento > 5) html += `<li><b>Auditoria Urgente:</b> Ligue para as lojas que cancelaram pedidos ontem e descubra se é falta de stock, pouco pessoal na cozinha ou falhas de internet na loja.</li>`;
+                if (slaMedio > 45) html += `<li><b>Logística:</b> Mande uma notificação Push apenas para os motoboys oferecendo "R$ 1.00 extra por entrega" entre as 19h e as 21h hoje para evitar atrasos.</li>`;
+                if (storesSet.size < allStores.length * 0.5) html += `<li><b>Marketing Parceiros:</b> Metade das suas lojas não está a vender. Crie um "Cupão Patrocinado" focado nas lojas mais fracas para gerar tração no algoritmo delas.</li>`;
+                html += `<li><b>Retenção:</b> Vá à aba de Clientes, pegue nos 10 maiores gastadores e envie um cupão VIP exclusivo para eles no WhatsApp para garantir fidelidade máxima.</li>`;
+                html += `</ol>`;
 
                 loading.style.display = 'none';
                 content.innerHTML = html;
                 content.style.display = 'block';
                 btn.style.display = 'inline-flex';
-                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg> Refazer Auditoria com Dados Recentes';
+                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg> Gerar Novo Relatório Atualizado';
                 
-            }, 2500); 
-        };
-
-        // Lógica do Chatbot IA Local
-        window.sendChatMessage = () => {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            if (!message) return;
-
-            const chatBox = document.getElementById('chat-messages');
-            
-            // Adiciona msg do user
-            const userDiv = document.createElement('div');
-            userDiv.className = 'chat-bubble user';
-            userDiv.innerText = message;
-            chatBox.appendChild(userDiv);
-            
-            input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // Simula resposta IA baseada no contexto
-            setTimeout(() => {
-                const msgLower = message.toLowerCase();
-                let aiResponse = "Estou analisando os dados em tempo real... ";
-
-                if (msgLower.includes("previs") || msgLower.includes("fatur") || msgLower.includes("fechar o mês")) {
-                    if (globalForecast > 0) {
-                        aiResponse = `Baseado no ritmo de vendas, a previsão é fecharmos o mês com R$ ${globalForecast.toLocaleString('pt-BR', {minimumFractionDigits:2})} em vendas, o que te dá um lucro líquido de cerca de R$ ${(globalForecast * 0.08).toLocaleString('pt-BR', {minimumFractionDigits:2})}.`;
-                    } else {
-                        aiResponse = "Ainda não tenho dados suficientes (ou não gerou o relatório principal hoje) para te dar uma previsão exata. Por favor, clique em 'Analisar Dados Agora' no painel ao lado.";
-                    }
-                } 
-                else if (msgLower.includes("problema") || msgLower.includes("loja") || msgLower.includes("cancel")) {
-                    if (globalProblemStores && globalProblemStores.length > 0) {
-                        aiResponse = `As lojas que estão a apresentar taxa de cancelamento crítica hoje são: ${globalProblemStores.join(', ')}. Sugiro entrar na aba de Gestão e ver o que se passa.`;
-                    } else {
-                        aiResponse = "Neste momento, nenhuma das lojas ativas está com uma taxa de cancelamento fora do normal. A operação está fluida!";
-                    }
-                }
-                else if (msgLower.includes("cliente") || msgLower.includes("vips") || msgLower.includes("abandon")) {
-                    aiResponse = `Temos ${globalChurnCount} clientes frequentes em Doresópolis que estão inativos há mais de duas semanas. Eles precisam de um cupão de incentivo urgentemente.`;
-                }
-                else if (msgLower.includes("entregador") || msgLower.includes("motoboy") || msgLower.includes("atraso")) {
-                    aiResponse = "Você pode usar o mapa de calor para ver onde os pedidos estão concentrados agora, e pedir aos entregadores no grupo de WhatsApp para se posicionarem nessas manchas vermelhas.";
-                }
-                else {
-                    aiResponse = "Interessante! Como IA focada em dados do UaiPede, posso te ajudar a identificar lojas com problemas, prever faturamento ou analisar clientes inativos. O que deseja saber?";
-                }
-
-                const aiDiv = document.createElement('div');
-                aiDiv.className = 'chat-bubble ai';
-                aiDiv.innerHTML = `<strong>UaiPede AI:</strong><br>${aiResponse}`;
-                chatBox.appendChild(aiDiv);
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-            }, 1000);
+            }, 2500); // Finge carregamento e "pensamento" de IA
         };
 
         // =========================================
@@ -954,8 +840,8 @@
                 updateHeatMap(orders, stores);
             }
             
+            // Limpar relatório de IA quando muda a cidade para forçar a atualizar a leitura
             document.getElementById('ai-report-content').style.display = 'none';
-            document.getElementById('btn-generate-ai').style.display = 'inline-flex';
         };
 
         function updateCityDropdown() {
