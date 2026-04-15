@@ -90,11 +90,13 @@
 
         .login-alert { background: #fff3cd; color: #856404; padding: 15px; border-radius: 12px; border: 1px solid #ffeeba; text-align: center; margin-bottom: 15px; font-size: 0.95rem; font-weight: 500;}
 
-        /* BOTÃO FINALIZAR FIXO */
+        /* BOTÃO FINALIZAR FIXO E ALERTA DE PEDIDO MÍNIMO */
         .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; padding: 15px; border-top: 1px solid #eee; z-index: 100; padding-bottom: calc(15px + env(safe-area-inset-bottom)); box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
         .btn-checkout { width: 100%; max-width: 600px; margin: 0 auto; background: #ea1d2c; color: #fff; border: none; padding: 16px 20px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center;}
         .btn-checkout:active { transform: scale(0.98); }
-        .btn-checkout:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-checkout:disabled { background: #ccc; cursor: not-allowed; opacity: 0.7; }
+        
+        #min-order-alert { display: none; color: #ea1d2c; font-size: 0.85rem; font-weight: bold; text-align: center; margin: 0 auto 10px auto; background: #fff5f5; padding: 10px; border-radius: 8px; border: 1px dashed #fbd5d5; max-width: 600px;}
 
         /* MODAL DE CUPONS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; }
@@ -252,6 +254,9 @@
         </div>
 
         <div class="bottom-bar" id="bottom-bar-checkout" style="display: none;">
+            
+            <div id="min-order-alert"></div>
+            
             <button class="btn-checkout" id="btn-finish" onclick="window.finishOrder()">
                 <span>Confirmar Pedido</span>
                 <span id="btn-checkout-total">R$ 0,00</span>
@@ -460,7 +465,6 @@
                     }
                 });
 
-                // 🟢 CORREÇÃO NA LISTAGEM DOS CUPONS GLOBAIS 🟢
                 if (storeCity) {
                     const qGlobal = query(collection(db, "coupons"), where("storeId", "==", "GLOBAL"), where("targetCity", "==", storeCity), where("active", "==", true));
                     const snapGlobal = await getDocs(qGlobal);
@@ -484,7 +488,6 @@
                     return;
                 }
 
-                // 🟢 RENDERIZAÇÃO MELHORADA DOS CUPONS NO MODAL DO CARRINHO (COM CORES) 🟢
                 container.innerHTML = availableCoupons.map(c => {
                     const isGlobal = c.storeId === 'GLOBAL';
                     const isSicoob = (c.exclusiveFor === 'sicoob') || (c.sponsorName && c.sponsorName.toLowerCase().includes('sicoob'));
@@ -548,7 +551,6 @@
             document.getElementById('coupons-modal').style.display = 'none';
         };
 
-        // 🟢 APLICAÇÃO DA REGRA MELHORADA 🟢
         window.applyCoupon = async (codeParam = null) => {
             const codeInput = codeParam || document.getElementById('coupon-code').value.trim().toUpperCase();
             const msg = document.getElementById('coupon-message');
@@ -683,6 +685,21 @@
 
             document.getElementById('total-val').innerText = `R$ ${finalTotal.toFixed(2)}`;
             document.getElementById('btn-checkout-total').innerText = `R$ ${finalTotal.toFixed(2)}`;
+
+            // 🟢 VALIDAÇÃO DE PEDIDO MÍNIMO DA LOJA 🟢
+            const btnFinish = document.getElementById('btn-finish');
+            const minOrderAlert = document.getElementById('min-order-alert');
+            const minOrderValue = storeDataCache && storeDataCache.minOrder ? parseFloat(storeDataCache.minOrder) : 0;
+
+            if (minOrderValue > 0 && subtotalStore < minOrderValue) {
+                const diff = minOrderValue - subtotalStore;
+                minOrderAlert.style.display = 'block';
+                minOrderAlert.innerText = `O valor mínimo para pedidos nesta loja é de R$ ${minOrderValue.toFixed(2)}. Adicione mais R$ ${diff.toFixed(2)} para finalizar.`;
+                btnFinish.disabled = true;
+            } else {
+                minOrderAlert.style.display = 'none';
+                btnFinish.disabled = false;
+            }
         };
 
         window.renderCart = () => {
@@ -760,6 +777,13 @@
         };
 
         window.finishOrder = async () => {
+            // Dupla verificação de segurança no momento do clique
+            const minOrderValue = storeDataCache && storeDataCache.minOrder ? parseFloat(storeDataCache.minOrder) : 0;
+            if (minOrderValue > 0 && subtotalStore < minOrderValue) {
+                alert(`O valor mínimo para pedidos nesta loja é de R$ ${minOrderValue.toFixed(2)}. Adicione mais itens na sacola.`);
+                return;
+            }
+
             let addressString = "";
 
             if (currentMethod === 'entrega') {
