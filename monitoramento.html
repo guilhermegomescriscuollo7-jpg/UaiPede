@@ -15,32 +15,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
     
     <style>
-        /* =======================================
-           DARK THEME
-           ======================================= */
         :root {
-            --bg-main: #0B0E14;
-            --bg-card: #151A23;
-            --border-color: #1F2533;
-            --text-main: #FFFFFF;
-            --text-muted: #8A92A6;
-            --primary: #ea1d2c;
-            --primary-soft: rgba(234, 29, 44, 0.15);
-            --success: #00B67A;
-            --success-soft: rgba(0, 182, 122, 0.15);
-            --danger: #FF3B30;
-            --danger-soft: rgba(255, 59, 48, 0.15);
-            --info: #007AFF;
-            --info-soft: rgba(0, 122, 255, 0.15);
-            --warning: #FF9500;
-            --warning-soft: rgba(255, 149, 0, 0.15);
-            --ai-color: #8e44ad;
-            --radius-md: 14px;
-            --radius-lg: 20px;
+            --bg-main: #0B0E14; --bg-card: #151A23; --border-color: #1F2533;
+            --text-main: #FFFFFF; --text-muted: #8A92A6;
+            --primary: #ea1d2c; --primary-soft: rgba(234, 29, 44, 0.15);
+            --success: #00B67A; --success-soft: rgba(0, 182, 122, 0.15);
+            --danger: #FF3B30; --danger-soft: rgba(255, 59, 48, 0.15);
+            --info: #007AFF; --info-soft: rgba(0, 122, 255, 0.15);
+            --warning: #FF9500; --warning-soft: rgba(255, 149, 0, 0.15);
+            --ai-color: #8e44ad; --radius-md: 14px; --radius-lg: 20px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
         body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -62,7 +48,6 @@
         .nav-item.ai-menu.active { background: linear-gradient(135deg, var(--ai-color), #9b59b6); color: #fff; border-color: transparent; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);}
 
         .main { flex: 1; overflow-y: auto; padding: 30px; position: relative; background: var(--bg-main); }
-        
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);}
         
         .header-search { display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 12px; width: 300px;}
@@ -71,12 +56,10 @@
         .header-right { display: flex; align-items: center; gap: 20px; }
         .profile-area { display: flex; align-items: center; gap: 12px; background: var(--bg-card); padding: 6px 12px 6px 6px; border-radius: 30px; border: 1px solid var(--border-color);}
         .profile-avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        
         .city-filter { padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border-color); outline: none; font-weight: 600; color: var(--text-main); background: var(--bg-card); cursor: pointer; font-size: 0.9rem; }
 
         h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text-main); margin-bottom: 20px; display:flex; align-items:center; gap:10px;}
 
-        /* ==================== SECRETÁRIA IA WIDGET ==================== */
         .secretary-card { background: linear-gradient(135deg, rgba(138,43,226,0.08), rgba(74,20,140,0.08)); border: 1px solid rgba(138,43,226,0.3); border-radius: 16px; padding: 20px 25px; display: flex; gap: 20px; margin-bottom: 25px; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
         .secretary-card::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: var(--ai-color); }
         .secretary-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, var(--ai-color), #9b59b6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(138,43,226,0.4); }
@@ -122,7 +105,6 @@
         .btn-pay { padding: 8px 16px; border: none; background: var(--success); border-radius: 8px; font-weight: 700; color: #fff; cursor: pointer; transition: 0.2s; display:inline-flex; align-items:center; gap:6px;}
         .btn-pay:hover { filter: brightness(1.1); }
 
-        /* ==================== MAPA E IA ==================== */
         #map { height: 550px; width: 100%; border-radius: 12px; z-index: 1; border: 1px solid var(--border-color); background-color: var(--bg-card); }
         .leaflet-control-attribution { opacity: 0.3; background: transparent !important; color: var(--text-muted) !important;}
         .leaflet-popup-content-wrapper { background: var(--bg-card) !important; color: var(--text-main) !important; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
@@ -134,9 +116,6 @@
         .section { display: none; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .critical-alert { background: var(--danger-soft); border: 1px solid var(--danger); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: none; align-items: center; gap: 12px; }
-        .critical-alert strong { color: var(--danger); font-weight: 700; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease;}
@@ -179,9 +158,7 @@
         .chat-input-area button { background: var(--ai-color); border: none; color: white; width: 45px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
         .chat-input-area button:hover { background: #9b59b6; transform: scale(1.05);}
 
-        @media (max-width: 1000px) {
-            .ai-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1000px) { .ai-grid { grid-template-columns: 1fr; } }
         @media (max-width: 900px) {
             .sidebar { position: fixed; left: -280px; height: 100vh; box-shadow: 10px 0 30px rgba(0,0,0,0.5);}
             .sidebar.active { left: 0; }
@@ -190,7 +167,6 @@
             .bi-grid, .bi-grid-half { grid-template-columns: 1fr; }
             .main { padding: 20px; }
             header { border-bottom: none; padding-bottom: 0;}
-            
             table, thead, tbody, th, td, tr { display: block; }
             th { display: none; }
             td { text-align: right; padding-left: 50%; position: relative; border-bottom: 1px solid var(--border-color);}
@@ -210,12 +186,10 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                 Dashboard
             </div>
-            
             <div class="nav-item ai-menu" onclick="switchTab('ia-uaipede', this)">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
                 Diretor Virtual
             </div>
-
             <div class="nav-item" onclick="switchTab('heatmap', this)">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 Inteligência Geo
@@ -255,10 +229,6 @@
                 <select id="city-filter" class="city-filter" onchange="applyFilters()">
                     <option value="todas">Todas as Cidades</option>
                 </select>
-                <div style="position:relative; cursor:pointer;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                    <span style="position:absolute; top:-2px; right:-2px; width:10px; height:10px; background:var(--primary); border-radius:50%; border:2px solid var(--bg-main);"></span>
-                </div>
                 <div class="profile-area">
                     <div class="profile-avatar">C</div>
                     <div>
@@ -268,13 +238,6 @@
                 </div>
             </div>
         </header>
-
-        <div class="critical-alert" id="critical-alert">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            <div>
-                <strong><span id="critical-count">0</span> Pedidos em Atraso Crítico (>45 min)</strong>
-            </div>
-        </div>
 
         <section id="visao-geral" class="section active">
             <h1>
@@ -379,9 +342,7 @@
             <div class="ai-grid">
                 <div class="ai-report-container">
                     <div class="ai-header">
-                        <div class="ai-title">
-                            Diretor Virtual (Previsões e Decisões)
-                        </div>
+                        <div class="ai-title">Diretor Virtual (Previsões e Decisões)</div>
                         <button class="btn-ai" id="btn-generate-ai" onclick="generateAIReport()">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
                             Analisar Dados Agora
@@ -626,26 +587,17 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allOrders = [];
-        let allStores = [];
-        let allDrivers = [];
-        let cityMap = {};
-        let currentFilter = 'todas';
+        let allOrders = []; let allStores = []; let allDrivers = []; let cityMap = {}; let currentFilter = 'todas';
 
-        let globalForecast = 0;
-        let globalChurnCount = 0;
-        let globalProblemStores = [];
+        let globalForecast = 0; let globalChurnCount = 0; let globalProblemStores = [];
 
-        // =========================================
-        // CONFIGURAÇÕES CHART.JS
-        // =========================================
+        // Config Chart.js
         Chart.defaults.color = '#8A92A6';
         Chart.defaults.font.family = "'Inter', sans-serif";
         
         const ctxRev = document.getElementById('revenueChart').getContext('2d');
         let gradient = ctxRev.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, 'rgba(234, 29, 44, 0.4)');
-        gradient.addColorStop(1, 'rgba(234, 29, 44, 0.0)');
+        gradient.addColorStop(0, 'rgba(234, 29, 44, 0.4)'); gradient.addColorStop(1, 'rgba(234, 29, 44, 0.0)');
 
         const revChart = new Chart(ctxRev, {
             type: 'line',
@@ -653,30 +605,25 @@
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#1F2533' }, border: { dash: [4, 4] } }, x: { grid: { display: false } } } }
         });
 
-        const ctxOps = document.getElementById('opsChart').getContext('2d');
-        const opsChart = new Chart(ctxOps, {
+        const opsChart = new Chart(document.getElementById('opsChart').getContext('2d'), {
             type: 'doughnut',
             data: { labels: ['Concluídos', 'Cancelados', 'Em Preparo'], datasets: [{ data: [0,0,0], backgroundColor: ['#00B67A', '#FF3B30', '#007AFF'], borderWidth: 0 }] },
             options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { padding: 20 } } } }
         });
 
-        const ctxPay = document.getElementById('paymentChart').getContext('2d');
-        const paymentChart = new Chart(ctxPay, {
+        const paymentChart = new Chart(document.getElementById('paymentChart').getContext('2d'), {
             type: 'pie',
             data: { labels: ['PIX', 'Cartão', 'Dinheiro'], datasets: [{ data: [0,0,0], backgroundColor: ['#00B67A', '#007AFF', '#FF9500'], borderWidth: 0 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15 } } } }
         });
 
-        const ctxPeak = document.getElementById('peakHoursChart').getContext('2d');
-        const peakHoursChart = new Chart(ctxPeak, {
+        const peakHoursChart = new Chart(document.getElementById('peakHoursChart').getContext('2d'), {
             type: 'bar',
             data: { labels: ['10-12h', '12-14h', '14-18h', '18-20h', '20-22h', '22-00h'], datasets: [{ label: 'Pedidos', data: [0,0,0,0,0,0], backgroundColor: '#007AFF', borderRadius: 6 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#1F2533' }, border: { dash: [4,4] } }, x: { grid: { display: false } } } }
         });
 
-        // =========================================
-        // LÓGICA DA SECRETÁRIA IA
-        // =========================================
+        // Secretária IA Textos
         function updateSecretaryInsights(orders, stores, drivers) {
             const now = new Date();
             const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
@@ -740,9 +687,7 @@
             document.getElementById('sec-heatmap').innerHTML = `As <strong>zonas mais quentes</strong> do mapa representam as regiões com maior número de entregas concluídas. Use essa visão para direcionar campanhas!`;
         }
 
-        // =========================================
-        // LÓGICA IA UAIPEDE (DIRETOR VIRTUAL)
-        // =========================================
+        // IA Diretor (Forecast & Chatbot)
         window.aiActionSendCoupon = () => { alert(`Ação IA executada!\nCupom de 10% criado e notificação Push enviada para os ${globalChurnCount} clientes VIPs inativos.`); };
         window.aiActionAlertDrivers = () => { alert(`Ação IA executada!\nNotificação de "Demanda Alta" disparada para todos os entregadores.`); };
         window.aiActionPauseStore = (storeId) => { alert(`Ação IA executada!\nLoja com ID ${storeId} pausada temporariamente para evitar atrasos.`); };
@@ -859,9 +804,7 @@
             }, 1000);
         };
 
-        // =========================================
-        // MAPA GEOCODER COM CACHE PARA NÃO BLOQUEAR
-        // =========================================
+        // Geocoder Maps
         let heatMapInstance = null;
         let heatLayer = null;
         let storeMarkers = [];
@@ -958,9 +901,7 @@
             loadingOverlay.style.display = 'none';
         }
 
-        // =========================================
-        // FIREBASE LISTENERS E LÓGICA DE DADOS
-        // =========================================
+        // Fluxo Inicial e Escutas
         onSnapshot(collection(db, "stores"), (snap) => {
             allStores = []; cityMap = {};
             snap.forEach(d => { const s = d.data(); allStores.push({ id: d.id, ...s }); if(s.city) cityMap[d.id] = s.city; });
@@ -1153,9 +1094,6 @@
             }
         }
 
-        // =========================================
-        // NOVO: FECHAMENTO DE FATURAS (LOJAS)
-        // =========================================
         window.renderLojas = () => {
             const filter = document.getElementById('store-month-filter') ? document.getElementById('store-month-filter').value : 'current';
             const now = new Date();
@@ -1297,14 +1235,8 @@
         window.toggleMenu = () => {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
-            
-            if (sidebar.style.left === '0px') {
-                sidebar.style.left = '-280px';
-                overlay.style.display = 'none';
-            } else {
-                sidebar.style.left = '0px';
-                overlay.style.display = 'block';
-            }
+            if (sidebar.style.left === '0px') { sidebar.style.left = '-280px'; overlay.style.display = 'none'; } 
+            else { sidebar.style.left = '0px'; overlay.style.display = 'block'; }
         };
 
         window.switchTab = (id, el) => {
@@ -1314,7 +1246,7 @@
             document.getElementById(id).classList.add('active');
             if(window.innerWidth <= 900) {
                 document.getElementById('sidebar').style.left = '-280px';
-                document.getElementById('sidebar-overlay').style.display = 'none';
+                if(document.getElementById('sidebar-overlay')) document.getElementById('sidebar-overlay').style.display = 'none';
             }
 
             if(id === 'heatmap') {
@@ -1322,14 +1254,8 @@
                 const stores = currentFilter === 'todas' ? allStores : allStores.filter(s => s.city === currentFilter);
                 updateHeatMap(orders, stores);
             }
-
-            if(id === 'logistica') {
-                window.renderRepasses();
-            }
-            
-            if(id === 'lojas') {
-                window.renderLojas();
-            }
+            if(id === 'logistica') window.renderRepasses();
+            if(id === 'lojas') window.renderLojas();
         };
 
         window.logout = () => { if(confirm("Deseja sair do painel CEO?")) window.location.href = "login.html"; };
