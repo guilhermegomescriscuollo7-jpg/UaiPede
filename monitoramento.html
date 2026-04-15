@@ -120,7 +120,7 @@
         .btn-ver-detalhes { padding: 8px 16px; border: 1px solid var(--border-color); background: transparent; border-radius: 8px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: 0.2s; display:inline-flex; align-items:center; gap:6px;}
         .btn-ver-detalhes:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
         .btn-pay { padding: 8px 16px; border: none; background: var(--success); border-radius: 8px; font-weight: 700; color: #fff; cursor: pointer; transition: 0.2s; display:inline-flex; align-items:center; gap:6px;}
-        .btn-pay:hover { background: #008f5e; }
+        .btn-pay:hover { filter: brightness(1.1); }
 
         /* ==================== MAPA E IA ==================== */
         #map { height: 550px; width: 100%; border-radius: 12px; z-index: 1; border: 1px solid var(--border-color); background-color: var(--bg-card); }
@@ -396,7 +396,7 @@
                     <div class="ai-content" id="ai-report-content">
                         <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(138, 43, 226, 0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
-                            <p>Clique no botão acima para gerar uma auditoria e previsão automática para Doresópolis baseada no histórico deste mês.</p>
+                            <p>Clique no botão acima para gerar uma auditoria e previsão automática baseada no histórico deste mês.</p>
                         </div>
                     </div>
                 </div>
@@ -458,7 +458,7 @@
         <section id="lojas" class="section">
             <h1>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                Gestão de Parceiros
+                Gestão e Acerto com Lojas
             </h1>
 
             <div class="secretary-card">
@@ -470,11 +470,23 @@
             </div>
 
             <div class="city-counter-container" id="city-counter-container"></div>
+            
             <div class="card" style="padding: 0; overflow:hidden;">
+                <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <h3 style="margin: 0; display:flex; align-items:center; gap:8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        Fechamento de Faturas (Lojas)
+                    </h3>
+                    <select id="store-month-filter" class="city-filter" onchange="renderLojas()">
+                        <option value="current">Mês Atual</option>
+                        <option value="last">Mês Anterior</option>
+                    </select>
+                </div>
+
                 <div class="table-responsive">
                     <table id="table-lojas">
                         <thead>
-                            <tr><th>Loja</th><th>Localização</th><th>Status</th><th>Faturação</th><th>Ações</th></tr>
+                            <tr><th>Loja</th><th>Status</th><th>Pedidos</th><th>Faturamento Bruto</th><th>Taxa (8%)</th><th>Repasse Líquido</th><th>Ações</th></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -511,7 +523,7 @@
                 <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                     <h3 style="margin: 0; display:flex; align-items:center; gap:8px;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        Fechamento de Repasses
+                        Fechamento de Repasses (Motoboys)
                     </h3>
                     <select id="payout-month-filter" class="city-filter" onchange="renderRepasses()">
                         <option value="current">Mês Atual</option>
@@ -578,7 +590,7 @@
                     <strong id="modal-store-ticket" style="color:var(--text-main);">R$ 0,00</strong>
                 </div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed var(--border-color);">
-                    <span style="color:var(--text-muted); font-weight:500; font-size:0.9rem;">Faturação Bruta:</span>
+                    <span style="color:var(--text-muted); font-weight:500; font-size:0.9rem;">Faturamento Bruto:</span>
                     <strong id="modal-store-total" style="font-size:1.1rem; color:var(--text-main);">R$ 0,00</strong>
                 </div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
@@ -663,14 +675,14 @@
         });
 
         // =========================================
-        // LÓGICA DA SECRETÁRIA IA (MINI RELATÓRIOS)
+        // LÓGICA DA SECRETÁRIA IA
         // =========================================
         function updateSecretaryInsights(orders, stores, drivers) {
             const now = new Date();
             const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
             const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
-            // --- 1. Visão Geral ---
+            // 1. Visão Geral
             let totalHoje = 0; let totalMes = 0; let concluidosMes = 0;
             orders.forEach(o => {
                 if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
@@ -680,7 +692,7 @@
             });
             document.getElementById('sec-visao-geral').innerHTML = `Olá, CEO! Hoje já faturamos <strong>R$ ${totalHoje.toLocaleString('pt-BR', {minimumFractionDigits:2})}</strong>. Neste mês, nosso volume total está em <strong>R$ ${totalMes.toLocaleString('pt-BR', {minimumFractionDigits:2})}</strong> distribuídos em ${concluidosMes} pedidos concluídos.`;
 
-            // --- 2. Lojas ---
+            // 2. Lojas
             let online = 0; let offline = 0;
             stores.forEach(s => s.status === 'Aberto' ? online++ : offline++);
             
@@ -695,9 +707,9 @@
                 if(total > topStoreTotal) { topStoreTotal = total; topStore = name; }
             });
             
-            document.getElementById('sec-lojas').innerHTML = `Atualmente, temos <strong>${online} parceiros online</strong> e ${offline} fechados. A loja destaque do mês é a <strong>${topStore}</strong>, liderando as vendas com R$ ${topStoreTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})} de faturamento.`;
+            document.getElementById('sec-lojas').innerHTML = `Temos <strong>${online} parceiros online</strong> e ${offline} fechados. A loja destaque do mês é a <strong>${topStore}</strong>, liderando com R$ ${topStoreTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})} de faturamento.`;
 
-            // --- 3. Logística ---
+            // 3. Logística
             let driversOn = 0; 
             drivers.forEach(d => { if((d.isOnline === true || d.isOnline === "true") && d.isActive !== false) driversOn++; });
             
@@ -707,10 +719,9 @@
                     totalDriverFees += parseFloat(o.platformDriverFee || 5);
                 }
             });
+            document.getElementById('sec-logistica').innerHTML = `Temos <strong>${driversOn} motoboys nas ruas</strong>. Até agora, eles geraram <strong>R$ ${totalDriverFees.toLocaleString('pt-BR', {minimumFractionDigits:2})} em taxas</strong> no mês.`;
 
-            document.getElementById('sec-logistica').innerHTML = `Neste momento, temos <strong>${driversOn} motoboys nas ruas</strong>. Até agora, eles geraram <strong>R$ ${totalDriverFees.toLocaleString('pt-BR', {minimumFractionDigits:2})} em taxas</strong> no mês. Fique de olho nos horários de pico para não faltar frota!`;
-
-            // --- 4. Clientes ---
+            // 4. Clientes
             const clients = {};
             orders.forEach(o => {
                 if(o.timestamp >= startMonth && ['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
@@ -723,18 +734,17 @@
                 if(total > topClientTotal) { topClientTotal = total; topClient = name; }
             });
             const activeClientsCount = Object.keys(clients).length;
+            document.getElementById('sec-clientes').innerHTML = `Neste mês, <strong>${activeClientsCount} clientes únicos</strong> compraram na plataforma. O cliente VIP top 1 foi <strong>${topClient}</strong> (R$ ${topClientTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}).`;
 
-            document.getElementById('sec-clientes').innerHTML = `Neste mês, <strong>${activeClientsCount} clientes diferentes</strong> compraram na plataforma. O cliente VIP que mais gastou foi <strong>${topClient}</strong> (R$ ${topClientTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}).`;
-
-            // --- 5. Heatmap ---
-            document.getElementById('sec-heatmap').innerHTML = `O mapa abaixo mostra as <strong>zonas mais quentes</strong> da cidade baseadas nas entregas concluídas. Use os pontos de calor mais intensos para direcionar panfletagem e tráfego pago nas redes sociais.`;
+            // 5. Heatmap
+            document.getElementById('sec-heatmap').innerHTML = `As <strong>zonas mais quentes</strong> do mapa representam as regiões com maior número de entregas concluídas. Use essa visão para direcionar campanhas!`;
         }
 
         // =========================================
         // LÓGICA IA UAIPEDE (DIRETOR VIRTUAL)
         // =========================================
         window.aiActionSendCoupon = () => { alert(`Ação IA executada!\nCupom de 10% criado e notificação Push enviada para os ${globalChurnCount} clientes VIPs inativos.`); };
-        window.aiActionAlertDrivers = () => { alert(`Ação IA executada!\nNotificação de "Demanda Alta" disparada para todos os entregadores da cidade.`); };
+        window.aiActionAlertDrivers = () => { alert(`Ação IA executada!\nNotificação de "Demanda Alta" disparada para todos os entregadores.`); };
         window.aiActionPauseStore = (storeId) => { alert(`Ação IA executada!\nLoja com ID ${storeId} pausada temporariamente para evitar atrasos.`); };
 
         window.generateAIReport = () => {
@@ -971,14 +981,12 @@
             const stores = currentFilter === 'todas' ? allStores : allStores.filter(s => s.city === currentFilter);
             const drivers = currentFilter === 'todas' ? allDrivers : allDrivers.filter(d => (d.city && d.city === currentFilter) || !d.city);
             
-            // Chama a Secretária IA para atualizar os textos do topo de cada aba
             updateSecretaryInsights(orders, stores, drivers);
-
             processKPIs(orders);
             processWeeklyChart(orders);
             processAdditionalCharts(orders);
-            renderLojas(orders, stores);
-            renderLogistica(orders, drivers);
+            window.renderLojas();
+            renderLogistica(drivers);
             window.renderRepasses();
             renderClientes(orders);
             processTopProducts(orders);
@@ -1145,47 +1153,72 @@
             }
         }
 
-        function renderLojas(orders, stores) {
+        // =========================================
+        // NOVO: FECHAMENTO DE FATURAS (LOJAS)
+        // =========================================
+        window.renderLojas = () => {
+            const filter = document.getElementById('store-month-filter') ? document.getElementById('store-month-filter').value : 'current';
+            const now = new Date();
+            let start, end;
+
+            if (filter === 'current') {
+                start = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+                end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).getTime();
+            } else {
+                start = new Date(now.getFullYear(), now.getMonth() - 1, 1).getTime();
+                end = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).getTime();
+            }
+
+            const storesToProcess = currentFilter === 'todas' ? allStores : allStores.filter(s => s.city === currentFilter);
+            const ordersToProcess = currentFilter === 'todas' ? allOrders : allOrders.filter(o => cityMap[o.storeId] === currentFilter);
+
             const tbody = document.getElementById('table-lojas').querySelector('tbody');
-            if(stores.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Nenhuma loja encontrada.</td></tr>';
+            if(storesToProcess.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:30px;">Nenhuma loja encontrada.</td></tr>';
                 return;
             }
 
-            const startMonth = new Date(); startMonth.setDate(1); startMonth.setHours(0,0,0,0);
-            const startMonthMs = startMonth.getTime();
             const storeStats = {};
-            
-            orders.forEach(o => {
-                if (o.timestamp >= startMonthMs) {
+            ordersToProcess.forEach(o => {
+                if (o.timestamp >= start && o.timestamp <= end) {
                     if (!storeStats[o.storeId]) storeStats[o.storeId] = { total: 0, orders: 0, canceled: 0 };
                     if (['Entregue', 'Concluído', 'Concluido'].includes(o.status)) {
-                        storeStats[o.storeId].total += (o.total || 0); storeStats[o.storeId].orders += 1;
-                    } else if (o.status === 'Cancelado') { storeStats[o.storeId].canceled += 1; }
+                        storeStats[o.storeId].total += (o.total || 0); 
+                        storeStats[o.storeId].orders += 1;
+                    } else if (o.status === 'Cancelado') { 
+                        storeStats[o.storeId].canceled += 1; 
+                    }
                 }
             });
 
-            tbody.innerHTML = stores.sort((a,b) => (storeStats[b.id]?.total||0) - (storeStats[a.id]?.total||0)).map(store => {
+            tbody.innerHTML = storesToProcess.sort((a,b) => (storeStats[b.id]?.total||0) - (storeStats[a.id]?.total||0)).map(store => {
                 const statusBadge = store.status === 'Aberto' ? '<span class="badge badge-open">Online</span>' : '<span class="badge badge-closed">Fechada</span>';
                 const stats = storeStats[store.id] || { total: 0, orders: 0, canceled: 0 };
                 const safeName = store.name.replace(/'/g, "\\'");
+                
+                const taxa = stats.total * 0.08;
+                const liquido = stats.total - taxa;
 
                 return `<tr>
-                    <td data-label="Loja"><strong>${store.name}</strong></td>
-                    <td data-label="Localização" style="color:var(--text-muted);">${store.city || 'N/A'}</td>
+                    <td data-label="Loja"><strong>${store.name}</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">${store.city || 'N/A'}</span></td>
                     <td data-label="Status">${statusBadge}</td>
-                    <td data-label="Faturamento" style="color:var(--text-main); font-weight:700;">R$ ${stats.total.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                    <td data-label="Pedidos">${stats.orders}</td>
+                    <td data-label="Faturamento Bruto">R$ ${stats.total.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                    <td data-label="Taxa UaiPede (8%)" style="color:var(--danger); font-weight:600;">- R$ ${taxa.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                    <td data-label="Repasse Líquido" style="color:var(--success); font-weight:800;">R$ ${liquido.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
                     <td data-label="Ações">
                         <button class="btn-ver-detalhes" onclick="openStoreDetails('${safeName}', ${stats.total}, ${stats.orders}, ${stats.canceled}, '${store.status}')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             Detalhes
+                        </button>
+                        <button class="btn-pay" style="margin-top:5px; background:var(--info);" onclick="alert('Resumo copiado! Envie para o WhatsApp do lojista:\\n\\nFechamento Mensal - ${safeName}\\n\\nTotal de Pedidos: ${stats.orders}\\nFaturamento Bruto: R$ ${stats.total.toFixed(2)}\\nTaxa UaiPede (8%): R$ ${taxa.toFixed(2)}\\n\\nVALOR LÍQUIDO A REPASSAR: R$ ${liquido.toFixed(2)}')">
+                            Cobrar / Pagar
                         </button>
                     </td>
                 </tr>`;
             }).join('');
-        }
+        };
 
-        function renderLogistica(orders, drivers) {
+        function renderLogistica(drivers) {
             let online = 0; drivers.forEach(d => { if((d.isOnline === true || d.isOnline === "true") && d.isActive !== false) online++; });
             document.getElementById('online-drivers').innerText = online;
         }
@@ -1292,6 +1325,10 @@
 
             if(id === 'logistica') {
                 window.renderRepasses();
+            }
+            
+            if(id === 'lojas') {
+                window.renderLojas();
             }
         };
 
